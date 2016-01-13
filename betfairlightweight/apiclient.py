@@ -50,8 +50,8 @@ class APIClient:
 
     @property
     def cert(self):
-        cert = (os.path.normpath('certs/client-2048.crt'),
-                os.path.normpath('certs/client-2048.key'))
+        cert = (os.path.join(os.pardir, "certs/client-2048.crt"),
+                os.path.join(os.pardir, "certs/client-2048.key"))
         return cert
 
     @property
