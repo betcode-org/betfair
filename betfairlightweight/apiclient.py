@@ -55,9 +55,16 @@ class APIClient:
 
     @property
     def cert(self):
-        cert = (os.path.join(os.pardir, "certs/client-2048.crt"),
-                os.path.join(os.pardir, "certs/client-2048.key"))
-        return cert
+        cert_paths = []
+        ssl_path = os.path.join(os.pardir, 'certs/')
+        cert_path = os.listdir(ssl_path)
+        for file in cert_path:
+            ext = file.rpartition('.')[2]
+            if ext in ['key', 'crt', 'pem']:
+                cert_path = ssl_path + file
+                cert_paths.append(cert_path)
+        cert_paths.sort()
+        return cert_paths
 
     @property
     def login_headers(self):
