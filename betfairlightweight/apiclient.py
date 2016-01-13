@@ -7,6 +7,7 @@ from certs.secret import APP_KEYS
 class APIClient:
 
     URL = {'login': 'https://identitysso.betfair.com/api/certlogin',
+           'logout': 'https://identitysso.betfair.com/api/logout',
            'keep_alive': 'https://identitysso.betfair.com/api/keepAlive',
            'betting': 'https://api.betfair.com/exchange/betting/json-rpc/v1',
            'account': 'https://api.betfair.com/exchange/account/json-rpc/v1'}
@@ -43,6 +44,10 @@ class APIClient:
                 return True
         else:
             return True
+
+    def logout(self):
+        self._session_token = None
+        self.login_time = None
 
     @property
     def app_key(self):

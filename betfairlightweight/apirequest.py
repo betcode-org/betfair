@@ -1,5 +1,6 @@
 import apiparse
-from apimethod import Login, KeepAlive, BettingRequest, AccountRequest
+from apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest
+
 
 def login(api):
     return Login(api).call()
@@ -7,6 +8,10 @@ def login(api):
 
 def keep_alive(api):
     return KeepAlive(api).call()
+
+
+def logout(api):
+    return Logout(api).call()
 
 
 # Betting requests

@@ -68,6 +68,25 @@ class KeepAlive(APIMethod):
             print('login error:', response.status_code)
 
 
+class Logout(APIMethod):
+
+    def __init__(self, api_client):
+        super(Logout, self).__init__(api_client)
+        self.url = self._api_client.URL['logout']
+
+    def call(self):
+        headers = self._api_client.keep_alive_headers
+        cert = self._api_client.cert
+        response = self._api_client.request.get(self.url, headers=headers, cert=cert)
+        if response.status_code == 200:
+            response_json = response.json()
+            if response_json['status'] == 'SUCCESS':
+                self._api_client.logout()
+                print('logout successful')
+        else:
+            print('logout error:', response.status_code)
+
+
 class BettingRequest(APIMethod):
 
     def __init__(self, api_client, method, params):
