@@ -13,3 +13,6 @@ print(data)
 
 data = apirequest.list_event_types_parsed(trading, {"filter": {}})
 print(data)
+
+
+apirequest.logout(trading)
