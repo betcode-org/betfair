@@ -1,16 +1,15 @@
-import apimethod
+import apirequest
 from apiclient import APIClient
 
 
 trading = APIClient('', '')
 
-apimethod.login(trading)
+apirequest.login(trading)
 
-# keep_alive(_rcl).call()
+# keep_alive(trading)
 
-data = apimethod.list_event_types(trading, {"filter": {}})
+data = apirequest.list_event_types(trading, {"filter": {}})
 print(data)
 
-
-print(apimethod.get_account_funds(trading, {}))
-# ParameterFactory
+data = apirequest.list_event_types_parsed(trading, {"filter": {}})
+print(data)
