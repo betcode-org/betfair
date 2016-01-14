@@ -1,8 +1,8 @@
 import apirequest
-from apiclient import APIClient
+import apiclient
 
 
-trading = APIClient('', '')
+trading = apiclient.APIClient('username', 'password')
 
 apirequest.login(trading)
 
