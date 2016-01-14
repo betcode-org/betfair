@@ -12,7 +12,7 @@ class APIClient:
            'betting': 'https://api.betfair.com/exchange/betting/json-rpc/v1',
            'account': 'https://api.betfair.com/exchange/account/json-rpc/v1'}
 
-    __APP_KEYS = APP_KEYS
+    __APP_KEYS = APP_KEYS  # APP_KEYS = {'username': appKey}
 
     def __init__(self, username, password):
         self.username = username
