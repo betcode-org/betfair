@@ -75,9 +75,7 @@ class MarketCatalogue:
         if 'description' in market_catalogue:
             self.description = MarketCatalogueDescription(market_catalogue['description'])
         if 'runners' in market_catalogue:
-            self.runners = []
-            for runner in market_catalogue['runners']:
-                self.runners.append(RunnerCatalogue(runner))
+            self.runners = [RunnerCatalogue(runner) for runner in market_catalogue['runners']]
 
 
 class MarketCatalogueCompetition:
@@ -94,12 +92,13 @@ class MarketCatalogueEvent:
         self.name = event['name']
         self.open_date = strp_betfair_time(event['openDate'])
         self.timezone = event['timezone']
+        self.venue = key_check(event, 'venue')
 
 
 class MarketCatalogueEventType:
 
     def __init__(self, event_type):
-        self.id = event_type['name']
+        self.id = event_type['id']
         self.name = event_type['name']
 
 
@@ -110,13 +109,13 @@ class MarketCatalogueDescription:
         self.bsp_market = description['bspMarket']
         self.discount_allowed = description['discountAllowed']
         self.market_base_rate = description['marketBaseRate']
-        self.market_time = description['marketTime']
+        self.market_time = strp_betfair_time(description['marketTime'])
         self.market_type = description['marketType']
         self.persistence_enabled = description['persistenceEnabled']
         self.regulator = description['regulator']
         self.rules = key_check(description, 'rules')
         self.rules_has_date = description['rulesHasDate']
-        self.suspend_time = description['suspendTime']
+        self.suspend_time = strp_betfair_time(description['suspendTime'])
         self.turn_in_play_enabled = description['turnInPlayEnabled']
         self.wallet = description['wallet']
 
@@ -193,9 +192,7 @@ class MarketBook:
         self.total_available = market_book['totalAvailable']
         self.total_matched = market_book['totalMatched']
         self.version = market_book['version']
-        self.runners = []
-        for runner in market_book['runners']:
-            self.runners.append(RunnerBook(runner))
+        self.runners = [RunnerBook(runner) for runner in market_book['runners']]
 
 
 class RunnerBook:
@@ -212,9 +209,9 @@ class RunnerBook:
         if 'ex' in runner_book:
             self.ex = RunnerBookEX(runner_book['ex'])
         if 'orders' in runner_book:
-            self.orders = runner_book['orders']  # todo
-        if 'matched' in runner_book:
-            self.matches = runner_book['matches']  # todo
+            self.orders = [RunnerBookOrder(order) for order in runner_book['orders']]
+        if 'matches' in runner_book:
+            self.matches = [RunnerBookMatch(match) for match in runner_book['matches']]
 
 
 class RunnerBookSP:
@@ -232,3 +229,118 @@ class RunnerBookEX:
         self.available_to_back = ex['availableToBack']
         self.available_to_lay = ex['availableToLay']
         self.traded_volume = ex['tradedVolume']
+
+
+class RunnerBookOrder:
+
+    def __init__(self, order):
+        self.bet_id = order['betId']
+        self.avg_price_matched = order['avgPriceMatched']
+        self.bsp_liability = order['bspLiability']
+        self.order_type = order['orderType']
+        self.persistence_type = order['persistenceType']
+        self.placed_date = strp_betfair_time(order['placedDate'])
+        self.price = order['price']
+        self.side = order['side']
+        self.size = order['size']
+        self.size_cancelled = order['sizeCancelled']
+        self.size_lapsed = order['sizeLapsed']
+        self.size_matched = order['sizeMatched']
+        self.size_remaining = order['sizeRemaining']
+        self.size_voided = order['sizeVoided']
+        self.status = order['status']
+
+
+class RunnerBookMatch:
+
+    def __init__(self, match):
+        self.price = match['price']
+        self.side = match['side']
+        self.size = match['size']
+
+
+class CurrentOrders:
+
+    def __init__(self, current_orders):
+        self.more_available = current_orders['moreAvailable']
+        self.orders = [CurrentOrdersOrder(order) for order in current_orders['currentOrders']]
+
+
+class CurrentOrdersOrder:
+
+    def __init__(self, order):
+        self.bet_id = order['betId']
+        self.average_price_matched = order['averagePriceMatched']
+        self.bsp_liability = order['bspLiability']
+        self.handicap = order['handicap']
+        self.market_id = order['marketId']
+        self.matched_date = key_check_datetime(order, 'matchedDate')
+        self.order_type = order['orderType']
+        self.persistence_type = order['persistenceType']
+        self.placed_date = strp_betfair_time(order['placedDate'])
+        self.price_size = CurrentOrdersOrderPriceSize(order['priceSize'])
+        self.regulator_code = order['regulatorCode']
+        self.selection_id = order['selectionId']
+        self.side = order['side']
+        self.size_cancelled = order['sizeCancelled']
+        self.size_lapsed = order['sizeLapsed']
+        self.size_matched = order['sizeMatched']
+        self.size_remaining = order['sizeRemaining']
+        self.size_voided = order['sizeVoided']
+        self.status = order['status']
+        self.bet_id = order['betId']
+
+
+class CurrentOrdersOrderPriceSize:
+
+    def __init__(self, price_size):
+        self.price = price_size['price']
+        self.size = price_size['size']
+
+
+class ClearedOrders:
+
+    def __init__(self, cleared_orders):
+        self.more_available = cleared_orders['moreAvailable']
+        self.orders = [ClearedOrdersOrder(order) for order in cleared_orders['clearedOrders']]
+
+
+class ClearedOrdersOrder:
+
+    def __init__(self, order):
+        self.bet_id = order['betId']
+        self.bet_count = order['betCount']
+        self.bet_outcome = order['betOutcome']
+        self.event_id = order['eventId']
+        self.event_type_id = order['eventTypeId']
+        self.handicap = order['handicap']
+        self.last_matched_date = strp_betfair_time(order['lastMatchedDate'])
+        self.market_id = order['marketId']
+        self.order_type = order['orderType']
+        self.persistence_type = order['persistenceType']
+        self.placed_date = strp_betfair_time(order['placedDate'])
+        self.price_matched = order['priceMatched']
+        self.price_reduced = order['priceReduced']
+        self.price_requested = order['priceRequested']
+        self.profit = order['profit']
+        self.selection_id = order['selectionId']
+        self.settled_date = strp_betfair_time(order['settledDate'])
+        self.side = order['side']
+        self.size_settled = order['sizeSettled']
+
+
+class MarketProfitLoss:
+
+    def __init__(self, market_profit_loss):
+        self.market_id = market_profit_loss['marketId']
+        self.commission_applied = key_check(market_profit_loss, 'commissionApplied')
+        self.profit_and_losses = [MarketProfitLosses(runner) for runner in market_profit_loss['profitAndLosses']]
+
+
+class MarketProfitLosses:
+
+    def __init__(self, runner):
+        self.selection_id = runner['selectionId']
+        self.if_win = runner['ifWin']
+        self.if_lose = key_check(runner, 'ifLose')
+        self.if_place = key_check(runner, 'ifPlace')
