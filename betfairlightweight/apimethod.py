@@ -1,4 +1,5 @@
 import json
+import logging
 
 
 class APIMethod:
@@ -26,7 +27,7 @@ class APIMethod:
                 json_response = response.json()
                 return json_response
             else:
-                print('request error:', response.status_code)
+                logging.error('Requests error: %s' % response.status_code)
         else:
             print('Transaction limit reached:', self._api_client.transaction_count)
 
@@ -46,8 +47,9 @@ class Login(APIMethod):
             response_json = response.json()
             if response_json['loginStatus'] == 'SUCCESS':
                 self._api_client.set_session_token(response_json['sessionToken'])
+            return response_json
         else:
-            print('login error:', response.status_code)
+            logging.error('Requests login error: %s' % response.status_code)
 
 
 class KeepAlive(APIMethod):
@@ -64,8 +66,9 @@ class KeepAlive(APIMethod):
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
                 self._api_client.set_session_token(response_json['token'])
+            return response_json
         else:
-            print('login error:', response.status_code)
+            logging.error('Requests keepALive error: %s' % response.status_code)
 
 
 class Logout(APIMethod):
@@ -83,8 +86,9 @@ class Logout(APIMethod):
             if response_json['status'] == 'SUCCESS':
                 self._api_client.logout()
                 print('logout successful')
+            return response_json
         else:
-            print('logout error:', response.status_code)
+            logging.error('Requests logout error: %s' % response.status_code)
 
 
 class BettingRequest(APIMethod):
