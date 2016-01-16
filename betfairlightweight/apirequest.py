@@ -14,49 +14,99 @@ def logout(api):
     return Logout(api).call()
 
 
-# Betting requests
+# Betting requests todo error handling!
 
 
-def list_event_types(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params).call()
-
-
-def list_event_types_parsed(api, params):
+def list_event_types(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params).call()
-    response_parsed = [apiparse.EventTypes(x) for x in response['result']]
-    return response_parsed
+    if parsed:
+        return [apiparse.EventType(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_competitions(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params).call()
+def list_competitions(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {}}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params).call()
+    if parsed:
+        return [apiparse.Competition(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_time_ranges(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params).call()
+def list_time_ranges(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {},
+                  'granularity': 'DAYS'}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params).call()
+    if parsed:
+        return [apiparse.TimeRange(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_events(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listEvents', params).call()
+def list_events(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {}}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listEvents', params).call()
+    if parsed:
+        return [apiparse.Event(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_market_types(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params).call()
+def list_market_types(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {}}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params).call()
+    if parsed:
+        return [apiparse.MarketType(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_countries(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listCountries', params).call()
+def list_countries(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {}}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listCountries', params).call()
+    if parsed:
+        return [apiparse.Country(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_venues(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listVenues', params).call()
+def list_venues(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {}}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listVenues', params).call()
+    if parsed:
+        return [apiparse.Venue(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_market_catalogue(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listMarketCatalogue', params).call()
+def list_market_catalogue(api, params=None, parsed=True):
+    if not params:
+        params = {'filter': {},
+                  'maxResults': '1'}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketCatalogue', params).call()
+    if parsed:
+        return [apiparse.MarketCatalogue(x) for x in response['result']]
+    else:
+        return response
 
 
-def list_market_book(api, params):
-    return BettingRequest(api, 'SportsAPING/v1.0/listMarketBook', params).call()
+def list_market_book(api, params=None, parsed=True):
+    if not params:
+        params = {'marketIds': ['1.122618187']}
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketBook', params).call()
+    if parsed:
+        return [apiparse.MarketBook(x) for x in response['result']]
+    else:
+        return response
 
 
 def place_orders(api, params):
