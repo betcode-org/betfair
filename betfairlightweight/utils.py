@@ -18,3 +18,13 @@ def key_check_datetime(data, key):
         return strp_betfair_time(output)
     except KeyError:
         return None
+
+
+def price_check(data, number, key):
+    try:
+        output = data[number][key]
+    except KeyError:
+        output = None
+    except IndexError:
+        output = None
+    return output

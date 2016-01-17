@@ -1,7 +1,9 @@
 import datetime
 import os
 import requests
+import logging
 from certs.secret import APP_KEYS
+import errors.apiexceptions as apiexceptions
 
 
 class APIClient:
@@ -29,21 +31,19 @@ class APIClient:
         self._session_token = session_token
         self.transaction_count = 0
         self.login_time = datetime.datetime.now()
-        print(self.login_time, self._session_token)
+        logging.info('New sessionToken: %s', self._session_token)
 
     def check_transaction_count(self, method):
         now = datetime.datetime.now()
         if now > self.time_trig:
+            logging.info('Transaction count reset: %s', self.transaction_count)
             self.time_trig = now.replace(hour=(now.hour + 1), minute=0, second=0, microsecond=0)
             self.transaction_count = 0
         if method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
             self.transaction_count += 1
             if self.transaction_count > 999:
-                return False
-            else:
-                return True
-        else:
-            return True
+                logging.error('Transaction limit reached: %s', self.transaction_count)
+                raise apiexceptions.TransactionCountError
 
     def logout(self):
         self._session_token = None

@@ -20,16 +20,14 @@ class APIMethod:
         return self.payload
 
     def call(self):
-        if self._api_client.check_transaction_count(self.method):
-            headers = self._api_client.request_headers
-            response = self._api_client.request.post(self.url, data=self.payload, headers=headers)
-            if response.status_code == 200:
-                json_response = response.json()
-                return json_response
-            else:
-                logging.error('Requests error: %s' % response.status_code)
+        self._api_client.check_transaction_count(self.method)
+        headers = self._api_client.request_headers
+        response = self._api_client.request.post(self.url, data=self.payload, headers=headers)
+        if response.status_code == 200:
+            json_response = response.json()
+            return json_response
         else:
-            print('Transaction limit reached:', self._api_client.transaction_count)
+            logging.error('Requests error: %s' % response.status_code)
 
 
 class Login(APIMethod):
@@ -46,6 +44,7 @@ class Login(APIMethod):
         if response.status_code == 200:
             response_json = response.json()
             if response_json['loginStatus'] == 'SUCCESS':
+                logging.info('Login: %s', response_json['loginStatus'])
                 self._api_client.set_session_token(response_json['sessionToken'])
             return response_json
         else:
@@ -65,6 +64,7 @@ class KeepAlive(APIMethod):
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
+                logging.info('KeepAlive: %s', response_json['status'])
                 self._api_client.set_session_token(response_json['token'])
             return response_json
         else:
@@ -84,8 +84,8 @@ class Logout(APIMethod):
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
+                logging.info('Logout: %s', response_json['status'])
                 self._api_client.logout()
-                print('logout successful')
             return response_json
         else:
             logging.error('Requests logout error: %s' % response.status_code)
