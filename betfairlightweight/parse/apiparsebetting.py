@@ -1,10 +1,12 @@
 import logging
-from utils import key_check, strp_betfair_time, key_check_datetime
+import datetime
+from utils import key_check, strp_betfair_time, key_check_datetime, price_check
 
 
 class EventType:
 
     def __init__(self, event_type):
+        self.date_time_created = datetime.datetime.now()
         self.event_type_id = event_type['eventType']['id']
         self.event_type_name = event_type['eventType']['name']
         self.market_count = event_type['marketCount']
@@ -13,6 +15,7 @@ class EventType:
 class Competition:
 
     def __init__(self, competition):
+        self.date_time_created = datetime.datetime.now()
         self.competition_id = competition['competition']['id']
         self.competition_name = competition['competition']['name']
         self.market_count = competition['marketCount']
@@ -22,6 +25,7 @@ class Competition:
 class TimeRange:
 
     def __init__(self, time_range):
+        self.date_time_created = datetime.datetime.now()
         self.market_count = time_range['marketCount']
         self.time_range_from = time_range['timeRange']['from']
         self.time_range_to = time_range['timeRange']['to']
@@ -30,7 +34,8 @@ class TimeRange:
 class Event:
 
     def __init__(self, event):
-        self.event_id = event['event']['id']
+        self.date_time_created = datetime.datetime.now()
+        self.id = event['event']['id']
         self.open_date = strp_betfair_time(event['event']['openDate'])
         self.time_zone = event['event']['timezone']
         self.country_code = key_check(event['event'], 'countryCode')
@@ -41,6 +46,7 @@ class Event:
 class MarketType:
 
     def __init__(self, market_type):
+        self.date_time_created = datetime.datetime.now()
         self.market_type = market_type['marketType']
         self.market_count = market_type['marketCount']
 
@@ -48,6 +54,7 @@ class MarketType:
 class Country:
 
     def __init__(self, country):
+        self.date_time_created = datetime.datetime.now()
         self.country_code = country['countryCode']
         self.market_count = country['marketCount']
 
@@ -55,6 +62,7 @@ class Country:
 class Venue:
 
     def __init__(self, venue):
+        self.date_time_created = datetime.datetime.now()
         self.venue = venue['venue']
         self.market_count = venue['marketCount']
 
@@ -62,6 +70,7 @@ class Venue:
 class MarketCatalogue:
 
     def __init__(self, market_catalogue):
+        self.date_time_created = datetime.datetime.now()
         self.market_id = market_catalogue['marketId']
         self.market_name = market_catalogue['marketName']
         self.total_matched = market_catalogue['totalMatched']
@@ -82,7 +91,7 @@ class MarketCatalogueCompetition:
 
     def __init__(self, competition):
         self.id = competition['id']
-        self.name = ['name']
+        self.name = competition['name']
 
 
 class MarketCatalogueEvent:
@@ -110,7 +119,7 @@ class MarketCatalogueDescription:
         self.discount_allowed = description['discountAllowed']
         self.market_base_rate = description['marketBaseRate']
         self.market_time = strp_betfair_time(description['marketTime'])
-        self.market_type = description['marketType']
+        self.market_type = key_check(description, 'marketType')
         self.persistence_enabled = description['persistenceEnabled']
         self.regulator = description['regulator']
         self.rules = key_check(description, 'rules')
@@ -176,6 +185,7 @@ class RunnerCatalogueMetadata:
 class MarketBook:
 
     def __init__(self, market_book):
+        self.date_time_created = datetime.datetime.now()
         self.market_id = market_book['marketId']
         self.bet_delay = market_book['betDelay']
         self.bsp_reconciled = market_book['bspReconciled']
@@ -194,14 +204,45 @@ class MarketBook:
         self.version = market_book['version']
         self.runners = [RunnerBook(runner) for runner in market_book['runners']]
 
+    @property
+    def market_tuple_creator(self):
+        csv_tuple = (self.date_time_created, self.market_id,
+                     self.cross_matching, self.status, self.inplay, self.total_matched,
+                     self.overround, self.underround)
+        return csv_tuple
+
+    @property
+    def overround(self, over=0.0):
+        for runner in self.runners:
+            if runner.status == 'ACTIVE':
+                try:
+                    back_a = price_check(runner.ex.available_to_back, 0, 'price')
+                    if back_a:
+                        over += 1 / back_a
+                except AttributeError:
+                    return None
+        return round(over, 4)
+
+    @property
+    def underround(self, under=0.0):
+        for runner in self.runners:
+            if runner.status == 'ACTIVE':
+                try:
+                    lay_a = price_check(runner.ex.available_to_lay, 0, 'price')
+                    if lay_a:
+                        under += 1 / lay_a
+                except AttributeError:
+                    return None
+        return round(under, 4)
+
 
 class RunnerBook:
 
     def __init__(self, runner_book):
         self.selection_id = runner_book['selectionId']
         self.status = runner_book['status']
-        self.total_matched = runner_book['totalMatched']
-        self.adjustment_factor = runner_book['adjustmentFactor']
+        self.total_matched = key_check(runner_book, 'totalMatched')
+        self.adjustment_factor = key_check(runner_book, 'adjustmentFactor')
         self.handicap = runner_book['handicap']
         self.last_price_traded = key_check(runner_book, 'lastPriceTraded')
         if 'sp' in runner_book:
@@ -212,6 +253,21 @@ class RunnerBook:
             self.orders = [RunnerBookOrder(order) for order in runner_book['orders']]
         if 'matches' in runner_book:
             self.matches = [RunnerBookMatch(match) for match in runner_book['matches']]
+
+    @property
+    def runner_tuple_creator(self):
+        try:
+            back_a = price_check(self.ex.available_to_back, 0, 'price')
+            back_b = price_check(self.ex.available_to_back, 1, 'price')
+            back_c = price_check(self.ex.available_to_back, 2, 'price')
+            lay_a = price_check(self.ex.available_to_lay, 0, 'price')
+            lay_b = price_check(self.ex.available_to_lay, 1, 'price')
+            lay_c = price_check(self.ex.available_to_lay, 2, 'price')
+        except AttributeError:
+            (back_a, back_b, back_c, lay_a, lay_b, lay_c) = (None, None, None, None, None, None)
+        csv_tuple = (self.selection_id, self.status, self.total_matched, back_c, back_b, back_a, lay_a, lay_b, lay_c,
+                     self.last_price_traded)
+        return csv_tuple
 
 
 class RunnerBookSP:
@@ -262,6 +318,7 @@ class RunnerBookMatch:
 class CurrentOrders:
 
     def __init__(self, current_orders):
+        self.date_time_created = datetime.datetime.now()
         self.more_available = current_orders['moreAvailable']
         self.orders = [CurrentOrdersOrder(order) for order in current_orders['currentOrders']]
 
@@ -301,6 +358,7 @@ class CurrentOrdersOrderPriceSize:
 class ClearedOrders:
 
     def __init__(self, cleared_orders):
+        self.date_time_created = datetime.datetime.now()
         self.more_available = cleared_orders['moreAvailable']
         self.orders = [ClearedOrdersOrder(order) for order in cleared_orders['clearedOrders']]
 
@@ -332,6 +390,7 @@ class ClearedOrdersOrder:
 class MarketProfitLoss:
 
     def __init__(self, market_profit_loss):
+        self.date_time_created = datetime.datetime.now()
         self.market_id = market_profit_loss['marketId']
         self.commission_applied = key_check(market_profit_loss, 'commissionApplied')
         self.profit_and_losses = [MarketProfitLosses(runner) for runner in market_profit_loss['profitAndLosses']]

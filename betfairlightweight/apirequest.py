@@ -24,7 +24,7 @@ def logout(api):
     return response
 
 
-# Betting requests todo error handling!
+# Betting requests todo error handling! / move date_time_created to apirequest
 
 
 def list_event_types(api, params=None, parsed=True):
