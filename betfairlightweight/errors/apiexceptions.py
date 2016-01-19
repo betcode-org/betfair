@@ -16,6 +16,10 @@ class APIError(BetfairError):
     pass
 
 
+class ParamsError(BetfairError):
+    pass
+
+
 class TransactionCountError(BetfairError):
     pass
 
