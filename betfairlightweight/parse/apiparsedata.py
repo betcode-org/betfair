@@ -6,7 +6,7 @@ from utils import key_check, strp_betfair_time, key_check_datetime, price_check
 class EventType:
 
     def __init__(self, event_type):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.event_type_id = event_type['eventType']['id']
         self.event_type_name = event_type['eventType']['name']
         self.market_count = event_type['marketCount']
@@ -15,7 +15,7 @@ class EventType:
 class Competition:
 
     def __init__(self, competition):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.competition_id = competition['competition']['id']
         self.competition_name = competition['competition']['name']
         self.market_count = competition['marketCount']
@@ -25,7 +25,7 @@ class Competition:
 class TimeRange:
 
     def __init__(self, time_range):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.market_count = time_range['marketCount']
         self.time_range_from = time_range['timeRange']['from']
         self.time_range_to = time_range['timeRange']['to']
@@ -34,7 +34,7 @@ class TimeRange:
 class Event:
 
     def __init__(self, event):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.id = event['event']['id']
         self.open_date = strp_betfair_time(event['event']['openDate'])
         self.time_zone = event['event']['timezone']
@@ -46,7 +46,7 @@ class Event:
 class MarketType:
 
     def __init__(self, market_type):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.market_type = market_type['marketType']
         self.market_count = market_type['marketCount']
 
@@ -54,7 +54,7 @@ class MarketType:
 class Country:
 
     def __init__(self, country):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.country_code = country['countryCode']
         self.market_count = country['marketCount']
 
@@ -62,7 +62,7 @@ class Country:
 class Venue:
 
     def __init__(self, venue):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.venue = venue['venue']
         self.market_count = venue['marketCount']
 
@@ -70,7 +70,7 @@ class Venue:
 class MarketCatalogue:
 
     def __init__(self, market_catalogue):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.market_id = market_catalogue['marketId']
         self.market_name = market_catalogue['marketName']
         self.total_matched = market_catalogue['totalMatched']
@@ -185,7 +185,7 @@ class RunnerCatalogueMetadata:
 class MarketBook:
 
     def __init__(self, market_book):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.market_id = market_book['marketId']
         self.bet_delay = market_book['betDelay']
         self.bsp_reconciled = market_book['bspReconciled']
@@ -206,7 +206,7 @@ class MarketBook:
 
     @property
     def market_tuple_creator(self):
-        csv_tuple = (self.date_time_created, self.market_id,
+        csv_tuple = (self.date_time_received, self.market_id,
                      self.cross_matching, self.status, self.inplay, self.total_matched,
                      self.overround, self.underround)
         return csv_tuple
@@ -318,7 +318,7 @@ class RunnerBookMatch:
 class CurrentOrders:
 
     def __init__(self, current_orders):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.more_available = current_orders['moreAvailable']
         self.orders = [CurrentOrdersOrder(order) for order in current_orders['currentOrders']]
 
@@ -358,7 +358,7 @@ class CurrentOrdersOrderPriceSize:
 class ClearedOrders:
 
     def __init__(self, cleared_orders):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.more_available = cleared_orders['moreAvailable']
         self.orders = [ClearedOrdersOrder(order) for order in cleared_orders['clearedOrders']]
 
@@ -390,7 +390,7 @@ class ClearedOrdersOrder:
 class MarketProfitLoss:
 
     def __init__(self, market_profit_loss):
-        self.date_time_created = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.now()
         self.market_id = market_profit_loss['marketId']
         self.commission_applied = key_check(market_profit_loss, 'commissionApplied')
         self.profit_and_losses = [MarketProfitLosses(runner) for runner in market_profit_loss['profitAndLosses']]

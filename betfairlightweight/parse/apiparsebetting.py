@@ -1,14 +1,21 @@
 from utils import key_check, strp_betfair_time
 
 
-class PlaceOrder:
+class Order:
 
-    def __init__(self, result):
+    def __init__(self, result, date_time_received):
+        self.date_time_received = date_time_received
         self.market_id = result['marketId']
         self.status = result['status']
         self.customer_ref = key_check(result, 'customerRef')
         if self.status != 'SUCCESS':
             self.error_code = result['errorCode']
+
+
+class PlaceOrder(Order):
+
+    def __init__(self, result, date_time_placed):
+        super(PlaceOrder, self).__init__(result, date_time_placed)
         self.instruction_reports = [PlaceOrderInstructionReports(order) for order in result['instructionReports']]
 
 
@@ -45,14 +52,10 @@ class PlaceOrderLimit:
         self.size = limit_order['size']
 
 
-class CancelOrder:
+class CancelOrder(Order):
 
-    def __init__(self, result):
-        self.market_id = result['marketId']
-        self.status = result['status']
-        self.customer_ref = key_check(result, 'customerRef')
-        if self.status != 'SUCCESS':
-            self.error_code = result['errorCode']
+    def __init__(self, result, date_time_placed):
+        super(CancelOrder, self).__init__(result, date_time_placed)
         self.instruction_reports = [CancelOrderInstructionReports(order) for order in result['instructionReports']]
 
 
@@ -75,14 +78,10 @@ class CancelOrderInstruction:
         self.size_reduction = key_check(instruction, 'sizeReduction')
 
 
-class UpdateOrder:
+class UpdateOrder(Order):
 
-    def __init__(self, result):
-        self.market_id = result['marketId']
-        self.status = result['status']
-        self.customer_ref = key_check(result, 'customerRef')
-        if self.status != 'SUCCESS':
-            self.error_code = result['errorCode']
+    def __init__(self, result, date_time_placed):
+        super(UpdateOrder, self).__init__(result, date_time_placed)
         self.instruction_reports = [UpdateOrderInstructionReports(order) for order in result['instructionReports']]
 
 
@@ -102,14 +101,10 @@ class UpdateOrderInstruction:
         self.new_persistence_type = instruction['newPersistenceType']
 
 
-class ReplaceOrder:  # todo error code at result level
+class ReplaceOrder(Order):
 
-    def __init__(self, result):
-        self.market_id = result['marketId']
-        self.status = result['status']
-        self.customer_ref = key_check(result, 'customerRef')
-        if self.status != 'SUCCESS':
-            self.error_code = result['errorCode']
+    def __init__(self, result, date_time_placed):
+        super(ReplaceOrder, self).__init__(result, date_time_placed)
         self.instruction_reports = [ReplaceOrderInstructionReports(order) for order in result['instructionReports']]
 
 

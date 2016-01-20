@@ -33,14 +33,14 @@ class APIClient:
         self.login_time = datetime.datetime.now()
         logging.info('New sessionToken: %s', self._session_token)
 
-    def check_transaction_count(self, method):
+    def check_transaction_count(self, method, count):
         now = datetime.datetime.now()
         if now > self.time_trig:
             logging.info('Transaction count reset: %s', self.transaction_count)
             self.time_trig = now.replace(hour=(now.hour + 1), minute=0, second=0, microsecond=0)
             self.transaction_count = 0
         if method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
-            self.transaction_count += 1
+            self.transaction_count += count
             if self.transaction_count > 999:
                 logging.error('Transaction limit reached: %s', self.transaction_count)
                 raise apiexceptions.TransactionCountError
