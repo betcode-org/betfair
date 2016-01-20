@@ -1,3 +1,4 @@
+import datetime
 from errors import apierrorhandling
 from parse import apiparsedata, apiparseaccount, apiparsebetting
 from apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest
@@ -141,11 +142,12 @@ def list_market_book(api, params=None, parsed=True):
 
 def place_orders(api, params, parsed=True):  # atomic
     response = BettingRequest(api, 'SportsAPING/v1.0/placeOrders', params).call()
+    date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
         return
     if parsed:
-        return apiparsebetting.PlaceOrder(response['result'])
+        return apiparsebetting.PlaceOrder(response['result'], date_time_received)
     else:
         return response
 
@@ -154,33 +156,36 @@ def cancel_orders(api, params=None, parsed=True):
     if not params:
         params = {}  # cancel ALL orders
     response = BettingRequest(api, 'SportsAPING/v1.0/cancelOrders', params).call()
+    date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
         return
     if parsed:
-        return apiparsebetting.CancelOrder(response['result'])
+        return apiparsebetting.CancelOrder(response['result'], date_time_received)
     else:
         return response
 
 
 def update_orders(api, params, parsed=True):
     response = BettingRequest(api, 'SportsAPING/v1.0/updateOrders', params).call()
+    date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
         return
     if parsed:
-        return apiparsebetting.UpdateOrder(response['result'])
+        return apiparsebetting.UpdateOrder(response['result'], date_time_received)
     else:
         return response
 
 
 def replace_orders(api, params, parsed=True):
     response = BettingRequest(api, 'SportsAPING/v1.0/replaceOrders', params).call()
+    date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
         return
     if parsed:
-        return apiparsebetting.ReplaceOrder(response['result'])
+        return apiparsebetting.ReplaceOrder(response['result'], date_time_received)
     else:
         return response
 
