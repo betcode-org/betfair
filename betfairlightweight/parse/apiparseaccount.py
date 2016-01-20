@@ -1,5 +1,5 @@
 import logging
-from utils import key_check, strp_betfair_time, key_check_datetime
+from betfairlightweight.utils import key_check, strp_betfair_time, key_check_datetime
 
 
 class AccountFunds:

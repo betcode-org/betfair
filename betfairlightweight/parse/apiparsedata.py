@@ -1,6 +1,6 @@
 import logging
 import datetime
-from utils import key_check, strp_betfair_time, key_check_datetime, price_check
+from betfairlightweight.utils import key_check, strp_betfair_time, key_check_datetime, price_check
 
 
 class EventType:

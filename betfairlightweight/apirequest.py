@@ -1,7 +1,7 @@
 import datetime
-from errors import apierrorhandling
-from parse import apiparsedata, apiparseaccount, apiparsebetting
-from apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest
+from betfairlightweight.errors import apierrorhandling
+from betfairlightweight.parse import apiparsedata, apiparseaccount, apiparsebetting
+from betfairlightweight.apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest
 
 
 def login(api):
@@ -25,7 +25,7 @@ def logout(api):
     return response
 
 
-# Betting requests todo params error handling! / move date_time_created to apirequest
+# Betting requests
 
 
 def list_event_types(api, params=None, parsed=True):
@@ -228,7 +228,7 @@ def list_market_profit_and_loss(api, params=None, parsed=True):
         return response
 
 
-# account requests
+# account requests  # todo account error handling
 
 
 def get_account_funds(api, params=None, parsed=True):

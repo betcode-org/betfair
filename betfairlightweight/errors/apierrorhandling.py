@@ -1,6 +1,6 @@
 import logging
-import errors.apiexceptions as apiexceptions
-import errors.apierrors as apierrors
+import betfairlightweight.errors.apiexceptions as apiexceptions
+import betfairlightweight.errors.apierrors as apierrors
 
 
 def api_login_error_handling(response):
