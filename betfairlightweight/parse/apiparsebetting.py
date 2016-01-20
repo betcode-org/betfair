@@ -3,15 +3,27 @@ from utils import key_check, strp_betfair_time
 
 class PlaceOrder:
 
-    def __init__(self, market_id, place_response):
-        self.market_id = market_id
-        self.bet_id = place_response['betId']
-        self.status = place_response['status']
-        self.customer_ref = key_check(place_response, 'customerRef')
-        self.average_price_matched = place_response['averagePriceMatched']
-        self.size_matched = place_response['sizeMatched']
-        self.placed_date = strp_betfair_time(place_response['placedDate'])
-        self.instruction = PlaceOrderInstruction(place_response['instruction'])
+    def __init__(self, result):
+        self.market_id = result['marketId']
+        self.status = result['status']
+        self.customer_ref = key_check(result, 'customerRef')
+        if self.status != 'SUCCESS':
+            self.error_code = result['errorCode']
+        self.instruction_reports = [PlaceOrderInstructionReports(order) for order in result['instructionReports']]
+
+
+class PlaceOrderInstructionReports:
+
+    def __init__(self, instruction_report):
+        self.status = instruction_report['status']
+        if self.status == 'SUCCESS':
+            self.bet_id = instruction_report['betId']
+            self.average_price_matched = instruction_report['averagePriceMatched']
+            self.size_matched = instruction_report['sizeMatched']
+            self.placed_date = strp_betfair_time(instruction_report['placedDate'])
+        else:
+            self.error_code = instruction_report['errorCode']
+        self.instruction = PlaceOrderInstruction(instruction_report['instruction'])
 
 
 class PlaceOrderInstruction:
@@ -35,13 +47,25 @@ class PlaceOrderLimit:
 
 class CancelOrder:
 
-    def __init__(self, market_id, cancel_response):
-        self.market_id = market_id
-        self.status = cancel_response['status']
-        self.customer_ref = key_check(cancel_response, 'customerRef')
-        self.size_cancelled = cancel_response['sizeCancelled']
-        self.cancelled_date = strp_betfair_time(cancel_response['cancelledDate'])
-        self.instruction = CancelOrderInstruction(cancel_response['instruction'])
+    def __init__(self, result):
+        self.market_id = result['marketId']
+        self.status = result['status']
+        self.customer_ref = key_check(result, 'customerRef')
+        if self.status != 'SUCCESS':
+            self.error_code = result['errorCode']
+        self.instruction_reports = [CancelOrderInstructionReports(order) for order in result['instructionReports']]
+
+
+class CancelOrderInstructionReports:
+
+    def __init__(self, instruction_report):
+        self.status = instruction_report['status']
+        if self.status == 'SUCCESS':
+            self.size_cancelled = instruction_report['sizeCancelled']
+            self.cancelled_date = strp_betfair_time(instruction_report['cancelledDate'])
+        else:
+            self.error_code = instruction_report['errorCode']
+        self.instruction = CancelOrderInstruction(instruction_report['instruction'])
 
 
 class CancelOrderInstruction:
@@ -53,11 +77,22 @@ class CancelOrderInstruction:
 
 class UpdateOrder:
 
-    def __init__(self, market_id, update_response):
-        self.market_id = market_id
-        self.status = update_response['status']
-        self.customer_ref = key_check(update_response, 'customerRef')
-        self.instruction = UpdateOrderInstruction(update_response['instruction'])
+    def __init__(self, result):
+        self.market_id = result['marketId']
+        self.status = result['status']
+        self.customer_ref = key_check(result, 'customerRef')
+        if self.status != 'SUCCESS':
+            self.error_code = result['errorCode']
+        self.instruction_reports = [UpdateOrderInstructionReports(order) for order in result['instructionReports']]
+
+
+class UpdateOrderInstructionReports:
+
+    def __init__(self, instruction_report):
+        self.status = instruction_report['status']
+        if self.status != 'SUCCESS':
+            self.error_code = instruction_report['errorCode']
+        self.instruction = UpdateOrderInstruction(instruction_report['instruction'])
 
 
 class UpdateOrderInstruction:
@@ -67,11 +102,32 @@ class UpdateOrderInstruction:
         self.new_persistence_type = instruction['newPersistenceType']
 
 
-class ReplaceOrder:
+class ReplaceOrder:  # todo error code at result level
 
-    def __init__(self, market_id, replace_response):
-        self.market_id = market_id
-        self.status = replace_response['status']
-        self.customer_ref = key_check(replace_response, 'customerRef')
-        self.cancel_instruction = CancelOrder(market_id, replace_response['cancelInstructionReport'])
-        self.place_instruction = PlaceOrder(market_id, replace_response['placeInstructionReport'])
+    def __init__(self, result):
+        self.market_id = result['marketId']
+        self.status = result['status']
+        self.customer_ref = key_check(result, 'customerRef')
+        if self.status != 'SUCCESS':
+            self.error_code = result['errorCode']
+        self.instruction_reports = [ReplaceOrderInstructionReports(order) for order in result['instructionReports']]
+
+
+class ReplaceOrderInstructionReports:
+
+    def __init__(self, instruction_report):
+        self.status = instruction_report['status']
+        if self.status != 'SUCCESS':
+            self.error_code = instruction_report['errorCode']
+        self.cancel_instruction = CancelOrderInstructionReports(instruction_report['cancelInstructionReport'])
+        if self.status == 'SUCCESS':
+            self.place_instruction = PlaceOrderInstructionReports(instruction_report['placeInstructionReport'])
+        else:
+            self.place_instruction = ReplaceOrderPlace(instruction_report['placeInstructionReport'])
+
+
+class ReplaceOrderPlace:
+
+    def __init__(self, place_response):
+        self.status = place_response['status']
+        self.error_code = place_response['errorCode']
