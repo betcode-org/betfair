@@ -10,6 +10,7 @@ class APIMethod:
         self.payload = None
         self.method = None
         self.params = None
+        self.instructions_length = 0
 
     def create_req(self):
         payload = {'jsonrpc': '2.0',
@@ -20,7 +21,7 @@ class APIMethod:
         return self.payload
 
     def call(self):
-        self._api_client.check_transaction_count(self.method, len(self.params['instructions']))
+        self._api_client.check_transaction_count(self.method, self.instructions_length)
         headers = self._api_client.request_headers
         response = self._api_client.request.post(self.url, data=self.payload, headers=headers)
         if response.status_code == 200:
@@ -97,6 +98,8 @@ class BettingRequest(APIMethod):
         super(BettingRequest, self).__init__(api_client)
         self.method = method
         self.params = params
+        if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
+            self.instructions_length = len(self.params['instructions'])
         self.url = self._api_client.URL['betting']
         self.create_req()
 

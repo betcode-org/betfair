@@ -1,4 +1,4 @@
-from utils import key_check, strp_betfair_time
+from betfairlightweight.utils import key_check, strp_betfair_time
 
 
 class Order:

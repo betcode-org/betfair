@@ -2,8 +2,8 @@ import datetime
 import os
 import requests
 import logging
-from certs.secret import APP_KEYS
-import errors.apiexceptions as apiexceptions
+from betfairlightweight.secret import APP_KEYS
+from betfairlightweight.errors import apiexceptions
 
 
 class APIClient:
@@ -39,11 +39,10 @@ class APIClient:
             logging.info('Transaction count reset: %s', self.transaction_count)
             self.time_trig = now.replace(hour=(now.hour + 1), minute=0, second=0, microsecond=0)
             self.transaction_count = 0
-        if method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
-            self.transaction_count += count
-            if self.transaction_count > 999:
-                logging.error('Transaction limit reached: %s', self.transaction_count)
-                raise apiexceptions.TransactionCountError
+        self.transaction_count += count
+        if self.transaction_count > 999:
+            logging.error('Transaction limit reached: %s', self.transaction_count)
+            raise apiexceptions.TransactionCountError
 
     def logout(self):
         self._session_token = None
@@ -56,7 +55,7 @@ class APIClient:
     @property
     def cert(self):
         cert_paths = []
-        ssl_path = os.path.join(os.pardir, 'certs/')
+        ssl_path = os.path.join(os.pardir, '/certs/')
         cert_path = os.listdir(ssl_path)
         for file in cert_path:
             ext = file.rpartition('.')[2]
