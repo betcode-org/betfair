@@ -84,7 +84,7 @@ class MarketCatalogue:
         if 'description' in market_catalogue:
             self.description = MarketCatalogueDescription(market_catalogue['description'])
         if 'runners' in market_catalogue:
-            self.runners = [RunnerCatalogue(runner) for runner in market_catalogue['runners']]
+            self.runners = {runner['selectionId']: RunnerCatalogue(runner) for runner in market_catalogue['runners']}
 
 
 class MarketCatalogueCompetition:
@@ -202,7 +202,7 @@ class MarketBook:
         self.total_available = market_book['totalAvailable']
         self.total_matched = market_book['totalMatched']
         self.version = market_book['version']
-        self.runners = [RunnerBook(runner) for runner in market_book['runners']]
+        self.runners = {runner['selectionId']: RunnerBook(runner) for runner in market_book['runners']}
 
     @property
     def market_tuple_creator(self):
