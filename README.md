@@ -2,9 +2,9 @@
 
 Lightweight python wrapper for Betfair API-NG allowing all betting operations and some account operations.
 
-Add your certificates and secret.py with APP_KEYS (see apiclient.py) into certs before installing.
+Add your certificates to '/certs/' and secret.py with APP_KEYS (see apiclient.py) before installing.
 
-The library can then be used in as follows:
+The library can then be used as follows:
 
 ```python
 from betfairlightweight import apiclient, apirequest
