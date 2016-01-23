@@ -213,7 +213,7 @@ class MarketBook:
 
     @property
     def overround(self, over=0.0):
-        for runner in self.runners:
+        for runner in self.runners.values():
             if runner.status == 'ACTIVE':
                 try:
                     back_a = price_check(runner.ex.available_to_back, 0, 'price')
@@ -225,7 +225,7 @@ class MarketBook:
 
     @property
     def underround(self, under=0.0):
-        for runner in self.runners:
+        for runner in self.runners.values():
             if runner.status == 'ACTIVE':
                 try:
                     lay_a = price_check(runner.ex.available_to_lay, 0, 'price')
