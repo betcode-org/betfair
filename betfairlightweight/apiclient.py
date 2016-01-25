@@ -20,7 +20,7 @@ class APIClient:
         self.username = username
         self.password = password
         now = datetime.datetime.now()
-        self.time_trig = now.replace(hour=(now.hour + 1), minute=0, second=0, microsecond=0)
+        self.time_trig = now + datetime.timedelta(hours=1)
         self.login_time = None
         self._session_token = None
         self._appKey = None
