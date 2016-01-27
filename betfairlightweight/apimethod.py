@@ -21,7 +21,7 @@ class APIMethod:
         return self.payload
 
     def call(self):
-        self._api_client.check_transaction_count(self.method, self.instructions_length)
+        self._api_client.check_transaction_count(self.instructions_length)
         headers = self._api_client.request_headers
         response = self._api_client.request.post(self.url, data=self.payload, headers=headers)
         if response.status_code == 200:
