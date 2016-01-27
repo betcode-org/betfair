@@ -13,7 +13,7 @@ apirequest.login(trading)
 # apirequest.keep_alive(trading)
 
 
-params = {"marketIds": ["1.122638047"],
+params = {"marketIds": ["1.122481996"],
           'priceProjection': {'priceData': ['EX_TRADED']},
           'orderProjection': 'ALL',
           'matchProjection': 'ROLLED_UP_BY_PRICE',}
