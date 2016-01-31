@@ -36,6 +36,10 @@ class APIClient:
         self.login_time = datetime.datetime.now()
         logging.info('New sessionToken: %s', self._session_token)
 
+    def check_session(self):
+        if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 2:
+            return True
+
     def check_transaction_count(self, count):
         now = datetime.datetime.now()
         if now > self.time_trig:
