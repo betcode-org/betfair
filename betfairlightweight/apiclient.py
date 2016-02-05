@@ -27,7 +27,7 @@ class APIClient:
         self.login_time = None
         self._session_token = None
         self._appKey = None
-        self.request = requests.session()
+        self.request = requests
         self.transaction_count = 0
 
     def set_session_token(self, session_token):
@@ -37,7 +37,7 @@ class APIClient:
         logging.info('New sessionToken: %s', self._session_token)
 
     def check_session(self):
-        if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 2:
+        if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
             return True
 
     def check_transaction_count(self, count):

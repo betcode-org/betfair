@@ -28,10 +28,10 @@ def logout(api):
 # Betting requests
 
 
-def list_event_types(api, params=None, parsed=True):
+def list_event_types(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -40,10 +40,10 @@ def list_event_types(api, params=None, parsed=True):
         return response
 
 
-def list_competitions(api, params=None, parsed=True):
+def list_competitions(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -52,11 +52,11 @@ def list_competitions(api, params=None, parsed=True):
         return response
 
 
-def list_time_ranges(api, params=None, parsed=True):
+def list_time_ranges(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {},
                   'granularity': 'DAYS'}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -65,10 +65,10 @@ def list_time_ranges(api, params=None, parsed=True):
         return response
 
 
-def list_events(api, params=None, parsed=True):
+def list_events(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listEvents', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listEvents', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -77,10 +77,10 @@ def list_events(api, params=None, parsed=True):
         return response
 
 
-def list_market_types(api, params=None, parsed=True):
+def list_market_types(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -89,10 +89,10 @@ def list_market_types(api, params=None, parsed=True):
         return response
 
 
-def list_countries(api, params=None, parsed=True):
+def list_countries(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listCountries', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listCountries', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -101,10 +101,10 @@ def list_countries(api, params=None, parsed=True):
         return response
 
 
-def list_venues(api, params=None, parsed=True):
+def list_venues(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listVenues', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listVenues', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -113,11 +113,11 @@ def list_venues(api, params=None, parsed=True):
         return response
 
 
-def list_market_catalogue(api, params=None, parsed=True):
+def list_market_catalogue(api, params=None, session=None, parsed=True):
     if not params:
         params = {'filter': {},
                   'maxResults': '1'}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketCatalogue', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketCatalogue', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -126,10 +126,10 @@ def list_market_catalogue(api, params=None, parsed=True):
         return response
 
 
-def list_market_book(api, params=None, parsed=True):
+def list_market_book(api, params=None, session=None, parsed=True):
     if not params:
         params = {'marketIds': ['1.122618187']}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketBook', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketBook', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -140,8 +140,8 @@ def list_market_book(api, params=None, parsed=True):
 # order requests
 
 
-def place_orders(api, params, parsed=True):  # atomic
-    response = BettingRequest(api, 'SportsAPING/v1.0/placeOrders', params).call()
+def place_orders(api, params, session=None, parsed=True):  # atomic
+    response = BettingRequest(api, 'SportsAPING/v1.0/placeOrders', params).call(session)
     date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
@@ -152,10 +152,10 @@ def place_orders(api, params, parsed=True):  # atomic
         return response
 
 
-def cancel_orders(api, params=None, parsed=True):
+def cancel_orders(api, params=None, session=None, parsed=True):
     if not params:
         params = {}  # cancel ALL orders
-    response = BettingRequest(api, 'SportsAPING/v1.0/cancelOrders', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/cancelOrders', params).call(session)
     date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
@@ -166,8 +166,8 @@ def cancel_orders(api, params=None, parsed=True):
         return response
 
 
-def update_orders(api, params, parsed=True):
-    response = BettingRequest(api, 'SportsAPING/v1.0/updateOrders', params).call()
+def update_orders(api, params, session=None, parsed=True):
+    response = BettingRequest(api, 'SportsAPING/v1.0/updateOrders', params).call(session)
     date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
@@ -178,8 +178,8 @@ def update_orders(api, params, parsed=True):
         return response
 
 
-def replace_orders(api, params, parsed=True):
-    response = BettingRequest(api, 'SportsAPING/v1.0/replaceOrders', params).call()
+def replace_orders(api, params, session=None, parsed=True):
+    response = BettingRequest(api, 'SportsAPING/v1.0/replaceOrders', params).call(session)
     date_time_received = datetime.datetime.now()
     apierrorhandling.api_order_error_handling(response)
     if 'error' in response:
@@ -190,10 +190,10 @@ def replace_orders(api, params, parsed=True):
         return response
 
 
-def list_current_orders(api, params=None, parsed=True):  # todo handle moreAvailable
+def list_current_orders(api, params=None, session=None, parsed=True):  # todo handle moreAvailable
     if not params:
         params = {'dateRange': {}}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listCurrentOrders', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listCurrentOrders', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -202,12 +202,12 @@ def list_current_orders(api, params=None, parsed=True):  # todo handle moreAvail
         return response
 
 
-def list_cleared_orders(api, params=None, parsed=True):  # todo handle moreAvailable & groupby params
+def list_cleared_orders(api, params=None, session=None, parsed=True):  # todo handle moreAvailable & groupby params
     if not params:
         params = {'betStatus': 'SETTLED',
                   'settledDateRange': {},
                   'recordCount': '1000'}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listClearedOrders', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listClearedOrders', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -216,10 +216,10 @@ def list_cleared_orders(api, params=None, parsed=True):  # todo handle moreAvail
         return response
 
 
-def list_market_profit_and_loss(api, params=None, parsed=True):
+def list_market_profit_and_loss(api, params=None, session=None, parsed=True):
     if not params:
         params = {'marketIds': ['1.122617964']}
-    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketProfitAndLoss', params).call()
+    response = BettingRequest(api, 'SportsAPING/v1.0/listMarketProfitAndLoss', params).call(session)
     if not apierrorhandling.api_betting_error_handling(response, params):
         return
     if parsed:
@@ -231,53 +231,53 @@ def list_market_profit_and_loss(api, params=None, parsed=True):
 # account requests  # todo account error handling
 
 
-def get_account_funds(api, params=None, parsed=True):
+def get_account_funds(api, params=None, session=None, parsed=True):
     if not params:
         params = {'wallet': 'UK'}  # AUSTRALIAN
-    response = AccountRequest(api, 'AccountAPING/v1.0/getAccountFunds', params).call()
+    response = AccountRequest(api, 'AccountAPING/v1.0/getAccountFunds', params).call(session)
     if parsed:
         return apiparseaccount.AccountFunds(response['result'])
     else:
         return response
 
 
-def get_account_details(api, params=None, parsed=True):
+def get_account_details(api, params=None, session=None, parsed=True):
     if not params:
         params = {}
-    response = AccountRequest(api, 'AccountAPING/v1.0/getAccountDetails', params).call()
+    response = AccountRequest(api, 'AccountAPING/v1.0/getAccountDetails', params).call(session)
     if parsed:
         return apiparseaccount.AccountDetails(response['result'])
     else:
         return response
 
 
-def get_account_statement(api, params=None, parsed=True):
+def get_account_statement(api, params=None, session=None, parsed=True):
     if not params:
         params = {'itemDateRange': {},
                   'includeItem': 'ALL'}
-    response = AccountRequest(api, 'AccountAPING/v1.0/getAccountStatement', params).call()
+    response = AccountRequest(api, 'AccountAPING/v1.0/getAccountStatement', params).call(session)
     if parsed:
         return apiparseaccount.AccountStatement(response['result'])
     else:
         return response
 
 
-def list_currency_rates(api, params=None, parsed=True):
+def list_currency_rates(api, params=None, session=None, parsed=True):
     if not params:
         params = {'fromCurrency': 'GBP'}
-    response = AccountRequest(api, 'AccountAPING/v1.0/listCurrencyRates', params).call()
+    response = AccountRequest(api, 'AccountAPING/v1.0/listCurrencyRates', params).call(session)
     if parsed:
         return [apiparseaccount.CurrencyRate(x) for x in response['result']]
     else:
         return response
 
 
-def transfer_funds(api, params=None, parsed=True):
+def transfer_funds(api, params=None, session=None, parsed=True):
     if not params:
         params = {'from': 'UK',
                   'to': 'AUSTRALIAN',
                   'amount': '0.01'}
-    response = AccountRequest(api, 'AccountAPING/v1.0/transferFunds', params).call()
+    response = AccountRequest(api, 'AccountAPING/v1.0/transferFunds', params).call(session)
     if parsed:
         return apiparseaccount.TransferFunds(response['result'])
     else:
