@@ -20,12 +20,14 @@ class APIMethod:
         self.payload = json.dumps(payload)
         return self.payload
 
-    def call(self):
+    def call(self, session=None):
+        if not session:
+            session = self._api_client.request
         self._api_client.check_transaction_count(self.instructions_length)
         if self._api_client.check_session():
             KeepAlive(self._api_client).call()
         headers = self._api_client.request_headers
-        response = self._api_client.request.post(self.url, data=self.payload, headers=headers)
+        response = session.post(self.url, data=self.payload, headers=headers)
         if response.status_code == 200:
             json_response = response.json()
             return json_response
@@ -39,11 +41,13 @@ class Login(APIMethod):
         super(Login, self).__init__(api_client)
         self.url = self._api_client.URL['login']
 
-    def call(self):
+    def call(self, session=None):
+        if not session:
+            session = self._api_client.request
         self.payload = 'username=' + self._api_client.username + '&password=' + self._api_client.password
         headers = self._api_client.login_headers
         cert = self._api_client.cert
-        response = self._api_client.request.post(self.url, data=self.payload, headers=headers, cert=cert)
+        response = session.post(self.url, data=self.payload, headers=headers, cert=cert)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['loginStatus'] == 'SUCCESS':
@@ -60,10 +64,12 @@ class KeepAlive(APIMethod):
         super(KeepAlive, self).__init__(api_client)
         self.url = self._api_client.URL['keep_alive']
 
-    def call(self):
+    def call(self, session=None):
+        if not session:
+            session = self._api_client.request
         headers = self._api_client.keep_alive_headers
         cert = self._api_client.cert
-        response = self._api_client.request.post(self.url, headers=headers, cert=cert)
+        response = session.post(self.url, headers=headers, cert=cert)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
@@ -80,10 +86,12 @@ class Logout(APIMethod):
         super(Logout, self).__init__(api_client)
         self.url = self._api_client.URL['logout']
 
-    def call(self):
+    def call(self, session=None):
+        if not session:
+            session = self._api_client.request
         headers = self._api_client.keep_alive_headers
         cert = self._api_client.cert
-        response = self._api_client.request.get(self.url, headers=headers, cert=cert)
+        response = session.get(self.url, headers=headers, cert=cert)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
