@@ -161,7 +161,10 @@ def cancel_orders(api, params=None, session=None, parsed=True):
     if 'error' in response:
         return
     if parsed:
-        return apiparsebetting.CancelOrder(response['result'], date_time_received)
+        if params:
+            return apiparsebetting.CancelOrder(response['result'], date_time_received)
+        else:
+            return apiparsebetting.CancelAllOrders(response['result'], date_time_received)
     else:
         return response
 

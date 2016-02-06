@@ -52,6 +52,14 @@ class PlaceOrderLimit:
         self.size = limit_order['size']
 
 
+class CancelAllOrders:
+
+    def __init__(self, result, date_time_placed):
+        self.date_time_received = date_time_placed
+        self.status = result['status']
+        self.instruction_report = result['instructionReports']
+
+
 class CancelOrder(Order):  # todo cancel all orders has no response?
 
     def __init__(self, result, date_time_placed):
