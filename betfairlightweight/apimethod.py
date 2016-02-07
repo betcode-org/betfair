@@ -27,7 +27,11 @@ class APIMethod:
         if self._api_client.check_session():
             KeepAlive(self._api_client).call()
         headers = self._api_client.request_headers
-        response = session.post(self.url, data=self.payload, headers=headers)
+        try:
+            response = session.post(self.url, data=self.payload, headers=headers)
+        except Exception as e:
+            logging.error('MAJOR Requests error: %s' % e)
+            return
         if response.status_code == 200:
             json_response = response.json()
             return json_response
