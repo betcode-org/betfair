@@ -1,3 +1,5 @@
+from betfairlightweight.parse.meta import RACE_STATUS
+
 
 
 class RaceStatus:
@@ -9,3 +11,7 @@ class RaceStatus:
             self.meeting_id = result['meetingId']
             self.race_status = result['raceStatus']
             self.last_updated = result['lastUpdated']
+
+    @property
+    def race_status_description(self):
+        return RACE_STATUS[self.race_status]
