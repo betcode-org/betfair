@@ -247,10 +247,15 @@ def list_market_profit_and_loss(api, params=None, session=None, parsed=True):
             return response
 
 
-def list_race_status(api, params=None, session=None, parsed=True):
+def list_race_status(api, params, session=None, parsed=True):
     response = ScoresRequest(api, 'ScoresAPING/v1.0/listRaceDetails', params).call(session)
     if response:
-        return [apiparsescores.RaceStatus(x) for x in response['result']]
+        if not apierrorhandling.api_betting_error_handling(response, params):
+            return
+        if parsed:
+            return [apiparsescores.RaceStatus(x) for x in response['result']]
+        else:
+            return response
 
 
 # account requests  # todo account error handling
