@@ -126,3 +126,13 @@ class AccountRequest(APIMethod):
         self.params = params
         self.url = self._api_client.URL['account']
         self.create_req()
+
+
+class ScoresRequest(APIMethod):
+
+    def __init__(self, api_client, method, params):
+        super(ScoresRequest, self).__init__(api_client)
+        self.method = method
+        self.params = params
+        self.url = self._api_client.URL['scores']
+        self.create_req()

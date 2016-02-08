@@ -12,6 +12,7 @@ class APIClient:
            'logout': 'https://identitysso.betfair.com/api/logout',
            'keep_alive': 'https://identitysso.betfair.com/api/keepAlive',
            'betting': 'https://api.betfair.com/exchange/betting/json-rpc/v1',
+           'scores': 'https://api.betfair.com/exchange/scores/json-rpc/v1',
            'account': 'https://api.betfair.com/exchange/account/json-rpc/v1'}
 
     URL_AUS = {'betting': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
@@ -26,7 +27,6 @@ class APIClient:
         self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
         self.login_time = None
         self._session_token = None
-        self._appKey = None
         self.request = requests
         self.transaction_count = 0
 
