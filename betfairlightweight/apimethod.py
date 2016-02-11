@@ -28,7 +28,7 @@ class APIMethod:
             KeepAlive(self._api_client).call()
         headers = self._api_client.request_headers
         try:
-            response = session.post(self.url, data=self.payload, headers=headers)
+            response = session.post(self.url, data=self.payload, headers=headers, timeout=(3.05, 12))
         except Exception as e:
             logging.error('MAJOR Requests error: %s' % e)
             return
