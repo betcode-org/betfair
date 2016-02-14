@@ -186,6 +186,7 @@ class MarketBook:
 
     def __init__(self, market_book):
         self.date_time_received = datetime.datetime.now()
+        self.raw_market_book = market_book
         self.market_id = market_book['marketId']
         self.bet_delay = market_book['betDelay']
         self.bsp_reconciled = market_book['bspReconciled']
