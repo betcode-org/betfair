@@ -2,7 +2,6 @@ import datetime
 import os
 import requests
 import logging
-from betfairlightweight.secret import APP_KEYS
 from betfairlightweight.errors import apiexceptions
 
 
@@ -18,8 +17,6 @@ class APIClient:
     URL_AUS = {'betting': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
                'account': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}  # todo integrate
 
-    __APP_KEYS = APP_KEYS  # APP_KEYS = {'username': appKey}
-
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -29,6 +26,7 @@ class APIClient:
         self._session_token = None
         self.request = requests
         self.transaction_count = 0
+        self.app_key = self.get_app_key()
 
     def set_session_token(self, session_token):
         self._session_token = session_token
@@ -55,9 +53,12 @@ class APIClient:
         self._session_token = None
         self.login_time = None
 
-    @property
-    def app_key(self):
-        return self.__APP_KEYS[self.username]
+    def get_app_key(self):
+        app_key = os.environ.get(self.username)
+        if app_key:
+            return os.environ.get(self.username)
+        else:
+            return apiexceptions.AppKeyError
 
     @property
     def cert(self):
