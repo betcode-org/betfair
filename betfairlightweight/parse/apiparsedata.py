@@ -270,6 +270,16 @@ class RunnerBook:
                      self.last_price_traded)
         return csv_tuple
 
+    @property
+    def runner_tuple_creator_simple(self):
+        try:
+            back_a = price_check(self.ex.available_to_back, 0, 'price')
+            lay_a = price_check(self.ex.available_to_lay, 0, 'price')
+        except AttributeError:
+            (back_a, lay_a) = (None, None)
+        csv_tuple = (self.selection_id, back_a, lay_a, self.last_price_traded, self.total_matched)
+        return csv_tuple
+
 
 class RunnerBookSP:
 
