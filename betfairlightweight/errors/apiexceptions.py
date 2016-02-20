@@ -4,6 +4,10 @@ class BetfairError(Exception):
     pass
 
 
+class AppKeyError(BetfairError):
+    pass
+
+
 class LoginError(BetfairError):
     pass
 
