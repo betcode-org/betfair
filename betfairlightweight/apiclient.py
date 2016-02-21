@@ -55,6 +55,7 @@ class APIClient:
 
     def get_app_key(self):
         app_key = os.environ.get(self.username)
+        logging.info('App key found for %s: %s' % (self.username, app_key))
         if app_key:
             return os.environ.get(self.username)
         else:
