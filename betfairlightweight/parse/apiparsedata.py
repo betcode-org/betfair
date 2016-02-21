@@ -258,16 +258,24 @@ class RunnerBook:
     @property
     def runner_tuple_creator(self):
         try:
-            back_a = price_check(self.ex.available_to_back, 0, 'price')
-            back_b = price_check(self.ex.available_to_back, 1, 'price')
-            back_c = price_check(self.ex.available_to_back, 2, 'price')
-            lay_a = price_check(self.ex.available_to_lay, 0, 'price')
-            lay_b = price_check(self.ex.available_to_lay, 1, 'price')
-            lay_c = price_check(self.ex.available_to_lay, 2, 'price')
+            back_price_a = price_check(self.ex.available_to_back, 0, 'price')
+            back_price_b = price_check(self.ex.available_to_back, 1, 'price')
+            back_price_c = price_check(self.ex.available_to_back, 2, 'price')
+            back_size_a = price_check(self.ex.available_to_back, 0, 'size')
+            back_size_b = price_check(self.ex.available_to_back, 1, 'size')
+            back_size_c = price_check(self.ex.available_to_back, 2, 'size')
+            lay_price_a = price_check(self.ex.available_to_lay, 0, 'price')
+            lay_price_b = price_check(self.ex.available_to_lay, 1, 'price')
+            lay_price_c = price_check(self.ex.available_to_lay, 2, 'price')
+            lay_size_a = price_check(self.ex.available_to_lay, 0, 'size')
+            lay_size_b = price_check(self.ex.available_to_lay, 1, 'size')
+            lay_size_c = price_check(self.ex.available_to_lay, 2, 'size')
         except AttributeError:
-            (back_a, back_b, back_c, lay_a, lay_b, lay_c) = (None, None, None, None, None, None)
-        csv_tuple = (self.selection_id, self.status, self.total_matched, back_c, back_b, back_a, lay_a, lay_b, lay_c,
-                     self.last_price_traded)
+            (back_price_a, back_price_b, back_price_c, back_size_a, back_size_b, back_size_c,
+             lay_price_a, lay_price_b, lay_price_c, lay_size_a, lay_size_b, lay_size_c) = \
+                (None, None, None, None, None, None, None, None, None, None, None, None)
+        csv_tuple = (back_price_b, back_price_c, back_size_a, back_size_b, back_size_c, lay_price_b, lay_price_c,
+                     lay_size_a, lay_size_b, lay_size_c)
         return csv_tuple
 
     @property
