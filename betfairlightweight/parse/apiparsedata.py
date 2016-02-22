@@ -220,6 +220,8 @@ class MarketBook:
                     back_a = price_check(runner.ex.available_to_back, 0, 'price')
                     if back_a:
                         over += 1 / back_a
+                    else:
+                        over += 1
                 except AttributeError:
                     return None
         return round(over, 4)
