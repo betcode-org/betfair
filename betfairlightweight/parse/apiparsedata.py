@@ -94,7 +94,7 @@ class MarketCatalogueCompetition:
         self.name = competition['name']
 
 
-class MarketCatalogueEvent:
+class MarketCatalogueEvent:  # todo missing countryCode
 
     def __init__(self, event):
         self.id = event['id']
