@@ -78,7 +78,7 @@ class KeepAlive(APIMethod):
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
                 logging.info('KeepAlive: %s', response_json['status'])
-                self._api_client.set_session_token(response_json['token'])
+                self._api_client.set_session_token(response_json['token'], True)
             return response_json
         else:
             logging.error('Requests keepALive error: %s' % response.status_code)

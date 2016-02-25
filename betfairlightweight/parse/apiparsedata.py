@@ -129,7 +129,7 @@ class MarketCatalogueDescription:
         self.wallet = description['wallet']
 
 
-class RunnerCatalogue:
+class RunnerCatalogue:  # todo add removalDate
 
     def __init__(self, runner_catalogue):
         self.selection_id = runner_catalogue['selectionId']
