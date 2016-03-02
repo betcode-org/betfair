@@ -86,6 +86,10 @@ class MarketCatalogue:
         if 'runners' in market_catalogue:
             self.runners = {runner['selectionId']: RunnerCatalogue(runner) for runner in market_catalogue['runners']}
 
+    @property
+    def time_to_start(self):
+        return (self.market_start_time-datetime.datetime.now()).total_seconds()
+
 
 class MarketCatalogueCompetition:
 
