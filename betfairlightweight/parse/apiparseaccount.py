@@ -38,6 +38,7 @@ class AccountStatement:
         self.account_statement = [AccountStatementStatement(statement)
                                   for statement in account_statement['accountStatement']]
 
+
 class AccountStatementStatement:
 
     def __init__(self, statement):
