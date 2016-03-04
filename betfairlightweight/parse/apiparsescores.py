@@ -4,7 +4,8 @@ from betfairlightweight.parse.meta import RACE_STATUS
 
 class RaceStatus:
 
-    def __init__(self, raw_response, result):
+    def __init__(self, date_time_sent, raw_response, result):
+        self.date_time_sent = date_time_sent
         self.raw_response = raw_response
         self.response_code = result['responseCode']
         if self.response_code == 'OK':

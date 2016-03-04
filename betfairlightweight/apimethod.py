@@ -1,5 +1,6 @@
 import json
 import logging
+import datetime
 
 
 class APIMethod:
@@ -21,6 +22,7 @@ class APIMethod:
         return self.payload
 
     def call(self, session=None):
+        date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
         self._api_client.check_transaction_count(self.instructions_length)
@@ -34,7 +36,7 @@ class APIMethod:
             return
         if response.status_code == 200:
             json_response = response.json()
-            return json_response, response
+            return json_response, response, date_time_sent
         else:
             logging.error('Requests error: %s' % response.status_code)
 
