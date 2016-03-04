@@ -3,8 +3,9 @@ from betfairlightweight.utils import key_check, strp_betfair_time
 
 class Order:
 
-    def __init__(self, result, date_time_received):
+    def __init__(self, raw_response, result, date_time_received):
         self.date_time_received = date_time_received
+        self.raw_response = raw_response
         self.market_id = result['marketId']
         self.status = result['status']
         self.customer_ref = key_check(result, 'customerRef')
@@ -14,8 +15,8 @@ class Order:
 
 class PlaceOrder(Order):
 
-    def __init__(self, result, date_time_placed):
-        super(PlaceOrder, self).__init__(result, date_time_placed)
+    def __init__(self, raw_response, result, date_time_placed):
+        super(PlaceOrder, self).__init__(raw_response, result, date_time_placed)
         self.instruction_reports = [PlaceOrderInstructionReports(order) for order in result['instructionReports']]
 
 
@@ -54,7 +55,7 @@ class PlaceOrderLimit:
 
 class CancelAllOrders:
 
-    def __init__(self, result, date_time_placed):
+    def __init__(self, raw_response, result, date_time_placed):
         self.date_time_received = date_time_placed
         self.status = result['status']
         self.instruction_report = result['instructionReports']
@@ -62,8 +63,8 @@ class CancelAllOrders:
 
 class CancelOrder(Order):  # todo cancel all orders has no response?
 
-    def __init__(self, result, date_time_placed):
-        super(CancelOrder, self).__init__(result, date_time_placed)
+    def __init__(self, raw_response, result, date_time_placed):
+        super(CancelOrder, self).__init__(raw_response, result, date_time_placed)
         self.instruction_reports = [CancelOrderInstructionReports(order) for order in result['instructionReports']]
 
 
@@ -88,8 +89,8 @@ class CancelOrderInstruction:
 
 class UpdateOrder(Order):
 
-    def __init__(self, result, date_time_placed):
-        super(UpdateOrder, self).__init__(result, date_time_placed)
+    def __init__(self, raw_response, result, date_time_placed):
+        super(UpdateOrder, self).__init__(raw_response, result, date_time_placed)
         self.instruction_reports = [UpdateOrderInstructionReports(order) for order in result['instructionReports']]
 
 
@@ -111,8 +112,8 @@ class UpdateOrderInstruction:
 
 class ReplaceOrder(Order):
 
-    def __init__(self, result, date_time_placed):
-        super(ReplaceOrder, self).__init__(result, date_time_placed)
+    def __init__(self, raw_response, result, date_time_placed):
+        super(ReplaceOrder, self).__init__(raw_response, result, date_time_placed)
         self.instruction_reports = [ReplaceOrderInstructionReports(order) for order in result['instructionReports']]
 
 
