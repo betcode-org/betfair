@@ -34,7 +34,7 @@ class APIMethod:
             return
         if response.status_code == 200:
             json_response = response.json()
-            return json_response
+            return json_response, response
         else:
             logging.error('Requests error: %s' % response.status_code)
 

@@ -4,7 +4,8 @@ from betfairlightweight.utils import key_check, strp_betfair_time, key_check_dat
 
 class AccountFunds:
 
-    def __init__(self, account_funds):
+    def __init__(self, raw_response, account_funds):
+        self.raw_response = raw_response
         self.available_to_bet_balance = account_funds['availableToBetBalance']
         self.discount_rate = account_funds['discountRate']
         self.exposure = account_funds['exposure']
@@ -16,7 +17,8 @@ class AccountFunds:
 
 class AccountDetails:
 
-    def __init__(self, account_details):
+    def __init__(self, raw_response, account_details):
+        self.raw_response = raw_response
         self.country_code = account_details['countryCode']
         self.currency_code = account_details['currencyCode']
         self.discount_rate = account_details['discountRate']
@@ -30,7 +32,8 @@ class AccountDetails:
 
 class AccountStatement:
 
-    def __init__(self, account_statement):
+    def __init__(self, raw_response, account_statement):
+        self.raw_response = raw_response
         self.more_available = account_statement['moreAvailable']
         self.account_statement = [AccountStatementStatement(statement)
                                   for statement in account_statement['accountStatement']]
@@ -62,12 +65,14 @@ class AccountStatementLegacyData:
 
 class CurrencyRate:
 
-    def __init__(self, currency_rate):
+    def __init__(self, raw_response, currency_rate):
+        self.raw_response = raw_response
         self.currency_code = currency_rate['currencyCode']
         self.rate = currency_rate['rate']
 
 
 class TransferFunds:
 
-    def __init__(self, transfer_funds):
+    def __init__(self, raw_response, transfer_funds):
+        self.raw_response = raw_response
         self.transaction_id = transfer_funds['transactionId']
