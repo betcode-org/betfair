@@ -46,6 +46,7 @@ def api_order_error_handling(response):
         logging.error('API Execution %s: %s' % (response['result']['status'], description))
         for order in response['result']['instructionReports']:
             if order['status'] != 'SUCCESS':
+                logging.error('Bug error %s' % order)
                 error_code = order['errorCode']
                 description = apierrors.INSTRUCTION_REPORT_ERROR_CODE[order['errorCode']]
                 logging.error(' Instruction %s: %s' % (error_code, description))
