@@ -59,6 +59,7 @@ class CancelAllOrders:
     def __init__(self, date_time_sent, raw_response, result, date_time_placed):
         self.date_time_received = date_time_placed
         self.date_time_sent = date_time_sent
+        self.raw_response = raw_response
         self.status = result['status']
         self.instruction_report = result['instructionReports']
 
