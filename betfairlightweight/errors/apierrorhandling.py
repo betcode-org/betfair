@@ -35,7 +35,7 @@ def api_betting_error_handling(response, params=None):
         return response
 
 
-def api_order_error_handling(response):
+def api_order_error_handling(response, params=None):
     if 'error' in response:
         code = response['error']['code']
         description = apierrors.GENERIC_JSON_RPC_EXCEPTIONS.get(code)
@@ -46,7 +46,8 @@ def api_order_error_handling(response):
         logging.error('API Execution %s: %s' % (response['result']['status'], description))
         for order in response['result']['instructionReports']:
             if order['status'] != 'SUCCESS':
-                logging.error('Bug error %s' % response['result'])
+                logging.error('Bug error, request: %s' % params)
+                logging.error('Bug error, response: %s' % response)
                 error_code = order['errorCode']
                 description = apierrors.INSTRUCTION_REPORT_ERROR_CODE[order['errorCode']]
                 logging.error(' Instruction %s: %s' % (error_code, description))
