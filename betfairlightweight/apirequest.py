@@ -163,7 +163,7 @@ def place_orders(api, params, session=None, parsed=True):  # atomic
     if response:
         (response, raw_response, sent) = response
         date_time_received = datetime.datetime.now()
-        apierrorhandling.api_order_error_handling(response, params)
+        apierrorhandling.api_order_error_handling(response, params, 'SportsAPING/v1.0/placeOrders')
         if 'error' in response:
             return
         if parsed:
@@ -179,7 +179,7 @@ def cancel_orders(api, params=None, session=None, parsed=True):
     if response:
         (response, raw_response, sent) = response
         date_time_received = datetime.datetime.now()
-        apierrorhandling.api_order_error_handling(response, params)
+        apierrorhandling.api_order_error_handling(response, params, 'SportsAPING/v1.0/cancelOrders')
         if 'error' in response:
             return
         if parsed:
@@ -196,7 +196,7 @@ def update_orders(api, params, session=None, parsed=True):
     if response:
         (response, raw_response, sent) = response
         date_time_received = datetime.datetime.now()
-        apierrorhandling.api_order_error_handling(response, params)
+        apierrorhandling.api_order_error_handling(response, params, 'SportsAPING/v1.0/updateOrders')
         if 'error' in response:
             return
         if parsed:
@@ -210,7 +210,7 @@ def replace_orders(api, params, session=None, parsed=True):
     if response:
         (response, raw_response, sent) = response
         date_time_received = datetime.datetime.now()
-        apierrorhandling.api_order_error_handling(response, params)
+        apierrorhandling.api_order_error_handling(response, params, 'SportsAPING/v1.0/replaceOrders')
         if 'error' in response:
             return
         if parsed:
