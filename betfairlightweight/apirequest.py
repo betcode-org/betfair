@@ -219,7 +219,7 @@ def replace_orders(api, params, session=None, parsed=True):
             return response
 
 
-def list_current_orders(api, params=None, session=None, parsed=True):  # todo handle moreAvailable
+def list_current_orders(api, params=None, session=None, parsed=True):
     if not params:
         params = {'dateRange': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listCurrentOrders', params).call(session)
@@ -233,7 +233,7 @@ def list_current_orders(api, params=None, session=None, parsed=True):  # todo ha
             return response
 
 
-def list_cleared_orders(api, params=None, session=None, parsed=True):  # todo handle moreAvailable & groupby params
+def list_cleared_orders(api, params=None, session=None, parsed=True):
     if not params:
         params = {'betStatus': 'SETTLED',
                   'settledDateRange': {},
@@ -331,7 +331,7 @@ def transfer_funds(api, params=None, session=None, parsed=True):
     if not params:
         params = {'from': 'UK',
                   'to': 'AUSTRALIAN',
-                  'amount': '0.01'}
+                  'amount': '0.00'}
     response = AccountRequest(api, 'AccountAPING/v1.0/transferFunds', params).call(session)
     if response:
         (response, raw_response, sent) = response
