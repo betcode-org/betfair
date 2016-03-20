@@ -2,7 +2,8 @@ import datetime
 import os
 import requests
 import logging
-from betfairlightweight.errors import apiexceptions
+import threading
+from betfairlightweight.errors.apiexceptions import AppKeyError, TransactionCountError
 
 
 class APIClient:
@@ -25,6 +26,7 @@ class APIClient:
         now = datetime.datetime.now()
         self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
         self.login_time = None
+        self.session_lock = threading.Lock
         self._session_token = None
         self.request = requests
         self.transaction_count = 0
@@ -50,7 +52,7 @@ class APIClient:
         self.transaction_count += count
         if self.transaction_count > self.TRANSACTION_LIMIT:
             logging.error('Transaction limit reached: %s', self.transaction_count)
-            raise apiexceptions.TransactionCountError
+            raise TransactionCountError
 
     def logout(self):
         self._session_token = None
@@ -62,7 +64,7 @@ class APIClient:
         if app_key:
             return os.environ.get(self.username)
         else:
-            return apiexceptions.AppKeyError
+            raise AppKeyError
 
     @property
     def cert(self):
