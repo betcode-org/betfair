@@ -25,6 +25,7 @@ class APIClient:
         self.login_time = None
         self._session_token = None
         self.request = requests
+        self.transaction_limit = 999
         self.transaction_count = 0
         self.app_key = self.get_app_key()
 
@@ -35,7 +36,7 @@ class APIClient:
         self.login_time = datetime.datetime.now()
         logging.info('New sessionToken: %s', self._session_token)
 
-    def check_session(self):
+    def check_session(self):  # todo thread lock
         if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
             return True
 
@@ -46,7 +47,7 @@ class APIClient:
             self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
             self.transaction_count = 0
         self.transaction_count += count
-        if self.transaction_count > 999:
+        if self.transaction_count > self.transaction_limit:
             logging.error('Transaction limit reached: %s', self.transaction_count)
             raise apiexceptions.TransactionCountError
 
