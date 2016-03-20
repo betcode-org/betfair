@@ -1,6 +1,7 @@
 import json
 import logging
 import datetime
+from betfairlightweight.errors.apiexceptions import APIError
 
 
 class APIMethod:
@@ -25,7 +26,8 @@ class APIMethod:
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
-        self._api_client.check_transaction_count(self.instructions_length)
+        if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
+            self._api_client.check_transaction_count(self.instructions_length)
         if self._api_client.check_session():
             KeepAlive(self._api_client).call()
         headers = self._api_client.request_headers
@@ -33,12 +35,13 @@ class APIMethod:
             response = session.post(self.url, data=self.payload, headers=headers, timeout=(3.05, 12))
         except Exception as e:
             logging.error('MAJOR Requests error: %s' % e)
-            return
+            raise APIError
         if response.status_code == 200:
             json_response = response.json()
             return json_response, response, date_time_sent
         else:
             logging.error('Requests error: %s' % response.status_code)
+            raise APIError
 
 
 class Login(APIMethod):

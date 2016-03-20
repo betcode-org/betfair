@@ -17,6 +17,8 @@ class APIClient:
     URL_AUS = {'betting': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
                'account': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}  # todo integrate
 
+    TRANSACTION_LIMIT = 999
+
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -25,7 +27,6 @@ class APIClient:
         self.login_time = None
         self._session_token = None
         self.request = requests
-        self.transaction_limit = 999
         self.transaction_count = 0
         self.app_key = self.get_app_key()
 
@@ -47,7 +48,7 @@ class APIClient:
             self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
             self.transaction_count = 0
         self.transaction_count += count
-        if self.transaction_count > self.transaction_limit:
+        if self.transaction_count > self.TRANSACTION_LIMIT:
             logging.error('Transaction limit reached: %s', self.transaction_count)
             raise apiexceptions.TransactionCountError
 
