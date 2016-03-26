@@ -145,9 +145,10 @@ class ScoresRequest(APIMethod):
 
 class NavigationRequest:
 
-    def __init__(self, api_client):
+    def __init__(self, api_client, params):
         self._api_client = api_client
-        self.url = 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        self.params = params
+        self.url = self._api_client.NAVIGATION[params]
 
     def call(self):
         date_time_sent = datetime.datetime.now()

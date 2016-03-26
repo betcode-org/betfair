@@ -343,8 +343,8 @@ def transfer_funds(api, params=None, session=None, parsed=True):
 # Navigation request
 
 
-def list_navigation(api):
-    response = NavigationRequest(api).call()
+def list_navigation(api, params='UK'):
+    response = NavigationRequest(api, params).call()
     if response:
         (response, raw_response, sent) = response
         return response
