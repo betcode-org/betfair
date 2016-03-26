@@ -37,10 +37,8 @@ class APIClient:
         self.transaction_count = 0
         self.app_key = self.get_app_key()
 
-    def set_session_token(self, session_token, keep_alive=False):
+    def set_session_token(self, session_token):
         self._session_token = session_token
-        if not keep_alive:
-            self.transaction_count = 0
         self.login_time = datetime.datetime.now()
         logging.info('New sessionToken: %s', self._session_token)
 

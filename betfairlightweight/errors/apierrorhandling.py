@@ -8,18 +8,24 @@ def api_login_error_handling(response):
         description = apierrors.LOGIN_EXCEPTIONS[response['loginStatus']]
         logging.error('API login %s: %s' % (response['loginStatus'], description))
         raise apiexceptions.LoginError
+    else:
+        return response
 
 
 def api_keep_alive_error_handling(response):
     if response['token'] == '':
         logging.error('API keepAlive %s: %s' % (response['status'], response['error']))
         raise apiexceptions.KeepAliveError
+    else:
+        return response
 
 
 def api_logout_error_handling(response):
     if response['status'] != 'SUCCESS':
         logging.error('API logout %s: %s' % (response['status'], response['error']))
         raise apiexceptions.LogoutError
+    else:
+        return response
 
 
 def api_betting_error_handling(response, params=None):
@@ -30,7 +36,7 @@ def api_betting_error_handling(response, params=None):
             error_code = response['error']['data']['APINGException']['errorCode']
             description = apierrors.APING_EXCEPTION.get(error_code)
         logging.error('API betting %s: %s | %s' % (code, description, params))
-        # raise apiexceptions.APIError
+        raise apiexceptions.APIError
     else:
         return response
 

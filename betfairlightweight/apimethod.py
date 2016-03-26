@@ -1,7 +1,7 @@
 import json
 import logging
 import datetime
-from betfairlightweight.errors.apiexceptions import APIError
+from betfairlightweight.errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveError
 
 
 class APIMethod:
@@ -33,6 +33,9 @@ class APIMethod:
         headers = self._api_client.request_headers
         try:
             response = session.post(self.url, data=self.payload, headers=headers, timeout=(3.05, 12))
+        except ConnectionError:
+            logging.error('MAJOR Requests error: ConnectionError')
+            raise APIError
         except Exception as e:
             logging.error('MAJOR Requests error: %s' % e)
             raise APIError
@@ -65,6 +68,7 @@ class Login(APIMethod):
             return response_json
         else:
             logging.error('Requests login error: %s' % response.status_code)
+            raise LoginError
 
 
 class KeepAlive(APIMethod):
@@ -83,10 +87,11 @@ class KeepAlive(APIMethod):
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
                 logging.info('KeepAlive: %s', response_json['status'])
-                self._api_client.set_session_token(response_json['token'], True)
+                self._api_client.set_session_token(response_json['token'])
             return response_json
         else:
             logging.error('Requests keepALive error: %s' % response.status_code)
+            raise KeepAliveError
 
 
 class Logout(APIMethod):
@@ -109,6 +114,7 @@ class Logout(APIMethod):
             return response_json
         else:
             logging.error('Requests logout error: %s' % response.status_code)
+            raise LogoutError
 
 
 class BettingRequest(APIMethod):
