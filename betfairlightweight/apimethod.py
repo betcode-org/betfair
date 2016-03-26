@@ -141,3 +141,25 @@ class ScoresRequest(APIMethod):
         self.params = params
         self.url = self._api_client.URL['scores']
         self.create_req()
+
+
+class NavigationRequest:
+
+    def __init__(self, api_client):
+        self._api_client = api_client
+        self.url = 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+
+    def call(self):
+        date_time_sent = datetime.datetime.now()
+        headers = self._api_client.request_headers
+        try:
+            response = self._api_client.request.get(self.url, headers=headers, timeout=(3.05, 12))
+        except Exception as e:
+            logging.error('MAJOR Requests error: %s' % e)
+            raise APIError
+        if response.status_code == 200:
+            json_response = response.json()
+            return json_response, response, date_time_sent
+        else:
+            logging.error('Requests error: %s' % response.status_code)
+            raise APIError

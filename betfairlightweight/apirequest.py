@@ -1,7 +1,7 @@
 import datetime
 from betfairlightweight.errors import apierrorhandling
 from betfairlightweight.parse import apiparsedata, apiparseaccount, apiparsebetting, apiparsescores
-from betfairlightweight.apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest
+from betfairlightweight.apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, NavigationRequest
 
 
 def login(api):
@@ -339,3 +339,12 @@ def transfer_funds(api, params=None, session=None, parsed=True):
             return apiparseaccount.TransferFunds(sent, raw_response, response['result'])
         else:
             return response
+
+# Navigation request
+
+
+def list_navigation(api):
+    response = NavigationRequest(api).call()
+    if response:
+        (response, raw_response, sent) = response
+        return response
