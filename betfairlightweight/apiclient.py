@@ -18,6 +18,10 @@ class APIClient:
     URL_AUS = {'betting': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
                'account': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}  # todo integrate
 
+    NAVIGATION = {'UK': 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
+                  'ITALY': 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json',
+                  'SPAIN': 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'}
+
     TRANSACTION_LIMIT = 999
 
     def __init__(self, username, password):
