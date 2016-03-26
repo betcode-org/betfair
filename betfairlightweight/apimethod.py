@@ -123,6 +123,8 @@ class BettingRequest(APIMethod):
         super(BettingRequest, self).__init__(api_client)
         self.method = method
         self.params = params
+        if not exchange:
+            exchange = self._api_client.exchange
         if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
             self.instructions_length = len(self.params['instructions'])
         if exchange == 'AUS':
@@ -138,6 +140,8 @@ class AccountRequest(APIMethod):
         super(AccountRequest, self).__init__(api_client)
         self.method = method
         self.params = params
+        if not exchange:
+            exchange = self._api_client.exchange
         if exchange == 'AUS':
             self.url = self._api_client.URL_AUS['account']
         else:
