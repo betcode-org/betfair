@@ -28,9 +28,11 @@ def logout(api):
 # Betting requests
 
 
-def list_event_types(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_event_types(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -42,9 +44,11 @@ def list_event_types(api, params=None, session=None, parsed=True, exchange='UK')
             return response
 
 
-def list_competitions(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_competitions(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -56,10 +60,12 @@ def list_competitions(api, params=None, session=None, parsed=True, exchange='UK'
             return response
 
 
-def list_time_ranges(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_time_ranges(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {},
                   'granularity': 'DAYS'}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -71,9 +77,11 @@ def list_time_ranges(api, params=None, session=None, parsed=True, exchange='UK')
             return response
 
 
-def list_events(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_events(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listEvents', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -85,9 +93,11 @@ def list_events(api, params=None, session=None, parsed=True, exchange='UK'):
             return response
 
 
-def list_market_types(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_market_types(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -99,9 +109,11 @@ def list_market_types(api, params=None, session=None, parsed=True, exchange='UK'
             return response
 
 
-def list_countries(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_countries(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listCountries', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -113,9 +125,11 @@ def list_countries(api, params=None, session=None, parsed=True, exchange='UK'):
             return response
 
 
-def list_venues(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_venues(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listVenues', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -127,10 +141,12 @@ def list_venues(api, params=None, session=None, parsed=True, exchange='UK'):
             return response
 
 
-def list_market_catalogue(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_market_catalogue(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'filter': {},
                   'maxResults': '1'}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketCatalogue', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -142,9 +158,11 @@ def list_market_catalogue(api, params=None, session=None, parsed=True, exchange=
             return response
 
 
-def list_market_book(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_market_book(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'marketIds': ['1.122618187']}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketBook', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -158,7 +176,9 @@ def list_market_book(api, params=None, session=None, parsed=True, exchange='UK')
 # order requests
 
 
-def place_orders(api, params, session=None, parsed=True, exchange='UK'):  # atomic
+def place_orders(api, params, session=None, parsed=True, exchange=None):  # atomic
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/placeOrders', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -172,9 +192,11 @@ def place_orders(api, params, session=None, parsed=True, exchange='UK'):  # atom
             return response
 
 
-def cancel_orders(api, params=None, session=None, parsed=True, exchange='UK'):
+def cancel_orders(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {}  # cancel ALL orders
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/cancelOrders', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -191,7 +213,9 @@ def cancel_orders(api, params=None, session=None, parsed=True, exchange='UK'):
             return response
 
 
-def update_orders(api, params, session=None, parsed=True, exchange='UK'):
+def update_orders(api, params, session=None, parsed=True, exchange=None):
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/updateOrders', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -205,7 +229,9 @@ def update_orders(api, params, session=None, parsed=True, exchange='UK'):
             return response
 
 
-def replace_orders(api, params, session=None, parsed=True, exchange='UK'):
+def replace_orders(api, params, session=None, parsed=True, exchange=None):
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/replaceOrders', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -219,9 +245,11 @@ def replace_orders(api, params, session=None, parsed=True, exchange='UK'):
             return response
 
 
-def list_current_orders(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_current_orders(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'dateRange': {}}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listCurrentOrders', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -233,11 +261,13 @@ def list_current_orders(api, params=None, session=None, parsed=True, exchange='U
             return response
 
 
-def list_cleared_orders(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_cleared_orders(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'betStatus': 'SETTLED',
                   'settledDateRange': {},
                   'recordCount': '1000'}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listClearedOrders', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -249,9 +279,11 @@ def list_cleared_orders(api, params=None, session=None, parsed=True, exchange='U
             return response
 
 
-def list_market_profit_and_loss(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_market_profit_and_loss(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'marketIds': ['1.122617964']}
+    if not exchange:
+        exchange = api.exchange
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketProfitAndLoss', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -278,9 +310,11 @@ def list_race_status(api, params, session=None, parsed=True):
 # account requests  # todo account error handling
 
 
-def get_account_funds(api, params=None, session=None, parsed=True, exchange='UK'):
+def get_account_funds(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
-        params = {'wallet': 'UK'}  # AUSTRALIAN
+        params = {'wallet': None}  # AUSTRALIAN
+    if not exchange:
+        exchange = api.exchange
     response = AccountRequest(api, 'AccountAPING/v1.0/getAccountFunds', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -290,9 +324,11 @@ def get_account_funds(api, params=None, session=None, parsed=True, exchange='UK'
             return response
 
 
-def get_account_details(api, params=None, session=None, parsed=True, exchange='UK'):
+def get_account_details(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {}
+    if not exchange:
+        exchange = api.exchange
     response = AccountRequest(api, 'AccountAPING/v1.0/getAccountDetails', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -302,10 +338,12 @@ def get_account_details(api, params=None, session=None, parsed=True, exchange='U
             return response
 
 
-def get_account_statement(api, params=None, session=None, parsed=True, exchange='UK'):
+def get_account_statement(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'itemDateRange': {},
                   'includeItem': 'ALL'}
+    if not exchange:
+        exchange = api.exchange
     response = AccountRequest(api, 'AccountAPING/v1.0/getAccountStatement', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -315,9 +353,11 @@ def get_account_statement(api, params=None, session=None, parsed=True, exchange=
             return response
 
 
-def list_currency_rates(api, params=None, session=None, parsed=True, exchange='UK'):
+def list_currency_rates(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
         params = {'fromCurrency': 'GBP'}
+    if not exchange:
+        exchange = api.exchange
     response = AccountRequest(api, 'AccountAPING/v1.0/listCurrencyRates', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response
@@ -327,11 +367,13 @@ def list_currency_rates(api, params=None, session=None, parsed=True, exchange='U
             return response
 
 
-def transfer_funds(api, params=None, session=None, parsed=True, exchange='UK'):
+def transfer_funds(api, params=None, session=None, parsed=True, exchange=None):
     if not params:
-        params = {'from': 'UK',
+        params = {'from': None,
                   'to': 'AUSTRALIAN',
                   'amount': '0.00'}
+    if not exchange:
+        exchange = api.exchange
     response = AccountRequest(api, 'AccountAPING/v1.0/transferFunds', params, exchange).call(session)
     if response:
         (response, raw_response, sent) = response

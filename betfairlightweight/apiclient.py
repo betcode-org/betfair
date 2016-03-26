@@ -16,7 +16,7 @@ class APIClient:
            'account': 'https://api.betfair.com/exchange/account/json-rpc/v1'}
 
     URL_AUS = {'betting': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
-               'account': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}  # todo integrate
+               'account': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}
 
     NAVIGATION = {'UK': 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
                   'ITALY': 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json',
@@ -24,9 +24,10 @@ class APIClient:
 
     TRANSACTION_LIMIT = 999
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, exchange='UK'):
         self.username = username
         self.password = password
+        self.exchange = exchange
         now = datetime.datetime.now()
         self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
         self.login_time = None
