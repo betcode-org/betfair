@@ -2,7 +2,6 @@ import datetime
 import os
 import requests
 import logging
-import threading
 from betfairlightweight.errors.apiexceptions import AppKeyError, TransactionCountError
 
 
@@ -28,13 +27,12 @@ class APIClient:
         self.username = username
         self.password = password
         self.exchange = exchange
-        now = datetime.datetime.now()
-        self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
         self.login_time = None
-        self.session_lock = threading.Lock
+        self.time_trig = None
         self._session_token = None
         self.request = requests
         self.transaction_count = 0
+        self.set_time_trig()
         self.app_key = self.get_app_key()
 
     def set_session_token(self, session_token):
@@ -42,15 +40,14 @@ class APIClient:
         self.login_time = datetime.datetime.now()
         logging.info('New sessionToken: %s', self._session_token)
 
-    def check_session(self):  # todo thread lock
+    def check_session(self):
         if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
             return True
 
     def check_transaction_count(self, count):
-        now = datetime.datetime.now()
-        if now > self.time_trig:
+        if datetime.datetime.now() > self.time_trig:
             logging.info('Transaction count reset: %s', self.transaction_count)
-            self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+            self.set_time_trig()
             self.transaction_count = 0
         self.transaction_count += count
         if self.transaction_count > self.TRANSACTION_LIMIT:
@@ -68,6 +65,10 @@ class APIClient:
             return os.environ.get(self.username)
         else:
             raise AppKeyError
+
+    def set_time_trig(self):
+        now = datetime.datetime.now()
+        self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
     @property
     def cert(self):
