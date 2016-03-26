@@ -113,23 +113,29 @@ class Logout(APIMethod):
 
 class BettingRequest(APIMethod):
 
-    def __init__(self, api_client, method, params):
+    def __init__(self, api_client, method, params, exchange):
         super(BettingRequest, self).__init__(api_client)
         self.method = method
         self.params = params
         if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
             self.instructions_length = len(self.params['instructions'])
-        self.url = self._api_client.URL['betting']
+        if exchange == 'AUS':
+            self.url = self._api_client.URL_AUS['betting']
+        else:
+            self.url = self._api_client.URL['betting']
         self.create_req()
 
 
 class AccountRequest(APIMethod):
 
-    def __init__(self, api_client, method, params):
+    def __init__(self, api_client, method, params, exchange):
         super(AccountRequest, self).__init__(api_client)
         self.method = method
         self.params = params
-        self.url = self._api_client.URL['account']
+        if exchange == 'AUS':
+            self.url = self._api_client.URL_AUS['account']
+        else:
+            self.url = self._api_client.URL['account']
         self.create_req()
 
 
