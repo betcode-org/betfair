@@ -7,21 +7,22 @@ from betfairlightweight.errors.apiexceptions import APIError, LogoutError, Login
 
 class APIMethod:
 
-    def __init__(self, api_client):
+    def __init__(self, api_client, method=None, params=None, exchange=None):
         self._api_client = api_client
         self.url = None
         self.payload = None
-        self.method = None
-        self.params = None
+        self.method = method
+        self.params = params
+        self.exchange = exchange
         self.instructions_length = 0
 
+    @property
     def create_req(self):
         payload = {'jsonrpc': '2.0',
                    'method': self.method,
                    'params': self.params,
                    'id': 1}
-        self.payload = json.dumps(payload)
-        return self.payload
+        return json.dumps(payload)
 
     def call(self, session=None):
         date_time_sent = datetime.datetime.now()
@@ -31,16 +32,15 @@ class APIMethod:
             self._api_client.check_transaction_count(self.instructions_length)
         if self._api_client.check_session():
             KeepAlive(self._api_client).call()
-        headers = self._api_client.request_headers
         try:
-            response = session.post(self.url, data=self.payload, headers=headers, timeout=(3.05, 12))
+            response = session.post(self.url, data=self.create_req, headers=self._api_client.request_headers,
+                                    timeout=(3.05, 12))
         except ConnectionError:
             raise APIError(None, self.params, self.method, 'ConnectionError')
         except Exception as e:
             raise APIError(None, self.params, self.method, e)
         if response.status_code == 200:
-            json_response = response.json()
-            return json_response, response, date_time_sent
+            return response.json(), response, date_time_sent
         else:
             raise APIError(response, self.params, self.method)
 
@@ -55,9 +55,8 @@ class Login(APIMethod):
         if not session:
             session = self._api_client.request
         self.payload = 'username=' + self._api_client.username + '&password=' + self._api_client.password
-        headers = self._api_client.login_headers
-        cert = self._api_client.cert
-        response = session.post(self.url, data=self.payload, headers=headers, cert=cert)
+        response = session.post(self.url, data=self.payload, headers=self._api_client.login_headers,
+                                cert=self._api_client.cert)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['loginStatus'] == 'SUCCESS':
@@ -65,8 +64,7 @@ class Login(APIMethod):
                 self._api_client.set_session_token(response_json['sessionToken'])
             return response_json
         else:
-            logging.error('Requests login error: %s' % response.status_code)
-            raise LoginError
+            raise LoginError(response)
 
 
 class KeepAlive(APIMethod):
@@ -78,9 +76,7 @@ class KeepAlive(APIMethod):
     def call(self, session=None):
         if not session:
             session = self._api_client.request
-        headers = self._api_client.keep_alive_headers
-        cert = self._api_client.cert
-        response = session.post(self.url, headers=headers, cert=cert)
+        response = session.post(self.url, headers=self._api_client.keep_alive_headers, cert=self._api_client.cert)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
@@ -88,8 +84,7 @@ class KeepAlive(APIMethod):
                 self._api_client.set_session_token(response_json['token'])
             return response_json
         else:
-            logging.error('Requests keepALive error: %s' % response.status_code)
-            raise KeepAliveError
+            raise KeepAliveError(response)
 
 
 class Logout(APIMethod):
@@ -101,9 +96,7 @@ class Logout(APIMethod):
     def call(self, session=None):
         if not session:
             session = self._api_client.request
-        headers = self._api_client.keep_alive_headers
-        cert = self._api_client.cert
-        response = session.get(self.url, headers=headers, cert=cert)
+        response = session.get(self.url, headers=self._api_client.keep_alive_headers, cert=self._api_client.cert)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
@@ -111,50 +104,40 @@ class Logout(APIMethod):
                 self._api_client.logout()
             return response_json
         else:
-            logging.error('Requests logout error: %s' % response.status_code)
-            raise LogoutError
+            raise LogoutError(response)
 
 
 class BettingRequest(APIMethod):
 
     def __init__(self, api_client, method, params, exchange):
-        super(BettingRequest, self).__init__(api_client)
-        self.method = method
-        self.params = params
-        if not exchange:
-            exchange = self._api_client.exchange
+        super(BettingRequest, self).__init__(api_client, method, params, exchange)
+        if not self.exchange:
+            self.exchange = self._api_client.exchange
         if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
             self.instructions_length = len(self.params['instructions'])
-        if exchange == 'AUS':
+        if self.exchange == 'AUS':
             self.url = self._api_client.URL_AUS['betting']
         else:
             self.url = self._api_client.URL['betting']
-        self.create_req()
 
 
 class AccountRequest(APIMethod):
 
     def __init__(self, api_client, method, params, exchange):
-        super(AccountRequest, self).__init__(api_client)
-        self.method = method
-        self.params = params
-        if not exchange:
-            exchange = self._api_client.exchange
-        if exchange == 'AUS':
+        super(AccountRequest, self).__init__(api_client, method, params, exchange)
+        if not self.exchange:
+            self.exchange = self._api_client.exchange
+        if self.exchange == 'AUS':
             self.url = self._api_client.URL_AUS['account']
         else:
             self.url = self._api_client.URL['account']
-        self.create_req()
 
 
 class ScoresRequest(APIMethod):
 
     def __init__(self, api_client, method, params):
-        super(ScoresRequest, self).__init__(api_client)
-        self.method = method
-        self.params = params
+        super(ScoresRequest, self).__init__(api_client, method, params)
         self.url = self._api_client.URL['scores']
-        self.create_req()
 
 
 class NavigationRequest:
@@ -170,11 +153,9 @@ class NavigationRequest:
         try:
             response = self._api_client.request.get(self.url, headers=headers, timeout=(3.05, 12))
         except Exception as e:
-            logging.error('MAJOR Requests error: %s' % e)
-            raise APIError(None, self.params)
+            raise APIError(None, self.params, e)
         if response.status_code == 200:
             json_response = response.json()
             return json_response, response, date_time_sent
         else:
-            logging.error('Requests error: %s' % response.status_code)
             raise APIError(None, self.params)

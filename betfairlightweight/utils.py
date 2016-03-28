@@ -28,3 +28,10 @@ def price_check(data, number, key):
     except IndexError:
         output = None
     return output
+
+
+def transaction_count(func, *args, **kwargs):
+    self = args[0]
+    if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
+        self._api_client.check_transaction_count(self.instructions_length)
+    return func(*args, **kwargs)
