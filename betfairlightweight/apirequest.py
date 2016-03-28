@@ -24,7 +24,7 @@ def logout(api):
     return response
 
 
-# Betting requests
+# Betting requests todo add decorator to check logged in / keep alive status?
 
 
 def list_event_types(api, params=None, session=None, parsed=True, exchange=None):
@@ -296,7 +296,7 @@ def transfer_funds(api, params=None, session=None, parsed=True, exchange=None):
     else:
         return response
 
-# Navigation request
+# navigation requests
 
 
 def list_navigation(api, params='UK'):

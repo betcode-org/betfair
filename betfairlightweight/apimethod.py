@@ -1,6 +1,7 @@
 import json
 import logging
 import datetime
+from requests.exceptions import ConnectionError
 from betfairlightweight.errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveError
 
 
@@ -63,7 +64,7 @@ class Login(APIMethod):
         if response.status_code == 200:
             response_json = response.json()
             if response_json['loginStatus'] == 'SUCCESS':
-                logging.info('Login: %s', response_json['loginStatus'])
+                logging.info('Login: %s' % response_json['loginStatus'])
                 self._api_client.set_session_token(response_json['sessionToken'])
             return response_json
         else:
@@ -86,7 +87,7 @@ class KeepAlive(APIMethod):
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
-                logging.info('KeepAlive: %s', response_json['status'])
+                logging.info('KeepAlive: %s' % response_json['status'])
                 self._api_client.set_session_token(response_json['token'])
             return response_json
         else:
@@ -109,7 +110,7 @@ class Logout(APIMethod):
         if response.status_code == 200:
             response_json = response.json()
             if response_json['status'] == 'SUCCESS':
-                logging.info('Logout: %s', response_json['status'])
+                logging.info('Logout: %s' % response_json['status'])
                 self._api_client.logout()
             return response_json
         else:
