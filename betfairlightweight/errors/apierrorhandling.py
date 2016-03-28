@@ -18,24 +18,16 @@ def api_logout_error_handling(response):
         raise apiexceptions.LogoutError(response)
 
 
-def api_betting_error_handling(response, params=None):
+def api_betting_error_handling(response, params=None, method=None):
     if response.get('result'):
         return
-    elif 'error' in response:
-        code = response['error']['code']
-        description = apierrors.GENERIC_JSON_RPC_EXCEPTIONS.get(code)
-        if not description:
-            error_code = response['error']['data']['APINGException']['errorCode']
-            description = apierrors.APING_EXCEPTION.get(error_code)
-        logging.error('API betting %s: %s | %s' % (code, description, params))
-        raise apiexceptions.APIError
+    elif response.get('error'):
+        raise apiexceptions.APIError(response, params, method)
 
 
 def api_order_error_handling(response, params=None, method=None):
-    if 'error' in response:
-        code = response['error']['code']
-        description = apierrors.GENERIC_JSON_RPC_EXCEPTIONS.get(code)
-        logging.error('API betting %s: %s' % (code, description))
+    if response.get('error'):
+        raise apiexceptions.APIError(response, params, method)
     elif response['result']['status'] != 'SUCCESS':
         response_error_code = response['result']['errorCode']
         description = apierrors.EXECUTION_REPORT_ERROR_CODE[response_error_code]

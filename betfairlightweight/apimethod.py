@@ -35,17 +35,14 @@ class APIMethod:
         try:
             response = session.post(self.url, data=self.payload, headers=headers, timeout=(3.05, 12))
         except ConnectionError:
-            logging.error('MAJOR Requests error: ConnectionError')
-            raise APIError
+            raise APIError(None, self.params, self.method, 'ConnectionError')
         except Exception as e:
-            logging.error('MAJOR Requests error: %s' % e)
-            raise APIError
+            raise APIError(None, self.params, self.method, e)
         if response.status_code == 200:
             json_response = response.json()
             return json_response, response, date_time_sent
         else:
-            logging.error('Requests error: %s' % response.status_code)
-            raise APIError
+            raise APIError(response, self.params, self.method)
 
 
 class Login(APIMethod):
@@ -174,10 +171,10 @@ class NavigationRequest:
             response = self._api_client.request.get(self.url, headers=headers, timeout=(3.05, 12))
         except Exception as e:
             logging.error('MAJOR Requests error: %s' % e)
-            raise APIError
+            raise APIError(None, self.params)
         if response.status_code == 200:
             json_response = response.json()
             return json_response, response, date_time_sent
         else:
             logging.error('Requests error: %s' % response.status_code)
-            raise APIError
+            raise APIError(None, self.params)

@@ -32,7 +32,7 @@ def list_event_types(api, params=None, session=None, parsed=True, exchange=None)
         params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listEventTypes')
     if parsed:
         return [apiparsedata.EventType(sent, raw_response, x) for x in response['result']]
     else:
@@ -44,7 +44,7 @@ def list_competitions(api, params=None, session=None, parsed=True, exchange=None
         params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listCompetitions')
     if parsed:
         return [apiparsedata.Competition(sent, raw_response, x) for x in response['result']]
     else:
@@ -57,7 +57,7 @@ def list_time_ranges(api, params=None, session=None, parsed=True, exchange=None)
                   'granularity': 'DAYS'}
     response = BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listTimeRanges')
     if parsed:
         return [apiparsedata.TimeRange(sent, raw_response, x) for x in response['result']]
     else:
@@ -69,7 +69,7 @@ def list_events(api, params=None, session=None, parsed=True, exchange=None):
         params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listEvents', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listEvents')
     if parsed:
         return [apiparsedata.Event(sent, raw_response, x) for x in response['result']]
     else:
@@ -81,7 +81,7 @@ def list_market_types(api, params=None, session=None, parsed=True, exchange=None
         params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listMarketTypes')
     if parsed:
         return [apiparsedata.MarketType(sent, raw_response, x) for x in response['result']]
     else:
@@ -93,7 +93,7 @@ def list_countries(api, params=None, session=None, parsed=True, exchange=None):
         params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listCountries', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listCountries')
     if parsed:
         return [apiparsedata.Country(sent, raw_response, x) for x in response['result']]
     else:
@@ -105,7 +105,7 @@ def list_venues(api, params=None, session=None, parsed=True, exchange=None):
         params = {'filter': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listVenues', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listVenues')
     if parsed:
         return [apiparsedata.Venue(sent, raw_response, x) for x in response['result']]
     else:
@@ -118,7 +118,7 @@ def list_market_catalogue(api, params=None, session=None, parsed=True, exchange=
                   'maxResults': '1'}
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketCatalogue', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listMarketCatalogue')
     if parsed:
         return [apiparsedata.MarketCatalogue(sent, raw_response, x) for x in response['result']]
     else:
@@ -130,7 +130,7 @@ def list_market_book(api, params=None, session=None, parsed=True, exchange=None)
         params = {'marketIds': ['1.122618187']}
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketBook', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listMarketBook')
     if parsed:
         return [apiparsedata.MarketBook(sent, raw_response, x) for x in response['result']]
     else:
@@ -193,7 +193,7 @@ def list_current_orders(api, params=None, session=None, parsed=True, exchange=No
         params = {'dateRange': {}}
     response = BettingRequest(api, 'SportsAPING/v1.0/listCurrentOrders', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listCurrentOrders')
     if parsed:
         return apiparsedata.CurrentOrders(sent, raw_response, response['result'])
     else:
@@ -207,7 +207,7 @@ def list_cleared_orders(api, params=None, session=None, parsed=True, exchange=No
                   'recordCount': '1000'}
     response = BettingRequest(api, 'SportsAPING/v1.0/listClearedOrders', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listClearedOrders')
     if parsed:
         return apiparsedata.ClearedOrders(sent, raw_response, response['result'])
     else:
@@ -219,7 +219,7 @@ def list_market_profit_and_loss(api, params=None, session=None, parsed=True, exc
         params = {'marketIds': ['1.122617964']}
     response = BettingRequest(api, 'SportsAPING/v1.0/listMarketProfitAndLoss', params, exchange).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'SportsAPING/v1.0/listMarketProfitAndLoss')
     if parsed:
         return [apiparsedata.MarketProfitLoss(sent, raw_response, x) for x in response['result']]
     else:
@@ -229,7 +229,7 @@ def list_market_profit_and_loss(api, params=None, session=None, parsed=True, exc
 def list_race_status(api, params, session=None, parsed=True):
     response = ScoresRequest(api, 'ScoresAPING/v1.0/listRaceDetails', params).call(session)
     (response, raw_response, sent) = response
-    apierrorhandling.api_betting_error_handling(response, params)
+    apierrorhandling.api_betting_error_handling(response, params, 'ScoresAPING/v1.0/listRaceDetails')
     if parsed:
         return [apiparsescores.RaceStatus(sent, raw_response, x) for x in response['result']]
     else:
