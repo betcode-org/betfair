@@ -1,3 +1,5 @@
+import logging
+import betfairlightweight.errors.apierrors as apierrors
 
 
 class BetfairError(Exception):
@@ -5,15 +7,23 @@ class BetfairError(Exception):
 
 
 class AppKeyError(BetfairError):
-    pass
+
+    def __init__(self, username):
+        logging.error('AppKey not found for %s' % username)
 
 
 class LoginError(BetfairError):
-    pass
+
+    def __init__(self, response):
+        login_status = response.get('loginStatus')
+        description = apierrors.LOGIN_EXCEPTIONS[login_status]
+        logging.error('API login %s: %s' % (login_status, description))
 
 
 class KeepAliveError(BetfairError):
-    pass
+
+    def __init__(self, response):
+        logging.error('API keepAlive %s: %s' % (response.get('status'), response.get('error')))
 
 
 class APIError(BetfairError):
@@ -21,8 +31,12 @@ class APIError(BetfairError):
 
 
 class TransactionCountError(BetfairError):
-    pass
+
+    def __init__(self, transaction_count):
+        logging.error('Transaction limit reached: %s' % transaction_count)
 
 
 class LogoutError(BetfairError):
-    pass
+
+    def __init__(self, response):
+        logging.error('API logout %s: %s' % (response.get('status'), response.get('error')))

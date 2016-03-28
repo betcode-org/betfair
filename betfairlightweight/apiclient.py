@@ -46,13 +46,12 @@ class APIClient:
 
     def check_transaction_count(self, count):
         if datetime.datetime.now() > self.time_trig:
-            logging.info('Transaction count reset: %s', self.transaction_count)
+            logging.info('Transaction count reset: %s' % self.transaction_count)
             self.set_time_trig()
             self.transaction_count = 0
         self.transaction_count += count
         if self.transaction_count > self.TRANSACTION_LIMIT:
-            logging.error('Transaction limit reached: %s', self.transaction_count)
-            raise TransactionCountError
+            raise TransactionCountError(self.transaction_count)
 
     def logout(self):
         self._session_token = None
@@ -60,11 +59,11 @@ class APIClient:
 
     def get_app_key(self):
         app_key = os.environ.get(self.username)
-        logging.info('App key found for %s: %s' % (self.username, app_key))
         if app_key:
+            logging.info('App key found for %s: %s' % (self.username, app_key))
             return os.environ.get(self.username)
         else:
-            raise AppKeyError
+            raise AppKeyError(self.username)
 
     def set_time_trig(self):
         now = datetime.datetime.now()
