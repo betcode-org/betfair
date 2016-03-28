@@ -27,7 +27,24 @@ class KeepAliveError(BetfairError):
 
 
 class APIError(BetfairError):
-    pass
+
+    def __init__(self, response, params, method=None, exception=None):
+        if response is not None:
+            if hasattr(response, 'status_code') and response.status_code != 200:
+                logging.error('APIError, http error: %s' % response.status_code)
+            else:
+                code = response['error']['code']
+                description = apierrors.GENERIC_JSON_RPC_EXCEPTIONS.get(code)
+                error_details = None
+                if not description:
+                    error_code = response['error']['data']['APINGException']['errorCode']
+                    error_details = response['error']['data']['APINGException']['errorDetails']
+                    description = apierrors.APING_EXCEPTION.get(error_code)
+                logging.error('API betting %s: %s' % (code, description))
+                logging.error('Method: %s, Parameters sent: %s' % (method, params))
+                logging.error('Error details: %s' % error_details)
+        else:
+            logging.error('APIError error: %s' % exception)
 
 
 class TransactionCountError(BetfairError):
