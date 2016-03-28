@@ -15,15 +15,21 @@ class AppKeyError(BetfairError):
 class LoginError(BetfairError):
 
     def __init__(self, response):
-        login_status = response.get('loginStatus')
-        description = apierrors.LOGIN_EXCEPTIONS[login_status]
-        logging.error('API login %s: %s' % (login_status, description))
+        if hasattr(response, 'status_code') and response.status_code != 200:
+            logging.error('API login error, http error: %s' % response.status_code)
+        else:
+            login_status = response.get('loginStatus')
+            description = apierrors.LOGIN_EXCEPTIONS[login_status]
+            logging.error('API login %s: %s' % (login_status, description))
 
 
 class KeepAliveError(BetfairError):
 
     def __init__(self, response):
-        logging.error('API keepAlive %s: %s' % (response.get('status'), response.get('error')))
+        if hasattr(response, 'status_code') and response.status_code != 200:
+            logging.error('API keepAlive error, http error: %s' % response.status_code)
+        else:
+            logging.error('API keepAlive %s: %s' % (response.get('status'), response.get('error')))
 
 
 class APIError(BetfairError):
@@ -56,4 +62,7 @@ class TransactionCountError(BetfairError):
 class LogoutError(BetfairError):
 
     def __init__(self, response):
-        logging.error('API logout %s: %s' % (response.get('status'), response.get('error')))
+        if hasattr(response, 'status_code') and response.status_code != 200:
+            logging.error('API logout error, http error: %s' % response.status_code)
+        else:
+            logging.error('API logout %s: %s' % (response.get('status'), response.get('error')))

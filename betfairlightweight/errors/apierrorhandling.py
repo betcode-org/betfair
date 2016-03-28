@@ -31,11 +31,11 @@ def api_order_error_handling(response, params=None, method=None):
     elif response['result']['status'] != 'SUCCESS':
         response_error_code = response['result']['errorCode']
         description = apierrors.EXECUTION_REPORT_ERROR_CODE[response_error_code]
-        logging.error('API Execution %s: %s' % (response['result']['status'], description))
+        logging.warning('API Execution %s: %s' % (response['result']['status'], description))
         for order in response['result']['instructionReports']:
             if order['status'] != 'SUCCESS':
-                logging.error('Bug error %s, request: %s' % (method, params))
-                logging.error('Bug error %s, response: %s' % (method, response))
+                logging.warning('Bug error %s, request: %s' % (method, params))
+                logging.warning('Bug error %s, response: %s' % (method, response))
                 error_code = order.get('errorCode')
-                description = apierrors.INSTRUCTION_REPORT_ERROR_CODE[error_code]
-                logging.error(' Instruction %s: %s' % (error_code, description))
+                description = apierrors.INSTRUCTION_REPORT_ERROR_CODE.get(error_code)
+                logging.warning(' Instruction %s: %s' % (error_code, description))
