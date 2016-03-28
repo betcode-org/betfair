@@ -1,7 +1,6 @@
 from betfairlightweight.parse.meta import RACE_STATUS
 
 
-
 class RaceStatus:
 
     def __init__(self, date_time_sent, raw_response, result):

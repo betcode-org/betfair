@@ -35,10 +35,10 @@ class APIClient:
         self.set_time_trig()
         self.app_key = self.get_app_key()
 
-    def set_session_token(self, session_token):
+    def set_session_token(self, session_token, type):
         self._session_token = session_token
         self.login_time = datetime.datetime.now()
-        logging.info('New sessionToken: %s', self._session_token)
+        logging.info('%s new sessionToken: %s' % (type, self._session_token))
 
     def check_session(self):
         if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
@@ -53,14 +53,14 @@ class APIClient:
         if self.transaction_count > self.TRANSACTION_LIMIT:
             raise TransactionCountError(self.transaction_count)
 
-    def logout(self):
+    def logout(self, response_status):
         self._session_token = None
         self.login_time = None
+        logging.info('Logout: %s' % response_status)
 
     def get_app_key(self):
         app_key = os.environ.get(self.username)
         if app_key:
-            logging.info('App key found for %s: %s' % (self.username, app_key))
             return os.environ.get(self.username)
         else:
             raise AppKeyError(self.username)

@@ -1,5 +1,4 @@
 import datetime
-from betfairlightweight.errors.apiexceptions import APIError, LoginError, KeepAliveError, LogoutError
 from betfairlightweight.errors import apierrorhandling
 from betfairlightweight.parse import apiparsedata, apiparseaccount, apiparsebetting, apiparsescores
 from betfairlightweight.apimethod import Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest
@@ -7,20 +6,23 @@ from betfairlightweight.apimethod import NavigationRequest
 
 
 def login(api):
-    response = Login(api).call()
+    (response, raw_response, sent) = Login(api).call()
     apierrorhandling.api_login_error_handling(response)
+    api.set_session_token(response['sessionToken'], 'Login')
     return response
 
 
 def keep_alive(api):
-    response = KeepAlive(api).call()
+    (response, raw_response, sent) = KeepAlive(api).call()
     apierrorhandling.api_keep_alive_error_handling(response)
+    api.set_session_token(response['token'], 'KeepAlive')
     return response
 
 
 def logout(api):
-    response = Logout(api).call()
+    (response, raw_response, sent) = Logout(api).call()
     apierrorhandling.api_logout_error_handling(response)
+    api.logout(response['status'])
     return response
 
 
