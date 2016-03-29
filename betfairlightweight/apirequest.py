@@ -158,7 +158,7 @@ def cancel_orders(api, params=None, session=None, parsed=True, exchange=None):
     response = BettingRequest(api, 'SportsAPING/v1.0/cancelOrders', params, exchange).call(session)
     (response, raw_response, sent) = response
     date_time_received = datetime.datetime.now()
-    apierrorhandling.api_order_error_handling(response, params, 'SportsAPING/v1.0/cancelOrders')
+    apierrorhandling.api_order_error_handling(response, params, 'SportsAPING/v1.0/cancelOrders', raw_response)
     if parsed:
         if params:
             return apiparsebetting.CancelOrder(sent, raw_response, response['result'], date_time_received)
