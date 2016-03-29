@@ -25,7 +25,7 @@ def api_betting_error_handling(response, params=None, method=None):
         raise apiexceptions.APIError(response, params, method)
 
 
-def api_order_error_handling(response, params=None, method=None):
+def api_order_error_handling(response, params=None, method=None, raw_response=None):
     if response.get('error'):
         raise apiexceptions.APIError(response, params, method)
     elif response['result']['status'] != 'SUCCESS':
@@ -39,3 +39,10 @@ def api_order_error_handling(response, params=None, method=None):
                 error_code = order.get('errorCode')
                 description = apierrors.INSTRUCTION_REPORT_ERROR_CODE.get(error_code)
                 logging.warning(' Instruction %s: %s' % (error_code, description))
+        if raw_response:
+            logging.critical('Response analysis start')
+            for i in raw_response.__dict__:
+                logging.critical(' %s: %s' % (i, raw_response.__dict__[i]))
+                if i in ['request', 'raw']:
+                    logging.critical('   %s: %s' % (i, raw_response.__dict__[i].__dict__))
+            logging.critical('Response analysis end')
