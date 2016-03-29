@@ -48,7 +48,8 @@ class APIMethod:
         if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
             self._api_client.check_transaction_count(self.instructions_length)
         if self._api_client.check_session():
-            KeepAlive(self._api_client).call()
+            (response, raw_response, sent) = KeepAlive(self._api_client).call()
+            self._api_client.set_session_token(response['token'], 'KeepAlive')
         try:
             response = session.post(self.url, data=self.create_req, headers=self._api_client.request_headers,
                                     timeout=(3.05, 12))
