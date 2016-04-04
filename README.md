@@ -13,11 +13,11 @@ export username = "appkey"
 The library can then be used as follows:
 
 ```python
-from betfairlightweight import apiclient, apirequest
+import betfairlightweight
 
-trading = apiclient.APIClient('username', 'password')
+trading = betfairlightweight.APIClient('username', 'password')
 
-apirequest.login(trading)
+betfairlightweight.login(trading)
 ```
 
 
