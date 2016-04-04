@@ -21,8 +21,6 @@ class APIClient:
                   'ITALY': 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json',
                   'SPAIN': 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'}
 
-    TRANSACTION_LIMIT = 999
-
     def __init__(self, username, password, exchange='UK'):
         self.username = username
         self.password = password
@@ -31,6 +29,7 @@ class APIClient:
         self.time_trig = None
         self._session_token = None
         self.request = requests
+        self.transaction_limit = 999
         self.transaction_count = 0
         self.set_time_trig()
         self.app_key = self.get_app_key()
@@ -50,7 +49,7 @@ class APIClient:
             self.set_time_trig()
             self.transaction_count = 0
         self.transaction_count += count
-        if self.transaction_count > self.TRANSACTION_LIMIT:
+        if self.transaction_count > self.transaction_limit:
             raise TransactionCountError(self.transaction_count)
 
     def logout(self, response_status):
