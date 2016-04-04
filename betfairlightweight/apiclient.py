@@ -39,10 +39,6 @@ class APIClient:
         self.login_time = datetime.datetime.now()
         logging.info('%s new sessionToken: %s' % (type, self._session_token))
 
-    def check_session(self):
-        if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
-            return True
-
     def check_transaction_count(self, count):
         if datetime.datetime.now() > self.time_trig:
             logging.info('Transaction count reset: %s' % self.transaction_count)
@@ -67,6 +63,11 @@ class APIClient:
     def set_time_trig(self):
         now = datetime.datetime.now()
         self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+
+    @property
+    def check_session(self):
+        if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
+            return True
 
     @property
     def cert(self):
