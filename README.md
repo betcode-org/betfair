@@ -26,3 +26,11 @@ event_types = trading.list_event_types()
 ```
 
 event_types is a list of classes containing data.
+
+# todo
+
+    - Fix issue with no errorCode in cancel request
+    - Use schematics for json -> data structure
+    - Enums for correct values to be sent
+    - Remove handling of expired sessionToken, should be done in framework
+    - Choose where certs are located
