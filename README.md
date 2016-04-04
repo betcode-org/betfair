@@ -13,11 +13,11 @@ export username = "appkey"
 The library can then be used as follows:
 
 ```python
-from betfairlightweight import apiclient, apirequest
+import betfairlightweight
 
-trading = apiclient.APIClient('username', 'password')
+trading = betfairlightweight.APIClient('username', 'password')
 
-apirequest.login(trading)
+betfairlightweight.login(trading)
 ```
 
 
@@ -34,3 +34,4 @@ event_types is a list of classes containing data.
     - Enums for correct values to be sent
     - Remove handling of expired sessionToken, should be done in framework
     - Choose where certs are located
+    - Unit tests
