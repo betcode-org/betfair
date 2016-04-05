@@ -26,23 +26,23 @@ class APIClient:
         self.password = password
         self.exchange = exchange
         self.login_time = None
-        self.time_trig = None
-        self._session_token = None
         self.request = requests
         self.transaction_limit = 999
         self.transaction_count = 0
-        self.set_time_trig()
-        self.app_key = self.get_app_key()
+        self.next_hour = None
+        self.set_next_hour()
+        self._session_token = None
+        self._app_key = self.get_app_key()
 
-    def set_session_token(self, session_token, type):
+    def set_session_token(self, session_token, call_type):
         self._session_token = session_token
         self.login_time = datetime.datetime.now()
-        logging.info('%s new sessionToken: %s' % (type, self._session_token))
+        logging.info('%s new sessionToken: %s' % (call_type, self._session_token))
 
     def check_transaction_count(self, count):
-        if datetime.datetime.now() > self.time_trig:
+        if datetime.datetime.now() > self.next_hour:
             logging.info('Transaction count reset: %s' % self.transaction_count)
-            self.set_time_trig()
+            self.set_next_hour()
             self.transaction_count = 0
         self.transaction_count += count
         if self.transaction_count > self.transaction_limit:
@@ -60,12 +60,12 @@ class APIClient:
         else:
             raise AppKeyError(self.username)
 
-    def set_time_trig(self):
+    def set_next_hour(self):
         now = datetime.datetime.now()
-        self.time_trig = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+        self.next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
     @property
-    def check_session(self):
+    def session_expired(self):
         if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
             return True
 
@@ -91,14 +91,14 @@ class APIClient:
     @property
     def keep_alive_headers(self):
         headers = {'Accept': 'application/json',
-                   'X-Application': self.app_key,
+                   'X-Application': self._app_key,
                    'X-Authentication': self._session_token,
                    'content-type': 'application/x-www-form-urlencoded'}
         return headers
 
     @property
     def request_headers(self):
-        headers = {'X-Application': self.app_key,
+        headers = {'X-Application': self._app_key,
                    'X-Authentication': self._session_token,
                    'content-type': 'application/json'}
         return headers
