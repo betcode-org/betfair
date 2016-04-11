@@ -1,13 +1,6 @@
 import datetime
 
 
-def key_check(data, key):
-    try:
-        return data[key]
-    except KeyError:
-        return None
-
-
 def strp_betfair_time(datetime_string):
     return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
 

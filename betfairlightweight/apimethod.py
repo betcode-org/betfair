@@ -1,6 +1,7 @@
 import json
 import datetime
 from requests.exceptions import ConnectionError
+from betfairlightweight.errors import apierrorhandling
 from betfairlightweight.errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveError, BetfairError
 
 
@@ -14,6 +15,7 @@ class APIMethod:
         self.params = params
         self.exchange = exchange
         self.error = APIError
+        self.error_handler = apierrorhandling.api_betting_error_handling
         self.instructions_length = 0
 
     @property
@@ -26,6 +28,7 @@ class APIMethod:
 
     def create_resp(self, response, date_time_sent):
         if response.status_code == 200:
+            self.error_handler(response.json(), self.params, self.method)
             return response.json(), response, date_time_sent
         else:
             raise self.error(response, self.params, self.method)
@@ -41,7 +44,7 @@ class APIMethod:
             raise BetfairError
         return url
 
-    def call(self, session=None):
+    def __call__(self, session=None):
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -63,8 +66,9 @@ class Login(APIMethod):
         super(Login, self).__init__(api_client)
         self.url = self.initiate_exchange('login')
         self.error = LoginError
+        self.error_handler = apierrorhandling.api_login_error_handling
 
-    def call(self, session=None):
+    def __call__(self, session=None):
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -80,8 +84,9 @@ class KeepAlive(APIMethod):
         super(KeepAlive, self).__init__(api_client)
         self.url = self.initiate_exchange('keep_alive')
         self.error = KeepAliveError
+        self.error_handler = apierrorhandling.api_keep_alive_error_handling
 
-    def call(self, session=None):
+    def __call__(self, session=None):
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -95,8 +100,9 @@ class Logout(APIMethod):
         super(Logout, self).__init__(api_client)
         self.url = self.initiate_exchange('logout')
         self.error = LogoutError
+        self.error_handler = apierrorhandling.api_logout_error_handling
 
-    def call(self, session=None):
+    def __call__(self, session=None):
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -108,9 +114,17 @@ class BettingRequest(APIMethod):
 
     def __init__(self, api_client, method, params, exchange):
         super(BettingRequest, self).__init__(api_client, method, params, exchange)
+        self.url = self.initiate_exchange('betting')
+
+
+class OrderRequest(APIMethod):
+
+    def __init__(self, api_client, method, params, exchange):
+        super(OrderRequest, self).__init__(api_client, method, params, exchange)
         if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
             self.instructions_length = len(self.params['instructions'])
         self.url = self.initiate_exchange('betting')
+        self.error_handler = apierrorhandling.api_order_error_handling
 
 
 class AccountRequest(APIMethod):
@@ -135,7 +149,7 @@ class NavigationRequest(APIMethod):
         self.params = params
         self.url = self.initiate_exchange('NAVIGATION')
 
-    def call(self, session=None):
+    def __call__(self, session=None):
         date_time_sent = datetime.datetime.now()
         headers = self._api_client.request_headers
         try:

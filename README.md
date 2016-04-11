@@ -24,7 +24,7 @@ betfairlightweight.login(trading)
 
 
 ```python
-event_types = trading.list_event_types()
+event_types = betfairlightweight.list_event_types(trading)
 ```
 
 event_types is a list of classes containing data.
@@ -33,7 +33,7 @@ event_types is a list of classes containing data.
 
     - Unit tests
     - Fix issue with no errorCode in cancel request
-    - Use schematics for json -> data structure
+    - Use schematics for json -> data structure, schematics is slow as balls
     - Enums for correct values to be sent
     - Choose where certs are located
     - Thread lock on transaction counter
