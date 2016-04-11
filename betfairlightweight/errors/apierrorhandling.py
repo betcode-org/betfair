@@ -3,17 +3,17 @@ import betfairlightweight.errors.apiexceptions as apiexceptions
 import betfairlightweight.errors.apierrors as apierrors
 
 
-def api_login_error_handling(response):
+def api_login_error_handling(response, params=None, method=None):
     if response.get('loginStatus') != 'SUCCESS':
         raise apiexceptions.LoginError(response)
 
 
-def api_keep_alive_error_handling(response):
+def api_keep_alive_error_handling(response, params=None, method=None):
     if response.get('status') != 'SUCCESS':
         raise apiexceptions.KeepAliveError(response)
 
 
-def api_logout_error_handling(response):
+def api_logout_error_handling(response, params=None, method=None):
     if response.get('status') != 'SUCCESS':
         raise apiexceptions.LogoutError(response)
 

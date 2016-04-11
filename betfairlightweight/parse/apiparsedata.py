@@ -1,92 +1,77 @@
 import logging
 import datetime
-from betfairlightweight.utils import key_check, strp_betfair_time, key_check_datetime, price_check
+from betfairlightweight.parse.models import BetfairModel
+from betfairlightweight.utils import strp_betfair_time, key_check_datetime, price_check
 
 
-class EventType:
+class EventType(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, event_type):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(EventType, self).__init__(date_time_sent, raw_response)
         self.event_type_id = event_type['eventType']['id']
         self.event_type_name = event_type['eventType']['name']
         self.market_count = event_type['marketCount']
 
 
-class Competition:
+class Competition(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, competition):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(Competition, self).__init__(date_time_sent, raw_response)
         self.competition_id = competition['competition']['id']
         self.competition_name = competition['competition']['name']
         self.market_count = competition['marketCount']
         self.competition_region = competition['competitionRegion']
 
 
-class TimeRange:
+class TimeRange(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, time_range):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(TimeRange, self).__init__(date_time_sent, raw_response)
         self.market_count = time_range['marketCount']
         self.time_range_from = time_range['timeRange']['from']
         self.time_range_to = time_range['timeRange']['to']
 
 
-class Event:
+class Event(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, event):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(Event, self).__init__(date_time_sent, raw_response)
         self.id = event['event']['id']
         self.open_date = strp_betfair_time(event['event']['openDate'])
         self.time_zone = event['event']['timezone']
-        self.country_code = key_check(event['event'], 'countryCode')
+        self.country_code = event['event'].get('countryCode')
         self.name = event['event']['name']
         self.market_count = event['marketCount']
 
 
-class MarketType:
+class MarketType(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, market_type):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(MarketType, self).__init__(date_time_sent, raw_response)
         self.market_type = market_type['marketType']
         self.market_count = market_type['marketCount']
 
 
-class Country:
+class Country(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, country):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(Country, self).__init__(date_time_sent, raw_response)
         self.country_code = country['countryCode']
         self.market_count = country['marketCount']
 
 
-class Venue:
+class Venue(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, venue):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(Venue, self).__init__(date_time_sent, raw_response)
         self.venue = venue['venue']
         self.market_count = venue['marketCount']
 
 
-class MarketCatalogue:
+class MarketCatalogue(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, market_catalogue):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(MarketCatalogue, self).__init__(date_time_sent, raw_response)
         self.market_id = market_catalogue['marketId']
         self.market_name = market_catalogue['marketName']
         self.total_matched = market_catalogue['totalMatched']
@@ -114,14 +99,15 @@ class MarketCatalogueCompetition:
         self.name = competition['name']
 
 
-class MarketCatalogueEvent:  # todo missing countryCode
+class MarketCatalogueEvent:
 
     def __init__(self, event):
         self.id = event['id']
         self.name = event['name']
         self.open_date = strp_betfair_time(event['openDate'])
         self.timezone = event['timezone']
-        self.venue = key_check(event, 'venue')
+        self.venue = event.get('venue')
+        self.country_code = event.get('countryCode')
 
 
 class MarketCatalogueEventType:
@@ -139,22 +125,22 @@ class MarketCatalogueDescription:
         self.discount_allowed = description['discountAllowed']
         self.market_base_rate = description['marketBaseRate']
         self.market_time = strp_betfair_time(description['marketTime'])
-        self.market_type = key_check(description, 'marketType')
+        self.market_type = description.get('marketType')
         self.persistence_enabled = description['persistenceEnabled']
         self.regulator = description['regulator']
-        self.rules = key_check(description, 'rules')
+        self.rules = description.get('rules')
         self.rules_has_date = description['rulesHasDate']
         self.suspend_time = strp_betfair_time(description['suspendTime'])
         self.turn_in_play_enabled = description['turnInPlayEnabled']
         self.wallet = description['wallet']
 
 
-class RunnerCatalogue:  # todo add removalDate
+class RunnerCatalogue:
 
     def __init__(self, runner_catalogue):
         self.selection_id = runner_catalogue['selectionId']
         self.runner_name = runner_catalogue['runnerName']
-        self.sort_priority = key_check(runner_catalogue, 'sortPriority')
+        self.sort_priority = runner_catalogue.get('sortPriority')
         self.handicap = runner_catalogue['handicap']
         if 'metadata' in runner_catalogue:
             self.metadata = RunnerCatalogueMetadata(runner_catalogue['metadata'])
@@ -202,12 +188,10 @@ class RunnerCatalogueMetadata:
             logging.error('Runner metadata error: %s' % str(metadata['runnerId']))
         
 
-class MarketBook:
+class MarketBook(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, market_book):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(MarketBook, self).__init__(date_time_sent, raw_response)
         self.raw_market_book = market_book
         self.market_id = market_book['marketId']
         self.bet_delay = market_book['betDelay']
@@ -266,10 +250,11 @@ class RunnerBook:
     def __init__(self, runner_book):
         self.selection_id = runner_book['selectionId']
         self.status = runner_book['status']
-        self.total_matched = key_check(runner_book, 'totalMatched')
-        self.adjustment_factor = key_check(runner_book, 'adjustmentFactor')
+        self.total_matched = runner_book.get('totalMatched')
+        self.adjustment_factor = runner_book.get('adjustmentFactor')
         self.handicap = runner_book['handicap']
-        self.last_price_traded = key_check(runner_book, 'lastPriceTraded')
+        self.last_price_traded = runner_book.get('lastPriceTraded')
+        self.removal_date = key_check_datetime(runner_book, 'removalDate')
         if 'sp' in runner_book:
             self.sp = RunnerBookSP(runner_book['sp'])
         if 'ex' in runner_book:
@@ -278,29 +263,6 @@ class RunnerBook:
             self.orders = [RunnerBookOrder(order) for order in runner_book['orders']]
         if 'matches' in runner_book:
             self.matches = [RunnerBookMatch(match) for match in runner_book['matches']]
-
-    @property
-    def runner_tuple_creator(self):
-        try:
-            back_price_a = price_check(self.ex.available_to_back, 0, 'price')
-            back_price_b = price_check(self.ex.available_to_back, 1, 'price')
-            back_price_c = price_check(self.ex.available_to_back, 2, 'price')
-            back_size_a = price_check(self.ex.available_to_back, 0, 'size')
-            back_size_b = price_check(self.ex.available_to_back, 1, 'size')
-            back_size_c = price_check(self.ex.available_to_back, 2, 'size')
-            lay_price_a = price_check(self.ex.available_to_lay, 0, 'price')
-            lay_price_b = price_check(self.ex.available_to_lay, 1, 'price')
-            lay_price_c = price_check(self.ex.available_to_lay, 2, 'price')
-            lay_size_a = price_check(self.ex.available_to_lay, 0, 'size')
-            lay_size_b = price_check(self.ex.available_to_lay, 1, 'size')
-            lay_size_c = price_check(self.ex.available_to_lay, 2, 'size')
-        except AttributeError:
-            (back_price_a, back_price_b, back_price_c, back_size_a, back_size_b, back_size_c,
-             lay_price_a, lay_price_b, lay_price_c, lay_size_a, lay_size_b, lay_size_c) = \
-                (None, None, None, None, None, None, None, None, None, None, None, None)
-        csv_tuple = (back_price_b, back_price_c, back_size_a, back_size_b, back_size_c, lay_price_b, lay_price_c,
-                     lay_size_a, lay_size_b, lay_size_c)
-        return csv_tuple
 
     @property
     def runner_tuple_creator_simple(self):
@@ -358,12 +320,10 @@ class RunnerBookMatch:
         self.size = match['size']
 
 
-class CurrentOrders:
+class CurrentOrders(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, current_orders):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(CurrentOrders, self).__init__(date_time_sent, raw_response)
         self.more_available = current_orders['moreAvailable']
         self.orders = [CurrentOrdersOrder(order) for order in current_orders['currentOrders']]
 
@@ -400,12 +360,10 @@ class CurrentOrdersOrderPriceSize:
         self.size = price_size['size']
 
 
-class ClearedOrders:
+class ClearedOrders(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, cleared_orders):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(ClearedOrders, self).__init__(date_time_sent, raw_response)
         self.more_available = cleared_orders['moreAvailable']
         self.orders = [ClearedOrdersOrder(order) for order in cleared_orders['clearedOrders']]
 
@@ -434,14 +392,12 @@ class ClearedOrdersOrder:
         self.size_settled = order['sizeSettled']
 
 
-class MarketProfitLoss:
+class MarketProfitLoss(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, market_profit_loss):
-        self.date_time_received = datetime.datetime.now()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(MarketProfitLoss, self).__init__(date_time_sent, raw_response)
         self.market_id = market_profit_loss['marketId']
-        self.commission_applied = key_check(market_profit_loss, 'commissionApplied')
+        self.commission_applied = market_profit_loss.get('commissionApplied')
         self.profit_and_losses = [MarketProfitLosses(runner) for runner in market_profit_loss['profitAndLosses']]
 
 
@@ -450,5 +406,5 @@ class MarketProfitLosses:
     def __init__(self, runner):
         self.selection_id = runner['selectionId']
         self.if_win = runner['ifWin']
-        self.if_lose = key_check(runner, 'ifLose')
-        self.if_place = key_check(runner, 'ifPlace')
+        self.if_lose = runner.get('ifLose')
+        self.if_place = runner.get('ifPlace')

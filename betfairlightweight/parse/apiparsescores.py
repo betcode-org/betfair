@@ -1,11 +1,11 @@
-from betfairlightweight.parse.meta import RACE_STATUS
+from betfairlightweight.parse.models import BetfairModel
+from betfairlightweight.parse.enums import RaceStatusEnum
 
 
-class RaceStatus:
+class RaceStatus(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, result):
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(RaceStatus, self).__init__(date_time_sent, raw_response)
         self.response_code = result['responseCode']
         if self.response_code == 'OK':
             self.race_id = result['raceId']
@@ -15,4 +15,4 @@ class RaceStatus:
 
     @property
     def race_status_description(self):
-        return RACE_STATUS[self.race_status]
+        return RaceStatusEnum[self.race_status].value

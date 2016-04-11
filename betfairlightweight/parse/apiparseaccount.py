@@ -1,12 +1,11 @@
-import logging
-from betfairlightweight.utils import key_check, strp_betfair_time, key_check_datetime
+from betfairlightweight.parse.models import BetfairModel
+from betfairlightweight.utils import strp_betfair_time
 
 
-class AccountFunds:
+class AccountFunds(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, account_funds):
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(AccountFunds, self).__init__(date_time_sent, raw_response)
         self.available_to_bet_balance = account_funds['availableToBetBalance']
         self.discount_rate = account_funds['discountRate']
         self.exposure = account_funds['exposure']
@@ -16,11 +15,10 @@ class AccountFunds:
         self.wallet = account_funds['wallet']
 
 
-class AccountDetails:
+class AccountDetails(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, account_details):
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(AccountDetails, self).__init__(date_time_sent, raw_response)
         self.country_code = account_details['countryCode']
         self.currency_code = account_details['currencyCode']
         self.discount_rate = account_details['discountRate']
@@ -32,11 +30,10 @@ class AccountDetails:
         self.timezone = account_details['timezone']
 
 
-class AccountStatement:
+class AccountStatement(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, account_statement):
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(AccountStatement, self).__init__(date_time_sent, raw_response)
         self.more_available = account_statement['moreAvailable']
         self.account_statement = [AccountStatementStatement(statement)
                                   for statement in account_statement['accountStatement']]
@@ -67,18 +64,16 @@ class AccountStatementLegacyData:
         self.gross_bet_amount = legacy_data['grossBetAmount']
 
 
-class CurrencyRate:
+class CurrencyRate(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, currency_rate):
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(CurrencyRate, self).__init__(date_time_sent, raw_response)
         self.currency_code = currency_rate['currencyCode']
         self.rate = currency_rate['rate']
 
 
-class TransferFunds:
+class TransferFunds(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, transfer_funds):
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
+        super(TransferFunds, self).__init__(date_time_sent, raw_response)
         self.transaction_id = transfer_funds['transactionId']
