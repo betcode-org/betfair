@@ -1,4 +1,26 @@
 import datetime
+from .parse.enums import MockParams
+from .errors.apiexceptions import ParameterError
+
+
+def process_response(response, raw_response, sent, model):
+    response_result = response.get('result')
+    if isinstance(response_result, list):
+        return [model(sent, raw_response, x) for x in response_result]
+    else:
+        return model(sent, raw_response, response_result)
+
+
+def api_request(func, *args, **kwargs):
+    api_request_name = func.__name__
+
+    def api_request(api, params=None, session=None, exchange=None):
+        if not params:
+            params = MockParams[api_request_name].value
+            return func(api, params, session, exchange)
+        else:
+            return func(api, params, session, exchange)
+    return api_request
 
 
 def strp_betfair_time(datetime_string):
