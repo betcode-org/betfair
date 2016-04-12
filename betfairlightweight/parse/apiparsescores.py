@@ -1,5 +1,5 @@
-from parse.models import BetfairModel
-from parse.enums import RaceStatusEnum
+from betfairlightweight.parse.models import BetfairModel
+from betfairlightweight.parse.enums import RaceStatusEnum
 
 
 class RaceStatus(BetfairModel):
