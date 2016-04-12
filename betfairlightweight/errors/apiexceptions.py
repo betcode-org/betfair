@@ -66,3 +66,9 @@ class LogoutError(BetfairError):
             logging.error('API logout error, http error: %s' % response.status_code)
         else:
             logging.error('API logout %s: %s' % (response.get('status'), response.get('error')))
+
+
+class ParameterError(BetfairError):
+
+    def __init__(self, api_method):
+        logging.error('API method %s must have parameters' % api_method)

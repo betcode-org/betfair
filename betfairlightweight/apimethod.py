@@ -121,8 +121,9 @@ class OrderRequest(APIMethod):
 
     def __init__(self, api_client, method, params, exchange):
         super(OrderRequest, self).__init__(api_client, method, params, exchange)
-        if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
-            self.instructions_length = len(self.params['instructions'])
+        instructions = self.params.get('instructions')
+        if instructions and self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
+            self.instructions_length = len(self.params.get('instructions'))
         self.url = self.initiate_exchange('betting')
         self.error_handler = apierrorhandling.api_order_error_handling
 
