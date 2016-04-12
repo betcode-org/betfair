@@ -30,7 +30,7 @@ def list_event_types(api, params=None, session=None, parsed=True, exchange=None)
     request = BettingRequest(api, 'SportsAPING/v1.0/listEventTypes', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.EventType(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.EventTypeResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
@@ -41,7 +41,7 @@ def list_competitions(api, params=None, session=None, parsed=True, exchange=None
     request = BettingRequest(api, 'SportsAPING/v1.0/listCompetitions', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.Competition(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.CompetitionResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
@@ -53,7 +53,7 @@ def list_time_ranges(api, params=None, session=None, parsed=True, exchange=None)
     request = BettingRequest(api, 'SportsAPING/v1.0/listTimeRanges', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.TimeRange(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.TimeRangeResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
@@ -64,7 +64,7 @@ def list_events(api, params=None, session=None, parsed=True, exchange=None):
     request = BettingRequest(api, 'SportsAPING/v1.0/listEvents', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.Event(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.EventResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
@@ -75,7 +75,7 @@ def list_market_types(api, params=None, session=None, parsed=True, exchange=None
     request = BettingRequest(api, 'SportsAPING/v1.0/listMarketTypes', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.MarketType(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.MarketTypeResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
@@ -86,7 +86,7 @@ def list_countries(api, params=None, session=None, parsed=True, exchange=None):
     request = BettingRequest(api, 'SportsAPING/v1.0/listCountries', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.Country(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.CountryResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
@@ -97,7 +97,7 @@ def list_venues(api, params=None, session=None, parsed=True, exchange=None):
     request = BettingRequest(api, 'SportsAPING/v1.0/listVenues', params, exchange)
     (response, raw_response, sent) = request(session)
     if parsed:
-        return [apiparsedata.Venue(sent, raw_response, x) for x in response['result']]
+        return [apiparsedata.VenueResult(sent, raw_response, x) for x in response['result']]
     else:
         return response
 
