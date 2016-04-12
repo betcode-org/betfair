@@ -24,7 +24,6 @@ def logout(api):
 
 # Betting requests
 # todo add decorator to check logged in / keep alive status?
-# todo decorator to provide mock params
 
 @api_request
 def list_event_types(api, params=None, session=None, exchange=None):
