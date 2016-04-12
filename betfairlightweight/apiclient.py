@@ -2,7 +2,7 @@ import datetime
 import os
 import requests
 import logging
-from betfairlightweight.errors.apiexceptions import AppKeyError, TransactionCountError
+from .errors.apiexceptions import AppKeyError, TransactionCountError
 
 
 class APIClient:

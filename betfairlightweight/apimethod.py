@@ -1,8 +1,8 @@
 import json
 import datetime
 from requests.exceptions import ConnectionError
-from betfairlightweight.errors import apierrorhandling
-from betfairlightweight.errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveError, BetfairError
+from .errors import apierrorhandling
+from .errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveError, BetfairError
 
 
 class APIMethod:
