@@ -1,4 +1,4 @@
-https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=master
+![](https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=master)
 
 # betfairlightweight
 
