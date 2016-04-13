@@ -4,7 +4,12 @@ from setuptools.command.test import test as TestCommand
 from betfairlightweight.__init__ import __version__
 
 
-TEST_REQUIRES = ['pytest']
+INSTALL_REQUIRES = [
+    'requests>=2.6.2',
+]
+TEST_REQUIRES = [
+    'pytest'
+]
 
 
 class PyTest(TestCommand):
@@ -25,6 +30,7 @@ setup(
         version=__version__,
         packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
+        install_requires=INSTALL_REQUIRES,
         requires=['requests'],
         url='https://github.com/LiamPa/betfairlightweight',
         license='',
