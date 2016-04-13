@@ -6,8 +6,19 @@ from .errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveEr
 
 
 class APIMethod:
+    """ This is the base class for all api requests """
 
     def __init__(self, api_client, method=None, params=None, exchange=None):
+        """
+        :param api_client:
+            Client to be used for request.
+        :param method:
+            Betfair api-ng method to be used.
+        :param params:
+            Params to be used in requests, if None will use MockParams Enum.
+        :param exchange:
+            Allows to specify certain exchange to be used, regardless of client.exchange.
+        """
         self._api_client = api_client
         self.url = None
         self.payload = None
@@ -18,13 +29,20 @@ class APIMethod:
         self.error_handler = apierrorhandling.api_betting_error_handling
         self.instructions_length = 0
 
-    @property
-    def create_req(self):
-        payload = {'jsonrpc': '2.0',
-                   'method': self.method,
-                   'params': self.params,
-                   'id': 1}
-        return json.dumps(payload)
+    def __call__(self, session=None):
+        date_time_sent = datetime.datetime.now()
+        if not session:
+            session = self._api_client.request
+        if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
+            self._api_client.check_transaction_count(self.instructions_length)
+        try:
+            response = session.post(self.url, data=self.create_req, headers=self._api_client.request_headers,
+                                    timeout=(3.05, 12))
+        except ConnectionError:
+            raise APIError(None, self.params, self.method, 'ConnectionError')
+        except Exception as e:
+            raise APIError(None, self.params, self.method, e)
+        return self.create_resp(response, date_time_sent)
 
     def create_resp(self, response, date_time_sent):
         if response.status_code == 200:
@@ -44,23 +62,17 @@ class APIMethod:
             raise BetfairError
         return url
 
-    def __call__(self, session=None):
-        date_time_sent = datetime.datetime.now()
-        if not session:
-            session = self._api_client.request
-        if self.method in ['SportsAPING/v1.0/placeOrders', 'SportsAPING/v1.0/replaceOrders']:
-            self._api_client.check_transaction_count(self.instructions_length)
-        try:
-            response = session.post(self.url, data=self.create_req, headers=self._api_client.request_headers,
-                                    timeout=(3.05, 12))
-        except ConnectionError:
-            raise APIError(None, self.params, self.method, 'ConnectionError')
-        except Exception as e:
-            raise APIError(None, self.params, self.method, e)
-        return self.create_resp(response, date_time_sent)
+    @property
+    def create_req(self):
+        payload = {'jsonrpc': '2.0',
+                   'method': self.method,
+                   'params': self.params,
+                   'id': 1}
+        return json.dumps(payload)
 
 
 class Login(APIMethod):
+    """ Login method """
 
     def __init__(self, api_client):
         super(Login, self).__init__(api_client)
@@ -79,6 +91,7 @@ class Login(APIMethod):
 
 
 class KeepAlive(APIMethod):
+    """ KeepAlive method """
 
     def __init__(self, api_client):
         super(KeepAlive, self).__init__(api_client)
@@ -95,6 +108,7 @@ class KeepAlive(APIMethod):
 
 
 class Logout(APIMethod):
+    """ Logout method """
 
     def __init__(self, api_client):
         super(Logout, self).__init__(api_client)
@@ -111,6 +125,7 @@ class Logout(APIMethod):
 
 
 class BettingRequest(APIMethod):
+    """ Betting method """
 
     def __init__(self, api_client, method, params, exchange):
         super(BettingRequest, self).__init__(api_client, method, params, exchange)
@@ -118,6 +133,7 @@ class BettingRequest(APIMethod):
 
 
 class OrderRequest(APIMethod):
+    """ Order method """
 
     def __init__(self, api_client, method, params, exchange):
         super(OrderRequest, self).__init__(api_client, method, params, exchange)
@@ -129,6 +145,7 @@ class OrderRequest(APIMethod):
 
 
 class AccountRequest(APIMethod):
+    """ Account method """
 
     def __init__(self, api_client, method, params, exchange):
         super(AccountRequest, self).__init__(api_client, method, params, exchange)
@@ -136,6 +153,7 @@ class AccountRequest(APIMethod):
 
 
 class ScoresRequest(APIMethod):
+    """ Scores method """
 
     def __init__(self, api_client, method, params):
         super(ScoresRequest, self).__init__(api_client, method, params)
@@ -143,6 +161,7 @@ class ScoresRequest(APIMethod):
 
 
 class NavigationRequest(APIMethod):
+    """ Navigation method """
 
     def __init__(self, api_client, params):
         super(NavigationRequest, self).__init__(api_client, method=None, params=params)

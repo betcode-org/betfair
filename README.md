@@ -1,6 +1,6 @@
 # betfairlightweight
 
-Lightweight python wrapper for Betfair API-NG allowing all betting operations and some account operations.
+Lightweight, super fast python wrapper for Betfair API-NG allowing all betting operations and some account operations.
 
 # setup
 
@@ -32,8 +32,8 @@ event_types is a list of classes containing data.
 # todo
 
     - Unit tests
-    - Fix issue with no errorCode in cancel request
-    - Use schematics for json -> data structure, schematics is slow as balls
+    - Fix issue with no errorCode in cancel request (details sent to bdp@betfair.com)
+    - Use schematics for json -> data structure, schematics is slow as balls (0.3s+ for 300 marketBook request)
     - Enums for correct values to be sent
     - Choose where certs are located
     - Thread lock on transaction counter

@@ -4,26 +4,32 @@ from .apimethod import (
 from .utils import process_response, api_request
 
 
+"""
+Below lists all api requests
+"""
+
+
 def login(api):
     (response, raw_response, sent) = Login(api)()
-    api.set_session_token(response['sessionToken'], 'Login')
+    api.set_session_token(response.get('sessionToken'), 'Login')
     return response
 
 
 def keep_alive(api):
     (response, raw_response, sent) = KeepAlive(api)()
-    api.set_session_token(response['token'], 'KeepAlive')
+    api.set_session_token(response.get('token'), 'KeepAlive')
     return response
 
 
 def logout(api):
     (response, raw_response, sent) = Logout(api)()
-    api.logout(response['status'])
+    api.logout(response.get('status'))
     return response
 
 
 # Betting requests
 # todo add decorator to check logged in / keep alive status?
+
 
 @api_request
 def list_event_types(api, params=None, session=None, exchange=None):
