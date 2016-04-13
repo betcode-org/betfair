@@ -49,7 +49,7 @@ class APIClient:
         self.next_hour = None
         self.set_next_hour()
         self._session_token = None
-        self._app_key = self.get_app_key()
+        self._app_key = None
 
     def set_session_token(self, session_token, call_type):
         self._session_token = session_token
@@ -76,7 +76,7 @@ class APIClient:
 
     def get_app_key(self):
         if os.environ.get(self.username):
-            return os.environ.get(self.username)
+            self._app_key = os.environ.get(self.username)
         else:
             raise AppKeyError(self.username)
 
