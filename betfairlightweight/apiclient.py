@@ -6,6 +6,11 @@ from .errors.apiexceptions import AppKeyError, TransactionCountError
 
 
 class APIClient:
+    """
+    This class is a container for all client options. Its
+    primary purpose is to hold appkeys, session tokens,
+    transaction count and provide headers for requests.
+    """
 
     URL = {'login': 'https://identitysso.betfair.com/api/certlogin',
            'logout': 'https://identitysso.betfair.com/api/logout',
@@ -22,6 +27,14 @@ class APIClient:
                   'SPAIN': 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'}
 
     def __init__(self, username, password, exchange='UK'):
+        """
+        :param username:
+            Betfair username.
+        :param password:
+            Password for supplied username.
+        :param exchange:
+            Allows to specify certain exchange to be used, UK or AUS.
+        """
         self.username = username
         self.password = password
         self.exchange = exchange
@@ -54,8 +67,7 @@ class APIClient:
         logging.info('Logout: %s' % response_status)
 
     def get_app_key(self):
-        app_key = os.environ.get(self.username)
-        if app_key:
+        if os.environ.get(self.username):
             return os.environ.get(self.username)
         else:
             raise AppKeyError(self.username)
@@ -84,21 +96,18 @@ class APIClient:
 
     @property
     def login_headers(self):
-        headers = {'X-Application': 1,
-                   'content-type': 'application/x-www-form-urlencoded'}
-        return headers
+        return {'X-Application': 1,
+                'content-type': 'application/x-www-form-urlencoded'}
 
     @property
     def keep_alive_headers(self):
-        headers = {'Accept': 'application/json',
-                   'X-Application': self._app_key,
-                   'X-Authentication': self._session_token,
-                   'content-type': 'application/x-www-form-urlencoded'}
-        return headers
+        return {'Accept': 'application/json',
+                'X-Application': self._app_key,
+                'X-Authentication': self._session_token,
+                'content-type': 'application/x-www-form-urlencoded'}
 
     @property
     def request_headers(self):
-        headers = {'X-Application': self._app_key,
-                   'X-Authentication': self._session_token,
-                   'content-type': 'application/json'}
-        return headers
+        return {'X-Application': self._app_key,
+                'X-Authentication': self._session_token,
+                'content-type': 'application/json'}

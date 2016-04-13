@@ -3,6 +3,18 @@ from .parse.enums import MockParams
 
 
 def process_response(response, raw_response, sent, model):
+    """
+    Processes response based on response_result
+
+    :param response:
+        json response.
+    :param raw_response:
+        Raw response from requests.
+    :param sent:
+        Datetime request was sent.
+    :param model:
+        Model to be used for parsing.
+    """
     response_result = response.get('result')
     if isinstance(response_result, list):
         return [model(sent, raw_response, x) for x in response_result]
@@ -11,6 +23,12 @@ def process_response(response, raw_response, sent, model):
 
 
 def api_request(func):
+    """
+    Checks params and provides MockParams if None
+
+    :param func:
+        api request function.
+    """
     api_request_name = func.__name__
 
     def _api_request(api, params=None, session=None, exchange=None):
@@ -23,14 +41,27 @@ def api_request(func):
 
 
 def strp_betfair_time(datetime_string):
+    """
+    Converts Betfair string to datetime.
+
+    :param datetime_string:
+        Datetime string.
+    """
     return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def key_check_datetime(data, key):
-    try:
-        output = data[key]
-        return strp_betfair_time(output)
-    except KeyError:
+    """
+    Checks data is in json before parsing.
+
+    :param data:
+        json data.
+    :param key:
+        Datetime key.
+    """
+    if data.get(key):
+        return strp_betfair_time(data.get(key))
+    else:
         return None
 
 
