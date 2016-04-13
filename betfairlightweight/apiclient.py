@@ -2,29 +2,33 @@ import datetime
 import os
 import requests
 import logging
-from .errors.apiexceptions import AppKeyError, TransactionCountError
+from .errors.apiexceptions import AppKeyError, TransactionCountError, BetfairError
 
 
 class APIClient:
     """
     This class is a container for all client options. Its
-    primary purpose is to hold appkeys, session tokens,
+    primary purpose is to hold appkeys, session tokens, urls,
     transaction count and provide headers for requests.
     """
 
-    URL = {'login': 'https://identitysso.betfair.com/api/certlogin',
-           'logout': 'https://identitysso.betfair.com/api/logout',
-           'keep_alive': 'https://identitysso.betfair.com/api/keepAlive',
-           'betting': 'https://api.betfair.com/exchange/betting/json-rpc/v1',
-           'scores': 'https://api.betfair.com/exchange/scores/json-rpc/v1',
-           'account': 'https://api.betfair.com/exchange/account/json-rpc/v1'}
+    __url = {'Login': 'https://identitysso.betfair.com/api/certlogin',
+             'Logout': 'https://identitysso.betfair.com/api/logout',
+             'KeepAlive': 'https://identitysso.betfair.com/api/keepAlive',
+             'BettingRequest': 'https://api.betfair.com/exchange/betting/json-rpc/v1',
+             'OrderRequest': 'https://api.betfair.com/exchange/betting/json-rpc/v1',
+             'ScoresRequest': 'https://api.betfair.com/exchange/scores/json-rpc/v1',
+             'AccountRequest': 'https://api.betfair.com/exchange/account/json-rpc/v1'}
 
-    URL_AUS = {'betting': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
-               'account': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}
+    __url_aus = {'BettingRequest': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
+                 'OrderRequest': 'https://api-au.betfair.com/exchange/betting/json-rpc/v1',
+                 'ScoresRequest': None,
+                 'AccountRequest': 'https://api-au.betfair.com/exchange/account/json-rpc/v1'}
 
-    NAVIGATION = {'UK': 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
-                  'ITALY': 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json',
-                  'SPAIN': 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'}
+    __navigation = {'UK': 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
+                    'AUS': 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
+                    'ITALY': 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json',
+                    'SPAIN': 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'}
 
     def __init__(self, username, password, exchange='UK'):
         """
@@ -33,7 +37,7 @@ class APIClient:
         :param password:
             Password for supplied username.
         :param exchange:
-            Allows to specify certain exchange to be used, UK or AUS.
+            Allows to specify exchange to be used, UK or AUS.
         """
         self.username = username
         self.password = password
@@ -51,6 +55,10 @@ class APIClient:
         self._session_token = session_token
         self.login_time = datetime.datetime.now()
         logging.info('%s new sessionToken: %s' % (call_type, self._session_token))
+
+    def set_next_hour(self):
+        now = datetime.datetime.now()
+        self.next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
     def check_transaction_count(self, count):
         if datetime.datetime.now() > self.next_hour:
@@ -72,9 +80,20 @@ class APIClient:
         else:
             raise AppKeyError(self.username)
 
-    def set_next_hour(self):
-        now = datetime.datetime.now()
-        self.next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+    def get_url(self, call_type, exchange):
+        if exchange:
+            call_exchange = exchange
+        else:
+            call_exchange = self.exchange
+        if call_type == 'NavigationRequest':
+            url = self.__navigation[call_exchange]
+        elif call_exchange == 'UK' or call_type in ['Login', 'KeepAlive', 'Logout']:
+            url = self.__url[call_type]
+        elif call_exchange == 'AUS':
+            url = self.__url_aus[call_type]
+        else:
+            raise BetfairError
+        return url
 
     @property
     def session_expired(self):

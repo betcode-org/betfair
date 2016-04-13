@@ -10,19 +10,22 @@ Below lists all api requests
 
 
 def login(api):
-    (response, raw_response, sent) = Login(api)()
+    request = Login(api)
+    (response, raw_response, sent) = request()
     api.set_session_token(response.get('sessionToken'), 'Login')
     return response
 
 
 def keep_alive(api):
-    (response, raw_response, sent) = KeepAlive(api)()
+    request = KeepAlive(api)
+    (response, raw_response, sent) = request()
     api.set_session_token(response.get('token'), 'KeepAlive')
     return response
 
 
 def logout(api):
-    (response, raw_response, sent) = Logout(api)()
+    request = Logout(api)
+    (response, raw_response, sent) = request()
     api.logout(response.get('status'))
     return response
 
