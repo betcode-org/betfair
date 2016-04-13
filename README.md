@@ -1,3 +1,5 @@
+https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=master
+
 # betfairlightweight
 
 Lightweight, super fast python wrapper for Betfair API-NG allowing all betting operations and some account operations.
