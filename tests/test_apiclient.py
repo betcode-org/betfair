@@ -9,7 +9,7 @@ from betfairlightweight.errors.apiexceptions import TransactionCountError, AppKe
 
 
 def test_client_init(client):
-    assert client._app_key == 'synappkey'
+    assert client._app_key is None
     assert client.cert == ['/certs/client-2048.crt', '/certs/client-2048.key']
     assert client.transaction_limit == 999
     assert client.exchange == 'UK'
@@ -29,9 +29,9 @@ def test_client_headers(client):
                                       'content-type': 'application/json'}
 
 
-def test_client_app_key():
+def test_client_app_key(logged_in_client):
     with pytest.raises(AppKeyError):
-        APIClient('error', 'password', 'UK')
+        logged_in_client.get_app_key()
 
 
 def test_client_logged_in(logged_in_client):

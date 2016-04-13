@@ -10,6 +10,7 @@ Below lists all api requests
 
 
 def login(api):
+    api.get_app_key()
     request = Login(api)
     (response, raw_response, sent) = request()
     api.set_session_token(response.get('sessionToken'), 'Login')
