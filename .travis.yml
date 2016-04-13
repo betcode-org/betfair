@@ -1,0 +1,11 @@
+language: python
+
+sudo: false
+
+python:
+  - "3.4"
+
+install:
+  - travis_retry python setup.py install
+
+script: python setup.py test
