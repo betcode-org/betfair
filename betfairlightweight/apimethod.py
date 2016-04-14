@@ -52,7 +52,6 @@ class APIMethod:
         return self.create_resp(response, date_time_sent)
 
     def create_resp(self, response, date_time_sent):
-        print(self.__class__.__name__, self._error_handler)
         if response.status_code == 200:
             self._error_handler(response.json(), self.params, self.method)
             return response.json(), response, date_time_sent
