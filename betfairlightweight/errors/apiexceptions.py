@@ -1,5 +1,7 @@
 import logging
-import betfairlightweight.errors.apierrors as apierrors
+
+from ..errors import apierrors
+from ..parse import enums
 
 
 class BetfairError(Exception):
@@ -22,7 +24,7 @@ class LoginError(BetfairError):
             logging.error('API login error, http error: %s' % response.status_code)
         else:
             login_status = response.get('loginStatus')
-            description = apierrors.LOGIN_EXCEPTIONS[login_status]
+            description = enums.LoginExceptions[login_status].value
             logging.error('API login %s: %s' % (login_status, description))
 
 

@@ -1,6 +1,7 @@
 import json
 import datetime
 from requests.exceptions import ConnectionError
+
 from .errors import apierrorhandling
 from .errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveError
 
@@ -8,8 +9,8 @@ from .errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveEr
 class APIMethod:
     """ This is the base class for all api requests """
 
-    __error_handler = staticmethod(apierrorhandling.api_betting_error_handling)
-    __error = APIError
+    _error_handler = staticmethod(apierrorhandling.api_betting_error_handling)
+    _error = APIError
 
     def __init__(self, api_client, method=None, params=None, exchange=None):
         """
@@ -51,11 +52,12 @@ class APIMethod:
         return self.create_resp(response, date_time_sent)
 
     def create_resp(self, response, date_time_sent):
+        print(self.__class__.__name__, self._error_handler)
         if response.status_code == 200:
-            self.__error_handler(response.json(), self.params, self.method)
+            self._error_handler(response.json(), self.params, self.method)
             return response.json(), response, date_time_sent
         else:
-            raise self.__error(response, self.params, self.method)
+            raise self._error(response, self.params, self.method)
 
     @property
     def create_req(self):
@@ -68,8 +70,8 @@ class APIMethod:
 
 class Login(APIMethod):
     """ Login method """
-    __error_handler = staticmethod(apierrorhandling.api_login_error_handling)
-    __error = LoginError
+    _error_handler = staticmethod(apierrorhandling.api_login_error_handling)
+    _error = LoginError
 
     def __call__(self, session=None):
         url = self._api_client.get_url(self.__class__.__name__, self.exchange)
@@ -84,8 +86,8 @@ class Login(APIMethod):
 
 class KeepAlive(APIMethod):
     """ KeepAlive method """
-    __error_handler = staticmethod(apierrorhandling.api_keep_alive_error_handling)
-    __error = KeepAliveError
+    _error_handler = staticmethod(apierrorhandling.api_keep_alive_error_handling)
+    _error = KeepAliveError
 
     def __call__(self, session=None):
         url = self._api_client.get_url(self.__class__.__name__, self.exchange)
@@ -98,8 +100,8 @@ class KeepAlive(APIMethod):
 
 class Logout(APIMethod):
     """ Logout method """
-    __error_handler = staticmethod(apierrorhandling.api_logout_error_handling)
-    __error = LogoutError
+    _error_handler = staticmethod(apierrorhandling.api_logout_error_handling)
+    _error = LogoutError
 
     def __call__(self, session=None):
         url = self._api_client.get_url(self.__class__.__name__, self.exchange)
@@ -117,7 +119,7 @@ class BettingRequest(APIMethod):
 
 class OrderRequest(APIMethod):
     """ Order method """
-    __error_handler = staticmethod(apierrorhandling.api_order_error_handling)
+    _error_handler = staticmethod(apierrorhandling.api_order_error_handling)
 
 
 class AccountRequest(APIMethod):

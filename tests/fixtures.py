@@ -10,7 +10,7 @@ def client():
 
 @pytest.fixture
 def logged_in_client(client):
-    client = APIClient('test', 'password', 'UK')
+    client = APIClient('username', 'password', 'UK')
     client.set_session_token('sessiontoken', 'testcall')
     return client
 

@@ -1,6 +1,6 @@
 import datetime
-from betfairlightweight.parse.models import BetfairModel
-from betfairlightweight.utils import strp_betfair_time, key_check_datetime, price_check
+from ..parse.models import BetfairModel
+from ..utils import strp_betfair_time, key_check_datetime, price_check
 
 
 class EventType:
