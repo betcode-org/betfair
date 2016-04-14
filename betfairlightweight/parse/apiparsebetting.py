@@ -1,5 +1,5 @@
-from betfairlightweight.parse.models import BetfairModel
-from betfairlightweight.utils import strp_betfair_time
+from ..parse.models import BetfairModel
+from ..utils import strp_betfair_time
 
 
 class Order(BetfairModel):
