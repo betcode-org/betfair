@@ -123,7 +123,7 @@ class OrderRequest(APIMethod):
 
 class AccountRequest(APIMethod):
     """ Account method """
-    pass
+    pass  # todo account error handling
 
 
 class ScoresRequest(APIMethod):

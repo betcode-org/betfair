@@ -104,6 +104,6 @@ def test_client_logged_in_get_url(logged_in_client, logged_in_client_aus):
 
 
 def test_client_logged_in_logout(logged_in_client):
-    logged_in_client.logout('test')
+    logged_in_client.client_logout('test')
     assert logged_in_client.login_time is None
     assert logged_in_client._session_token is None

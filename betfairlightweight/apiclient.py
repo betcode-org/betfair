@@ -4,9 +4,13 @@ import requests
 import logging
 
 from .errors.apiexceptions import AppKeyError, TransactionCountError, BetfairError
+from .parse import apiparsedata, apiparseaccount, apiparsebetting, apiparsescores
+from .apimethod import (
+    Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, OrderRequest, NavigationRequest)
+from .utils import process_request, api_request
 
 
-class APIClient:
+class BaseClient:
     """
     This class is a container for all client options. Its
     primary purpose is to hold appkeys, session tokens, urls,
@@ -70,7 +74,7 @@ class APIClient:
         if self.transaction_count > self.transaction_limit:
             raise TransactionCountError(self.transaction_count)
 
-    def logout(self, response_status):
+    def client_logout(self, response_status):
         self._session_token = None
         self.login_time = None
         logging.info('Logout: %s' % response_status)
@@ -99,6 +103,11 @@ class APIClient:
     @property
     def session_expired(self):
         if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
+            return True
+
+    @property
+    def check_session(self):
+        if self._session_token:
             return True
 
     @property
@@ -131,3 +140,155 @@ class APIClient:
         return {'X-Application': self._app_key,
                 'X-Authentication': self._session_token,
                 'content-type': 'application/json'}
+
+
+class APIClient(BaseClient):
+    """
+    This class is a container for all request operations,
+    separated to make modifications easier.
+    """
+    
+    def login(self):
+        self.get_app_key()
+        request = Login(self)
+        (response, raw_response, sent) = request()
+        self.set_session_token(response.get('sessionToken'), 'Login')
+        return response
+
+    def keep_alive(self):
+        request = KeepAlive(self)
+        (response, raw_response, sent) = request()
+        self.set_session_token(response.get('token'), 'KeepAlive')
+        return response
+
+    def logout(self):
+        request = Logout(self)
+        (response, raw_response, sent) = request()
+        self.client_logout(response.get('status'))
+        return response
+
+    # Betting requests
+
+    @api_request
+    def list_event_types(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listEventTypes', params, exchange)
+        return process_request(request, session, apiparsedata.EventTypeResult)
+
+    @api_request
+    def list_competitions(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listCompetitions', params, exchange)
+        return process_request(request, session, apiparsedata.CompetitionResult)
+
+    @api_request
+    def list_time_ranges(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listTimeRanges', params, exchange)
+        return process_request(request, session, apiparsedata.TimeRangeResult)
+
+    @api_request
+    def list_events(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listEvents', params, exchange)
+        return process_request(request, session, apiparsedata.EventResult)
+
+    @api_request
+    def list_market_types(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listMarketTypes', params, exchange)
+        return process_request(request, session, apiparsedata.MarketTypeResult)
+
+    @api_request
+    def list_countries(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listCountries', params, exchange)
+        return process_request(request, session, apiparsedata.CountryResult)
+
+    @api_request
+    def list_venues(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listVenues', params, exchange)
+        return process_request(request, session, apiparsedata.VenueResult)
+
+    @api_request
+    def list_market_catalogue(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listMarketCatalogue', params, exchange)
+        return process_request(request, session, apiparsedata.MarketCatalogue)
+
+    @api_request
+    def list_market_book(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listMarketBook', params, exchange)
+        return process_request(request, session, apiparsedata.MarketBook)
+
+    # Order requests
+    
+    @api_request
+    def place_orders(self, params=None, session=None, exchange=None):  # atomic
+        request = OrderRequest(self, 'SportsAPING/v1.0/placeOrders', params, exchange)
+        return process_request(request, session, apiparsebetting.PlaceOrder)
+
+    @api_request
+    def cancel_orders(self, params=None, session=None, exchange=None):
+        request = OrderRequest(self, 'SportsAPING/v1.0/cancelOrders', params, exchange)
+        if params:
+            return process_request(request, session, apiparsebetting.CancelOrder)
+        else:
+            return process_request(request, session, apiparsebetting.CancelAllOrders)
+
+    @api_request
+    def update_orders(self, params=None, session=None, exchange=None):
+        request = OrderRequest(self, 'SportsAPING/v1.0/updateOrders', params, exchange)
+        return process_request(request, session, apiparsebetting.UpdateOrder)
+
+    @api_request
+    def replace_orders(self, params=None, session=None, exchange=None):
+        request = OrderRequest(self, 'SportsAPING/v1.0/replaceOrders', params, exchange)
+        return process_request(request, session, apiparsebetting.ReplaceOrder)
+
+    @api_request
+    def list_current_orders(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listCurrentOrders', params, exchange)
+        return process_request(request, session, apiparsedata.CurrentOrders)
+
+    @api_request
+    def list_cleared_orders(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listClearedOrders', params, exchange)
+        return process_request(request, session, apiparsedata.ClearedOrders)
+
+    @api_request
+    def list_market_profit_and_loss(self, params=None, session=None, exchange=None):
+        request = BettingRequest(self, 'SportsAPING/v1.0/listMarketProfitAndLoss', params, exchange)
+        return process_request(request, session, apiparsedata.MarketProfitLoss)
+
+    @api_request
+    def list_race_status(self, params=None, session=None, exchange=None):
+        request = ScoresRequest(self, 'ScoresAPING/v1.0/listRaceDetails', params, exchange)
+        return process_request(request, session, apiparsescores.RaceStatus)
+
+    # Account requests
+    
+    @api_request
+    def get_account_funds(self, params=None, session=None, exchange=None):
+        request = AccountRequest(self, 'AccountAPING/v1.0/getAccountFunds', params, exchange)
+        return process_request(request, session, apiparseaccount.AccountFunds)
+
+    @api_request
+    def get_account_details(self, params=None, session=None, exchange=None):
+        request = AccountRequest(self, 'AccountAPING/v1.0/getAccountDetails', params, exchange)
+        return process_request(request, session, apiparseaccount.AccountDetails)
+
+    @api_request
+    def get_account_statement(self, params=None, session=None, exchange=None):
+        request = AccountRequest(self, 'AccountAPING/v1.0/getAccountStatement', params, exchange)
+        return process_request(request, session, apiparseaccount.AccountStatement)
+
+    @api_request
+    def list_currency_rates(self, params=None, session=None, exchange=None):
+        request = AccountRequest(self, 'AccountAPING/v1.0/listCurrencyRates', params, exchange)
+        return process_request(request, session, apiparseaccount.CurrencyRate)
+
+    @api_request
+    def transfer_funds(self, params=None, session=None, exchange=None):
+        request = AccountRequest(self, 'AccountAPING/v1.0/transferFunds', params, exchange)
+        return process_request(request, session, apiparseaccount.TransferFunds)
+
+    # Navigation requests
+    
+    def list_navigation(self, params='UK'):
+        request = NavigationRequest(self, params)
+        (response, raw_response, sent) = request()
+        return response

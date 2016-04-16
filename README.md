@@ -21,12 +21,12 @@ import betfairlightweight
 
 trading = betfairlightweight.APIClient('username', 'password')
 
-betfairlightweight.login(trading)
+trading.login()
 ```
 
 
 ```python
-event_types = betfairlightweight.list_event_types(trading)
+event_types = trading.list_event_types()
 ```
 
 event_types is a list of classes containing data.
