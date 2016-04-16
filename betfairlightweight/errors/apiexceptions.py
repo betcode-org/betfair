@@ -82,3 +82,10 @@ class ParameterError(BetfairError):
 
     def __init__(self, api_method):
         logging.error('API method %s must have parameters' % api_method)
+
+
+class SessionTokenError(BetfairError):
+    """ Exception raised if session_token is None """
+
+    def __init__(self):
+        logging.error('APIClient must have session_token')
