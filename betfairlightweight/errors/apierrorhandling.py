@@ -1,6 +1,7 @@
 import logging
 
-from ..errors import apiexceptions, apierrors
+from ..errors import apiexceptions
+from ..parse import enums
 
 
 def api_login_error_handling(response, params=None, method=None):
@@ -25,24 +26,15 @@ def api_betting_error_handling(response, params=None, method=None):
         raise apiexceptions.APIError(response, params, method)
 
 
-def api_order_error_handling(response, params=None, method=None, raw_response=None):
+def api_order_error_handling(response, params=None, method=None):
     if response.get('error'):
         raise apiexceptions.APIError(response, params, method)
     elif response['result']['status'] != 'SUCCESS':
         response_error_code = response['result']['errorCode']
-        description = apierrors.EXECUTION_REPORT_ERROR_CODE[response_error_code]
+        description = enums.ExecutionReportErrorCode[response_error_code].value
         logging.warning('API Execution %s: %s' % (response['result']['status'], description))
-        logging.warning('Bug error %s, request: %s' % (method, params))
-        logging.warning('Bug error %s, response: %s' % (method, response))
         for order in response['result']['instructionReports']:
             if order['status'] != 'SUCCESS':
                 error_code = order.get('errorCode')
-                description = apierrors.INSTRUCTION_REPORT_ERROR_CODE.get(error_code)
+                description = enums.InstructionReportErrorCode[error_code].value
                 logging.warning(' Instruction %s: %s' % (error_code, description))
-        if raw_response:
-            logging.critical('Response analysis start')
-            for i in raw_response.__dict__:
-                logging.critical(' %s: %s' % (i, raw_response.__dict__[i]))
-                if i in ['request', 'raw']:
-                    logging.critical('   %s: %s' % (i, raw_response.__dict__[i].__dict__))
-            logging.critical('Response analysis end')

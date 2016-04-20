@@ -11,6 +11,7 @@ class APIMethod:
 
     _error_handler = staticmethod(apierrorhandling.api_betting_error_handling)
     _error = APIError
+    _timeout = 3.05
 
     def __init__(self, api_client, method=None, params=None, exchange=None):
         """
@@ -44,7 +45,7 @@ class APIMethod:
             self._api_client.check_transaction_count(self.instructions_length)
         try:
             response = session.post(url, data=self.create_req, headers=self._api_client.request_headers,
-                                    timeout=(3.05, 12))
+                                    timeout=(self._timeout, 12))
         except ConnectionError:
             raise APIError(None, self.params, self.method, 'ConnectionError')
         except Exception as e:
@@ -123,7 +124,7 @@ class OrderRequest(APIMethod):
 
 class AccountRequest(APIMethod):
     """ Account method """
-    pass  # todo account error handling
+    _timeout = 6.05  # todo account error handling
 
 
 class ScoresRequest(APIMethod):
