@@ -14,7 +14,7 @@ def test_client_init(client):
     assert client.transaction_limit == 999
     assert client.exchange == 'UK'
     assert client._session_token is None
-    assert client.login_time is None
+    assert client._login_time is None
 
 
 def test_client_headers(client):
@@ -35,13 +35,13 @@ def test_client_app_key(logged_in_client):
 
 
 def test_client_logged_in(logged_in_client):
-    assert logged_in_client.login_time is not None
+    assert logged_in_client._login_time is not None
     assert logged_in_client._session_token is not None
 
 
 def test_client_logged_in_session(logged_in_client):
     assert logged_in_client.session_expired is None
-    logged_in_client.login_time = datetime.datetime(2003, 8, 4, 12, 30, 45)
+    logged_in_client._login_time = datetime.datetime(2003, 8, 4, 12, 30, 45)
     assert logged_in_client.session_expired is True
     logged_in_client.set_session_token('sessiontoken', 'testcall')
     assert logged_in_client.session_expired is None
@@ -56,7 +56,7 @@ def test_client_logged_in_transaction(logged_in_client):
 
 def test_client_logged_in_transaction_reset(logged_in_client):
     logged_in_client.transaction_count = 666
-    logged_in_client.next_hour = datetime.datetime(2003, 8, 4, 12, 00, 00)
+    logged_in_client._next_hour = datetime.datetime(2003, 8, 4, 12, 00, 00)
     logged_in_client.check_transaction_count(1)
     assert logged_in_client.transaction_count == 1
 
@@ -105,5 +105,5 @@ def test_client_logged_in_get_url(logged_in_client, logged_in_client_aus):
 
 def test_client_logged_in_logout(logged_in_client):
     logged_in_client.client_logout('test')
-    assert logged_in_client.login_time is None
+    assert logged_in_client._login_time is None
     assert logged_in_client._session_token is None

@@ -7,7 +7,7 @@ from .errors.apiexceptions import APIError, LogoutError, LoginError, KeepAliveEr
 
 
 class APIMethod:
-    """ This is the base class for all api requests """
+    """This is the base class for all api requests"""
 
     _error_handler = staticmethod(apierrorhandling.api_betting_error_handling)
     _error = APIError
@@ -67,14 +67,17 @@ class APIMethod:
                    'id': 1}
         return json.dumps(payload)
 
+    def __str__(self):
+        return self.__class__.__name__
+
 
 class Login(APIMethod):
-    """ Login method """
+    """Login method"""
     _error_handler = staticmethod(apierrorhandling.api_login_error_handling)
     _error = LoginError
 
     def __call__(self, session=None):
-        url = self._api_client.get_url(self.__class__.__name__, self.exchange)
+        url = self._api_client.get_url(str(self), self.exchange)
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -85,12 +88,12 @@ class Login(APIMethod):
 
 
 class KeepAlive(APIMethod):
-    """ KeepAlive method """
+    """KeepAlive method"""
     _error_handler = staticmethod(apierrorhandling.api_keep_alive_error_handling)
     _error = KeepAliveError
 
     def __call__(self, session=None):
-        url = self._api_client.get_url(self.__class__.__name__, self.exchange)
+        url = self._api_client.get_url(str(self), self.exchange)
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -99,12 +102,12 @@ class KeepAlive(APIMethod):
 
 
 class Logout(APIMethod):
-    """ Logout method """
+    """Logout method"""
     _error_handler = staticmethod(apierrorhandling.api_logout_error_handling)
     _error = LogoutError
 
     def __call__(self, session=None):
-        url = self._api_client.get_url(self.__class__.__name__, self.exchange)
+        url = self._api_client.get_url(str(self), self.exchange)
         date_time_sent = datetime.datetime.now()
         if not session:
             session = self._api_client.request
@@ -113,30 +116,30 @@ class Logout(APIMethod):
 
 
 class BettingRequest(APIMethod):
-    """ Betting method """
+    """Betting method"""
     pass
 
 
 class OrderRequest(APIMethod):
-    """ Order method """
+    """Order method"""
     _error_handler = staticmethod(apierrorhandling.api_order_error_handling)
 
 
 class AccountRequest(APIMethod):
-    """ Account method """
+    """Account method"""
     _timeout = 6.05  # todo account error handling
 
 
 class ScoresRequest(APIMethod):
-    """ Scores method """
+    """Scores method"""
     pass
 
 
 class NavigationRequest(APIMethod):
-    """ Navigation method """
+    """Navigation method"""
 
     def __call__(self, session=None):
-        url = self._api_client.get_url(self.__class__.__name__, self.exchange)
+        url = self._api_client.get_url(str(self), self.exchange)
         date_time_sent = datetime.datetime.now()
         headers = self._api_client.request_headers
         try:
