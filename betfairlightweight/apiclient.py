@@ -11,8 +11,7 @@ from .utils import process_request, api_request
 
 
 class BaseClient:
-    """
-    This class is a container for all client options. Its
+    """This class is a container for all client options. Its
     primary purpose is to hold appkeys, session tokens, urls,
     transaction count and provide headers for requests.
     """

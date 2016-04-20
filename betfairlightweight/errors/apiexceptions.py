@@ -4,19 +4,19 @@ from ..parse import enums
 
 
 class BetfairError(Exception):
-    """ Base class for Betfair Errors """
+    """Base class for Betfair Errors"""
     pass
 
 
 class AppKeyError(BetfairError):
-    """ Exception raised if appkey is not found """
+    """Exception raised if appkey is not found"""
 
     def __init__(self, username):
         logging.error('AppKey not found for %s' % username)
 
 
 class LoginError(BetfairError):
-    """ Exception raised if sessionToken is not found """
+    """Exception raised if sessionToken is not found"""
 
     def __init__(self, response):
         if hasattr(response, 'status_code') and response.status_code != 200:
@@ -28,7 +28,7 @@ class LoginError(BetfairError):
 
 
 class KeepAliveError(BetfairError):
-    """ Exception raised if session is not found """
+    """Exception raised if session is not found"""
 
     def __init__(self, response):
         if hasattr(response, 'status_code') and response.status_code != 200:
@@ -38,7 +38,7 @@ class KeepAliveError(BetfairError):
 
 
 class APIError(BetfairError):
-    """ Exception raised if error is found """
+    """Exception raised if error is found"""
 
     def __init__(self, response, params, method=None, exception=None):
         if response is not None:
@@ -60,14 +60,14 @@ class APIError(BetfairError):
 
 
 class TransactionCountError(BetfairError):
-    """ Exception raised if transaction count is greater than 999 """
+    """Exception raised if transaction count is greater than 999"""
 
     def __init__(self, transaction_count):
         logging.error('Transaction limit reached: %s' % transaction_count)
 
 
 class LogoutError(BetfairError):
-    """ Exception raised if status_code is not found """
+    """Exception raised if status_code is not found"""
 
     def __init__(self, response):
         if hasattr(response, 'status_code') and response.status_code != 200:
@@ -77,14 +77,14 @@ class LogoutError(BetfairError):
 
 
 class ParameterError(BetfairError):
-    """ Exception raised if parameter is incorrect """
+    """Exception raised if parameter is incorrect"""
 
     def __init__(self, api_method):
         logging.error('API method %s must have parameters' % api_method)
 
 
 class SessionTokenError(BetfairError):
-    """ Exception raised if session_token is None """
+    """Exception raised if session_token is None"""
 
     def __init__(self):
         logging.error('APIClient must have session_token')

@@ -23,5 +23,5 @@ class BetfairModel:
         return self.__class__.__name__
 
     def __eq__(self, other):
-        if str(self.raw_response) == str(other.raw_response):
+        if self.raw_response == other.raw_response:
             return True

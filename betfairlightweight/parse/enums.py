@@ -1,6 +1,13 @@
 from enum import Enum
 
 
+GENERIC_JSON_RPC_EXCEPTIONS = {-32700: 'Invalid JSON was received by the server. An error occurred on the server while '
+                                       'parsing the JSON text.',
+                               -32601: 'Method not found',
+                               -32602: 'Problem parsing the parameters, or a mandatory parameter was not found',
+                               -32603: 'Internal JSON-RPC error'}
+
+
 class MockParams(Enum):
     list_event_types = {'filter': {}}
     list_competitions = {'filter': {}}
@@ -49,19 +56,6 @@ class RaceStatusEnum(Enum):
     WEIGHEDIN = 'The jockeys have weighed in'
     RACEVOID = 'The race has been declared void'
     ABANDONED = 'The meeting has been cancelled'
-
-
-# class GenericJsonRpcExceptions(Enum):
-#     -32700 = 'Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.'
-#     -32601 = 'Method not found'
-#     -32602 = 'Problem parsing the parameters, or a mandatory parameter was not found'
-#     -32603 = 'Internal JSON-RPC error'
-
-GENERIC_JSON_RPC_EXCEPTIONS = {-32700: 'Invalid JSON was received by the server. An error occurred on the server while '
-                                       'parsing the JSON text.',
-                               -32601: 'Method not found',
-                               -32602: 'Problem parsing the parameters, or a mandatory parameter was not found',
-                               -32603: 'Internal JSON-RPC error'}
 
 
 class LoginExceptions(Enum):

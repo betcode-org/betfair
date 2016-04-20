@@ -5,8 +5,7 @@ from .errors.apiexceptions import SessionTokenError
 
 
 def api_request(func):
-    """
-    Checks params and provides MockParams if None
+    """Checks params and provides MockParams if None
 
     :param func:
         api request function.
@@ -25,8 +24,7 @@ def api_request(func):
 
 
 def process_request(request, session, model):
-    """
-    Processes response based on response_result
+    """Processes response based on response_result
 
     :param request:
         __call__ function from apimethod.
@@ -44,8 +42,7 @@ def process_request(request, session, model):
 
 
 def strp_betfair_time(datetime_string):
-    """
-    Converts Betfair string to datetime.
+    """Converts Betfair string to datetime.
 
     :param datetime_string:
         Datetime string.
@@ -54,8 +51,7 @@ def strp_betfair_time(datetime_string):
 
 
 def key_check_datetime(data, key):
-    """
-    Checks data is in json before parsing.
+    """Checks data is in json before parsing.
 
     :param data:
         json data.
