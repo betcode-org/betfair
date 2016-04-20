@@ -5,7 +5,9 @@ from fixtures import client
 from fixtures import logged_in_client
 
 from betfairlightweight import apimethod
-from betfairlightweight.errors.apiexceptions import BetfairError, APIError, LoginError, LogoutError, KeepAliveError
+from betfairlightweight.errors.apiexceptions import (
+    BetfairError, APIError, LoginError, LogoutError, KeepAliveError
+)
 
 
 def test_api_method_init(logged_in_client):
@@ -19,6 +21,30 @@ def test_api_method_init(logged_in_client):
                                              'method': request.method,
                                              'params': request.params,
                                              'id': 1})
+    with pytest.raises(BetfairError):
+        request()
+
+
+def test_api_method_errors(logged_in_client):
+    request = apimethod.APIMethod(logged_in_client, 'method', 'params', 'exchange')
+    with pytest.raises(BetfairError):
+        request()
+    request = apimethod.BettingRequest(logged_in_client, 'method', 'params', 'exchange')
+    with pytest.raises(BetfairError):
+        request()
+    request = apimethod.OrderRequest(logged_in_client, 'method', 'params', 'exchange')
+    with pytest.raises(BetfairError):
+        request()
+    request = apimethod.BettingRequest(logged_in_client, 'method', 'params', 'exchange')
+    with pytest.raises(BetfairError):
+        request()
+    request = apimethod.AccountRequest(logged_in_client, 'method', 'params', 'exchange')
+    with pytest.raises(BetfairError):
+        request()
+    request = apimethod.ScoresRequest(logged_in_client, 'method', 'params', 'exchange')
+    with pytest.raises(BetfairError):
+        request()
+    request = apimethod.NavigationRequest(logged_in_client, 'method', 'params', 'UK')
     with pytest.raises(BetfairError):
         request()
 

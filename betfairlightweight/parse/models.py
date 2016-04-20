@@ -18,3 +18,10 @@ class BetfairModel:
     @property
     def elapsed_time(self):
         return (self.date_time_received-self.date_time_sent).total_seconds()
+
+    def __str__(self):
+        return self.__class__.__name__
+
+    def __eq__(self, other):
+        if str(self.raw_response) == str(other.raw_response):
+            return True

@@ -47,26 +47,26 @@ class BaseClient:
         self.username = username
         self.password = password
         self.exchange = exchange
-        self.login_time = None
+        self._login_time = None
         self.request = requests
         self.transaction_limit = 999
         self.transaction_count = 0
-        self.next_hour = None
+        self._next_hour = None
         self.set_next_hour()
         self._session_token = None
         self._app_key = None
 
     def set_session_token(self, session_token, call_type):
         self._session_token = session_token
-        self.login_time = datetime.datetime.now()
+        self._login_time = datetime.datetime.now()
         logging.info('%s new sessionToken: %s' % (call_type, self._session_token))
 
     def set_next_hour(self):
         now = datetime.datetime.now()
-        self.next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+        self._next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
 
     def check_transaction_count(self, count):
-        if datetime.datetime.now() > self.next_hour:
+        if datetime.datetime.now() > self._next_hour:
             logging.info('Transaction count reset: %s' % self.transaction_count)
             self.set_next_hour()
             self.transaction_count = 0
@@ -76,7 +76,7 @@ class BaseClient:
 
     def client_logout(self, response_status):
         self._session_token = None
-        self.login_time = None
+        self._login_time = None
         logging.info('Logout: %s' % response_status)
 
     def get_app_key(self):
@@ -102,7 +102,7 @@ class BaseClient:
 
     @property
     def session_expired(self):
-        if not self.login_time or (datetime.datetime.now()-self.login_time).total_seconds() > 12000:
+        if not self._login_time or (datetime.datetime.now()-self._login_time).total_seconds() > 12000:
             return True
 
     @property
