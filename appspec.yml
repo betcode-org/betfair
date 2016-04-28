@@ -2,4 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: home/ec2-user/betfairlightweight
+    destination: /home/ec2-user/betfairlightweight
+hooks:
+    AfterInstall:
+        - location: scripts/install.sh
+          timeout: 300
+          runas: root
