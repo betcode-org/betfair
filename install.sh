@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo ls
+cd /home/ec2-user/betfairlightweight
 
-python3 /home/ec2-user/betfairlightweight/setup.py install
+python3 setup.py install
