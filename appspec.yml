@@ -2,4 +2,4 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /betfairlightweight
+    destination: home/ec2-user/betfairlightweight
