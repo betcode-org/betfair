@@ -6,7 +6,8 @@ import logging
 from .errors.apiexceptions import AppKeyError, TransactionCountError, BetfairError
 from .parse import apiparsedata, apiparseaccount, apiparsebetting, apiparsescores
 from .apimethod import (
-    Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, OrderRequest, NavigationRequest)
+    Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, OrderRequest, NavigationRequest,
+    ScoresBroadcastRequest)
 from .utils import process_request, api_request
 
 
@@ -33,6 +34,8 @@ class BaseClient:
                     'AUS': 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
                     'ITALY': 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json',
                     'SPAIN': 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'}
+
+    __scores = {'UK': 'https://www.betfair.com/inplayservice/v1/scoresAndBroadcast'}
 
     def __init__(self, username, password, exchange='UK'):
         """
@@ -79,6 +82,7 @@ class BaseClient:
         logging.info('Logout: %s' % response_status)
 
     def get_app_key(self):
+        logging.info('Username: %s', self.username)
         if os.environ.get(self.username):
             self._app_key = os.environ.get(self.username)
         else:
@@ -91,6 +95,8 @@ class BaseClient:
             call_exchange = self.exchange
         if call_type == 'NavigationRequest':
             url = self.__navigation[call_exchange]
+        elif call_type == 'ScoresBroadcastRequest':
+            url = self.__scores[call_exchange]
         elif call_exchange == 'UK' or call_type in ['Login', 'KeepAlive', 'Logout']:
             url = self.__url[call_type]
         elif call_exchange == 'AUS':
@@ -291,3 +297,9 @@ class APIClient(BaseClient):
         request = NavigationRequest(self, params)
         (response, raw_response, sent) = request()
         return response
+
+    # Scores and Broadcasts
+
+    def list_scores(self, params=None, session=None, exchange=None):
+        request = ScoresBroadcastRequest(self, params=params, exchange=exchange)
+        return process_request(request, session, apiparsescores.Score)
