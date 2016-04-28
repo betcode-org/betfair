@@ -1,0 +1,4 @@
+os: linux
+files:
+  - source: source
+    destination: /betfairlightweight
