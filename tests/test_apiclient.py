@@ -70,6 +70,7 @@ def test_client_logged_in_get_url(logged_in_client, logged_in_client_aus):
         assert logged_in_client.get_url('OrderRequest', exchange) == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
         assert logged_in_client.get_url('ScoresRequest', exchange) == 'https://api.betfair.com/exchange/scores/json-rpc/v1'
         assert logged_in_client.get_url('AccountRequest', exchange) == 'https://api.betfair.com/exchange/account/json-rpc/v1'
+        assert logged_in_client.get_url('ScoresBroadcastRequest', exchange) == 'https://www.betfair.com/inplayservice/v1/scoresAndBroadcast'
 
     for exchange in ['AUS']:
         assert logged_in_client.get_url('Login', exchange) == 'https://identitysso.betfair.com/api/certlogin'
@@ -97,6 +98,7 @@ def test_client_logged_in_get_url(logged_in_client, logged_in_client_aus):
         assert logged_in_client_aus.get_url('OrderRequest', exchange) == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
         assert logged_in_client_aus.get_url('ScoresRequest', exchange) == 'https://api.betfair.com/exchange/scores/json-rpc/v1'
         assert logged_in_client_aus.get_url('AccountRequest', exchange) == 'https://api.betfair.com/exchange/account/json-rpc/v1'
+        assert logged_in_client.get_url('ScoresBroadcastRequest', exchange) == 'https://www.betfair.com/inplayservice/v1/scoresAndBroadcast'
 
     for exchange in ['UK', 'AUS']:
         assert logged_in_client.get_url('NavigationRequest', exchange) == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'

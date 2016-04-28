@@ -54,7 +54,8 @@ class APIMethod:
 
     def create_resp(self, response, date_time_sent):
         if response.status_code == 200:
-            self._error_handler(response.json(), self.params, self.method)
+            if self._error_handler:
+                self._error_handler(response.json(), self.params, self.method)
             return response.json(), response, date_time_sent
         else:
             raise self._error(response, self.params, self.method)
@@ -146,4 +147,21 @@ class NavigationRequest(APIMethod):
             response = self._api_client.request.get(url, headers=headers, timeout=(3.05, 12))
         except Exception as e:
             raise APIError(None, self.params, e)
+        return self.create_resp(response, date_time_sent)
+
+
+class ScoresBroadcastRequest(APIMethod):
+
+    _error_handler = None
+
+    def __call__(self, session=None):
+        url = self._api_client.get_url(str(self), self.exchange)
+        date_time_sent = datetime.datetime.now()
+        headers = self._api_client.request_headers
+        data = {'eventIds': '[%s]' % ', '.join(map(str, self.params)),
+                'alt': 'json',
+                'productType': 'EXCHANGE',
+                'regionCode': 'UK',
+                'locale': 'en_GB'}
+        response = self._api_client.request.get(url, params=data, headers=headers)
         return self.create_resp(response, date_time_sent)

@@ -34,11 +34,14 @@ def process_request(request, session, model):
         Model to be used for parsing.
     """
     (response, raw_response, sent) = request(session)
-    response_result = response.get('result')
-    if isinstance(response_result, list):
-        return [model(sent, raw_response, x) for x in response_result]
+    if isinstance(response, list):
+        return [model(sent, raw_response, x) for x in response]
     else:
-        return model(sent, raw_response, response_result)
+        response_result = response.get('result')
+        if isinstance(response_result, list):
+            return [model(sent, raw_response, x) for x in response_result]
+        else:
+            return model(sent, raw_response, response_result)
 
 
 def strp_betfair_time(datetime_string):
