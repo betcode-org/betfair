@@ -5,6 +5,6 @@ files:
     destination: /home/ec2-user/betfairlightweight
 hooks:
     AfterInstall:
-        - location: install.sh
+        - location: scripts/install.sh
           timeout: 300
           runas: root
