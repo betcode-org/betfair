@@ -30,11 +30,14 @@ def api_order_error_handling(response, params=None, method=None):
     if response.get('error'):
         raise apiexceptions.APIError(response, params, method)
     elif response['result']['status'] != 'SUCCESS':
-        response_error_code = response['result']['errorCode']
-        description = enums.ExecutionReportErrorCode[response_error_code].value
-        logging.warning('API Execution %s: %s' % (response['result']['status'], description))
-        for order in response['result']['instructionReports']:
-            if order['status'] != 'SUCCESS':
-                error_code = order.get('errorCode')
-                description = enums.InstructionReportErrorCode[error_code].value
-                logging.warning(' Instruction %s: %s' % (error_code, description))
+        if 'errorCode' in response['result']:
+            response_error_code = response['result']['errorCode']
+            description = enums.ExecutionReportErrorCode[response_error_code].value
+            logging.warning('API Execution %s: %s' % (response['result']['status'], description))
+            for order in response['result']['instructionReports']:
+                if order['status'] != 'SUCCESS':
+                    error_code = order.get('errorCode')
+                    description = enums.InstructionReportErrorCode[error_code].value
+                    logging.warning(' Instruction %s: %s' % (error_code, description))
+        else:
+            logging.error(' No errorCode: %s' % response['result'])
