@@ -37,7 +37,10 @@ def api_order_error_handling(response, params=None, method=None):
             for order in response['result']['instructionReports']:
                 if order['status'] != 'SUCCESS':
                     error_code = order.get('errorCode')
-                    description = enums.InstructionReportErrorCode[error_code].value
-                    logging.warning(' Instruction %s: %s' % (error_code, description))
+                    if error_code:
+                        description = enums.InstructionReportErrorCode[error_code].value
+                        logging.warning(' Instruction %s: %s' % (error_code, description))
+                    else:
+                        logging.error(' No errorCode: %s' % order)
         else:
             logging.error(' No errorCode: %s' % response['result'])
