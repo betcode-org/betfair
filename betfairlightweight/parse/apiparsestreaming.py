@@ -1,6 +1,7 @@
 import datetime
 
 from ..parse.models import BetfairModel
+from ..parse.apiparsedata import MarketBook
 from ..utils import strp_betfair_time
 
 
@@ -57,8 +58,13 @@ class MarketBookCache(BetfairModel):
         self.date_updated = datetime.datetime.now()
 
     @property
+    def create_market_book(self):
+        return MarketBook(self.date_time_sent, self.raw_response, self.serialise)
+
+    @property
     def serialise(self):
         """Creates standard market book json response
+
         :return: Json market book object
         """
         return {'marketId': self.market_id,
@@ -327,3 +333,14 @@ class RunnerBookAvailableToLay:
             return [{'price': volume[1], 'size': volume[2]}
                     for volume in sorted(self.batl, key=lambda x: x[0])]
         return []
+
+
+class OrderBookCache(BetfairModel):
+
+    def __init__(self, date_time_sent, raw_response, order_book):
+        super(OrderBookCache, self).__init__(date_time_sent, raw_response)
+        self.date_updated = datetime.datetime.now()
+        print('new image', order_book)
+
+    def update_cache(self, order_book):
+        print('update', order_book)
