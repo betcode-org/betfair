@@ -205,3 +205,37 @@ class ExecutionReportErrorCode(Enum):
     SERVICE_UNAVAILABLE = "The requested service is unavailable"
     REJECTED_BY_REGULATOR = "The regulator rejected the order. On the Italian Exchange this error will occur if " \
                             "more than 50 bets are sent in a single placeOrders request."
+
+
+class StreamingProtocolErrors(Enum):
+    """General errors not sent with id linking to specific request (as no request context)
+    """
+    INVALID_INPUT = 'Failure code returned when an invalid input is provided (could not deserialize the message)'
+    TIMEOUT = 'Failure code when a client times out (i.e. too slow sending data)'
+
+
+class StreamingAuthenticationErrors(Enum):
+    """Specific to authentication
+    """
+    NO_APP_KEY = 'Failure code returned when an application key is not found in the message'
+    INVALID_APP_KEY = 'Failure code returned when an invalid application key is received'
+    NO_SESSION = 'Failure code returned when a session token is not found in the message'
+    INVALID_SESSION_INFORMATION = 'Failure code returned when an invalid session token is received'
+    NOT_AUTHORIZED = 'Failure code returned when client is not authorized to perform the operation'
+    MAX_CONNECTION_LIMIT_EXCEEDED = 'Failure code returned when a client tries to create more connections than ' \
+                                    'allowed to'
+
+
+class StreamingSubscriptionErrors(Enum):
+    """Specific to subscription requests
+    """
+    SUBSCRIPTION_LIMIT_EXCEEDED = 'Customer tried to subscribe to more markets than allowed to'
+    INVALID_CLOCK = 'Failure code returned when an invalid clock is provided on re-subscription (check initialClk / ' \
+                    'clk supplied)'
+
+
+class StreamingGeneralErrors(Enum):
+    """General errors which may or may not be linked to specific request id
+    """
+    UNEXPECTED_ERROR = 'Failure code returned when an internal error occurred on the server'
+    CONNECTION_FAILED = 'Failure code used when the client / server connection is terminated'

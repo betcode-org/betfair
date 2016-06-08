@@ -1,6 +1,7 @@
 import datetime
+
 from ..parse.models import BetfairModel
-from ..utils import strp_betfair_time, key_check_datetime, price_check
+from ..utils import strp_betfair_time, price_check
 
 
 class EventType:
@@ -92,7 +93,7 @@ class MarketCatalogue(BetfairModel):
         self.market_id = market_catalogue.get('marketId')
         self.market_name = market_catalogue.get('marketName')
         self.total_matched = market_catalogue.get('totalMatched')
-        self.market_start_time = key_check_datetime(market_catalogue, 'marketStartTime')
+        self.market_start_time = strp_betfair_time(market_catalogue.get('marketStartTime'))
         if 'competition' in market_catalogue:
             self.competition = EventType(market_catalogue.get('competition'))
         if 'event' in market_catalogue:
@@ -188,7 +189,7 @@ class MarketBook(BetfairModel):
         self.cross_matching = market_book.get('crossMatching')
         self.inplay = market_book.get('inplay')
         self.is_market_data_delayed = market_book.get('isMarketDataDelayed')
-        self.last_match_time = key_check_datetime(market_book, 'lastMatchTime')
+        self.last_match_time = strp_betfair_time(market_book.get('lastMatchTime'))
         self.number_of_active_runners = market_book.get('numberOfActiveRunners')
         self.number_of_runners = market_book.get('numberOfRunners')
         self.number_of_winners = market_book.get('numberOfWinners')
@@ -242,7 +243,7 @@ class RunnerBook:
         self.adjustment_factor = runner_book.get('adjustmentFactor')
         self.handicap = runner_book.get('handicap')
         self.last_price_traded = runner_book.get('lastPriceTraded')
-        self.removal_date = key_check_datetime(runner_book, 'removalDate')
+        self.removal_date = strp_betfair_time(runner_book.get('removalDate'))
         if 'sp' in runner_book:
             self.sp = RunnerBookSP(runner_book.get('sp'))
         if 'ex' in runner_book:
@@ -324,7 +325,7 @@ class CurrentOrdersOrder:
         self.bsp_liability = order.get('bspLiability')
         self.handicap = order.get('handicap')
         self.market_id = order.get('marketId')
-        self.matched_date = key_check_datetime(order, 'matchedDate')
+        self.matched_date = strp_betfair_time(order.get('matchedDate'))
         self.order_type = order.get('orderType')
         self.persistence_type = order.get('persistenceType')
         self.placed_date = strp_betfair_time(order.get('placedDate'))

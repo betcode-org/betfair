@@ -7,8 +7,7 @@ from .errors.apiexceptions import SessionTokenError
 def api_request(func):
     """Checks params and provides MockParams if None
 
-    :param func:
-        api request function.
+    :param func: api request function.
     """
     api_request_name = func.__name__
 
@@ -26,12 +25,9 @@ def api_request(func):
 def process_request(request, session, model):
     """Processes response based on response_result
 
-    :param request:
-        __call__ function from apimethod.
-    :param session:
-        Requests session, if provided.
-    :param model:
-        Model to be used for parsing.
+    :param request: __call__ function from apimethod.
+    :param session: Requests session, if provided.
+    :param model: Model to be used for parsing.
     """
     (response, raw_response, sent) = request(session)
     if isinstance(response, list):
@@ -47,23 +43,13 @@ def process_request(request, session, model):
 def strp_betfair_time(datetime_string):
     """Converts Betfair string to datetime.
 
-    :param datetime_string:
-        Datetime string.
+    :param datetime_string: Datetime string.
     """
-    return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-
-
-def key_check_datetime(data, key):
-    """Checks data is in json before parsing.
-
-    :param data:
-        json data.
-    :param key:
-        Datetime key.
-    """
-    if data.get(key):
-        return strp_betfair_time(data.get(key))
-    else:
+    try:
+        return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+    except TypeError:
+        return None
+    except ValueError:
         return None
 
 
