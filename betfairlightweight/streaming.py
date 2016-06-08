@@ -17,18 +17,17 @@ class StreamListener:
     def __init__(self, output_queue=None):
         self.output_queue = output_queue
 
-        self.authenticated = False
-        self.connection_id = None
         self.streams = {}
 
         logging.info('[Listener]: Started')
 
-    def on_data(self, raw_data):
+    def on_data(self, raw_data, unique_id=None):
         """Called when raw data is received from connection.
         Override this method if you wish to manually handle
         the stream data
 
         :param raw_data: Received raw data
+        :param unique_id: Unique id, used only on initial connection
         :return: Return False to stop stream and close connection
         """
         try:
@@ -36,13 +35,14 @@ class StreamListener:
         except ValueError:
             logging.error('value error: %s' % raw_data)
             return
-        unique_id = data.get('id')
+        if not unique_id:
+            unique_id = data.get('id')
         if self._error_handler(data, unique_id):
             return False
 
         operation = data.get('op')
         if operation == 'connection':
-            self._on_connection(data)
+            self._on_connection(data, unique_id)
         elif operation == 'status':
             self._on_status(data, unique_id)
         elif operation == 'mcm' or operation == 'ocm':
@@ -50,13 +50,13 @@ class StreamListener:
         else:
             logging.error('[Listener: %s]: Response error: %s' % (unique_id, data))
 
-    def _on_connection(self, data):
+    def _on_connection(self, data, unique_id):
         """Called on collection operation
 
         :param data: Received data
         """
         self.connection_id = data.get('connectionId')
-        logging.info('[Connect]: connection_id: %s' % self.connection_id)
+        logging.info('[Connect: %s]: connection_id: %s' % (unique_id, self.connection_id))
 
     def _on_status(self, data, unique_id):
         """Called on status operation
@@ -64,13 +64,7 @@ class StreamListener:
         :param data: Received data
         """
         status_code = data.get('statusCode')
-
-        if data.get('id') == 1 and status_code == 'SUCCESS':
-            logging.info('[Authenticating: %s]: %s' % (unique_id, status_code))
-            self.authenticated = True
-
-        elif status_code == 'SUCCESS':
-            logging.info('[Subscription: %s]: %s' % (unique_id, status_code))
+        logging.info('[Subscription: %s]: %s' % (unique_id, status_code))
 
     def _on_change_message(self, data, unique_id):
         change_type = data.get('ct', 'UPDATE')
@@ -94,7 +88,8 @@ class StreamListener:
         self.streams[unique_id] = Stream(unique_id, stream_type, self.output_queue)
         return self.streams[unique_id]
 
-    def _error_handler(self, data, unique_id):
+    @staticmethod
+    def _error_handler(data, unique_id):
         """Called when data first received
 
         :param data: Received data
@@ -162,7 +157,7 @@ class Stream:
             market_id = market_book.get('id')
             if market_book.get('img'):
                 self.caches[market_id] = MarketBookCache(publish_time, market_book, market_book)
-                logging.debug('[Stream: %s] %s added to stream' % (self.unique_id, market_id))
+                logging.debug('[Stream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache = self.caches.get(market_id)
                 if market_book_cache:
@@ -230,12 +225,17 @@ class BetfairStream:
         self.running = False
 
     def start(self, async=False):
-        """Creates socket and starts read loop.
+        """Creates socket, waits for initial response, registers with
+        listener and then starts read loop.
 
         :param async: If True new thread is started
         """
         self.running = True
         self.socket = self._create_socket()
+
+        connection = self._receive_all()
+        self.listener.on_data(connection, self.unique_id)
+
         if async:
             threading.Thread(name='BetfairStream', target=self._read_loop, daemon=True).start()
         else:
@@ -245,16 +245,17 @@ class BetfairStream:
         """Closes socket and stops read loop
         """
         self.running = False
+        time.sleep(1)
         self.socket.close()
         logging.info('[Connect: %s]: Socket closed' % self.unique_id)
 
-    def authenticate(self, unique_id=1):
+    def authenticate(self, unique_id=None):
         """Authentication request.
 
         :param unique_id: If not supplied 1 is used.
         """
         message = {'op': 'authentication',
-                   'id': unique_id,
+                   'id': self.unique_id if not unique_id else unique_id,
                    'appKey': self.app_key,
                    'session': self.session_token}
         self._send(message)
@@ -299,7 +300,6 @@ class BetfairStream:
         s = ssl.wrap_socket(s)
         s.connect((self.__host, self.__port))
         s.settimeout(self.timeout)
-        logging.info('[Connect: %s]: Socket connected' % self.unique_id)
         return s
 
     def _read_loop(self):
