@@ -42,7 +42,7 @@ class StreamListener:
 
         operation = data.get('op')
         if operation == 'connection':
-            self._on_connection(data, unique_id)
+            self._on_connection(data)
         elif operation == 'status':
             self._on_status(data, unique_id)
         elif operation == 'mcm' or operation == 'ocm':
@@ -50,7 +50,7 @@ class StreamListener:
         else:
             logging.error('[Listener: %s]: Response error: %s' % (unique_id, data))
 
-    def _on_connection(self, data, unique_id):
+    def _on_connection(self, data):
         """Called on collection operation
 
         :param data: Received data
@@ -218,9 +218,11 @@ class BetfairStream:
     __CRLF = '\r\n'
     __encoding = 'utf-8'
 
-    def __init__(self, unique_id, listener=None, timeout=6, buffer_size=1024):
+    def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size):
         self.unique_id = unique_id
-        self.listener = listener if listener else StreamListener()
+        self.listener = listener
+        self.app_key = app_key
+        self.session_token = session_token
         self.timeout = timeout
         self.buffer_size = buffer_size
 
@@ -246,17 +248,15 @@ class BetfairStream:
         self.socket.close()
         logging.info('[Connect: %s]: Socket closed' % self.unique_id)
 
-    def authenticate(self, app_key, session_token, unique_id=1):
+    def authenticate(self, unique_id=1):
         """Authentication request.
 
-        :param app_key:
-        :param session_token:
         :param unique_id: If not supplied 1 is used.
         """
         message = {'op': 'authentication',
                    'id': unique_id,
-                   'appKey': app_key,
-                   'session': session_token}
+                   'appKey': self.app_key,
+                   'session': self.session_token}
         self._send(message)
 
     def heartbeat(self, unique_id=None):
