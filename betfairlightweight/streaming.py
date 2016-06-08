@@ -131,11 +131,13 @@ class Stream:
 
         if self.stream_type == 'mcm':
             market_books = data.get('mc', [])
-            self._process_market_books(market_books, publish_time)
+            if market_books:
+                self._process_market_books(market_books, publish_time)
             logging.info('[Stream: %s]: %s markets added' % (self.unique_id, len(market_books)))
         elif self.stream_type == 'ocm':
             order_books = data.get('oc')
-            self._process_order_books(order_books, publish_time)
+            if order_books:
+                self._process_order_books(order_books, publish_time)
 
     def on_update(self, data):
         self._update_clk(data)
@@ -177,6 +179,12 @@ class Stream:
                 self.updates_processed += 1
             else:
                 self.caches[market_id] = OrderBookCache(publish_time, order_book, order_book)
+                logging.info('[Stream: %s] %s added' % (self.unique_id, market_id))
+
+            closed = order_book.get('closed')
+            if closed:
+                logging.info('[Stream: %s] %s closed' % (self.unique_id, market_id))
+            self.output_queue.put(self.caches[market_id].create_order_book)
 
     def on_resubscribe(self, data):
         self._update_clk(data)

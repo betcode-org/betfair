@@ -53,6 +53,15 @@ def strp_betfair_time(datetime_string):
         return None
 
 
+def strp_betfair_integer_time(datetime_integer):
+    try:
+        return datetime.datetime.fromtimestamp(datetime_integer / 1e3)
+    except TypeError:
+        return None
+    except ValueError:
+        return None
+
+
 def price_check(data, number, key):
     try:
         output = data[number][key]

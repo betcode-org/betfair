@@ -239,3 +239,31 @@ class StreamingGeneralErrors(Enum):
     """
     UNEXPECTED_ERROR = 'Failure code returned when an internal error occurred on the server'
     CONNECTION_FAILED = 'Failure code used when the client / server connection is terminated'
+
+
+class StreamingSide(Enum):
+    """Some enums are provided in shorthand
+    """
+    L = 'LAY'
+    B = 'BACK'
+
+
+class StreamingStatus(Enum):
+    E = 'EXECUTABLE'
+    EC = 'EXECUTION_COMPLETE'
+
+
+class StreamingPersistenceType(Enum):
+    L = 'LAPSE'
+    P = 'PERSIST'
+    MOC = 'MARKET_ON_CLOSE'
+
+
+class StreamingOrderType(Enum):
+    L = 'LIMIT'
+    MOC = 'MARKET_ON_CLOSE'
+    LOC = 'LIMIT_ON_CLOSE'
+
+
+class StreamingRegulatorCode(Enum):
+    REG_GGC = 'GIBRALTAR REGULATOR'
