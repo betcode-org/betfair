@@ -9,6 +9,7 @@ from .apimethod import (
     Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, OrderRequest, NavigationRequest,
     ScoresBroadcastRequest)
 from .utils import process_request, api_request
+from .streaming import BetfairStream, StreamListener
 
 
 class BaseClient:
@@ -303,3 +304,10 @@ class APIClient(BaseClient):
     def list_scores(self, params=None, session=None, exchange=None):
         request = ScoresBroadcastRequest(self, params=params, exchange=exchange)
         return process_request(request, session, apiparsescores.Score)
+
+    # Streaming
+
+    def create_stream(self, unique_id, listener=None, timeout=6, buffer_size=1024):
+        listener = listener if listener else StreamListener()
+        return BetfairStream(unique_id, listener, app_key=self._app_key, session_token=self._session_token,
+                             timeout=timeout, buffer_size=buffer_size)
