@@ -16,10 +16,14 @@ class StreamListener:
 
     def __init__(self, output_queue=None):
         self.output_queue = output_queue
-
         self.streams = {}
 
-        logging.info('[Listener]: Started')
+    def register_stream(self, unique_id, operation):
+        if self.streams.get(unique_id):
+            logging.warning('[Listener: %s]: Stream already registered, removing data' % unique_id)
+            del self.streams[unique_id]
+        else:
+            self._add_stream(unique_id, operation)
 
     def on_data(self, raw_data, unique_id=None):
         """Called when raw data is received from connection.
@@ -58,7 +62,8 @@ class StreamListener:
         self.connection_id = data.get('connectionId')
         logging.info('[Connect: %s]: connection_id: %s' % (unique_id, self.connection_id))
 
-    def _on_status(self, data, unique_id):
+    @staticmethod
+    def _on_status(data, unique_id):
         """Called on status operation
 
         :param data: Received data
@@ -68,21 +73,21 @@ class StreamListener:
 
     def _on_change_message(self, data, unique_id):
         change_type = data.get('ct', 'UPDATE')
-        operation = data.get('op')
         stream = self.streams.get(unique_id)
+        operation = data.get('op')
         if not stream:
-            stream = self._add_stream(unique_id, operation)
+            logging.error('[Listener: %s]: Stream not registered' % unique_id)
 
         logging.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
 
         if change_type == 'SUB_IMAGE':
-            stream.on_subscribe(data)
+            stream.on_subscribe(data, operation)
         elif change_type == 'RESUB_DELTA':
-            stream.on_resubscribe(data)
+            stream.on_resubscribe(data, operation)
         elif change_type == 'HEARTBEAT':
             stream.on_heartbeat(data)
         elif change_type == 'UPDATE':
-            stream.on_update(data)
+            stream.on_update(data, operation)
 
     def _add_stream(self, unique_id, stream_type):
         self.streams[unique_id] = Stream(unique_id, stream_type, self.output_queue)
@@ -125,21 +130,21 @@ class Stream:
         self.time_created = datetime.datetime.now()
         self.time_updated = datetime.datetime.now()
 
-    def on_subscribe(self, data):
+    def on_subscribe(self, data, operation):
         self._update_clk(data)
         publish_time = datetime.datetime.fromtimestamp(data.get('pt') / 1e3)
 
-        if self.stream_type == 'mcm':
+        if operation == 'mcm':
             market_books = data.get('mc', [])
             if market_books:
                 self._process_market_books(market_books, publish_time)
             logging.info('[Stream: %s]: %s markets added' % (self.unique_id, len(market_books)))
-        elif self.stream_type == 'ocm':
+        elif operation == 'ocm':
             order_books = data.get('oc')
             if order_books:
                 self._process_order_books(order_books, publish_time)
 
-    def on_update(self, data):
+    def on_update(self, data, operation):
         self._update_clk(data)
 
         publish_time = data.get('pt')
@@ -147,14 +152,15 @@ class Stream:
         if latency > self.__max_latency:
             logging.warning('[Stream: %s]: Latency high: %s' % (self.unique_id, latency))
 
-        if self.stream_type == 'mcm':
+        if operation == 'mcm':
             market_books = data.get('mc')
             self._process_market_books(market_books, publish_time)
-        elif self.stream_type == 'ocm':
+        elif operation == 'ocm':
             order_books = data.get('oc')
             self._process_order_books(order_books, publish_time)
 
     def _process_market_books(self, market_books, publish_time):
+        output_market_book = []
         for market_book in market_books:
             market_id = market_book.get('id')
             if market_book.get('img'):
@@ -168,32 +174,37 @@ class Stream:
                 else:
                     logging.error('[Stream: %s] Received update for market not in stream: %s' %
                                   (self.unique_id, market_book))
-            self.output_queue.put(self.caches[market_id].create_market_book)
+            output_market_book.append(self.caches[market_id].create_market_book)
+
+        self.output_queue.put(output_market_book)
 
     def _process_order_books(self, order_books, publish_time):
+        output_order_book = []
         for order_book in order_books:
             market_id = order_book.get('id')
             order_book_cache = self.caches.get(market_id)
             if order_book_cache:
                 order_book_cache.update_cache(order_book)
-                self.updates_processed += 1
             else:
                 self.caches[market_id] = OrderBookCache(publish_time, order_book, order_book)
                 logging.info('[Stream: %s] %s added' % (self.unique_id, market_id))
+            self.updates_processed += 1
 
             closed = order_book.get('closed')
             if closed:
                 logging.info('[Stream: %s] %s closed' % (self.unique_id, market_id))
-            self.output_queue.put(self.caches[market_id].create_order_book)
+            output_order_book.append(self.caches[market_id].create_order_book)
 
-    def on_resubscribe(self, data):
+        self.output_queue.put(output_order_book)
+
+    def on_resubscribe(self, data, operation):
         self._update_clk(data)
 
     def on_heartbeat(self, data):
         self._update_clk(data)
 
     def _on_creation(self):
-        logging.info('[Stream: %s]: %s type stream created' % (self.unique_id, self.stream_type))
+        logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, self.stream_type))
 
     def _update_clk(self, data):
         (initial_clk, clk) = (data.get('initialClk'), data.get('clk'))
@@ -207,9 +218,6 @@ class Stream:
     def _calc_latency(publish_time):
         return (datetime.datetime.now() - datetime.datetime.fromtimestamp(publish_time / 1e3)).total_seconds()
 
-    def __len__(self):
-        return len(self.caches)
-
 
 class BetfairStream:
     """Stream holder, socket connects to betfair,
@@ -221,24 +229,26 @@ class BetfairStream:
     __CRLF = '\r\n'
     __encoding = 'utf-8'
 
-    def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size):
+    def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size, description):
         self.unique_id = unique_id
         self.listener = listener
         self.app_key = app_key
         self.session_token = session_token
         self.timeout = timeout
         self.buffer_size = buffer_size
+        self.description = description
 
         self.socket = None
         self.running = False
 
     def start(self, async=False):
-        """Creates socket, waits for initial response, registers with
-        listener and then starts read loop.
+        """Creates socket, registers with listener, waits for
+        initial response and then starts read loop.
 
         :param async: If True new thread is started
         """
         self.running = True
+        self.listener.register_stream(self.unique_id, self.description)
         self.socket = self._create_socket()
 
         connection = self._receive_all()
@@ -277,7 +287,7 @@ class BetfairStream:
                    'id': self.unique_id if not unique_id else unique_id}
         self._send(message)
 
-    def subscribe_to_markets(self, market_filter=None, market_data_filter=None, unique_id=None):
+    def subscribe_to_markets(self, market_filter, market_data_filter, unique_id=None):
         """Market subscription request.
 
         :param market_filter: Market filter.
@@ -300,7 +310,8 @@ class BetfairStream:
         self._send(message)
 
     def _create_socket(self):
-        """Creates ssl socket and connects to stream api.
+        """Creates ssl socket, connects to stream api and
+        sets timeout.
 
         :return: Connected socket.
         """
@@ -326,7 +337,7 @@ class BetfairStream:
             except socket.error as e:
                 logging.ERROR('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
                 break
-        logging.warning('_read_loop ended: %s' % self.unique_id)
+        logging.warning('[Connect: %s]: _read_loop ended' % self.unique_id)
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,
