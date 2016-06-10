@@ -307,7 +307,7 @@ class APIClient(BaseClient):
 
     # Streaming
 
-    def create_stream(self, unique_id, listener=None, timeout=6, buffer_size=1024):
+    def create_stream(self, unique_id, listener=None, timeout=6, buffer_size=1024, description='BetfairSocket'):
         listener = listener if listener else StreamListener()
         return BetfairStream(unique_id, listener, app_key=self._app_key, session_token=self._session_token,
-                             timeout=timeout, buffer_size=buffer_size)
+                             timeout=timeout, buffer_size=buffer_size, description=description)
