@@ -1,6 +1,6 @@
 import datetime
 
-from betfairlightweight.utils import strp_betfair_time, price_check
+from betfairlightweight.utils import strp_betfair_time, price_check, strp_betfair_integer_time
 
 
 def test_api_request():
@@ -20,6 +20,18 @@ def test_strp_betfair_time():
     assert not stripped
 
     stripped = strp_betfair_time('45')
+    assert not stripped
+
+
+def test_strp_betfair_integer_time():
+    integer = 1465631675000
+    stripped = strp_betfair_integer_time(integer)
+    assert type(stripped) == datetime.datetime
+
+    stripped = strp_betfair_integer_time(None)
+    assert not stripped
+
+    stripped = strp_betfair_integer_time('45')
     assert not stripped
 
 

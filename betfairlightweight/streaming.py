@@ -7,6 +7,7 @@ import threading
 import time
 
 from .parse.apiparsestreaming import MarketBookCache, OrderBookCache
+from .utils import strp_betfair_integer_time
 
 
 class StreamListener:
@@ -83,7 +84,7 @@ class StreamListener:
         if change_type == 'SUB_IMAGE':
             stream.on_subscribe(data, operation)
         elif change_type == 'RESUB_DELTA':
-            stream.on_resubscribe(data, operation)
+            stream.on_resubscribe(data)
         elif change_type == 'HEARTBEAT':
             stream.on_heartbeat(data)
         elif change_type == 'UPDATE':
@@ -98,6 +99,7 @@ class StreamListener:
         """Called when data first received
 
         :param data: Received data
+        :param unique_id: Unique id
         :return: True if error present
         """
         status_code = data.get('statusCode')
@@ -121,18 +123,24 @@ class Stream:
         self.stream_type = stream_type
         self.output_queue = output_queue
 
-        self.initial_clk = None
-        self.clk = None
-        self.caches = {}
-        self.updates_processed = 0
+        self._initial_clk = None
+        self._clk = None
+        self._caches = {}
+        self._updates_processed = 0
         self._on_creation()
 
         self.time_created = datetime.datetime.now()
         self.time_updated = datetime.datetime.now()
 
+    def on_heartbeat(self, data):
+        self._update_clk(data)
+
+    def on_resubscribe(self, data):
+        self._update_clk(data)
+
     def on_subscribe(self, data, operation):
         self._update_clk(data)
-        publish_time = datetime.datetime.fromtimestamp(data.get('pt') / 1e3)
+        publish_time = strp_betfair_integer_time(data.get('pt'))
 
         if operation == 'mcm':
             market_books = data.get('mc', [])
@@ -164,17 +172,17 @@ class Stream:
         for market_book in market_books:
             market_id = market_book.get('id')
             if market_book.get('img'):
-                self.caches[market_id] = MarketBookCache(publish_time, market_book, market_book)
+                self._caches[market_id] = MarketBookCache(publish_time, market_book, market_book)
                 logging.debug('[Stream: %s] %s added' % (self.unique_id, market_id))
             else:
-                market_book_cache = self.caches.get(market_id)
+                market_book_cache = self._caches.get(market_id)
                 if market_book_cache:
                     market_book_cache.update_cache(market_book)
-                    self.updates_processed += 1
+                    self._updates_processed += 1
                 else:
                     logging.error('[Stream: %s] Received update for market not in stream: %s' %
                                   (self.unique_id, market_book))
-            output_market_book.append(self.caches[market_id].create_market_book)
+            output_market_book.append(self._caches[market_id].create_market_book)
 
         self.output_queue.put(output_market_book)
 
@@ -182,26 +190,20 @@ class Stream:
         output_order_book = []
         for order_book in order_books:
             market_id = order_book.get('id')
-            order_book_cache = self.caches.get(market_id)
+            order_book_cache = self._caches.get(market_id)
             if order_book_cache:
                 order_book_cache.update_cache(order_book)
             else:
-                self.caches[market_id] = OrderBookCache(publish_time, order_book, order_book)
+                self._caches[market_id] = OrderBookCache(publish_time, order_book, order_book)
                 logging.info('[Stream: %s] %s added' % (self.unique_id, market_id))
-            self.updates_processed += 1
+            self._updates_processed += 1
 
             closed = order_book.get('closed')
             if closed:
                 logging.info('[Stream: %s] %s closed' % (self.unique_id, market_id))
-            output_order_book.append(self.caches[market_id].create_order_book)
+            output_order_book.append(self._caches[market_id].create_order_book)
 
         self.output_queue.put(output_order_book)
-
-    def on_resubscribe(self, data, operation):
-        self._update_clk(data)
-
-    def on_heartbeat(self, data):
-        self._update_clk(data)
 
     def _on_creation(self):
         logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, self.stream_type))
@@ -209,14 +211,14 @@ class Stream:
     def _update_clk(self, data):
         (initial_clk, clk) = (data.get('initialClk'), data.get('clk'))
         if initial_clk:
-            self.initial_clk = data.get('initialClk')
+            self._initial_clk = data.get('initialClk')
         if clk:
-            self.clk = data.get('clk')
+            self._clk = data.get('clk')
         self.time_updated = datetime.datetime.now()
 
     @staticmethod
     def _calc_latency(publish_time):
-        return (datetime.datetime.now() - datetime.datetime.fromtimestamp(publish_time / 1e3)).total_seconds()
+        return (datetime.datetime.now() - strp_betfair_integer_time(publish_time)).total_seconds()
 
 
 class BetfairStream:
@@ -238,8 +240,8 @@ class BetfairStream:
         self.buffer_size = buffer_size
         self.description = description
 
-        self.socket = None
-        self.running = False
+        self._socket = None
+        self._running = False
 
     def start(self, async=False):
         """Creates socket, registers with listener, waits for
@@ -247,12 +249,12 @@ class BetfairStream:
 
         :param async: If True new thread is started
         """
-        self.running = True
+        self._running = True
         self.listener.register_stream(self.unique_id, self.description)
-        self.socket = self._create_socket()
+        self._socket = self._create_socket()
 
-        connection = self._receive_all()
-        self.listener.on_data(connection, self.unique_id)
+        connection_string = self._receive_all()
+        self.listener.on_data(connection_string, self.unique_id)
 
         if async:
             threading.Thread(name='BetfairStream', target=self._read_loop, daemon=True).start()
@@ -262,9 +264,9 @@ class BetfairStream:
     def stop(self):
         """Closes socket and stops read loop
         """
-        self.running = False
+        self._running = False
         time.sleep(1)
-        self.socket.close()
+        self._socket.close()
         logging.info('[Connect: %s]: Socket closed' % self.unique_id)
 
     def authenticate(self, unique_id=None):
@@ -312,8 +314,6 @@ class BetfairStream:
     def _create_socket(self):
         """Creates ssl socket, connects to stream api and
         sets timeout.
-
-        :return: Connected socket.
         """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s = ssl.wrap_socket(s)
@@ -325,7 +325,7 @@ class BetfairStream:
         """Read loop, splits by CRLF and pushes received data
         to _data.
         """
-        while self.running:
+        while self._running:
             try:
                 received_data_raw = self._receive_all()
                 received_data_split = received_data_raw.split(self.__CRLF)
@@ -342,12 +342,10 @@ class BetfairStream:
     def _receive_all(self):
         """Whilst socket is running receives data from socket,
         till CRLF is detected.
-
-        :return: Decoded data.
         """
         (data, part) = ('', '')
-        while self.running and part[-2:] != bytes(self.__CRLF, encoding=self.__encoding):
-            part = self.socket.recv(self.buffer_size)
+        while self._running and part[-2:] != bytes(self.__CRLF, encoding=self.__encoding):
+            part = self._socket.recv(self.buffer_size)
             if part:
                 data += part.decode(self.__encoding)
         return data
@@ -367,4 +365,4 @@ class BetfairStream:
         :param message: Data to be sent to Betfair.
         """
         message_dumped = json.dumps(message) + self.__CRLF
-        self.socket.send(message_dumped.encode())
+        self._socket.send(message_dumped.encode())
