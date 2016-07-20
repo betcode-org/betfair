@@ -29,7 +29,6 @@ trading.login()
 event_types = trading.list_event_types()
 ```
 
-event_types is a list of classes containing data.
 
 # streaming
 
@@ -51,6 +50,15 @@ betfair_socket.subscribe_to_markets({'eventTypeIds': ['7'],
 # todo
 
     - Complete unit tests
+    - After reviewing other wrappers looking to change apiclient to be similar to twilio
+        trading.auth.*
+        trading.navigation.*
+        trading.betting.*
+        trading.accounts.*
+        trading.race_status.*
+        trading.scores.*
+        trading.streaming.*
+      Enables the wrapper to more closely resemble the API
     - Market and Order streaming added, need further tests
     - Fix issue with no errorCode in cancel request (details sent to bdp@betfair.com)
     - Use schematics for json -> data structure, schematics is slow as balls (0.3s+ for 300 marketBook request)
