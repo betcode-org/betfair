@@ -1,6 +1,6 @@
 from .apiclient import APIClient
 from .errors.apiexceptions import BetfairError
-from .streaming import StreamListener
+from .streaming.listener import StreamListener
 
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'

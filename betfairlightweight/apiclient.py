@@ -9,13 +9,15 @@ from .apimethod import (
     Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, OrderRequest, NavigationRequest,
     ScoresBroadcastRequest)
 from .utils import process_request, api_request
-from .streaming import BetfairStream, StreamListener
+from .streaming.betfairstream import BetfairStream
+from .streaming.listener import BaseListener
 
 
 class BaseClient:
-    """This class is a container for all client options. Its
+    """This class is a container for all client options. It's
     primary purpose is to hold appkeys, session tokens, urls,
-    transaction count and provide headers for requests.
+    transaction count, provide headers for requests and make
+    requests to betfair
     """
 
     __url = {'Login': 'https://identitysso.betfair.com/api/certlogin',
@@ -38,17 +40,20 @@ class BaseClient:
 
     __scores = {'UK': 'https://www.betfair.com/inplayservice/v1/scoresAndBroadcast'}
 
-    def __init__(self, username, password, exchange='UK'):
+    def __init__(self, username, password, app_key=None, exchange='UK'):
         """
         :param username:
             Betfair username.
         :param password:
             Password for supplied username.
+        :param app_key:
+            App Key for account, if None will look in .bashprofile
         :param exchange:
             Allows to specify exchange to be used, UK or AUS.
         """
         self.username = username
         self.password = password
+        self._app_key = app_key
         self.exchange = exchange
         self._login_time = None
         self.request = requests
@@ -57,7 +62,8 @@ class BaseClient:
         self._next_hour = None
         self.set_next_hour()
         self._session_token = None
-        self._app_key = None
+
+        self.get_app_key()
 
     def set_session_token(self, session_token, call_type):
         self._session_token = session_token
@@ -84,10 +90,11 @@ class BaseClient:
 
     def get_app_key(self):
         logging.info('Username: %s', self.username)
-        if os.environ.get(self.username):
-            self._app_key = os.environ.get(self.username)
-        else:
-            raise AppKeyError(self.username)
+        if self._app_key is None:
+            if os.environ.get(self.username):
+                self._app_key = os.environ.get(self.username)
+            else:
+                raise AppKeyError(self.username)
 
     def get_url(self, call_type, exchange):
         if exchange:
@@ -155,7 +162,6 @@ class APIClient(BaseClient):
     """
     
     def login(self):
-        self.get_app_key()
         request = Login(self)
         (response, raw_response, sent) = request()
         self.set_session_token(response.get('sessionToken'), 'Login')
@@ -308,6 +314,6 @@ class APIClient(BaseClient):
     # Streaming
 
     def create_stream(self, unique_id, listener=None, timeout=6, buffer_size=1024, description='BetfairSocket'):
-        listener = listener if listener else StreamListener()
+        listener = listener if listener else BaseListener()
         return BetfairStream(unique_id, listener, app_key=self._app_key, session_token=self._session_token,
                              timeout=timeout, buffer_size=buffer_size, description=description)
