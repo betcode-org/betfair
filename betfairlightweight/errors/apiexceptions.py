@@ -12,7 +12,7 @@ class AppKeyError(BetfairError):
     """Exception raised if appkey is not found"""
 
     def __init__(self, username):
-        logging.error('AppKey not found for %s' % username)
+        logging.error('AppKey not found in .bashprofile for %s, add or pass to APIClient' % username)
 
 
 class LoginError(BetfairError):

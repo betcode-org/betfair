@@ -4,7 +4,7 @@ from ..parse.models import BetfairModel
 from ..parse.apiparsedata import MarketBook, CurrentOrders
 from ..utils import strp_betfair_time, strp_betfair_integer_time
 from ..parse.enums import (
-    StreamingOrderType, StreamingPersistenceType, StreamingSide, StreamingStatus, StreamingRegulatorCode
+    StreamingOrderType, StreamingPersistenceType, StreamingSide, StreamingStatus
 )
 
 
@@ -86,7 +86,8 @@ class MarketBookCache(BetfairModel):
                 'inplay': self.market_definition.in_play,
                 'numberOfWinners': self.market_definition.number_of_winners,
                 'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-                'runners': [runner.serialise for runner in self.runners.values()]
+                'runners': [runner.serialise(self.market_definition.runners.get(runner.selection_id).status)
+                            for runner in self.runners.values()]
                 }
 
 
@@ -112,7 +113,8 @@ class MarketDefinition:
         self.open_date = strp_betfair_time(market_definition.get('openDate'))
         self.persistence_enabled = market_definition.get('persistenceEnabled')
         self.regulators = market_definition.get('regulators')
-        self.runners = [MarketDefinitionRunner(runner) for runner in market_definition.get('runners', [])]
+        self.runners = {runner.get('id'): MarketDefinitionRunner(runner)
+                        for runner in market_definition.get('runners', [])}
         self.runners_voidable = market_definition.get('runnersVoidable')
         self.status = market_definition.get('status')
         self.suspend_time = strp_betfair_time(market_definition.get('suspendTime'))
@@ -145,9 +147,8 @@ class RunnerBook:
         self.spn = runner_book.get('spn')
         self.spf = runner_book.get('spf')
 
-    @property
-    def serialise(self):
-        return {'status': 'ACTIVE',
+    def serialise(self, status):
+        return {'status': status,
                 'ex': {'tradedVolume': self.traded.traded_volume,
                        'availableToBack': self.atb.available_to_back,
                        'availableToLay': self.atl.available_to_lay},

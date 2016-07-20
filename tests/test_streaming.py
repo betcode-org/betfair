@@ -9,7 +9,7 @@ from fixtures import logged_in_client, logged_in_client_aus
 from betfairlightweight import APIClient
 from betfairlightweight import StreamListener
 from betfairlightweight.errors.apiexceptions import TransactionCountError, AppKeyError
-from betfairlightweight.streaming import Stream
+from betfairlightweight.streaming.stream import Stream
 
 
 def test_betfair_stream(logged_in_client):

@@ -19,7 +19,7 @@ The library can then be used as follows:
 ```python
 import betfairlightweight
 
-trading = betfairlightweight.APIClient('username', 'password')
+trading = betfairlightweight.APIClient('username', 'password', app_key='app_key')
 
 trading.login()
 ```
@@ -30,6 +30,23 @@ event_types = trading.list_event_types()
 ```
 
 event_types is a list of classes containing data.
+
+# streaming
+
+Currently two listeners available, below will run the base listener which prints anything it receives.
+Stream listener is able to hold multiple streams, hold a cache and push market_books/order_books out via a queue.
+
+
+```python
+betfair_socket = trading.create_stream(2, description='Test Market Socket')
+betfair_socket.start(True)
+betfair_socket.authenticate()
+betfair_socket.subscribe_to_markets({'eventTypeIds': ['7'],
+                                     'countryCodes': ['GB', 'IE'], 
+                                     'marketTypes': ['WIN']},
+                                    {'fields': ['EX_BEST_OFFERS', 'EX_MARKET_DEF'],
+                                     'ladderLevels': 1})
+```
 
 # todo
 
