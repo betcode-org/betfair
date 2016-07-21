@@ -28,7 +28,8 @@ class PyTest(TestCommand):
 setup(
         name='betfairlightweight',
         version=__version__,
-        packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse'],
+        packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse',
+                  'betfairlightweight.streaming'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         install_requires=INSTALL_REQUIRES,
         requires=['requests'],
