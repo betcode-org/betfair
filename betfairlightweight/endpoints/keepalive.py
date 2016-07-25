@@ -1,7 +1,7 @@
 import datetime
 
 from .base import BaseEndpoint
-from ..errors.apiexceptions import KeepAliveError
+from ..exceptions import KeepAliveError
 
 
 class KeepAlive(BaseEndpoint):

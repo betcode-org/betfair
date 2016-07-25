@@ -6,7 +6,7 @@ import distutils.command.bdist_conda
 setup(
         name='betfairlightweight',
         version=__version__,
-        packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse',
+        packages=['betfairlightweight', 'betfairlightweight.parse',
                   'betfairlightweight.streaming', 'betfairlightweight.endpoints'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         requires=['requests'],

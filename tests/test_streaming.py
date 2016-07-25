@@ -8,7 +8,7 @@ from .fixtures import logged_in_client, logged_in_client_aus
 
 from betfairlightweight import APIClient
 from betfairlightweight import StreamListener
-from betfairlightweight.errors.apiexceptions import TransactionCountError, AppKeyError
+from betfairlightweight.exceptions import TransactionCountError, AppKeyError
 from betfairlightweight.streaming.stream import Stream
 
 

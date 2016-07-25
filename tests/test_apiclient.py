@@ -6,7 +6,7 @@ from .fixtures import client, client_aus
 from .fixtures import logged_in_client, logged_in_client_aus
 
 from betfairlightweight.apiclient import APIClient
-from betfairlightweight.errors.apiexceptions import TransactionCountError, AppKeyError
+from betfairlightweight.exceptions import TransactionCountError, AppKeyError
 
 
 def test_client_init(client):
