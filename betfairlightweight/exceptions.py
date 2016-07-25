@@ -1,6 +1,6 @@
 import logging
 
-from ..parse import enums
+from .parse import enums
 
 
 class BetfairError(Exception):

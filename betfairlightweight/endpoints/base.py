@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from ..errors.apiexceptions import APIError
+from ..exceptions import APIError
 
 
 class BaseEndpoint:

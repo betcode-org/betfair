@@ -1,7 +1,7 @@
 import datetime
 
 from .parse.enums import MockParams
-from .errors.apiexceptions import SessionTokenError
+from .exceptions import SessionTokenError
 
 
 def api_request(func):

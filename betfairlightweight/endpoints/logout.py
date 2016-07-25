@@ -1,7 +1,7 @@
 import datetime
 
 from .base import BaseEndpoint
-from ..errors.apiexceptions import LogoutError
+from ..exceptions import LogoutError
 
 
 class Logout(BaseEndpoint):

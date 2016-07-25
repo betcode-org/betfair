@@ -7,7 +7,7 @@ from .fixtures import logged_in_client, logged_in_client_aus
 
 from betfairlightweight.apiclient import APIClient
 from betfairlightweight.endpoints.base import BaseEndpoint
-from betfairlightweight.errors.apiexceptions import APIError, LoginError, LogoutError, KeepAliveError
+from betfairlightweight.exceptions import APIError, LoginError, LogoutError, KeepAliveError
 
 
 def test_base_endpoint_init(logged_in_client):

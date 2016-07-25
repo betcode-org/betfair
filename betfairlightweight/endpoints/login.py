@@ -1,7 +1,7 @@
 import datetime
 
 from .base import BaseEndpoint
-from ..errors.apiexceptions import LoginError
+from ..exceptions import LoginError
 
 
 class Login(BaseEndpoint):

@@ -2,7 +2,7 @@ import requests
 import datetime
 import os
 
-from .errors.apiexceptions import AppKeyError
+from .exceptions import AppKeyError
 
 
 class BaseClient:
