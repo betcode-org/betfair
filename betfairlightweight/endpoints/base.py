@@ -19,7 +19,6 @@ class BaseEndpoint:
         date_time_sent = datetime.datetime.now()
         session = self.client.request
         request = self.create_req(method, params)
-
         try:
             response = session.post(url, data=request, headers=self.client.request_headers,
                                     timeout=(self.timeout, 12))
