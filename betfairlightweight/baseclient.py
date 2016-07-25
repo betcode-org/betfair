@@ -46,6 +46,11 @@ class BaseClient:
         self._login_time = None
 
     @property
+    def session_expired(self):
+        if not self._login_time or (datetime.datetime.now()-self._login_time).total_seconds() > 12000:
+            return True
+
+    @property
     def cert(self):
         cert_paths = []
         ssl_path = os.path.join(os.pardir, '/certs/')

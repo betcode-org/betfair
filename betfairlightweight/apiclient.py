@@ -4,9 +4,9 @@ import requests
 import logging
 
 from .baseclient import BaseClient
-from .endpoints.login import Login
-from .endpoints.keepalive import KeepAlive
-from .endpoints.logout import Logout
+from .endpoints import (
+    Login, Logout, KeepAlive
+)
 
 # from .errors.apiexceptions import AppKeyError, TransactionCountError, BetfairError
 # from .parse import apiparsedata, apiparseaccount, apiparsebetting, apiparsescores

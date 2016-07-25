@@ -29,7 +29,7 @@ setup(
         name='betfairlightweight',
         version=__version__,
         packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse',
-                  'betfairlightweight.streaming'],
+                  'betfairlightweight.streaming', 'betfairlightweight.endpoints'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         install_requires=INSTALL_REQUIRES,
         requires=['requests'],

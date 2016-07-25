@@ -7,7 +7,7 @@ setup(
         name='betfairlightweight',
         version=__version__,
         packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse',
-                  'betfairlightweight.streaming'],
+                  'betfairlightweight.streaming', 'betfairlightweight.endpoints'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         requires=['requests'],
         url='https://github.com/LiamPa/betfairlightweight',

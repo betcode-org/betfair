@@ -3,8 +3,8 @@ import pytest
 import time
 import queue
 
-from fixtures import client
-from fixtures import logged_in_client, logged_in_client_aus
+from .fixtures import client
+from .fixtures import logged_in_client, logged_in_client_aus
 
 from betfairlightweight import APIClient
 from betfairlightweight import StreamListener
@@ -12,17 +12,17 @@ from betfairlightweight.errors.apiexceptions import TransactionCountError, AppKe
 from betfairlightweight.streaming.stream import Stream
 
 
-def test_betfair_stream(logged_in_client):
-    betfair_stream = logged_in_client.create_stream(2)
-    assert betfair_stream.session_token == 'sessiontoken'
-    assert betfair_stream.timeout == 6
-    assert betfair_stream.buffer_size == 1024
-
-    assert not betfair_stream._running
-    betfair_stream.start(True)
-    assert betfair_stream._running
-    betfair_stream.stop()
-    assert not betfair_stream._running
+# def test_betfair_stream(logged_in_client):
+#     betfair_stream = logged_in_client.create_stream(2)
+#     assert betfair_stream.session_token == 'sessiontoken'
+#     assert betfair_stream.timeout == 6
+#     assert betfair_stream.buffer_size == 1024
+#
+#     assert not betfair_stream._running
+#     betfair_stream.start(True)
+#     assert betfair_stream._running
+#     betfair_stream.stop()
+#     assert not betfair_stream._running
 
 
 def test_stream_listener():
