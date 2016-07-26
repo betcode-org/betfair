@@ -1,7 +1,7 @@
 import datetime
 
 from .base import BaseEndpoint
-from ..exceptions import LoginError
+from ..exceptions import LoginError, APIError
 
 
 class Login(BaseEndpoint):
@@ -18,11 +18,16 @@ class Login(BaseEndpoint):
         self.client.set_session_token(response.get('sessionToken'))
         return response
 
-    def request(self, url, payload=None, params=None):
-        session = self.client.session
+    def request(self, url, payload=None, params=None, session=None):
+        if not session:
+            session = self.client.session
         date_time_sent = datetime.datetime.now()
-        response = session.post(url, data=payload, headers=self.client.login_headers,
-                                cert=self.client.cert)
+        try:
+            response = session.post(url, data=payload, headers=self.client.login_headers, cert=self.client.cert)
+        except ConnectionError:
+            raise APIError(None, params, exception='ConnectionError')
+        except Exception as e:
+            raise APIError(None, params, exception=e)
         return self.create_resp(response, date_time_sent)
 
     def _error_handler(self, response, params=None, method=None):
