@@ -15,6 +15,13 @@ class AppKeyError(BetfairError):
         logging.error('AppKey not found in .bashprofile for %s, add or pass to APIClient' % username)
 
 
+class CertsError(BetfairError):
+    """Exception raised if certs folder is not found"""
+
+    def __init__(self):
+        logging.error('Certificate folder not found in /certs/')
+
+
 class LoginError(BetfairError):
     """Exception raised if sessionToken is not found"""
 
