@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=master)](https://travis-ci.org/LiamPa/betfairlightweight)
+[![Build Status](https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=version_0_3_0)](https://travis-ci.org/LiamPa/betfairlightweight)
 
 # betfairlightweight
 

@@ -22,6 +22,12 @@ class CertsError(BetfairError):
         logging.error('Certificate folder not found in /certs/')
 
 
+class StatusCodeError(BetfairError):
+
+    def __init__(self, status_code):
+        logging.error('Status code error: %s' % status_code)
+
+
 class LoginError(BetfairError):
     """Exception raised if sessionToken is not found"""
 

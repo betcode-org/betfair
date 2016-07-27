@@ -1,33 +1,35 @@
-import datetime
 
 from .base import BaseEndpoint
 from ..exceptions import KeepAliveError, APIError
+from ..utils import check_status_code
 
 
 class KeepAlive(BaseEndpoint):
 
     _error = KeepAliveError
-    _endpoints_uk = {
-        'KeepAlive': 'https://identitysso.betfair.com/api/keepAlive'
-    }
 
     def __call__(self):
-        url = self._endpoints_uk['KeepAlive']
-        (response, raw_response, sent) = self.request(url)
-        self.client.set_session_token(response.get('token'))
-        return response
+        url = '%s%s' % (self.client.identity_uri, 'keepAlive')
+        response = self.request(url)
+
+        response_json = response.json()
+        self.client.set_session_token(response_json.get('token'))
+        return response_json
 
     def request(self, url, payload=None, params=None, session=None):
         if not session:
             session = self.client.session
-        date_time_sent = datetime.datetime.now()
         try:
             response = session.post(url, headers=self.client.keep_alive_headers, cert=self.client.cert)
         except ConnectionError:
             raise APIError(None, params, exception='ConnectionError')
         except Exception as e:
             raise APIError(None, params, exception=e)
-        return self.create_resp(response, date_time_sent)
+
+        check_status_code(response)
+        if self._error_handler:
+            self._error_handler(response.json(), params)
+        return response
 
     def _error_handler(self, response, params=None, method=None):
         if response.get('status') != 'SUCCESS':

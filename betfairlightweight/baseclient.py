@@ -1,4 +1,5 @@
 import requests
+import collections
 import datetime
 import os
 
@@ -7,7 +8,21 @@ from .exceptions import AppKeyError, CertsError
 
 class BaseClient:
 
-    def __init__(self, username, password, app_key=None, exchange='UK'):
+    IDENTITY_URLS = collections.defaultdict(
+            lambda: 'https://identitysso.betfair.com/api/',
+            spain='https://identitysso.betfair.es',
+            italy='https://identitysso.betfair.it/api/',
+            romania='https://idenititysso.betfair.ro',
+            w_con='https://identitysso.w-con.betfair.com',
+            europe='https://identitysso.betfaironline.eu',
+    )
+
+    API_URLS = collections.defaultdict(
+            lambda: 'https://api.betfair.com/exchange/betting/json-rpc/v1',
+            australia='https://api-au.betfair.com/exchange/betting/json-rpc/v1',
+    )
+
+    def __init__(self, username, password, app_key=None, locale=None):
         """
         :param username:
             Betfair username.
@@ -15,17 +30,20 @@ class BaseClient:
             Password for supplied username.
         :param app_key:
             App Key for account, if None will look in .bashprofile
-        :param exchange:
-            Allows to specify exchange to be used, UK or AUS.
+        :param locale:
+            Allows to specify exchange to be used, defaults to UK for
+            login and global for api.
         """
         self.username = username
         self.password = password
         self.app_key = app_key
-        self.exchange = exchange
+        self.locale = locale
 
         self.session = requests
         self._login_time = None
         self.session_token = None
+        self.identity_uri = self.IDENTITY_URLS[locale]
+        self.api_uri = self.API_URLS[locale]
 
         self.get_app_key()
 

@@ -1,7 +1,19 @@
 import datetime
 
 from .parse.enums import MockParams
-from .exceptions import SessionTokenError
+from .exceptions import SessionTokenError, StatusCodeError
+
+
+def check_status_code(response, codes=None):
+    """Checks response.status_code is in codes
+
+    :param response: Requests response
+    :param codes: List of accepted codes or callable
+    :raises: StatusCodeError if code invalid
+    """
+    codes = codes or [200]
+    if response.status_code not in codes:
+        raise StatusCodeError(response.status_code)
 
 
 def api_request(func):
@@ -54,6 +66,10 @@ def strp_betfair_time(datetime_string):
 
 
 def strp_betfair_integer_time(datetime_integer):
+    """Converts Betfair integer to datetime.
+
+    :param datetime_integer: Datetime integer.
+    """
     try:
         return datetime.datetime.fromtimestamp(datetime_integer / 1e3)
     except TypeError:
@@ -63,6 +79,12 @@ def strp_betfair_integer_time(datetime_integer):
 
 
 def price_check(data, number, key):
+    """Access data from dictionary.
+
+    :param data: Dict object.
+    :param number: Number.
+    :param key: Key.
+    """
     try:
         output = data[number][key]
     except KeyError:
