@@ -1,6 +1,3 @@
-import logging
-
-from .parse import enums
 
 
 class BetfairError(Exception):
@@ -12,92 +9,88 @@ class AppKeyError(BetfairError):
     """Exception raised if appkey is not found"""
 
     def __init__(self, username):
-        logging.error('AppKey not found in .bashprofile for %s, add or pass to APIClient' % username)
+        message = 'AppKey not found in .bashprofile for %s, add or pass to APIClient' % username
+        super(AppKeyError, self).__init__(message)
 
 
 class CertsError(BetfairError):
     """Exception raised if certs folder is not found"""
 
     def __init__(self):
-        logging.error('Certificate folder not found in /certs/')
+        message = 'Certificate folder not found in /certs/'
+        super(CertsError, self).__init__(message)
 
 
 class StatusCodeError(BetfairError):
 
     def __init__(self, status_code):
-        logging.error('Status code error: %s' % status_code)
+        message = 'Status code error: %s' % status_code
+        super(StatusCodeError, self).__init__(message)
 
 
 class LoginError(BetfairError):
     """Exception raised if sessionToken is not found"""
 
     def __init__(self, response):
-        if hasattr(response, 'status_code') and response.status_code != 200:
-            logging.error('API login error, http error: %s' % response.status_code)
-        else:
-            login_status = response.get('loginStatus')
-            description = enums.LoginExceptions[login_status].value
-            logging.error('API login %s: %s' % (login_status, description))
+        login_status = response.get('loginStatus', 'UNKNOWN')
+        message = 'API login: %s' % login_status
+        super(LoginError, self).__init__(message)
 
 
 class KeepAliveError(BetfairError):
-    """Exception raised if session is not found"""
+    """Exception raised if keep alive fails"""
 
     def __init__(self, response):
-        if hasattr(response, 'status_code') and response.status_code != 200:
-            logging.error('API keepAlive error, http error: %s' % response.status_code)
-        else:
-            logging.error('API keepAlive %s: %s' % (response.get('status'), response.get('error')))
+        keep_alive_status = response.get('status', 'UNKNOWN')
+        keep_alive_error = response.get('error')
+        message = 'API keepAlive %s: %s' % (keep_alive_status, keep_alive_error)
+        super(KeepAliveError, self).__init__(message)
 
 
 class APIError(BetfairError):
     """Exception raised if error is found"""
 
-    def __init__(self, response, params, method=None, exception=None):
-        if response is not None:
-            if hasattr(response, 'status_code') and response.status_code != 200:
-                logging.error('APIError, http error: %s' % response.status_code)
-            else:
-                code = response['error']['code']
-                description = enums.GENERIC_JSON_RPC_EXCEPTIONS.get(code)
-                error_details = None
-                if not description:
-                    error_code = response['error']['data']['APINGException']['errorCode']
-                    error_details = response['error']['data']['APINGException']['errorDetails']
-                    description = enums.ApingException[error_code].value
-                logging.error('API betting %s: %s' % (code, description))
-                logging.error('Method: %s, Parameters sent: %s' % (method, params))
-                logging.error('Error details: %s' % error_details)
+    def __init__(self, response, method=None, params=None, exception=None):
+        if response:
+            # code = response['error']['code']
+            error_data = response['error']
+            # params
+            # method
+            message = error_data
         else:
-            logging.error('APIError error: %s' % exception)
+            message = exception
+        super(APIError, self).__init__(message)
 
 
 class TransactionCountError(BetfairError):
     """Exception raised if transaction count is greater than 999"""
 
     def __init__(self, transaction_count):
-        logging.error('Transaction limit reached: %s' % transaction_count)
+        message = 'Transaction limit reached: %s' % transaction_count
+        super(TransactionCountError, self).__init__(message)
 
 
 class LogoutError(BetfairError):
-    """Exception raised if status_code is not found"""
+    """Exception raised if logout errors"""
 
     def __init__(self, response):
-        if hasattr(response, 'status_code') and response.status_code != 200:
-            logging.error('API logout error, http error: %s' % response.status_code)
-        else:
-            logging.error('API logout %s: %s' % (response.get('status'), response.get('error')))
+        logout_status = response.get('status', 'UNKNOWN')
+        logout_error = response.get('error')
+        message = 'API keepAlive %s: %s' % (logout_status, logout_error)
+        super(LogoutError, self).__init__(message)
 
 
 class ParameterError(BetfairError):
     """Exception raised if parameter is incorrect"""
 
     def __init__(self, api_method):
-        logging.error('API method %s must have parameters' % api_method)
+        message = 'API method %s must have parameters' % api_method
+        super(ParameterError, self).__init__(message)
 
 
 class SessionTokenError(BetfairError):
     """Exception raised if session_token is None"""
 
     def __init__(self):
-        logging.error('APIClient must have session_token')
+        message = 'APIClient must have session_token'
+        super(SessionTokenError, self).__init__(message)
