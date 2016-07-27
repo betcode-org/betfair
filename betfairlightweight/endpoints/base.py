@@ -1,22 +1,19 @@
-import datetime
 import json
 
 from ..exceptions import APIError
+from ..utils import check_status_code
 
 
 class BaseEndpoint:
 
     timeout = 3.05
     _error = APIError
-    _endpoints_uk = {}
-    _endpoints_aus = {}
 
     def __init__(self, parent):
         """
         :param parent: API client.
         """
         self.client = parent
-        self.exchange = parent.exchange
 
     def request(self, url, method, params=None, session=None):
         """
@@ -25,9 +22,9 @@ class BaseEndpoint:
         :param params: Params to be used in request, if None will use MockParams Enum.  # todo
         :param session: Requests session to be used, reduces latency.
         """
-        date_time_sent = datetime.datetime.now()
         if not session:
             session = self.client.session
+
         request = self.create_req(method, params)
         try:
             response = session.post(url, data=request, headers=self.client.request_headers,
@@ -36,22 +33,11 @@ class BaseEndpoint:
             raise APIError(None, params, method, 'ConnectionError')
         except Exception as e:
             raise APIError(None, params, method, e)
-        return self.create_resp(response, method, params, date_time_sent)
 
-    def create_resp(self, response, date_time_sent, method=None, params=None):
-        """
-        :param response: Raw requests response.
-        :param date_time_sent: Datetime request was sent.
-        :param method: Betfair api-ng method to be used.
-        :param params: Params to be used in request.
-        :return: json response, raw_response and datetime sent.
-        """
-        if response.status_code == 200:
-            if self._error_handler:
-                self._error_handler(response.json(), params, method)
-            return response.json(), response, date_time_sent
-        else:
-            raise self._error(response, params, method)
+        check_status_code(response)
+        if self._error_handler:
+            self._error_handler(response.json(), params, method)
+        return response
 
     @staticmethod
     def create_req(method, params):
