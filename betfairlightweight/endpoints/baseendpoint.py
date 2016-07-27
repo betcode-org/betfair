@@ -15,9 +15,8 @@ class BaseEndpoint:
         """
         self.client = parent
 
-    def request(self, url, method, params=None, session=None):
+    def request(self, method, params=None, session=None):
         """
-        :param url: URL to be used for request.
         :param method: Betfair api-ng method to be used.
         :param params: Params to be used in request, if None will use MockParams Enum.  # todo
         :param session: Requests session to be used, reduces latency.
@@ -27,16 +26,16 @@ class BaseEndpoint:
 
         request = self.create_req(method, params)
         try:
-            response = session.post(url, data=request, headers=self.client.request_headers,
+            response = session.post(self.url, data=request, headers=self.client.request_headers,
                                     timeout=(self.timeout, 12))
         except ConnectionError:
-            raise APIError(None, params, method, 'ConnectionError')
+            raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
-            raise APIError(None, params, method, e)
+            raise APIError(None, method, params, e)
 
         check_status_code(response)
         if self._error_handler:
-            self._error_handler(response.json(), params, method)
+            self._error_handler(response.json(), method, params)
         return response
 
     @staticmethod
@@ -52,7 +51,7 @@ class BaseEndpoint:
                    'id': 1}
         return json.dumps(payload)
 
-    def _error_handler(self, response, params=None, method=None):
+    def _error_handler(self, response, method=None, params=None):
         """
         :param response: Json response.
         :param params: Params to be used in request.
@@ -62,4 +61,8 @@ class BaseEndpoint:
         if response.get('result'):
             return
         elif response.get('error'):
-            raise self._error(response, params, method)
+            raise self._error(response, method, params)
+
+    @property
+    def url(self):
+        return None
