@@ -5,7 +5,7 @@ import logging
 
 from .baseclient import BaseClient
 from .endpoints import (
-    Login, Logout, KeepAlive
+    Login, Logout, KeepAlive, Betting
 )
 
 # from .errors.apiexceptions import AppKeyError, TransactionCountError, BetfairError
@@ -26,7 +26,7 @@ class APIClient(BaseClient):
         self.login = Login(self)
         self.keep_alive = KeepAlive(self)
         self.logout = Logout(self)
-
+        self.betting = Betting(self)
 
 
 

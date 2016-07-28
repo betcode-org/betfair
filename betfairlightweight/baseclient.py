@@ -33,8 +33,7 @@ class BaseClient:
         :param certs:
             Directory for certificates, if None will look in /certs/
         :param locale:
-            Exchange to be used, defaults to UK for
-            login and global for api.
+            Exchange to be used, defaults to UK for login and global for api.
         """
         self.username = username
         self.password = password
