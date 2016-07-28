@@ -12,6 +12,8 @@ class BaseClientInit(unittest.TestCase):
         assert client.username == 'username'
         assert client.password == 'password'
         assert client.app_key == 'app_key'
+        assert client.certs is None
+        assert client.locale is None
         assert client._login_time is None
         assert client.session_token is None
 
@@ -21,32 +23,32 @@ class BaseClientInit(unittest.TestCase):
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
 
-        client = APIClient('username', 'password', 'app_key', 'australia')
+        client = APIClient('username', 'password', 'app_key', locale='australia')
         assert client.locale == 'australia'
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
         assert client.api_uri == 'https://api-au.betfair.com/exchange/betting/json-rpc/v1'
 
-        client = APIClient('username', 'password', 'app_key', 'spain')
+        client = APIClient('username', 'password', 'app_key', locale='spain')
         assert client.locale == 'spain'
         assert client.identity_uri == 'https://identitysso.betfair.es'
         assert client.api_uri == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
 
-        client = APIClient('username', 'password', 'app_key', 'italy')
+        client = APIClient('username', 'password', 'app_key', locale='italy')
         assert client.locale == 'italy'
         assert client.identity_uri == 'https://identitysso.betfair.it/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
 
-        client = APIClient('username', 'password', 'app_key', 'romania')
+        client = APIClient('username', 'password', 'app_key', locale='romania')
         assert client.locale == 'romania'
         assert client.identity_uri == 'https://idenititysso.betfair.ro'
         assert client.api_uri == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
 
-        client = APIClient('username', 'password', 'app_key', 'w_con')
+        client = APIClient('username', 'password', 'app_key', locale='w_con')
         assert client.locale == 'w_con'
         assert client.identity_uri == 'https://identitysso.w-con.betfair.com'
         assert client.api_uri == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
 
-        client = APIClient('username', 'password', 'app_key', 'europe')
+        client = APIClient('username', 'password', 'app_key', locale='europe')
         assert client.locale == 'europe'
         assert client.identity_uri == 'https://identitysso.betfaironline.eu'
         assert client.api_uri == 'https://api.betfair.com/exchange/betting/json-rpc/v1'
