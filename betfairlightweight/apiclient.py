@@ -1,21 +1,7 @@
-import datetime
-import os
-import requests
-import logging
-
 from .baseclient import BaseClient
 from .endpoints import (
     Login, Logout, KeepAlive, Betting
 )
-
-# from .errors.apiexceptions import AppKeyError, TransactionCountError, BetfairError
-# from .parse import apiparsedata, apiparseaccount, apiparsebetting, apiparsescores
-# from .apimethod import (
-#     Login, Logout, KeepAlive, BettingRequest, AccountRequest, ScoresRequest, OrderRequest, NavigationRequest,
-#     ScoresBroadcastRequest)
-# from .utils import process_request, api_request
-# from .streaming.betfairstream import BetfairStream
-# from .streaming.listener import BaseListener
 
 
 class APIClient(BaseClient):
@@ -27,7 +13,6 @@ class APIClient(BaseClient):
         self.keep_alive = KeepAlive(self)
         self.logout = Logout(self)
         self.betting = Betting(self)
-
 
 
 # class BaseClient:
