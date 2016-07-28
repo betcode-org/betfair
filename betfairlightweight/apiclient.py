@@ -20,8 +20,8 @@ from .endpoints import (
 
 class APIClient(BaseClient):
 
-    def __init__(self, username, password, app_key=None, locale=None):
-        super(APIClient, self).__init__(username, password, app_key, locale)
+    def __init__(self, username, password, app_key=None, certs=None, locale=None):
+        super(APIClient, self).__init__(username, password, app_key=app_key, certs=certs, locale=locale)
 
         self.login = Login(self)
         self.keep_alive = KeepAlive(self)

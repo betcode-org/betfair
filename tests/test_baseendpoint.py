@@ -60,9 +60,9 @@ class BaseEndPointTest(unittest.TestCase):
         assert self.base_endpoint.create_req('test', 'empty') == json.dumps(payload)
 
     def test_base_endpoint_error_handler(self):
-        mock_response = create_mock_json('tests/resources/base_success.json')
+        mock_response = create_mock_json('tests/resources/base_endpoint_success.json')
         assert self.base_endpoint._error_handler(mock_response.json()) is None
 
-        mock_response = create_mock_json('tests/resources/base_fail.json')
+        mock_response = create_mock_json('tests/resources/base_endpoint_fail.json')
         with self.assertRaises(APIError):
             self.base_endpoint._error_handler(mock_response.json())

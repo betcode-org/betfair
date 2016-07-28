@@ -22,7 +22,7 @@ class BaseClient:
             australia='https://api-au.betfair.com/exchange/betting/json-rpc/v1',
     )
 
-    def __init__(self, username, password, app_key=None, locale=None):
+    def __init__(self, username, password, app_key=None, certs=None, locale=None):
         """
         :param username:
             Betfair username.
@@ -30,13 +30,16 @@ class BaseClient:
             Password for supplied username.
         :param app_key:
             App Key for account, if None will look in .bashprofile
+        :param certs:
+            Directory for certificates, if None will look in /certs/
         :param locale:
-            Allows to specify exchange to be used, defaults to UK for
+            Exchange to be used, defaults to UK for
             login and global for api.
         """
         self.username = username
         self.password = password
         self.app_key = app_key
+        self.certs = certs
         self.locale = locale
 
         self.session = requests
@@ -83,8 +86,13 @@ class BaseClient:
         """Looks in /certs/ for betfair certs.
         :return: Path of cert files
         """
+        if self.certs:
+            certs = self.certs
+        else:
+            certs = '/certs/'
+
         cert_paths = []
-        ssl_path = os.path.join(os.pardir, '/certs/')
+        ssl_path = os.path.join(os.pardir, certs)
         try:
             cert_path = os.listdir(ssl_path)
         except FileNotFoundError:
