@@ -65,6 +65,11 @@ class BaseEndpoint:
 
     @staticmethod
     def process_response(response_json, resource, date_time_sent):
+        """
+        :param response_json: Response in json format
+        :param resource: Resource data structure
+        :param date_time_sent: Date time sent
+        """
         if isinstance(response_json, list):
             return [resource(date_time_sent=date_time_sent, **x) for x in response_json]
         else:
@@ -76,4 +81,4 @@ class BaseEndpoint:
 
     @property
     def url(self):
-        return None
+        return self.client.api_uri

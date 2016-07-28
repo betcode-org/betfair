@@ -13,7 +13,3 @@ class Betting(BaseEndpoint):
         method = '%s%s' % (self.URI, 'listEventTypes')
         response = self.request(method, params)
         return self.process_response(response.json(), EventTypes, date_time_sent)
-
-    @property
-    def url(self):
-        return self.client.api_uri
