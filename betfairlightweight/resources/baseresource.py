@@ -1,3 +1,4 @@
+import datetime
 
 
 class BaseResource:
@@ -12,6 +13,8 @@ class BaseResource:
         sub_resources = {}  # sub resources are complex attributes within a resource
 
     def __init__(self, **kwargs):
+        self.date_time_sent = kwargs.pop('date_time_sent', None)
+        self.date_time_created = datetime.datetime.now()
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
         self.set_attributes(**kwargs)
 
@@ -52,3 +55,8 @@ class BaseResource:
             return
         else:
             return self.__getattribute__(item)
+
+    @property
+    def elapsed_time(self):
+        if self.date_time_sent:
+            return (self.date_time_created-self.date_time_sent).total_seconds()

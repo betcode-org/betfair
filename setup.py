@@ -14,8 +14,8 @@ TEST_REQUIRES = [
 setup(
         name='betfairlightweight',
         version=__version__,
-        packages=['betfairlightweight', 'betfairlightweight.parse',
-                  'betfairlightweight.streaming', 'betfairlightweight.endpoints'],
+        packages=['betfairlightweight', 'betfairlightweight.endpoints', 'betfairlightweight.resources',
+                  'betfairlightweight.streaming'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         install_requires=INSTALL_REQUIRES,
         requires=['requests'],

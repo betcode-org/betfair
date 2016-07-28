@@ -66,3 +66,6 @@ class BaseEndPointTest(unittest.TestCase):
         mock_response = create_mock_json('tests/resources/base_endpoint_fail.json')
         with self.assertRaises(APIError):
             self.base_endpoint._error_handler(mock_response.json())
+
+    def test_base_endpoint_process_response(self):
+        pass

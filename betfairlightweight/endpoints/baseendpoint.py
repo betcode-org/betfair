@@ -63,6 +63,17 @@ class BaseEndpoint:
         elif response.get('error'):
             raise self._error(response, method, params)
 
+    @staticmethod
+    def process_response(response_json, resource, date_time_sent):
+        if isinstance(response_json, list):
+            return [resource(date_time_sent=date_time_sent, **x) for x in response_json]
+        else:
+            response_result = response_json.get('result')
+            if isinstance(response_result, list):
+                return [resource(date_time_sent=date_time_sent, **x) for x in response_result]
+            else:
+                return resource(date_time_sent=date_time_sent, **response_result)
+
     @property
     def url(self):
         return None
