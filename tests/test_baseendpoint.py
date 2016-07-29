@@ -68,4 +68,21 @@ class BaseEndPointTest(unittest.TestCase):
             self.base_endpoint._error_handler(mock_response.json())
 
     def test_base_endpoint_process_response(self):
-        pass
+        mock_resource = mock.Mock()
+
+        response_list = [{}, {}]
+        response = self.base_endpoint.process_response(response_list, mock_resource, None)
+        assert type(response) == list
+        assert response[0] == mock_resource()
+
+        response_result_list = {'result': [{}, {}]}
+        response = self.base_endpoint.process_response(response_result_list, mock_resource, None)
+        assert type(response) == list
+        assert response[0] == mock_resource()
+
+        response_result = {'result': {}}
+        response = self.base_endpoint.process_response(response_result, mock_resource, None)
+        assert response == mock_resource()
+
+    def test_base_endpoint_url(self):
+        assert self.base_endpoint.url == self.base_endpoint.client.api_uri
