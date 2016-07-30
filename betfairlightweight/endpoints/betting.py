@@ -79,3 +79,15 @@ class Betting(BaseEndpoint):
         method = '%s%s' % (self.URI, 'listMarketProfitAndLoss')
         response = self.request(method, params)
         return self.process_response(response.json(), resources.MarketProfitLoss, date_time_sent)
+
+    def place_orders(self, params=None):
+        date_time_sent = datetime.datetime.utcnow()
+        method = '%s%s' % (self.URI, 'placeOrders')
+        response = self.request(method, params)
+        return self.process_response(response.json(), resources.PlaceOrders, date_time_sent)
+
+    def cancel_orders(self, params=None):
+        date_time_sent = datetime.datetime.utcnow()
+        method = '%s%s' % (self.URI, 'cancelOrders')
+        response = self.request(method, params)
+        return self.process_response(response.json(), resources.CancelOrders, date_time_sent)

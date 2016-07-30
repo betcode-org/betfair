@@ -213,6 +213,7 @@ class BettingResourcesTest(unittest.TestCase):
                 assert resource.runners[runner['selectionId']].ex.traded_volume == runner['ex'].get('tradedVolume')
                 # print(resource.runners[runner['selectionId']].orders)
                 # print(resource.runners[runner['selectionId']].matches)
+                # todo complete
 
     def test_current_orders(self):
         mock_response = create_mock_json('tests/resources/list_current_orders.json')
@@ -224,6 +225,7 @@ class BettingResourcesTest(unittest.TestCase):
 
         for current_order in current_orders.get('currentOrders'):
             assert resource.orders[0].bet_id == current_order['betId']
+            # todo complete
 
     def test_cleared_orders(self):
         mock_response = create_mock_json('tests/resources/list_cleared_orders.json')
@@ -235,6 +237,7 @@ class BettingResourcesTest(unittest.TestCase):
 
         for cleared_order in cleared_orders.get('clearedOrders'):
             assert resource.orders[0].bet_id == cleared_order['betId']
+            # todo complete
 
     def test_market_profit_loss(self):
         mock_response = create_mock_json('tests/resources/list_market_profit_and_loss.json')
@@ -242,10 +245,54 @@ class BettingResourcesTest(unittest.TestCase):
 
         for market_profit in market_profits:
             resource = resources.MarketProfitLoss(date_time_sent=self.DATE_TIME_SENT,
-                                               **market_profit)
+                                                  **market_profit)
 
             assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_id == market_profit['marketId']
             assert resource.commission_applied == market_profit.get('commissionApplied')
 
             assert len(resource.profit_and_losses) == len(market_profit['profitAndLosses'])
+            # todo complete
+
+    def test_place_orders(self):
+        mock_response = create_mock_json('tests/resources/place_orders.json')
+        place_orders = mock_response.json().get('result')
+        resource = resources.PlaceOrders(date_time_sent=self.DATE_TIME_SENT,
+                                        **place_orders)
+        assert resource.datetime_sent == self.DATE_TIME_SENT
+        assert len(resource.instruction_reports) == len(place_orders.get('instructionReports'))
+
+        for order in place_orders.get('instructionReports'):
+            assert resource.instruction_reports[0].size_matched == order['sizeMatched']
+            assert resource.instruction_reports[0].status == order['status']
+            assert resource.instruction_reports[0].bet_id == order['betId']
+            assert resource.instruction_reports[0].average_price_matched == order['averagePriceMatched']
+            assert resource.instruction_reports[0].placed_date == datetime.datetime.strptime(
+                        order['placedDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            assert resource.instruction_reports[0].error_code == order.get('errorCode')
+
+            assert resource.instruction_reports[0].instruction.selection_id == order['instruction']['selectionId']
+            assert resource.instruction_reports[0].instruction.side == order['instruction']['side']
+            assert resource.instruction_reports[0].instruction.order_type == order['instruction']['orderType']
+            assert resource.instruction_reports[0].instruction.handicap == order['instruction']['handicap']
+
+            assert resource.instruction_reports[0].instruction.order.persistence_type == order['instruction']['limitOrder']['persistenceType']
+            assert resource.instruction_reports[0].instruction.order.price == order['instruction']['limitOrder']['price']
+            assert resource.instruction_reports[0].instruction.order.size == order['instruction']['limitOrder']['size']
+
+    def test_cancel_orders(self):
+        mock_response = create_mock_json('tests/resources/cancel_orders.json')
+        cancel_orders = mock_response.json().get('result')
+        resource = resources.CancelOrders(date_time_sent=self.DATE_TIME_SENT,
+                                          **cancel_orders)
+        assert resource.datetime_sent == self.DATE_TIME_SENT
+        assert len(resource.instruction_reports) == len(cancel_orders.get('instructionReports'))
+
+        for order in cancel_orders.get('instructionReports'):
+            assert resource.instruction_reports[0].size_cancelled == order['sizeCancelled']
+            assert resource.instruction_reports[0].status == order['status']
+            assert resource.instruction_reports[0].cancelled_date == datetime.datetime.strptime(
+                        order['cancelledDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+
+            assert resource.instruction_reports[0].instruction.bet_id == order['instruction']['betId']
+            assert resource.instruction_reports[0].instruction.size_reduction == order['instruction'].get('sizeReduction')

@@ -10,5 +10,7 @@ from .bettingresources import (
     MarketBook,
     CurrentOrders,
     ClearedOrders,
-    MarketProfitLoss
+    MarketProfitLoss,
+    PlaceOrders,
+    CancelOrders
 )

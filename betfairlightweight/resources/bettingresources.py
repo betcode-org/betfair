@@ -421,3 +421,91 @@ class MarketProfitLoss(BaseResource):
         sub_resources = {
             'profitAndLosses': ProfitAndLosses
         }
+
+
+class PlaceOrderLimit(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'order'
+        attributes = {
+            'persistenceType': 'persistence_type',
+            'price': 'price',
+            'size': 'size'
+        }
+
+
+class PlaceOrderInstruction(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'instruction'
+        attributes = {
+            'selectionId': 'selection_id',
+            'side': 'side',
+            'orderType': 'order_type',
+            'handicap': 'handicap'
+        }
+        sub_resources = {
+            'limitOrder': PlaceOrderLimit
+        }
+
+
+class PlaceOrderInstructionReports(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'instruction_reports'
+        attributes = {
+            'status': 'status',
+            'betId': 'bet_id',
+            'averagePriceMatched': 'average_price_matched',
+            'sizeMatched': 'size_matched',
+            'placedDate': 'placed_date',
+            'errorCode': 'error_code',
+        }
+        sub_resources = {
+            'instruction': PlaceOrderInstruction
+        }
+        datetime_attributes = (
+            'placedDate'
+        )
+
+
+class PlaceOrders(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'place_order'
+        sub_resources = {
+            'instructionReports': PlaceOrderInstructionReports
+        }
+
+
+class CancelOrderInstruction(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'instruction'
+        attributes = {
+            'betId': 'bet_id',
+            'sizeReduction': 'size_reduction'
+        }
+
+
+class CancelOrderInstructionReports(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'instruction_reports'
+        attributes = {
+            'status': 'status',
+            'sizeCancelled': 'size_cancelled',
+            'cancelledDate': 'cancelled_date',
+            'errorCode': 'CancelOrderInstruction',
+        }
+        sub_resources = {
+            'instruction': CancelOrderInstruction
+        }
+        datetime_attributes = (
+            'cancelledDate'
+        )
+
+
+class CancelOrders(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'cancel_order'
+        attributes = {
+            'status': 'status'
+        }
+        sub_resources = {
+            'instructionReports': CancelOrderInstructionReports
+        }
