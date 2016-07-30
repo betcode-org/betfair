@@ -2,7 +2,7 @@ from .baseresource import BaseResource
 
 
 class EventType(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'event_type'
         attributes = {
             'id': 'id',
@@ -11,7 +11,7 @@ class EventType(BaseResource):
 
 
 class EventTypeResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'event_type_result'
         attributes = {
             'marketCount': 'market_count'
@@ -22,7 +22,7 @@ class EventTypeResult(BaseResource):
 
 
 class Competition(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'competition'
         attributes = {
             'id': 'id',
@@ -31,7 +31,7 @@ class Competition(BaseResource):
 
 
 class CompetitionResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'competition_result'
         attributes = {
             'marketCount': 'market_count',
@@ -43,7 +43,7 @@ class CompetitionResult(BaseResource):
 
 
 class TimeRange(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'time_range'
         attributes = {
             'from': '_from',
@@ -52,7 +52,7 @@ class TimeRange(BaseResource):
 
 
 class TimeRangeResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'time_range_result'
         attributes = {
             'marketCount': 'market_count'
@@ -63,7 +63,7 @@ class TimeRangeResult(BaseResource):
 
 
 class Event(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'event'
         attributes = {
             'id': 'id',
@@ -76,7 +76,7 @@ class Event(BaseResource):
 
 
 class EventResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'event_result'
         attributes = {
             'marketCount': 'market_count'
@@ -87,7 +87,7 @@ class EventResult(BaseResource):
 
 
 class MarketTypeResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'market_type_result'
         attributes = {
             'marketCount': 'market_count',
@@ -96,7 +96,7 @@ class MarketTypeResult(BaseResource):
 
 
 class CountryResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'country_result'
         attributes = {
             'marketCount': 'market_count',
@@ -105,7 +105,7 @@ class CountryResult(BaseResource):
 
 
 class VenueResult(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'venue_result'
         attributes = {
             'marketCount': 'market_count',
@@ -114,7 +114,7 @@ class VenueResult(BaseResource):
 
 
 class MarketCatalogueDescription(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'description'
         attributes = {
             'bettingType': 'betting_type',
@@ -134,7 +134,7 @@ class MarketCatalogueDescription(BaseResource):
 
 
 class MarketCatalogue(BaseResource):
-    class Meta:
+    class Meta(BaseResource.Meta):
         identifier = 'market_catalogue'
         attributes = {
             'marketId': 'market_id',

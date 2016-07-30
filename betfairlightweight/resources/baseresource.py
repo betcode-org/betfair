@@ -11,10 +11,12 @@ class BaseResource:
         identifier = 'id'  # The key with which you uniquely identify this resource.
         attributes = {'id': 'id'}  # Acceptable attributes that you want to display in this resource.
         sub_resources = {}  # sub resources are complex attributes within a resource
+        datetime_attributes = ()  # Attributes to be converted to datetime
+        dict_attributes = {}  # Attributes to be converted into a dictionary
 
     def __init__(self, **kwargs):
-        self.date_time_sent = kwargs.pop('date_time_sent', None)
-        self.date_time_created = datetime.datetime.now()
+        self.datetime_sent = kwargs.pop('date_time_sent', None)
+        self.datetime_created = datetime.datetime.now()
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
         self.set_attributes(**kwargs)
 
@@ -26,7 +28,10 @@ class BaseResource:
         for attribute_name, resource in self._sub_resource_map.items():
             sub_attr = kwargs.get(attribute_name)
             if sub_attr:
-                if isinstance(sub_attr, list):
+                if attribute_name in self.Meta.dict_attributes.keys():
+                    assign = self.Meta.dict_attributes[attribute_name]
+                    value = {x[assign]: resource(**x) for x in sub_attr}
+                elif isinstance(sub_attr, list):
                     value = [resource(**x) for x in sub_attr]  # A list of sub resources is supported
                 else:
                     value = resource(**sub_attr)  # So is a single resource
@@ -44,7 +49,37 @@ class BaseResource:
                 kwargs.pop(key, None)  # Don't let these attributes be overridden later
         for field, value in kwargs.items():
             if field in self.Meta.attributes:
+                if field in self.Meta.datetime_attributes:
+                    value = self.strip_datetime(value) or value
                 setattr(self, self.Meta.attributes[field], value)
+
+    @staticmethod
+    def strip_datetime(value):
+        """
+        Converts value to datetime if string or int.
+        """
+        if isinstance(value, str):
+            try:
+                return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
+            except TypeError:
+                return
+            except ValueError:
+                return
+        elif isinstance(value, int):
+            try:
+                return datetime.datetime.fromtimestamp(value / 1e3)
+            except TypeError:
+                return
+            except ValueError:
+                return
+
+    @property
+    def elapsed_time(self):
+        """
+        Elapsed time between datetime sent and datetime created
+        """
+        if self.datetime_sent:
+            return (self.datetime_created-self.datetime_sent).total_seconds()
 
     def __getattr__(self, item):
         """
@@ -55,8 +90,3 @@ class BaseResource:
             return
         else:
             return self.__getattribute__(item)
-
-    @property
-    def elapsed_time(self):
-        if self.date_time_sent:
-            return (self.date_time_created-self.date_time_sent).total_seconds()

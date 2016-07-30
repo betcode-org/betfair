@@ -18,7 +18,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.EventTypeResult(date_time_sent=self.DATE_TIME_SENT,
                                                  **event_type)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == event_type['marketCount']
             assert resource.event_type.id == event_type['eventType']['id']
             assert resource.event_type.name == event_type['eventType']['name']
@@ -31,7 +31,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.CompetitionResult(date_time_sent=self.DATE_TIME_SENT,
                                                    **competition)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == competition['marketCount']
             assert resource.competition_region == competition['competitionRegion']
             assert resource.competition.id == competition['competition']['id']
@@ -45,7 +45,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.TimeRangeResult(date_time_sent=self.DATE_TIME_SENT,
                                                  **time_range)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == time_range['marketCount']
             assert resource.time_range._from == time_range['timeRange']['from']
             assert resource.time_range.to == time_range['timeRange']['to']
@@ -58,7 +58,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.EventResult(date_time_sent=self.DATE_TIME_SENT,
                                              **event_result)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == event_result['marketCount']
             assert resource.event.id == event_result['event']['id']
             assert resource.event.open_date == event_result['event']['openDate']
@@ -75,7 +75,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.MarketTypeResult(date_time_sent=self.DATE_TIME_SENT,
                                                   **market_type_result)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == market_type_result['marketCount']
             assert resource.market_type == market_type_result['marketType']
 
@@ -87,7 +87,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.CountryResult(date_time_sent=self.DATE_TIME_SENT,
                                                **countries_result)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == countries_result['marketCount']
             assert resource.country_code == countries_result['countryCode']
 
@@ -99,7 +99,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.VenueResult(date_time_sent=self.DATE_TIME_SENT,
                                              **venue_result)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_count == venue_result['marketCount']
             assert resource.venue == venue_result['venue']
 
@@ -111,7 +111,7 @@ class BettingResourcesTest(unittest.TestCase):
             resource = resources.MarketCatalogue(date_time_sent=self.DATE_TIME_SENT,
                                                  **market_catalogue)
 
-            assert resource.date_time_sent == self.DATE_TIME_SENT
+            assert resource.datetime_sent == self.DATE_TIME_SENT
             assert resource.market_id == market_catalogue['marketId']
             assert resource.market_name == market_catalogue['marketName']
             assert resource.total_matched == market_catalogue['totalMatched']
