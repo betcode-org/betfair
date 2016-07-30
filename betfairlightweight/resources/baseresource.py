@@ -16,7 +16,7 @@ class BaseResource:
 
     def __init__(self, **kwargs):
         self.datetime_sent = kwargs.pop('date_time_sent', None)
-        self.datetime_created = datetime.datetime.now()
+        self.datetime_created = datetime.datetime.utcnow()
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
         self.set_attributes(**kwargs)
 

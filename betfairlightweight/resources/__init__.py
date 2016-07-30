@@ -6,5 +6,6 @@ from .bettingresources import (
     MarketTypeResult,
     CountryResult,
     VenueResult,
-    MarketCatalogue
+    MarketCatalogue,
+    MarketBook
 )
