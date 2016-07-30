@@ -213,3 +213,39 @@ class BettingResourcesTest(unittest.TestCase):
                 assert resource.runners[runner['selectionId']].ex.traded_volume == runner['ex'].get('tradedVolume')
                 # print(resource.runners[runner['selectionId']].orders)
                 # print(resource.runners[runner['selectionId']].matches)
+
+    def test_current_orders(self):
+        mock_response = create_mock_json('tests/resources/list_current_orders.json')
+        current_orders = mock_response.json().get('result')
+        resource = resources.CurrentOrders(date_time_sent=self.DATE_TIME_SENT,
+                                           **current_orders)
+        assert resource.datetime_sent == self.DATE_TIME_SENT
+        assert len(resource.orders) == len(current_orders.get('currentOrders'))
+
+        for current_order in current_orders.get('currentOrders'):
+            assert resource.orders[0].bet_id == current_order['betId']
+
+    def test_cleared_orders(self):
+        mock_response = create_mock_json('tests/resources/list_cleared_orders.json')
+        cleared_orders = mock_response.json().get('result')
+        resource = resources.ClearedOrders(date_time_sent=self.DATE_TIME_SENT,
+                                           **cleared_orders)
+        assert resource.datetime_sent == self.DATE_TIME_SENT
+        assert len(resource.orders) == len(cleared_orders.get('clearedOrders'))
+
+        for cleared_order in cleared_orders.get('clearedOrders'):
+            assert resource.orders[0].bet_id == cleared_order['betId']
+
+    def test_market_profit_loss(self):
+        mock_response = create_mock_json('tests/resources/list_market_profit_and_loss.json')
+        market_profits = mock_response.json().get('result')
+
+        for market_profit in market_profits:
+            resource = resources.MarketProfitLoss(date_time_sent=self.DATE_TIME_SENT,
+                                               **market_profit)
+
+            assert resource.datetime_sent == self.DATE_TIME_SENT
+            assert resource.market_id == market_profit['marketId']
+            assert resource.commission_applied == market_profit.get('commissionApplied')
+
+            assert len(resource.profit_and_losses) == len(market_profit['profitAndLosses'])

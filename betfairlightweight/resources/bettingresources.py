@@ -304,3 +304,120 @@ class MarketBook(BaseResource):
         dict_attributes = {
             'runners': 'selectionId'
         }
+
+
+class PriceSize(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'price_size'
+        attributes = {
+            'price': 'price',
+            'size': 'size'
+        }
+
+
+class CurrentOrder(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'orders'
+        attributes = {
+            'betId': 'bet_id',
+            'averagePriceMatched': 'average_price_matched',
+            'bspLiability': 'bsp_liability',
+            'handicap': 'handicap',
+            'marketId': 'market_id',
+            'matchedDate': 'matched_date',
+            'orderType': 'order_type',
+            'persistenceType': 'persistence_type',
+            'placedDate': 'placed_date',
+            'regulatorCode': 'regulator_code',
+            'selectionId': 'selection_id',
+            'side': 'side',
+            'sizeCancelled': 'size_cancelled',
+            'sizeLapsed': 'size_lapsed',
+            'sizeMatched': 'size_matched',
+            'sizeRemaining': 'size_remaining',
+            'sizeVoided': 'size_voided',
+            'status': 'status'
+        }
+        sub_resources = {
+            'priceSize': PriceSize
+        }
+        datetime_attributes = (
+            'placedDate',
+            'matchedDate'
+        )
+
+
+class CurrentOrders(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'current_orders'
+        attributes = {
+            'moreAvailable': 'more_available'
+        }
+        sub_resources = {
+            'currentOrders': CurrentOrder
+        }
+
+
+class ClearedOrder(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'orders'
+        attributes = {
+            'betId': 'bet_id',
+            'betCount': 'bet_count',
+            'betOutcome': 'bet_outcome',
+            'eventId': 'event_id',
+            'eventTypeId': 'event_type_id',
+            'handicap': 'handicap',
+            'lastMatchedDate': 'last_matched_date',
+            'marketId': 'market_id',
+            'orderType': 'order_type',
+            'persistenceType': 'persistence_type',
+            'placedDate': 'placed_date',
+            'priceMatched': 'price_matched',
+            'priceReduced': 'price_reduced',
+            'priceRequested': 'price_requested',
+            'profit': 'profit',
+            'selectionId': 'selection_id',
+            'settledDate': 'settled_date',
+            'side': 'side',
+            'sizeSettled': 'size_settled'
+        }
+        datetime_attributes = (
+            'placedDate',
+            'lastMatchedDate',
+            'settledDate'
+        )
+
+
+class ClearedOrders(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'cleared_orders'
+        attributes = {
+            'moreAvailable': 'more_available'
+        }
+        sub_resources = {
+            'clearedOrders': ClearedOrder
+        }
+
+
+class ProfitAndLosses(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'profit_and_losses'
+        attributes = {
+            'selectionId': 'selection_id',
+            'ifWin': 'if_win',
+            'ifLose': 'if_lose',
+            'ifPlace': 'if_place'
+        }
+
+
+class MarketProfitLoss(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'market_profit_loss'
+        attributes = {
+            'marketId': 'market_id',
+            'commissionApplied': 'commission_applied'
+        }
+        sub_resources = {
+            'profitAndLosses': ProfitAndLosses
+        }
