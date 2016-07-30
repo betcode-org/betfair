@@ -7,5 +7,8 @@ from .bettingresources import (
     CountryResult,
     VenueResult,
     MarketCatalogue,
-    MarketBook
+    MarketBook,
+    CurrentOrders,
+    ClearedOrders,
+    MarketProfitLoss
 )
