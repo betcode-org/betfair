@@ -296,3 +296,22 @@ class BettingResourcesTest(unittest.TestCase):
 
             assert resource.instruction_reports[0].instruction.bet_id == order['instruction']['betId']
             assert resource.instruction_reports[0].instruction.size_reduction == order['instruction'].get('sizeReduction')
+
+    def test_update_orders(self):
+        mock_response = create_mock_json('tests/resources/update_orders.json')
+        update_orders = mock_response.json().get('result')
+        resource = resources.UpdateOrders(date_time_sent=self.DATE_TIME_SENT,
+                                          **update_orders)
+        assert resource.datetime_sent == self.DATE_TIME_SENT
+        assert len(resource.instruction_reports) == len(update_orders.get('instructionReports'))
+
+        for order in update_orders.get('instructionReports'):
+            pass
+
+    def test_replace_orders(self):
+        mock_response = create_mock_json('tests/resources/replace_orders.json')
+        replace_orders = mock_response.json().get('result')
+        resource = resources.ReplaceOrders(date_time_sent=self.DATE_TIME_SENT,
+                                          **replace_orders)
+        assert resource.datetime_sent == self.DATE_TIME_SENT
+        # assert len(resource.instruction_reports) == len(replace_orders.get('instructionReports'))

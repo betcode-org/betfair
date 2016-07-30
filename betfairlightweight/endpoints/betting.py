@@ -91,3 +91,15 @@ class Betting(BaseEndpoint):
         method = '%s%s' % (self.URI, 'cancelOrders')
         response = self.request(method, params)
         return self.process_response(response.json(), resources.CancelOrders, date_time_sent)
+
+    def update_orders(self, params=None):
+        date_time_sent = datetime.datetime.utcnow()
+        method = '%s%s' % (self.URI, 'updateOrders')
+        response = self.request(method, params)
+        return self.process_response(response.json(), resources.UpdateOrders, date_time_sent)
+
+    def replace_orders(self, params=None):
+        date_time_sent = datetime.datetime.utcnow()
+        method = '%s%s' % (self.URI, 'replaceOrders')
+        response = self.request(method, params)
+        return self.process_response(response.json(), resources.ReplaceOrders, date_time_sent)

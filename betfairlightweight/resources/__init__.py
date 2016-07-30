@@ -12,5 +12,7 @@ from .bettingresources import (
     ClearedOrders,
     MarketProfitLoss,
     PlaceOrders,
-    CancelOrders
+    CancelOrders,
+    UpdateOrders,
+    ReplaceOrders
 )
