@@ -8,8 +8,8 @@ class KeepAlive(BaseEndpoint):
 
     _error = KeepAliveError
 
-    def __call__(self):
-        response = self.request()
+    def __call__(self, session=None):
+        response = self.request(session=session)
 
         response_json = response.json()
         self.client.set_session_token(response_json.get('token'))

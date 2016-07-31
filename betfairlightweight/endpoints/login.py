@@ -8,8 +8,8 @@ class Login(BaseEndpoint):
 
     _error = LoginError
 
-    def __call__(self):
-        response = self.request(self.url)
+    def __call__(self, session=None):
+        response = self.request(self.url, session=session)
 
         response_json = response.json()
         self.client.set_session_token(response_json.get('sessionToken'))

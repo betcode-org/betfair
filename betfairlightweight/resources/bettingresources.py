@@ -449,7 +449,7 @@ class PlaceOrderInstruction(BaseResource):
 
 class PlaceOrderInstructionReports(BaseResource):
     class Meta(BaseResource.Meta):
-        identifier = 'instruction_reports'
+        identifier = 'place_instruction_reports'
         attributes = {
             'status': 'status',
             'betId': 'bet_id',
@@ -470,7 +470,10 @@ class PlaceOrders(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'place_orders'
         attributes = {
-            'customerRef': 'customer_ref'
+            'marketId': 'market_id',
+            'status': 'status',
+            'customerRef': 'customer_ref',
+            'errorCode': 'error_code'
         }
         sub_resources = {
             'instructionReports': PlaceOrderInstructionReports
@@ -488,7 +491,7 @@ class CancelOrderInstruction(BaseResource):
 
 class CancelOrderInstructionReports(BaseResource):
     class Meta(BaseResource.Meta):
-        identifier = 'instruction_reports'
+        identifier = 'cancel_instruction_reports'
         attributes = {
             'status': 'status',
             'sizeCancelled': 'size_cancelled',
@@ -507,8 +510,10 @@ class CancelOrders(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'cancel_orders'
         attributes = {
+            'marketId': 'market_id',
             'status': 'status',
-            'customerRef': 'customer_ref'
+            'customerRef': 'customer_ref',
+            'errorCode': 'error_code'
         }
         sub_resources = {
             'instructionReports': CancelOrderInstructionReports
@@ -526,10 +531,10 @@ class UpdateOrderInstruction(BaseResource):
 
 class UpdateOrderInstructionReports(BaseResource):
     class Meta(BaseResource.Meta):
-        identifier = 'instruction_reports'
+        identifier = 'update_instruction_reports'
         attributes = {
             'status': 'status',
-            'errorCode': 'CancelOrderInstruction',
+            'errorCode': 'error_code',
         }
         sub_resources = {
             'instruction': UpdateOrderInstruction
@@ -540,8 +545,10 @@ class UpdateOrders(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'update_orders'
         attributes = {
+            'marketId': 'market_id',
             'status': 'status',
-            'customerRef': 'customer_ref'
+            'customerRef': 'customer_ref',
+            'errorCode': 'error_code'
         }
         sub_resources = {
             'instructionReports': UpdateOrderInstructionReports
@@ -550,7 +557,7 @@ class UpdateOrders(BaseResource):
 
 class ReplaceOrderInstructionReports(BaseResource):
     class Meta(BaseResource.Meta):
-        identifier = 'instruction_reports'
+        identifier = 'replace_instruction_reports'
         attributes = {
             'status': 'status',
             'errorCode': 'CancelOrderInstruction',
@@ -565,8 +572,10 @@ class ReplaceOrders(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'replace_orders'
         attributes = {
+            'marketId': 'market_id',
             'status': 'status',
-            'customerRef': 'customer_ref'
+            'customerRef': 'customer_ref',
+            'errorCode': 'error_code'
         }
         sub_resources = {
             'instructionReports': ReplaceOrderInstructionReports

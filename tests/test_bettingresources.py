@@ -260,25 +260,29 @@ class BettingResourcesTest(unittest.TestCase):
         resource = resources.PlaceOrders(date_time_sent=self.DATE_TIME_SENT,
                                         **place_orders)
         assert resource.datetime_sent == self.DATE_TIME_SENT
-        assert len(resource.instruction_reports) == len(place_orders.get('instructionReports'))
+        assert resource.market_id == place_orders['marketId']
+        assert resource.status == place_orders['status']
+        assert resource.customer_ref == place_orders.get('customerRef')
+        assert resource.error_code == place_orders.get('errorCode')
+        assert len(resource.place_instruction_reports) == len(place_orders.get('instructionReports'))
 
         for order in place_orders.get('instructionReports'):
-            assert resource.instruction_reports[0].size_matched == order['sizeMatched']
-            assert resource.instruction_reports[0].status == order['status']
-            assert resource.instruction_reports[0].bet_id == order['betId']
-            assert resource.instruction_reports[0].average_price_matched == order['averagePriceMatched']
-            assert resource.instruction_reports[0].placed_date == datetime.datetime.strptime(
+            assert resource.place_instruction_reports[0].size_matched == order['sizeMatched']
+            assert resource.place_instruction_reports[0].status == order['status']
+            assert resource.place_instruction_reports[0].bet_id == order['betId']
+            assert resource.place_instruction_reports[0].average_price_matched == order['averagePriceMatched']
+            assert resource.place_instruction_reports[0].placed_date == datetime.datetime.strptime(
                         order['placedDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
-            assert resource.instruction_reports[0].error_code == order.get('errorCode')
+            assert resource.place_instruction_reports[0].error_code == order.get('errorCode')
 
-            assert resource.instruction_reports[0].instruction.selection_id == order['instruction']['selectionId']
-            assert resource.instruction_reports[0].instruction.side == order['instruction']['side']
-            assert resource.instruction_reports[0].instruction.order_type == order['instruction']['orderType']
-            assert resource.instruction_reports[0].instruction.handicap == order['instruction']['handicap']
+            assert resource.place_instruction_reports[0].instruction.selection_id == order['instruction']['selectionId']
+            assert resource.place_instruction_reports[0].instruction.side == order['instruction']['side']
+            assert resource.place_instruction_reports[0].instruction.order_type == order['instruction']['orderType']
+            assert resource.place_instruction_reports[0].instruction.handicap == order['instruction']['handicap']
 
-            assert resource.instruction_reports[0].instruction.order.persistence_type == order['instruction']['limitOrder']['persistenceType']
-            assert resource.instruction_reports[0].instruction.order.price == order['instruction']['limitOrder']['price']
-            assert resource.instruction_reports[0].instruction.order.size == order['instruction']['limitOrder']['size']
+            assert resource.place_instruction_reports[0].instruction.order.persistence_type == order['instruction']['limitOrder']['persistenceType']
+            assert resource.place_instruction_reports[0].instruction.order.price == order['instruction']['limitOrder']['price']
+            assert resource.place_instruction_reports[0].instruction.order.size == order['instruction']['limitOrder']['size']
 
     def test_cancel_orders(self):
         mock_response = create_mock_json('tests/resources/cancel_orders.json')
@@ -286,16 +290,20 @@ class BettingResourcesTest(unittest.TestCase):
         resource = resources.CancelOrders(date_time_sent=self.DATE_TIME_SENT,
                                           **cancel_orders)
         assert resource.datetime_sent == self.DATE_TIME_SENT
-        assert len(resource.instruction_reports) == len(cancel_orders.get('instructionReports'))
+        assert resource.market_id == cancel_orders['marketId']
+        assert resource.status == cancel_orders['status']
+        assert resource.customer_ref == cancel_orders.get('customerRef')
+        assert resource.error_code == cancel_orders.get('errorCode')
+        assert len(resource.cancel_instruction_reports) == len(cancel_orders.get('instructionReports'))
 
         for order in cancel_orders.get('instructionReports'):
-            assert resource.instruction_reports[0].size_cancelled == order['sizeCancelled']
-            assert resource.instruction_reports[0].status == order['status']
-            assert resource.instruction_reports[0].cancelled_date == datetime.datetime.strptime(
+            assert resource.cancel_instruction_reports[0].size_cancelled == order['sizeCancelled']
+            assert resource.cancel_instruction_reports[0].status == order['status']
+            assert resource.cancel_instruction_reports[0].cancelled_date == datetime.datetime.strptime(
                         order['cancelledDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
-            assert resource.instruction_reports[0].instruction.bet_id == order['instruction']['betId']
-            assert resource.instruction_reports[0].instruction.size_reduction == order['instruction'].get('sizeReduction')
+            assert resource.cancel_instruction_reports[0].instruction.bet_id == order['instruction']['betId']
+            assert resource.cancel_instruction_reports[0].instruction.size_reduction == order['instruction'].get('sizeReduction')
 
     def test_update_orders(self):
         mock_response = create_mock_json('tests/resources/update_orders.json')
@@ -303,7 +311,11 @@ class BettingResourcesTest(unittest.TestCase):
         resource = resources.UpdateOrders(date_time_sent=self.DATE_TIME_SENT,
                                           **update_orders)
         assert resource.datetime_sent == self.DATE_TIME_SENT
-        assert len(resource.instruction_reports) == len(update_orders.get('instructionReports'))
+        assert resource.market_id == update_orders['marketId']
+        assert resource.status == update_orders['status']
+        assert resource.customer_ref == update_orders.get('customerRef')
+        assert resource.error_code == update_orders.get('errorCode')
+        assert len(resource.update_instruction_reports) == len(update_orders.get('instructionReports'))
 
         for order in update_orders.get('instructionReports'):
             pass
@@ -314,4 +326,8 @@ class BettingResourcesTest(unittest.TestCase):
         resource = resources.ReplaceOrders(date_time_sent=self.DATE_TIME_SENT,
                                           **replace_orders)
         assert resource.datetime_sent == self.DATE_TIME_SENT
+        assert resource.market_id == replace_orders['marketId']
+        assert resource.status == replace_orders['status']
+        assert resource.customer_ref == replace_orders.get('customerRef')
+        assert resource.error_code == replace_orders.get('errorCode')
         # assert len(resource.instruction_reports) == len(replace_orders.get('instructionReports'))
