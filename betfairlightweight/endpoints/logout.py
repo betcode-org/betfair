@@ -8,8 +8,8 @@ class Logout(BaseEndpoint):
 
     _error = LogoutError
 
-    def __call__(self):
-        response = self.request()
+    def __call__(self, session=None):
+        response = self.request(session=session)
 
         response_json = response.json()
         self.client.client_logout()
