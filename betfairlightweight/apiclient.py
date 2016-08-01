@@ -15,7 +15,7 @@ class APIClient(BaseClient):
         self.betting = Betting(self)
         self.account = Account(self)
         self.navigation = Navigation(self)
-        self.score = Scores(self)
+        self.scores = Scores(self)
         self.in_play_service = InPlayService(self)
 
 
