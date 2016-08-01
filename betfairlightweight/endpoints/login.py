@@ -10,15 +10,12 @@ class Login(BaseEndpoint):
 
     def __call__(self, session=None):
         response = self.request(self.url, session=session)
-
         response_json = response.json()
         self.client.set_session_token(response_json.get('sessionToken'))
         return response_json
 
     def request(self, method=None, params=None, session=None):
-        if not session:
-            session = self.client.session
-
+        session = session or self.client.session
         try:
             response = session.post(self.url, data=self.data, headers=self.client.login_headers, cert=self.client.cert)
         except ConnectionError:

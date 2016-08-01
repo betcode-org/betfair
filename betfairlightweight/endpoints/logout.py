@@ -10,14 +10,12 @@ class Logout(BaseEndpoint):
 
     def __call__(self, session=None):
         response = self.request(session=session)
-
         response_json = response.json()
         self.client.client_logout()
         return response_json
 
     def request(self, payload=None, params=None, session=None):
-        if not session:
-            session = self.client.session
+        session = session or self.client.session
         try:
             response = session.post(self.url, headers=self.client.keep_alive_headers, cert=self.client.cert)
         except ConnectionError:

@@ -15,15 +15,13 @@ class BaseEndpoint:
         """
         self.client = parent
 
-    def request(self, method, params=None, session=None):
+    def request(self, method, params, session):
         """
         :param method: Betfair api-ng method to be used.
         :param params: Params to be used in request, if None will use MockParams Enum.  # todo
         :param session: Requests session to be used, reduces latency.
         """
-        if not session:
-            session = self.client.session
-
+        session = session or self.client.session
         request = self.create_req(method, params)
         try:
             response = session.post(self.url, data=request, headers=self.client.request_headers,
