@@ -22,6 +22,12 @@ class BaseClient:
             australia='https://api-au.betfair.com/exchange/betting/json-rpc/v1',
     )
 
+    NAVIGATION_URLS = collections.defaultdict(
+            lambda: 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
+            spain='https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json',
+            italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
+    )
+
     def __init__(self, username, password, app_key=None, certs=None, locale=None):
         """
         :param username:
@@ -46,6 +52,7 @@ class BaseClient:
         self.session_token = None
         self.identity_uri = self.IDENTITY_URLS[locale]
         self.api_uri = self.API_URLS[locale]
+        self.navigation_uri = self.NAVIGATION_URLS[locale]
 
         self.get_app_key()
 
@@ -85,11 +92,7 @@ class BaseClient:
         """Looks in /certs/ for betfair certs.
         :return: Path of cert files
         """
-        if self.certs:
-            certs = self.certs
-        else:
-            certs = '/certs/'
-
+        certs = self.certs or '/certs/'
         cert_paths = []
         ssl_path = os.path.join(os.pardir, certs)
         try:
