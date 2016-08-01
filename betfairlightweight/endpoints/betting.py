@@ -103,9 +103,3 @@ class Betting(BaseEndpoint):
         method = '%s%s' % (self.URI, 'replaceOrders')
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.ReplaceOrders, date_time_sent)
-
-    def list_race_details(self, params=None, session=None):
-        date_time_sent = datetime.datetime.utcnow()
-        method = '%s%s' % (self.URI, 'listRaceDetails')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.RaceDetails, date_time_sent)

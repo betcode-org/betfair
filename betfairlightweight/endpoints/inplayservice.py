@@ -1,11 +1,12 @@
 import json
+import datetime
 
 from ..exceptions import APIError
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
 
 
-class Score(BaseEndpoint):
+class InPlayService(BaseEndpoint):
 
     def list_scores(self, params, session=None):
         return self.request(params=params, session=session)
@@ -35,8 +36,9 @@ class Score(BaseEndpoint):
                 'productType': 'EXCHANGE',
                 'regionCode': 'UK',
                 'locale': 'en_GB'}
-        return json.dumps(data)
+        print(data)
+        return data
 
     @property
     def url(self):
-        return 'https://www.betfair.com/inplayservice/v1/scoresAndBroadcast'
+        return 'https://www.betfair.com/inplayservice/v1.1'
