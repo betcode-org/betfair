@@ -19,7 +19,7 @@ class Navigation(BaseEndpoint):
             raise APIError(None, method, params, e)
 
         check_status_code(response)
-        return response
+        return response.json()
 
     @property
     def url(self):

@@ -14,8 +14,7 @@ from .bettingresources import (
     PlaceOrders,
     CancelOrders,
     UpdateOrders,
-    ReplaceOrders,
-    RaceDetails
+    ReplaceOrders
 )
 
 from .accountresources import (
@@ -24,4 +23,8 @@ from .accountresources import (
     AccountStatementResult,
     CurrencyRate,
     TransferFunds
+)
+
+from .scoresresources import (
+    RaceDetails
 )
