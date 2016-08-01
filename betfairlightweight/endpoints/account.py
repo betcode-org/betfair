@@ -38,3 +38,7 @@ class Account(BaseEndpoint):
         method = '%s%s' % (self.URI, 'transferFunds')
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.TransferFunds, date_time_sent)
+
+    @property
+    def url(self):
+        return '%s%s' % (self.client.api_uri, 'account/json-rpc/v1')
