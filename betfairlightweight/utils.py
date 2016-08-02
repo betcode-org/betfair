@@ -1,6 +1,6 @@
 import datetime
 
-from .parse.enums import MockParams
+from .enums import MockParams
 from .exceptions import SessionTokenError, StatusCodeError
 
 
@@ -16,22 +16,22 @@ def check_status_code(response, codes=None):
         raise StatusCodeError(response.status_code)
 
 
-def api_request(func):
-    """Checks params and provides MockParams if None
-
-    :param func: api request function.
-    """
-    api_request_name = func.__name__
-
-    def _api_request(api, params=None, session=None, exchange=None):
-        if not api.check_session:
-            raise SessionTokenError()
-        if not params:
-            params = MockParams[api_request_name].value
-            return func(api, params, session, exchange)
-        else:
-            return func(api, params, session, exchange)
-    return _api_request
+# def api_request(func):
+#     """Checks params and provides MockParams if None
+#
+#     :param func: api request function.
+#     """
+#     api_request_name = func.__name__
+#
+#     def _api_request(api, params=None, session=None, exchange=None):
+#         if not api.check_session:
+#             raise SessionTokenError()
+#         if not params:
+#             params = MockParams[api_request_name].value
+#             return func(api, params, session, exchange)
+#         else:
+#             return func(api, params, session, exchange)
+#     return _api_request
 
 
 # def process_request(request, session, model):

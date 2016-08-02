@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from ..parse.apiparsestreaming import MarketBookCache, OrderBookCache
+from ..resources.streamingresources import MarketBookCache, OrderBookCache
 from ..utils import strp_betfair_integer_time
 
 
