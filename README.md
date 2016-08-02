@@ -2,7 +2,11 @@
 
 # betfairlightweight
 
-Lightweight, super fast python wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and some account operations.
+Lightweight, super fast python wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations.
+
+python3 only.
+
+[Documentation](https://github.com/LiamPa/betfairlightweight/wiki)
 
 # setup
 
@@ -26,7 +30,7 @@ trading.login()
 
 
 ```python
-event_types = trading.list_event_types()
+event_types = trading.betting.list_event_types()
 ```
 
 
@@ -38,7 +42,7 @@ Stream listener is able to hold multiple streams, hold a cache and push market_b
 [Exchange Stream API](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
 ```python
-betfair_socket = trading.create_stream(2, description='Test Market Socket')
+betfair_socket = trading.streaming.create_stream(2, description='Test Market Socket')
 betfair_socket.start(True)
 betfair_socket.authenticate()
 betfair_socket.subscribe_to_markets({'eventTypeIds': ['7'],
