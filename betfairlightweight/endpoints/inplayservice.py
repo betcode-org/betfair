@@ -36,7 +36,6 @@ class InPlayService(BaseEndpoint):
                 'productType': 'EXCHANGE',
                 'regionCode': 'UK',
                 'locale': 'en_GB'}
-        print(data)
         return data
 
     @property

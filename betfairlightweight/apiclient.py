@@ -1,6 +1,6 @@
 from .baseclient import BaseClient
 from .endpoints import (
-    Login, Logout, KeepAlive, Betting, Account, Navigation, Scores, InPlayService
+    Login, Logout, KeepAlive, Betting, Account, Navigation, Scores, InPlayService, Streaming
 )
 
 
@@ -16,6 +16,7 @@ class APIClient(BaseClient):
         self.account = Account(self)
         self.navigation = Navigation(self)
         self.scores = Scores(self)
+        self.streaming = Streaming(self)
         self.in_play_service = InPlayService(self)
 
 
