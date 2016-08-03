@@ -1,5 +1,6 @@
 import datetime
 
+from .baseresource import BaseResource
 from .bettingresources import MarketBook, CurrentOrders
 from ..utils import strp_betfair_time, strp_betfair_integer_time
 from ..enums import (
@@ -17,7 +18,7 @@ class BetfairModel:
         :param raw_response:
             Raw response from requests.
         """
-        self.date_time_received = datetime.datetime.now()
+        self.date_time_received = datetime.datetime.utcnow()
         self.date_time_sent = date_time_sent
         self.raw_response = raw_response
 
@@ -69,7 +70,7 @@ class MarketBookCache(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, market_book):
         super(MarketBookCache, self).__init__(date_time_sent, raw_response)
-        self.date_updated = datetime.datetime.now()
+        self.date_updated = datetime.datetime.utcnow()
         self.market_id = market_book.get('id')
         self.image = market_book.get('img')
         self.total_matched = market_book.get('tv')
@@ -115,7 +116,7 @@ class MarketBookCache(BetfairModel):
                         runner.atl.update_virtual_depth(new_data.get('bdatl'))
                 else:
                     self.runners[new_data.get('id')] = RunnerBook(new_data)
-        self.date_updated = datetime.datetime.now()
+        self.date_updated = datetime.datetime.utcnow()
 
     @property
     def create_market_book(self):
@@ -368,14 +369,14 @@ class OrderBookCache(BetfairModel):
 
     def __init__(self, date_time_sent, raw_response, order_book):
         super(OrderBookCache, self).__init__(date_time_sent, raw_response)
-        self.date_updated = datetime.datetime.now()
+        self.date_updated = datetime.datetime.utcnow()
         self.market_id = order_book.get('id')
         self.closed = order_book.get('closed')
         self.runners = {order_changes.get('id'): OrderBookRunner(order_changes, self.market_id)
                         for order_changes in order_book.get('orc')}
 
     def update_cache(self, order_book):
-        self.date_updated = datetime.datetime.now()
+        self.date_updated = datetime.datetime.utcnow()
         for order_changes in order_book.get('orc'):
             selection_id = order_changes['id']
             runner = self.runners.get(selection_id)

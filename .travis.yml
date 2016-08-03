@@ -12,7 +12,6 @@ install:
   - pip install coveralls
 
 script:
-
     coverage run --source=betfairlightweight setup.py test
 
 after_success:
