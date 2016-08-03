@@ -13,29 +13,36 @@ class LoginTest(unittest.TestCase):
         client = APIClient('username', 'password', 'app_key', 'UK')
         self.login = Login(client)
 
-    def test_call(self):
-        pass
+    @mock.patch('betfairlightweight.endpoints.login.Login.request')
+    def test_call(self, mock_response):
+        mock = create_mock_json('tests/resources/login_success.json')
+        mock_response.return_value = mock
+        response = self.login()
 
-    # @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
-    # @mock.patch('betfairlightweight.baseclient.BaseClient.login_headers')
-    # @mock.patch('betfairlightweight.apiclient.requests.post')
-    # def test_request(self, mock_post, mock_login_headers, mock_cert):
-    #     mock_response = create_mock_json('tests/resources/login_success.json')
-    #     mock_post.return_value = mock_response
-    #
-    #     mock_headers = mock.Mock()
-    #     mock_headers.return_value = {}
-    #     mock_login_headers.return_value = mock_headers
-    #
-    #     mock_client_cert = mock.Mock()
-    #     mock_client_cert.return_value = []
-    #     mock_cert.return_value = mock_client_cert
-    #
-    #     url = None
-    #     response = self.login.request()
-    #
-    #     mock_post.assert_called_once_with(url, data=None, headers=mock_login_headers, cert=mock_cert)
-    #     assert response == mock_response
+        assert response == mock.json()
+        assert self.login.client.session_token == mock.json().get('sessionToken')
+
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.login_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request(self, mock_post, mock_login_headers, mock_cert):
+        mock_response = create_mock_json('tests/resources/login_success.json')
+        mock_post.return_value = mock_response
+
+        mock_headers = mock.Mock()
+        mock_headers.return_value = {}
+        mock_login_headers.return_value = mock_headers
+
+        mock_client_cert = mock.Mock()
+        mock_client_cert.return_value = []
+        mock_cert.return_value = mock_client_cert
+
+        url = 'https://identitysso.betfair.com/api/certlogin'
+        response = self.login.request()
+
+        mock_post.assert_called_once_with(url, data='username=username&password=password',
+                                          headers=mock_login_headers, cert=mock_cert)
+        assert response == mock_response
 
     def test_login_error_handler(self):
         mock_response = create_mock_json('tests/resources/login_success.json')

@@ -22,8 +22,8 @@ class Stream:
         self._updates_processed = 0
         self._on_creation()
 
-        self.time_created = datetime.datetime.now()
-        self.time_updated = datetime.datetime.now()
+        self.time_created = datetime.datetime.utcnow()
+        self.time_updated = datetime.datetime.utcnow()
 
     def on_heartbeat(self, data):
         self._update_clk(data)
@@ -107,8 +107,8 @@ class Stream:
             self._initial_clk = data.get('initialClk')
         if clk:
             self._clk = data.get('clk')
-        self.time_updated = datetime.datetime.now()
+        self.time_updated = datetime.datetime.utcnow()
 
     @staticmethod
     def _calc_latency(publish_time):
-        return (datetime.datetime.now() - strp_betfair_integer_time(publish_time)).total_seconds()
+        return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()

@@ -49,3 +49,4 @@ class BettingTest(unittest.TestCase):
         self.betting.transaction_limit = 2
         with self.assertRaises(TransactionCountError):
             self.betting.check_transaction_count(params)
+        assert self.betting.transaction_count == 6
