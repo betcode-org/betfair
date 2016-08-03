@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=version_0_3_0)](https://travis-ci.org/LiamPa/betfairlightweight)
+[![Build Status](https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=version_0_3_0)](https://travis-ci.org/LiamPa/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/LiamPa/betfairlightweight/badge.svg?branch=version_0_3_0)](https://coveralls.io/github/LiamPa/betfairlightweight?branch=version_0_3_0)
 
 # betfairlightweight
 
