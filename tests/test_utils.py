@@ -62,6 +62,9 @@ class UtilsTest(unittest.TestCase):
         back_c = price_check(data, 2, 'price')
         assert not back_c
 
+        back_d = price_check(data, 0, 'pricer')
+        assert not back_d
+
         data = []
-        back_a = price_check(data, 0, 'price')
-        assert not back_a
+        back_e = price_check(data, 0, 'price')
+        assert not back_e

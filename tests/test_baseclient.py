@@ -2,7 +2,7 @@ import datetime
 import unittest
 
 from betfairlightweight import APIClient
-from betfairlightweight.exceptions import AppKeyError
+from betfairlightweight.exceptions import AppKeyError, CertsError
 
 
 class BaseClientInit(unittest.TestCase):
@@ -64,11 +64,11 @@ class BaseClientInit(unittest.TestCase):
 class BaseClientTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = APIClient('username', 'password', 'app_key')
+        self.client = APIClient('username', 'password', 'app_key', '/fail/')
 
     def test_client_certs(self):
-        # assert client.cert == ['/certs/client-2048.crt', '/certs/client-2048.key']  # fails travis
-        pass
+        with self.assertRaises(CertsError):
+            print(self.client.cert)
 
     def test_set_session_token(self):
         self.client.set_session_token('session_token')
