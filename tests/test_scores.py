@@ -23,4 +23,4 @@ class ScoresTest(unittest.TestCase):
         self.scores = Scores(client)
 
     def test_url(self):
-        assert '%s%s' % (self.scores.client.api_uri, 'scores/json-rpc/v1')
+        assert self.scores.url == '%s%s' % (self.scores.client.api_uri, 'scores/json-rpc/v1')
