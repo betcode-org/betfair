@@ -1,7 +1,7 @@
 import datetime
 
 from .enums import MockParams
-from .exceptions import SessionTokenError, StatusCodeError
+from .exceptions import StatusCodeError
 
 
 def check_status_code(response, codes=None):
@@ -73,8 +73,6 @@ def strp_betfair_integer_time(datetime_integer):
     try:
         return datetime.datetime.fromtimestamp(datetime_integer / 1e3)
     except TypeError:
-        return None
-    except ValueError:
         return None
 
 

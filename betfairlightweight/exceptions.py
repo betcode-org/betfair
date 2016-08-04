@@ -80,17 +80,17 @@ class LogoutError(BetfairError):
         super(LogoutError, self).__init__(message)
 
 
-class ParameterError(BetfairError):
-    """Exception raised if parameter is incorrect"""
-
-    def __init__(self, api_method):
-        message = 'API method %s must have parameters' % api_method
-        super(ParameterError, self).__init__(message)
-
-
-class SessionTokenError(BetfairError):
-    """Exception raised if session_token is None"""
-
-    def __init__(self):
-        message = 'APIClient must have session_token'
-        super(SessionTokenError, self).__init__(message)
+# class ParameterError(BetfairError):
+#     """Exception raised if parameter is incorrect"""
+#
+#     def __init__(self, api_method):
+#         message = 'API method %s must have parameters' % api_method
+#         super(ParameterError, self).__init__(message)
+#
+#
+# class SessionTokenError(BetfairError):
+#     """Exception raised if session_token is None"""
+#
+#     def __init__(self):
+#         message = 'APIClient must have session_token'
+#         super(SessionTokenError, self).__init__(message)
