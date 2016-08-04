@@ -1,0 +1,96 @@
+
+
+class BetfairError(Exception):
+    """Base class for Betfair Errors"""
+    pass
+
+
+class AppKeyError(BetfairError):
+    """Exception raised if appkey is not found"""
+
+    def __init__(self, username):
+        message = 'AppKey not found in .bashprofile for %s, add or pass to APIClient' % username
+        super(AppKeyError, self).__init__(message)
+
+
+class CertsError(BetfairError):
+    """Exception raised if certs folder is not found"""
+
+    def __init__(self):
+        message = 'Certificate folder not found in /certs/'
+        super(CertsError, self).__init__(message)
+
+
+class StatusCodeError(BetfairError):
+
+    def __init__(self, status_code):
+        message = 'Status code error: %s' % status_code
+        super(StatusCodeError, self).__init__(message)
+
+
+class LoginError(BetfairError):
+    """Exception raised if sessionToken is not found"""
+
+    def __init__(self, response):
+        login_status = response.get('loginStatus', 'UNKNOWN')
+        message = 'API login: %s' % login_status
+        super(LoginError, self).__init__(message)
+
+
+class KeepAliveError(BetfairError):
+    """Exception raised if keep alive fails"""
+
+    def __init__(self, response):
+        keep_alive_status = response.get('status', 'UNKNOWN')
+        keep_alive_error = response.get('error')
+        message = 'API keepAlive %s: %s' % (keep_alive_status, keep_alive_error)
+        super(KeepAliveError, self).__init__(message)
+
+
+class APIError(BetfairError):
+    """Exception raised if error is found"""
+
+    def __init__(self, response, method=None, params=None, exception=None):
+        if response:
+            # code = response['error']['code']
+            error_data = response['error']
+            # params
+            # method
+            message = error_data
+        else:
+            message = exception
+        super(APIError, self).__init__(message)
+
+
+class TransactionCountError(BetfairError):
+    """Exception raised if transaction count is greater than 999"""
+
+    def __init__(self, transaction_count):
+        message = 'Transaction limit reached: %s' % transaction_count
+        super(TransactionCountError, self).__init__(message)
+
+
+class LogoutError(BetfairError):
+    """Exception raised if logout errors"""
+
+    def __init__(self, response):
+        logout_status = response.get('status', 'UNKNOWN')
+        logout_error = response.get('error')
+        message = 'API keepAlive %s: %s' % (logout_status, logout_error)
+        super(LogoutError, self).__init__(message)
+
+
+# class ParameterError(BetfairError):
+#     """Exception raised if parameter is incorrect"""
+#
+#     def __init__(self, api_method):
+#         message = 'API method %s must have parameters' % api_method
+#         super(ParameterError, self).__init__(message)
+#
+#
+# class SessionTokenError(BetfairError):
+#     """Exception raised if session_token is None"""
+#
+#     def __init__(self):
+#         message = 'APIClient must have session_token'
+#         super(SessionTokenError, self).__init__(message)

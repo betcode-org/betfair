@@ -8,27 +8,13 @@ INSTALL_REQUIRES = [
     'requests>=2.6.2',
 ]
 TEST_REQUIRES = [
-    'pytest'
+    'mock'
 ]
-
-
-class PyTest(TestCommand):
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = ['--verbose']
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-        errcode = pytest.main(self.test_args)
-        sys.exit(errcode)
-
 
 setup(
         name='betfairlightweight',
         version=__version__,
-        packages=['betfairlightweight', 'betfairlightweight.errors', 'betfairlightweight.parse',
+        packages=['betfairlightweight', 'betfairlightweight.endpoints', 'betfairlightweight.resources',
                   'betfairlightweight.streaming'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         install_requires=INSTALL_REQUIRES,
@@ -38,7 +24,5 @@ setup(
         author='liampauling',
         author_email='',
         description='Lightweight python wrapper for Betfair API-NG',
-        test_suite='tests',
-        tests_require=TEST_REQUIRES,
-        cmdclass={'test': PyTest}
+        test_suite='tests'
 )
