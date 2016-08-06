@@ -1,6 +1,7 @@
 import datetime
 
 from .baseresource import BaseResource
+from ..utils import price_check
 
 
 class EventType(BaseResource):
@@ -273,6 +274,15 @@ class RunnerBook(BaseResource):
             'removalDate',
         )
 
+    @property
+    def runner_tuple_creator_simple(self):
+        try:
+            back_a = price_check(self.ex.available_to_back, 0, 'price')
+            lay_a = price_check(self.ex.available_to_lay, 0, 'price')
+        except AttributeError:
+            (back_a, lay_a) = (None, None)
+        return self.selection_id, back_a, lay_a, self.last_price_traded, self.total_matched
+
 
 class MarketBook(BaseResource):
     class Meta(BaseResource.Meta):
@@ -304,6 +314,39 @@ class MarketBook(BaseResource):
         dict_attributes = {
             'runners': 'selectionId'
         }
+
+    @property
+    def market_tuple_creator(self):
+        csv_tuple = (self.date_time_received, self.market_id,
+                     self.cross_matching, self.status, self.inplay, self.total_matched,
+                     self.overround, self.underround)
+        return csv_tuple
+
+    @property
+    def overround(self, over=0.0):
+        for runner in self.runners.values():
+            if runner.status == 'ACTIVE':
+                try:
+                    back_a = price_check(runner.ex.available_to_back, 0, 'price')
+                    if back_a:
+                        over += 1 / back_a
+                    else:
+                        over += 1
+                except AttributeError:
+                    return None
+        return round(over, 4)
+
+    @property
+    def underround(self, under=0.0):
+        for runner in self.runners.values():
+            if runner.status == 'ACTIVE':
+                try:
+                    lay_a = price_check(runner.ex.available_to_lay, 0, 'price')
+                    if lay_a:
+                        under += 1 / lay_a
+                except AttributeError:
+                    return None
+        return round(under, 4)
 
 
 class PriceSize(BaseResource):

@@ -81,6 +81,10 @@ class BaseResource:
         if self.datetime_sent:
             return (self.datetime_created-self.datetime_sent).total_seconds()
 
+    @property
+    def sub_resource_identifiers(self):
+        return [sub_resource.Meta.identifier for sub_resource in self.Meta.sub_resources.values()]
+
     def __getattr__(self, item):
         """
         If item is an expected attribute in Meta
@@ -88,5 +92,10 @@ class BaseResource:
         """
         if item in self.Meta.attributes.values():
             return
+        elif item in self.sub_resource_identifiers:
+            return []
         else:
             return self.__getattribute__(item)
+
+    def __str__(self):
+        return self.__class__.__name__
