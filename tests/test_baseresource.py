@@ -114,3 +114,11 @@ class BaseResourceInit(unittest.TestCase):
         assert len(model_response.runners) == 2
         assert model_response.runners.get(1234) is not None
         assert model_response.runners[1234].name == 'second'
+
+    def test_sub_resource_identifiers(self):
+        base_resource = BaseResource()
+        assert base_resource.sub_resource_identifiers == []
+
+    def test_str(self):
+        base_resource = BaseResource()
+        assert str(base_resource) == 'BaseResource'
