@@ -1,5 +1,6 @@
 import datetime
 import unittest
+import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import AppKeyError, CertsError
@@ -70,6 +71,11 @@ class BaseClientTest(unittest.TestCase):
         with self.assertRaises(CertsError):
             print(self.client.cert)
 
+    @mock.patch('betfairlightweight.baseclient.os.listdir')
+    def test_client_certs_mocked(self, mock_listdir):
+        mock_listdir.return_value = ['.DS_Store', 'client-2048.crt', 'client-2048.key']
+        assert self.client.cert == ['/fail/client-2048.crt', '/fail/client-2048.key']
+
     def test_set_session_token(self):
         self.client.set_session_token('session_token')
         assert self.client.session_token == 'session_token'
@@ -80,6 +86,12 @@ class BaseClientTest(unittest.TestCase):
         with self.assertRaises(AppKeyError):
             self.client.get_app_key()
         self.client.app_key = 'app_key'
+
+    @mock.patch('betfairlightweight.baseclient.os.environ')
+    def test_get_app_key_mocked(self, mocked_environ):
+        self.client.app_key = None
+        mocked_environ.__get__ = mock.Mock(return_value='app_key')
+        assert self.client.get_app_key() is None
 
     def test_client_headers(self):
         assert self.client.login_headers == {'X-Application': 1,
