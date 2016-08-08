@@ -17,6 +17,7 @@ class BaseResource:
     def __init__(self, **kwargs):
         self.datetime_sent = kwargs.pop('date_time_sent', None)
         self.datetime_created = datetime.datetime.utcnow()
+        self.datetime_updated = datetime.datetime.utcnow()
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
         self.set_attributes(**kwargs)
 
@@ -93,7 +94,7 @@ class BaseResource:
         if item in self.Meta.attributes.values():
             return
         elif item in self.sub_resource_identifiers:
-            return []
+            return {}
         else:
             return self.__getattribute__(item)
 
