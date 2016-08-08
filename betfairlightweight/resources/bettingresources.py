@@ -317,7 +317,7 @@ class MarketBook(BaseResource):
 
     @property
     def market_tuple_creator(self):
-        csv_tuple = (self.date_time_received, self.market_id,
+        csv_tuple = (self.datetime_created, self.market_id,
                      self.cross_matching, self.status, self.inplay, self.total_matched,
                      self.overround, self.underround)
         return csv_tuple
