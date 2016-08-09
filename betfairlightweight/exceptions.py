@@ -95,3 +95,10 @@ class LogoutError(BetfairError):
 #     def __init__(self):
 #         message = 'APIClient must have session_token'
 #         super(SessionTokenError, self).__init__(message)
+
+
+class SocketError(BetfairError):
+    """Exception raised if error with socket"""
+
+    def __init__(self, message):
+        super(SocketError, self).__init__(message)
