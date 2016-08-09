@@ -42,6 +42,7 @@ class MarketDefinitionRunner(BaseResource):
             'sortPriority': 'sort_priority',
             'status': 'status'
         }
+        data_type = {}
 
 
 class MarketDefinition(BaseResource):
@@ -87,36 +88,6 @@ class MarketDefinition(BaseResource):
         }
 
 
-# class RunnerBookTraded(BaseResource):
-#     class Meta(BaseResource.Meta):
-#         identifier = 'traded'
-#         attributes = {
-#             'traded': 'traded'
-#         }
-#
-#     def update(self, traded_update):
-#         if not traded_update:
-#             print('empty ladder', traded_update)
-#             self.traded = traded_update
-#         for trade_update in traded_update:
-#             updated = False
-#             for (count, trade) in enumerate(self.traded):
-#                 if trade[0] == trade_update[0]:
-#                     self.traded[count] = trade_update
-#                     updated = True
-#                     break
-#             if not updated:
-#                 self.traded.append(trade_update)
-#
-#     @property
-#     def traded_volume(self):
-#         if self.traded:
-#             return [{'price': volume[0], 'size': volume[1]}
-#                     for volume in sorted(self.traded, key=lambda x: x[0])]
-#         else:
-#             return []
-
-
 class RunnerBook(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'runners'
@@ -138,15 +109,62 @@ class RunnerBook(BaseResource):
             'spn': 'spn',
             'spf': 'spf',
         }
-        # sub_resources = {
-        #     'trd': RunnerBookTraded,
-        # }
+        data_type = {}
+
+    def update_traded(self, traded_update):
+        if not traded_update:
+            print('empty ladder', traded_update)
+            self.trd = traded_update
+        for trade_update in traded_update:
+            updated = False
+            for (count, trade) in enumerate(self.trd):
+                if trade[0] == trade_update[0]:
+                    self.trd[count] = trade_update
+                    updated = True
+                    break
+            if not updated:
+                self.trd.append(trade_update)
+
+    @property
+    def traded_volume(self):
+        if self.trd:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.trd, key=lambda x: x[0])]
+        else:
+            return []
+
+    @property
+    def available_to_back(self):
+        if self.atb:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.atb, key=lambda x: x[0], reverse=True)]
+        elif self.bdatb:
+            return [{'price': volume[1], 'size': volume[2]}
+                    for volume in sorted(self.bdatb, key=lambda x: x[0])]
+        elif self.batb:
+            return [{'price': volume[1], 'size': volume[2]}
+                    for volume in sorted(self.batb, key=lambda x: x[0])]
+        else:
+            return []
+
+    @property
+    def available_to_lay(self):
+        if self.atl:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.atl, key=lambda x: x[0])]
+        elif self.bdatl:
+            return [{'price': volume[1], 'size': volume[2]}
+                    for volume in sorted(self.bdatl, key=lambda x: x[0])]
+        elif self.batl:
+            return [{'price': volume[1], 'size': volume[2]}
+                    for volume in sorted(self.batl, key=lambda x: x[0])]
+        return []
 
     def serialise(self, status):
         return {'status': status,
-                # 'ex': {'tradedVolume': self.traded.traded_volume,
-                #        'availableToBack': self.atb.available_to_back,
-                #        'availableToLay': self.atl.available_to_lay},
+                'ex': {'tradedVolume': self.traded_volume,
+                       'availableToBack': self.available_to_back,
+                       'availableToLay': self.available_to_lay},
                 'adjustmentFactor': None,
                 'lastPriceTraded': self.last_price_traded,
                 'handicap': None,
@@ -185,7 +203,7 @@ class MarketBookCache(BaseResource):
             for new_data in runner_change:
                 selection_id = new_data.get('id')
                 runner = self.runners.get(selection_id)
-                # if runner:
+                if runner:
                 #     if new_data.get('ltp'):
                 #         runner.last_price_traded = new_data.get('ltp')
                 #     if new_data.get('tv'):
@@ -194,8 +212,8 @@ class MarketBookCache(BaseResource):
                 #         runner.spn = new_data.get('spn')
                 #     if new_data.get('spf'):
                 #         runner.spf = new_data.get('spf')
-                #     if new_data.get('trd'):
-                #         runner.traded.update(new_data.get('trd'))
+                    if new_data.get('trd'):
+                        runner.update_traded(new_data.get('trd'))
                 #     if new_data.get('atb'):
                 #         runner.atb.update_full_depth(new_data.get('atb'))
                 #     if new_data.get('atl'):
