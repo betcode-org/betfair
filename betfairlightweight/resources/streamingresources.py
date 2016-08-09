@@ -2,36 +2,9 @@ import datetime
 
 from .baseresource import BaseResource
 from .bettingresources import MarketBook, CurrentOrders
-from ..utils import strp_betfair_time, strp_betfair_integer_time
 from ..enums import (
     StreamingOrderType, StreamingPersistenceType, StreamingSide, StreamingStatus
 )
-
-
-class BetfairModel:
-    """ Base class for parsing betfair response """
-
-    def __init__(self, date_time_sent, raw_response):
-        """
-        :param date_time_sent:
-            Datetime request sent.
-        :param raw_response:
-            Raw response from requests.
-        """
-        self.date_time_received = datetime.datetime.utcnow()
-        self.date_time_sent = date_time_sent
-        self.raw_response = raw_response
-
-    @property
-    def elapsed_time(self):
-        return (self.date_time_received-self.date_time_sent).total_seconds()
-
-    def __str__(self):
-        return self.__class__.__name__
-
-    def __eq__(self, other):
-        if self.raw_response == other.raw_response:
-            return True
 
 
 class MarketDefinitionRunner(BaseResource):
@@ -267,16 +240,19 @@ class RunnerBook(BaseResource):
         return []
 
     def serialise(self, status):
-        return {'status': status,
-                'ex': {'tradedVolume': self.serialise_traded_volume,
-                       'availableToBack': self.serialise_available_to_back,
-                       'availableToLay': self.serialise_available_to_lay},
-                'adjustmentFactor': None,
-                'lastPriceTraded': self.last_price_traded,
-                'handicap': None,
-                'totalMatched': self.total_matched,
-                'selectionId': self.selection_id
-                }
+        return {
+            'status': status,
+            'ex': {
+                'tradedVolume': self.serialise_traded_volume,
+                'availableToBack': self.serialise_available_to_back,
+                'availableToLay': self.serialise_available_to_lay
+            },
+            'adjustmentFactor': None,
+            'lastPriceTraded': self.last_price_traded,
+            'handicap': None,
+            'totalMatched': self.total_matched,
+            'selectionId': self.selection_id
+        }
 
 
 class MarketBookCache(BaseResource):
@@ -343,39 +319,161 @@ class MarketBookCache(BaseResource):
     @property
     def serialise(self):
         """Creates standard market book json response
-
-        :return: Json market book object
         """
-        return {'marketId': self.market_id,
-                'totalAvailable': None,
-                'betDelay': self.market_definition.bet_delay,
-                'version': self.market_definition.version,
-                'complete': self.market_definition.complete,
-                'numberOfRunners': None,
-                'runnersVoidable': self.market_definition.runners_voidable,
-                'totalMatched': self.total_matched,
-                'status': self.market_definition.status,
-                'bspReconciled': self.market_definition.bsp_reconciled,
-                'isMarketDataDelayed': None,
-                'lastMatchTime': None,
-                'crossMatching': self.market_definition.cross_matching,
-                'inplay': self.market_definition.in_play,
-                'numberOfWinners': self.market_definition.number_of_winners,
-                'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-                'runners': [runner.serialise(self.market_definition.runners.get(runner.selection_id).status)
-                            for runner in self.runners.values()]
-                }
+        return {
+            'marketId': self.market_id,
+            'totalAvailable': None,
+            'betDelay': self.market_definition.bet_delay,
+            'version': self.market_definition.version,
+            'complete': self.market_definition.complete,
+            'numberOfRunners': None,
+            'runnersVoidable': self.market_definition.runners_voidable,
+            'totalMatched': self.total_matched,
+            'status': self.market_definition.status,
+            'bspReconciled': self.market_definition.bsp_reconciled,
+            'isMarketDataDelayed': None,
+            'lastMatchTime': None,
+            'crossMatching': self.market_definition.cross_matching,
+            'inplay': self.market_definition.in_play,
+            'numberOfWinners': self.market_definition.number_of_winners,
+            'numberOfActiveRunners': self.market_definition.number_of_active_runners,
+            'runners': [runner.serialise(self.market_definition.runners.get(runner.selection_id).status)
+                        for runner in self.runners.values()]
+        }
 
 
-class OrderBookCache(BetfairModel):
+class UnmatchedOrder(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'unmatched_orders'
+        attributes = {
+            'id': 'bet_id',
+            'p': 'price',
+            'bsp': 'bsp_liability',
+            'side': 'side',
+            'status': 'status',
+            'pt': 'persistence_type',
+            'ot': 'order_type',
+            'pd': 'placed_date',
+            'md': 'matched_date',
+            'avp': 'average_price_matched',
+            'sm': 'size_matched',
+            'sr': 'size_remaining',
+            'sl': 'size_lapsed',
+            'sc': 'size_cancelled',
+            'sv': 'size_voided',
+            'rac': 'regulator_auth_code',
+            'rc': 'regulator_code',
+        }
+        datetime_attributes = (
+            'pd',
+            'md'
+        )
+        data_type = {}
 
-    def __init__(self, date_time_sent, raw_response, order_book):
-        super(OrderBookCache, self).__init__(date_time_sent, raw_response)
-        self.date_updated = datetime.datetime.utcnow()
-        self.market_id = order_book.get('id')
-        self.closed = order_book.get('closed')
-        self.runners = {order_changes.get('id'): OrderBookRunner(order_changes, self.market_id)
-                        for order_changes in order_book.get('orc')}
+    def serialise(self, market_id, selection_id):
+        return {
+            "averagePriceMatched": self.average_price_matched,
+            "betId": self.bet_id,
+            "bspLiability": self.bsp_liability,
+            "handicap": 0.0,
+            "marketId": market_id,
+            "orderType": StreamingOrderType[self.order_type].value,
+            "persistenceType": StreamingPersistenceType[self.persistence_type].value,
+            "placedDate": self.placed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "priceSize": {
+                "price": self.price,
+                "size": self.size
+            },
+            "regulatorCode": self.regulator_code,
+            "selectionId": selection_id,
+            "side": StreamingSide[self.side].value,
+            "sizeCancelled": self.size_cancelled,
+            "sizeLapsed": self.size_lapsed,
+            "sizeMatched": self.size_matched,
+            "sizeRemaining": self.size_remaining,
+            "sizeVoided": self.size_voided,
+            "status": StreamingStatus[self.status].value
+        }
+
+
+# class MatchedLays:
+#
+#     class Meta(BaseResource.Meta):
+#         identifier = 'matched_lays'
+#         attributes = {
+#             'matche': 'selection_id'
+#         }
+#
+#     def __init__(self, matched):
+#         self.price = matched[0]
+#         self.size = matched[1]
+
+
+class OrderBookRunner(BaseResource):
+
+    class Meta(BaseResource.Meta):
+        identifier = 'runners'
+        attributes = {
+            'market_id': 'market_id',
+            'id': 'selection_id',
+            'ml': 'matched_lays',
+            'mb': 'matched_backs',
+        }
+        sub_resources = {
+            'uo': UnmatchedOrder
+        }
+        dict_attributes = {
+            'uo': 'id'
+        }
+        data_type = {}
+
+    def update_matched_lays(self, matched_lays):
+        for matched_lay in matched_lays:
+            updated = False
+            (price, size) = matched_lay
+            for matches in self.matched_lays:
+                if matches.price == price:
+                    matches.size = size
+                    updated = True
+                    break
+            # if not updated:
+            #     self.matched_lays.append(Match(matched_lay))
+
+    def update_unmatched_backs(self, matched_backs):
+        for matched_back in matched_backs:
+            updated = False
+            (price, size) = matched_back
+            for matches in self.matched_backs:
+                if matches.price == price:
+                    matches.size = size
+                    updated = True
+                    break
+            # if not updated:
+            #     self.matched_backs.append(Match(matched_back))
+
+    def update_unmatched(self, unmatched_orders):
+        for unmatched_order in unmatched_orders:
+            self.unmatched_orders[unmatched_order.get('id')] = UnmatchedOrder(**unmatched_order)
+
+    @property
+    def serialise_orders(self):
+        return [order.serialise(self.market_id, self.selection_id) for order in self.unmatched_orders.values()]
+
+
+class OrderBookCache(BaseResource):
+
+    class Meta(BaseResource.Meta):
+        identifier = 'order_book_cache'
+        attributes = {
+            'id': 'market_id',
+            'closed': 'closed'
+        }
+        sub_resources = {
+            'orc': OrderBookRunner
+        }
+        dict_attributes = {
+            'orc': 'id'
+        }
 
     def update_cache(self, order_book):
         self.date_updated = datetime.datetime.utcnow()
@@ -387,112 +485,18 @@ class OrderBookCache(BetfairModel):
                 runner.update_unmatched_backs(order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
-                self.runners[order_changes.get('id')] = OrderBookRunner(order_changes, self.market_id)
+                self.runners[order_changes.get('id')] = OrderBookRunner(**order_changes)
+
+    @property
+    def create_order_book(self):
+        return CurrentOrders(**self.serialise)
 
     @property
     def serialise(self):
         orders = []
         for runner in self.runners.values():
             orders.extend(runner.serialise_orders)
-        return {"currentOrders": orders,
-                "moreAvailable": False}
-
-    @property
-    def create_order_book(self):
-        return CurrentOrders(**self.serialise)
-
-
-class OrderBookRunner:
-
-    def __init__(self, order_changes, market_id):
-        self.selection_id = order_changes.get('id')
-        self.market_id = market_id
-        self.matched_lays = [Match(matched) for matched in order_changes.get('ml', [])]
-        self.matched_backs = [Match(matched) for matched in order_changes.get('mb', [])]
-        self.unmatched_orders = {unmatched_order.get('id'): UnmatchedOrder(unmatched_order)
-                                 for unmatched_order in order_changes.get('uo', [])}
-
-    def update_matched_lays(self, matched_lays):
-        for matched_lay in matched_lays:
-            updated = False
-            (price, size) = matched_lay
-            for matches in self.matched_lays:
-                if matches.price == price:
-                    matches.size = size
-                    updated = True
-                    break
-            if not updated:
-                self.matched_lays.append(Match(matched_lay))
-
-    def update_unmatched_backs(self, matched_backs):
-        for matched_back in matched_backs:
-            updated = False
-            (price, size) = matched_back
-            for matches in self.matched_backs:
-                if matches.price == price:
-                    matches.size = size
-                    updated = True
-                    break
-            if not updated:
-                self.matched_backs.append(Match(matched_back))
-
-    def update_unmatched(self, unmatched_orders):
-        for unmatched_order in unmatched_orders:
-            self.unmatched_orders[unmatched_order.get('id')] = UnmatchedOrder(unmatched_order)
-
-    @property
-    def serialise_orders(self):
-        return [order.serialise(self.market_id, self.selection_id) for order in self.unmatched_orders.values()]
-
-
-class Match:
-
-    def __init__(self, matched):
-        self.price = matched[0]
-        self.size = matched[1]
-
-
-class UnmatchedOrder:
-
-    def __init__(self, unmatched_order):
-        self.bet_id = unmatched_order.get('id')
-        self.price = unmatched_order.get('p')
-        self.size = unmatched_order.get('s')
-        self.bsp_liability = unmatched_order.get('bsp', 0.0)
-        self.side = unmatched_order.get('side')
-        self.status = unmatched_order.get('status')
-        self.persistence_type = unmatched_order.get('pt')
-        self.order_type = unmatched_order.get('ot')
-        self.placed_date = strp_betfair_integer_time(unmatched_order.get('pd'))
-        self.matched_date = strp_betfair_integer_time(unmatched_order.get('md'))
-        self.average_price_matched = unmatched_order.get('avp', 0.0)
-        self.size_matched = unmatched_order.get('sm')
-        self.size_remaining = unmatched_order.get('sr')
-        self.size_lapsed = unmatched_order.get('sl')
-        self.size_cancelled = unmatched_order.get('sc')
-        self.size_voided = unmatched_order.get('sv')
-        self.regulator_auth_code = unmatched_order.get('rac')
-        self.regulator_code = unmatched_order.get('rc')
-
-    def serialise(self, market_id, selection_id):
-        return {"averagePriceMatched": self.average_price_matched,
-                "betId": self.bet_id,
-                "bspLiability": self.bsp_liability,
-                "handicap": 0.0,
-                "marketId": market_id,
-                "orderType": StreamingOrderType[self.order_type].value,
-                "persistenceType": StreamingPersistenceType[self.persistence_type].value,
-                "placedDate": self.placed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "priceSize": {
-                    "price": self.price,
-                    "size": self.size
-                },
-                "regulatorCode": self.regulator_code,
-                "selectionId": selection_id,
-                "side": StreamingSide[self.side].value,
-                "sizeCancelled": self.size_cancelled,
-                "sizeLapsed": self.size_lapsed,
-                "sizeMatched": self.size_matched,
-                "sizeRemaining": self.size_remaining,
-                "sizeVoided": self.size_voided,
-                "status": StreamingStatus[self.status].value}
+        return {
+            "currentOrders": orders,
+            "moreAvailable": False
+        }
