@@ -87,7 +87,7 @@ class Stream:
             if order_book_cache:
                 order_book_cache.update_cache(order_book)
             else:
-                self._caches[market_id] = OrderBookCache(publish_time, order_book, order_book)
+                self._caches[market_id] = OrderBookCache(**order_book)
                 logging.info('[Stream: %s] %s added' % (self.unique_id, market_id))
             self._updates_processed += 1
 
