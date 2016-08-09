@@ -159,6 +159,7 @@ class RunnerCatalogue(BaseResource):
             'handicap': 'handicap',
             'metadata': 'metadata'
         }
+        data_type = {}
 
 
 class MarketCatalogue(BaseResource):
@@ -273,6 +274,7 @@ class RunnerBook(BaseResource):
         datetime_attributes = (
             'removalDate',
         )
+        data_type = {}
 
     @property
     def runner_tuple_creator_simple(self):

@@ -13,6 +13,7 @@ class BaseResource:
         sub_resources = {}  # sub resources are complex attributes within a resource
         datetime_attributes = ()  # Attributes to be converted to datetime
         dict_attributes = {}  # Attributes to be converted into a dictionary
+        data_type = []
 
     def __init__(self, **kwargs):
         self.datetime_sent = kwargs.pop('date_time_sent', None)
@@ -83,8 +84,10 @@ class BaseResource:
             return (self.datetime_created-self.datetime_sent).total_seconds()
 
     @property
-    def sub_resource_identifiers(self):
-        return [sub_resource.Meta.identifier for sub_resource in self.Meta.sub_resources.values()]
+    def sub_resource_mapping(self):
+        return {self.Meta.sub_resources[sub_resource].Meta.identifier:
+                self.Meta.sub_resources[sub_resource].Meta.data_type
+                for sub_resource in self.Meta.sub_resources}
 
     def __getattr__(self, item):
         """
@@ -93,8 +96,8 @@ class BaseResource:
         """
         if item in self.Meta.attributes.values():
             return
-        elif item in self.sub_resource_identifiers:
-            return {}
+        elif item in self.sub_resource_mapping:
+            return self.sub_resource_mapping.get(item)
         else:
             return self.__getattribute__(item)
 

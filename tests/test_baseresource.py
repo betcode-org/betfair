@@ -14,6 +14,7 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource.Meta.attributes == {'id': 'id'}
         assert base_resource.Meta.sub_resources == {}
         assert base_resource.Meta.datetime_attributes == ()
+        assert base_resource.Meta.data_type == []
         assert base_resource.datetime_sent is None
         assert base_resource.datetime_created is not None
         assert base_resource.datetime_updated is not None
@@ -49,6 +50,19 @@ class BaseResourceInit(unittest.TestCase):
 
         with self.assertRaises(AttributeError):
             assert model_response.not_in
+
+    def test_data_empty_sub(self):
+        mock_response = create_mock_json('tests/resources/base_resource.json')
+
+        class Model(BaseResource):
+            class Meta(BaseResource.Meta):
+                identifier = 'model'
+                attributes = {'id': 'main_id'}
+                sub_resources = {'SubId': BaseResource}
+
+        model_response = Model(**mock_response.json())
+        assert model_response.main_id == 12345
+        assert model_response.id == []
 
     def test_strip_datetime(self):
         base_resource = BaseResource()
@@ -118,7 +132,7 @@ class BaseResourceInit(unittest.TestCase):
 
     def test_sub_resource_identifiers(self):
         base_resource = BaseResource()
-        assert base_resource.sub_resource_identifiers == []
+        assert base_resource.sub_resource_mapping == {}
 
     def test_str(self):
         base_resource = BaseResource()
