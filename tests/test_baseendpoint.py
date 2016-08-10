@@ -32,31 +32,24 @@ class BaseEndPointTest(unittest.TestCase):
                    'id': 1}
         assert self.base_endpoint.create_req('test', 'empty') == json.dumps(payload)
 
-    # @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
-    # @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
-    # @mock.patch('betfairlightweight.utils.check_status_code')
-    # @mock.patch('betfairlightweight.baseclient.requests.post')
-    # def test_request(self, mock_post, mock_check_status_code, mock_request_headers, mock_cert):
-    #     mock_post.return_value = {}
-    #
-    #     # mock_checker = mock.Mock()
-    #     mock_check_status_code.return_value = None
-    #     # mock_checker = mock_check
-    #
-    #     mock_headers = mock.Mock()
-    #     mock_headers.return_value = {}
-    #     mock_request_headers.return_value = mock_headers
-    #
-    #     mock_client_cert = mock.Mock()
-    #     mock_client_cert.return_value = []
-    #     mock_cert.return_value = mock_client_cert
-    #
-    #     url = 'https://api.betfair.com/exchange/betting/json-rpc/v1'
-    #     response = self.base_endpoint.request(None, None, None)
-    #
-    #     mock_post.assert_called_once_with(url, data=None,
-    #                                       headers=mock_request_headers, cert=mock_cert)
-    #     # assert response == mock_response
+    @mock.patch('betfairlightweight.endpoints.baseendpoint.BaseEndpoint.create_req')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request(self, mock_post, mock_request_headers, mock_cert, mock_create_req):
+        mock_response = create_mock_json('tests/resources/login_success.json')
+        mock_post.return_value = mock_response
+
+        mock_client_cert = mock.Mock()
+        mock_client_cert.return_value = []
+        mock_cert.return_value = mock_client_cert
+
+        url = 'https://api.betfair.com/exchange/betting/json-rpc/v1'
+        response = self.base_endpoint.request(None, None, None)
+
+        mock_post.assert_called_once_with(url, data=mock_create_req(),
+                                          headers=mock_request_headers, timeout=(3.05, 12))
+        assert response == mock_response
 
     def test_base_endpoint_error_handler(self):
         mock_response = create_mock_json('tests/resources/base_endpoint_success.json')
