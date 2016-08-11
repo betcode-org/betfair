@@ -468,13 +468,17 @@ class MarketProfitLoss(BaseResource):
         }
 
 
-class PlaceOrderLimit(BaseResource):
+class LimitOrder(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'order'
         attributes = {
             'persistenceType': 'persistence_type',
             'price': 'price',
-            'size': 'size'
+            'size': 'size',
+            'timeInForce': 'time_in_force',
+            'minFillSize': 'min_fill_size',
+            'betTargetType': 'bet_target_type',
+            'betTargetSize': 'bet_target_size'
         }
 
 
@@ -488,7 +492,7 @@ class PlaceOrderInstruction(BaseResource):
             'handicap': 'handicap'
         }
         sub_resources = {
-            'limitOrder': PlaceOrderLimit
+            'limitOrder': LimitOrder
         }
 
 
@@ -541,7 +545,7 @@ class CancelOrderInstructionReports(BaseResource):
             'status': 'status',
             'sizeCancelled': 'size_cancelled',
             'cancelledDate': 'cancelled_date',
-            'errorCode': 'CancelOrderInstruction',
+            'errorCode': 'error_code',
         }
         sub_resources = {
             'instruction': CancelOrderInstruction
