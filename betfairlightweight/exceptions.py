@@ -53,11 +53,11 @@ class APIError(BetfairError):
     def __init__(self, response, method=None, params=None, exception=None):
         if response:
             error_data = response.get('error')
-            message = '%s \n   Params: %s \n   Exception: %s \n    Error: %s \n    Full Response: %s' % (
+            message = '%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s' % (
                 method, params, exception, error_data, response
             )
         else:
-            message = '%s \n    Params: %s \n   Exception: %s' % (
+            message = '%s \nParams: %s \nException: %s' % (
                 method, params, exception
             )
         super(APIError, self).__init__(message)
