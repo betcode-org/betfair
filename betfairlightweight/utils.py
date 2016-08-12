@@ -34,24 +34,6 @@ def check_status_code(response, codes=None):
 #     return _api_request
 
 
-# def process_request(request, session, model):
-#     """Processes response based on response_result
-#
-#     :param request: __call__ function from apimethod.
-#     :param session: Requests session, if provided.
-#     :param model: Model to be used for parsing.
-#     """
-#     (response, raw_response, sent) = request(session)
-#     if isinstance(response, list):
-#         return [model(sent, raw_response, x) for x in response]
-#     else:
-#         response_result = response.get('result')
-#         if isinstance(response_result, list):
-#             return [model(sent, raw_response, x) for x in response_result]
-#         else:
-#             return model(sent, raw_response, response_result)
-
-
 def strp_betfair_time(datetime_string):
     """Converts Betfair string to datetime.
 
