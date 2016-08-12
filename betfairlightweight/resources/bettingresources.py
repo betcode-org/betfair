@@ -81,7 +81,7 @@ class Event(BaseResource):
             'venue': 'venue'
         }
         datetime_attributes = (
-            'openDate',
+            'openDate'
         )
 
 
@@ -179,7 +179,7 @@ class MarketCatalogue(BaseResource):
             'runners': RunnerCatalogue
         }
         datetime_attributes = (
-            'marketStartTime',
+            'marketStartTime'
         )
         dict_attributes = {
             'runners': 'selectionId'
@@ -249,7 +249,7 @@ class RunnerBookMatch(BaseResource):
             'matchDate': 'match_date'
         }
         datetime_attributes = (
-            'matchDate',
+            'matchDate'
         )
 
 
@@ -522,6 +522,7 @@ class PlaceOrders(BaseResource):
             'marketId': 'market_id',
             'status': 'status',
             'customerRef': 'customer_ref',
+            'customerStrategyRef': 'customer_strategy_ref',
             'errorCode': 'error_code'
         }
         sub_resources = {
@@ -609,7 +610,7 @@ class ReplaceOrderInstructionReports(BaseResource):
         identifier = 'replace_instruction_reports'
         attributes = {
             'status': 'status',
-            'errorCode': 'CancelOrderInstruction',
+            'errorCode': 'error_code',
         }
         sub_resources = {
             'cancelInstructionReport': CancelOrderInstructionReports,
