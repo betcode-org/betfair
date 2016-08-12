@@ -81,7 +81,7 @@ class Event(BaseResource):
             'venue': 'venue'
         }
         datetime_attributes = (
-            'openDate',
+            'openDate'
         )
 
 
@@ -159,6 +159,7 @@ class RunnerCatalogue(BaseResource):
             'handicap': 'handicap',
             'metadata': 'metadata'
         }
+        data_type = {}
 
 
 class MarketCatalogue(BaseResource):
@@ -178,7 +179,7 @@ class MarketCatalogue(BaseResource):
             'runners': RunnerCatalogue
         }
         datetime_attributes = (
-            'marketStartTime',
+            'marketStartTime'
         )
         dict_attributes = {
             'runners': 'selectionId'
@@ -248,7 +249,7 @@ class RunnerBookMatch(BaseResource):
             'matchDate': 'match_date'
         }
         datetime_attributes = (
-            'matchDate',
+            'matchDate'
         )
 
 
@@ -273,6 +274,7 @@ class RunnerBook(BaseResource):
         datetime_attributes = (
             'removalDate',
         )
+        data_type = {}
 
     @property
     def runner_tuple_creator_simple(self):
@@ -466,13 +468,17 @@ class MarketProfitLoss(BaseResource):
         }
 
 
-class PlaceOrderLimit(BaseResource):
+class LimitOrder(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'order'
         attributes = {
             'persistenceType': 'persistence_type',
             'price': 'price',
-            'size': 'size'
+            'size': 'size',
+            'timeInForce': 'time_in_force',
+            'minFillSize': 'min_fill_size',
+            'betTargetType': 'bet_target_type',
+            'betTargetSize': 'bet_target_size'
         }
 
 
@@ -486,7 +492,7 @@ class PlaceOrderInstruction(BaseResource):
             'handicap': 'handicap'
         }
         sub_resources = {
-            'limitOrder': PlaceOrderLimit
+            'limitOrder': LimitOrder
         }
 
 
@@ -516,6 +522,7 @@ class PlaceOrders(BaseResource):
             'marketId': 'market_id',
             'status': 'status',
             'customerRef': 'customer_ref',
+            'customerStrategyRef': 'customer_strategy_ref',
             'errorCode': 'error_code'
         }
         sub_resources = {
@@ -539,7 +546,7 @@ class CancelOrderInstructionReports(BaseResource):
             'status': 'status',
             'sizeCancelled': 'size_cancelled',
             'cancelledDate': 'cancelled_date',
-            'errorCode': 'CancelOrderInstruction',
+            'errorCode': 'error_code',
         }
         sub_resources = {
             'instruction': CancelOrderInstruction
@@ -603,7 +610,7 @@ class ReplaceOrderInstructionReports(BaseResource):
         identifier = 'replace_instruction_reports'
         attributes = {
             'status': 'status',
-            'errorCode': 'CancelOrderInstruction',
+            'errorCode': 'error_code',
         }
         sub_resources = {
             'cancelInstructionReport': CancelOrderInstructionReports,

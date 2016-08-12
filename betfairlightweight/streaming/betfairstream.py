@@ -5,6 +5,8 @@ import logging
 import socket
 import ssl
 
+from ..exceptions import SocketError
+
 
 class BetfairStream:
     """Stream holder, socket connects to betfair,
@@ -118,11 +120,9 @@ class BetfairStream:
                     if received_data:
                         self._data(received_data)
             except socket.timeout:
-                logging.warning('[Connect: %s]: Socket timeout' % self.unique_id)
+                pass
             except socket.error as e:
-                logging.ERROR('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
-                break
-        logging.warning('[Connect: %s]: _read_loop ended' % self.unique_id)
+                raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,

@@ -65,7 +65,7 @@ class Stream:
         for market_book in market_books:
             market_id = market_book.get('id')
             if market_book.get('img'):
-                self._caches[market_id] = MarketBookCache(publish_time, market_book, market_book)
+                self._caches[market_id] = MarketBookCache(date_time_sent=publish_time, **market_book)
                 logging.debug('[Stream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache = self._caches.get(market_id)
@@ -87,7 +87,7 @@ class Stream:
             if order_book_cache:
                 order_book_cache.update_cache(order_book)
             else:
-                self._caches[market_id] = OrderBookCache(publish_time, order_book, order_book)
+                self._caches[market_id] = OrderBookCache(**order_book)
                 logging.info('[Stream: %s] %s added' % (self.unique_id, market_id))
             self._updates_processed += 1
 
