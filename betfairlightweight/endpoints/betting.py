@@ -132,3 +132,5 @@ class Betting(BaseEndpoint):
         instructions = params.get('instructions')
         if instructions:
             return len(instructions)
+        else:
+            return 0
