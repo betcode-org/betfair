@@ -160,8 +160,6 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.runners[6].sort_priority == 7
             assert resource.runners[6].metadata == {'runnerId': '872710'}
 
-            assert type(resource.time_to_start) is float
-
     def test_market_book(self):
         mock_response = create_mock_json('tests/resources/list_market_book.json')
         market_books = mock_response.json().get('result')
