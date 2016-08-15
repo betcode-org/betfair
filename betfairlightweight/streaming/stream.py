@@ -110,5 +110,5 @@ class Stream:
         self.time_updated = datetime.datetime.utcnow()
 
     @staticmethod
-    def _calc_latency(publish_time):
+    def _calc_latency(publish_time):  # todo gmt /utc?
         return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()
