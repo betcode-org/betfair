@@ -15,7 +15,6 @@ class MarketDefinitionRunner(BaseResource):
             'sortPriority': 'sort_priority',
             'status': 'status'
         }
-        data_type = {}
 
 
 class MarketDefinition(BaseResource):
@@ -56,9 +55,6 @@ class MarketDefinition(BaseResource):
             'openDate',
             'suspendTime'
         )
-        dict_attributes = {
-            'runners': 'id'
-        }
 
 
 class RunnerBook(BaseResource):
@@ -78,7 +74,6 @@ class RunnerBook(BaseResource):
             'spn': 'starting_price_near',
             'spf': 'starting_price_far',
         }
-        data_type = {}
 
     def update_traded(self, traded_update):
         if not traded_update:
@@ -267,9 +262,6 @@ class MarketBookCache(BaseResource):
             'marketDefinition': MarketDefinition,
             'rc': RunnerBook
         }
-        dict_attributes = {
-            'rc': 'id'
-        }
 
     def update_cache(self, market_change):
         market_definition = market_change.get('marketDefinition')
@@ -281,10 +273,11 @@ class MarketBookCache(BaseResource):
             self.total_matched = traded_volume
 
         runner_change = market_change.get('rc')
+        runner_dict = {runner.selection_id: runner for runner in self.runners}
         if runner_change:
             for new_data in runner_change:
                 selection_id = new_data.get('id')
-                runner = self.runners.get(selection_id)
+                runner = runner_dict.get(selection_id)
                 if runner:
                     if new_data.get('ltp'):
                         runner.last_price_traded = new_data.get('ltp')
@@ -309,7 +302,7 @@ class MarketBookCache(BaseResource):
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
                 else:
-                    self.runners[new_data.get('id')] = RunnerBook(**new_data)
+                    runner_dict[new_data.get('id')] = RunnerBook(**new_data)
         self.datetime_updated = datetime.datetime.utcnow()
 
     @property
@@ -320,6 +313,7 @@ class MarketBookCache(BaseResource):
     def serialise(self):
         """Creates standard market book json response
         """
+        market_definition_dict = {runner.id: runner for runner in self.market_definition.runners}
         return {
             'marketId': self.market_id,
             'totalAvailable': None,
@@ -337,8 +331,8 @@ class MarketBookCache(BaseResource):
             'inplay': self.market_definition.in_play,
             'numberOfWinners': self.market_definition.number_of_winners,
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-            'runners': [runner.serialise(self.market_definition.runners.get(runner.selection_id).status)
-                        for runner in self.runners.values()]
+            'runners': [runner.serialise(market_definition_dict.get(runner.selection_id).status)
+                        for runner in self.runners]  # todo 'NoneType' object is not iterable
         }
 
 
@@ -368,7 +362,6 @@ class UnmatchedOrder(BaseResource):
             'pd',
             'md'
         )
-        data_type = {}
 
     def serialise(self, market_id, selection_id):
         return {
@@ -422,10 +415,6 @@ class OrderBookRunner(BaseResource):
         sub_resources = {
             'uo': UnmatchedOrder
         }
-        dict_attributes = {
-            'uo': 'id'
-        }
-        data_type = {}
 
     def update_matched_lays(self, matched_lays):
         for matched_lay in matched_lays:
@@ -457,7 +446,7 @@ class OrderBookRunner(BaseResource):
 
     @property
     def serialise_orders(self):
-        return [order.serialise(self.market_id, self.selection_id) for order in self.unmatched_orders.values()]
+        return [order.serialise(self.market_id, self.selection_id) for order in self.unmatched_orders]
 
 
 class OrderBookCache(BaseResource):
@@ -470,9 +459,6 @@ class OrderBookCache(BaseResource):
         }
         sub_resources = {
             'orc': OrderBookRunner
-        }
-        dict_attributes = {
-            'orc': 'id'
         }
 
     def update_cache(self, order_book):
@@ -494,7 +480,7 @@ class OrderBookCache(BaseResource):
     @property
     def serialise(self):
         orders = []
-        for runner in self.runners.values():
+        for runner in self.runners:
             orders.extend(runner.serialise_orders)
         return {
             "currentOrders": orders,
