@@ -13,7 +13,8 @@ class MarketDefinitionRunner(BaseResource):
         attributes = {
             'id': 'id',
             'sortPriority': 'sort_priority',
-            'status': 'status'
+            'status': 'status',
+            'adjustmentFactor': 'adjustment_factor'
         }
 
 
@@ -43,6 +44,7 @@ class MarketDefinition(BaseResource):
             'openDate': 'open_date',
             'status': 'status',
             'suspendTime': 'suspend_time',
+            'venue': 'venue',
             'timezone': 'timezone',
             'turnInPlayEnabled': 'turn_in_play_enabled',
             'version': 'version',
@@ -299,7 +301,7 @@ class MarketBookCache(BaseResource):
                     if new_data.get('batb'):
                         runner.update_best_available_to_back(new_data.get('batb'))
                     if new_data.get('batl'):
-                        runner.update_update_best_available_to_lay(new_data.get('batl'))
+                        runner.update_best_available_to_lay(new_data.get('batl'))
                     if new_data.get('bdatb'):
                         runner.update_best_display_available_to_back(new_data.get('bdatb'))
                     if new_data.get('bdatl'):

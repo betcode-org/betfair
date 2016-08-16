@@ -48,7 +48,7 @@ def strp_betfair_time(datetime_string):
 
 
 def strp_betfair_integer_time(datetime_integer):
-    """Converts Betfair integer to datetime.
+    """Converts Betfair integer to utc datetime.
 
     :param datetime_integer: Datetime integer.
     """
