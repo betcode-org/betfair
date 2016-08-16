@@ -251,6 +251,8 @@ class RunnerBook(BaseResource):
 
 
 class MarketBookCache(BaseResource):
+    publish_time = None
+
     class Meta(BaseResource.Meta):
         identifier = 'market_book_cache'
         attributes = {
@@ -263,7 +265,8 @@ class MarketBookCache(BaseResource):
             'rc': RunnerBook
         }
 
-    def update_cache(self, market_change):
+    def update_cache(self, market_change, publish_time):
+        self.publish_time = self.strip_datetime(publish_time)
         market_definition = market_change.get('marketDefinition')
         if market_definition:
             self.market_definition = MarketDefinition(**market_definition)
@@ -307,7 +310,7 @@ class MarketBookCache(BaseResource):
 
     @property
     def create_market_book(self):
-        return MarketBook(**self.serialise)
+        return MarketBook(date_time_sent=self.publish_time, **self.serialise)
 
     @property
     def serialise(self):

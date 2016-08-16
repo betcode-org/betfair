@@ -1,4 +1,5 @@
 import datetime
+import json
 
 
 class BaseResource:
@@ -19,6 +20,7 @@ class BaseResource:
         self.datetime_created = now
         self.datetime_updated = now
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
+        self.data = kwargs
         self.set_attributes(**kwargs)
 
     def set_sub_resources(self, **kwargs):
@@ -53,6 +55,9 @@ class BaseResource:
                     value = self.strip_datetime(value) or value
                 setattr(self, self.Meta.attributes[field], value)
 
+    def json(self):
+        return json.dumps(self.data)
+
     @staticmethod
     def strip_datetime(value):
         """
@@ -67,7 +72,7 @@ class BaseResource:
                 return
         elif isinstance(value, int):
             try:
-                return datetime.datetime.fromtimestamp(value / 1e3)
+                return datetime.datetime.utcfromtimestamp(value / 1e3)
             except TypeError:
                 return
             except ValueError:

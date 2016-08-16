@@ -53,7 +53,7 @@ def strp_betfair_integer_time(datetime_integer):
     :param datetime_integer: Datetime integer.
     """
     try:
-        return datetime.datetime.fromtimestamp(datetime_integer / 1e3)
+        return datetime.datetime.utcfromtimestamp(datetime_integer / 1e3)
     except TypeError:
         return None
 
