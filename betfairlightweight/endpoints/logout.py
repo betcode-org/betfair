@@ -1,4 +1,3 @@
-
 from .baseendpoint import BaseEndpoint
 from ..exceptions import LogoutError, APIError
 from ..utils import check_status_code
