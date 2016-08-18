@@ -11,3 +11,6 @@ class RaceDetails(BaseResource):
             'raceStatus': 'race_status',
             'lastUpdated': 'last_updated'
         }
+        datetime_attributes = (
+            'lastUpdated'
+        )

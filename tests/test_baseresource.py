@@ -1,5 +1,6 @@
 import unittest
 import datetime
+import json
 
 from betfairlightweight.resources.baseresource import BaseResource
 
@@ -14,12 +15,12 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource.Meta.attributes == {'id': 'id'}
         assert base_resource.Meta.sub_resources == {}
         assert base_resource.Meta.datetime_attributes == ()
-        assert base_resource.Meta.data_type == []
         assert base_resource.datetime_sent is None
         assert base_resource.datetime_created is not None
         assert base_resource.datetime_updated is not None
         assert base_resource.elapsed_time is None
         assert base_resource.id is None
+        assert base_resource.data == {}
         with self.assertRaises(AttributeError):
             assert base_resource.not_in
 
@@ -31,6 +32,13 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource.datetime_sent == datetime.datetime(2003, 8, 4, 12, 30, 45)
         assert base_resource.id == 12345
         assert base_resource.elapsed_time > 0
+        assert base_resource.data == mock_response.json()
+
+    def test_data_json(self):
+        mock_response = create_mock_json('tests/resources/base_resource.json')
+        base_resource = BaseResource(date_time_sent=datetime.datetime(2003, 8, 4, 12, 30, 45),
+                                     **mock_response.json())
+        assert base_resource.json() == json.dumps(mock_response.json())
 
     def test_data_sub(self):
         mock_response = create_mock_json('tests/resources/base_resource_sub.json')
@@ -62,7 +70,6 @@ class BaseResourceInit(unittest.TestCase):
 
         model_response = Model(**mock_response.json())
         assert model_response.main_id == 12345
-        assert model_response.id == []
 
     def test_strip_datetime(self):
         base_resource = BaseResource()
@@ -104,7 +111,7 @@ class BaseResourceInit(unittest.TestCase):
         assert model_response.main_id == 12345
         assert model_response.id.id == 6789
         assert model_response.datetime == datetime.datetime.strptime('2100-06-01T10:10:00.0Z', '%Y-%m-%dT%H:%M:%S.%fZ')
-        assert model_response.datetime_int == datetime.datetime.fromtimestamp(1465631675000 / 1e3)
+        assert model_response.datetime_int == datetime.datetime.utcfromtimestamp(1465631675000 / 1e3)
         assert model_response.datetime_wrong == 'wrong'
 
     def test_data_dict(self):
@@ -121,18 +128,32 @@ class BaseResourceInit(unittest.TestCase):
                 identifier = 'model'
                 attributes = {'Id': 'id'}
                 sub_resources = {'Runners': Runner}
-                dict_attributes = {'Runners': 'Id'}
 
         model_response = Model(**mock_response.json())
 
         assert model_response.id == 12345
         assert len(model_response.runners) == 2
-        assert model_response.runners.get(1234) is not None
-        assert model_response.runners[1234].name == 'second'
+        assert type(model_response.runners) == list
 
-    def test_sub_resource_identifiers(self):
-        base_resource = BaseResource()
-        assert base_resource.sub_resource_mapping == {}
+    def test_empty_sub_resource(self):
+        mock_response = create_mock_json('tests/resources/base_resource.json')
+
+        class Runner(BaseResource):
+            class Meta(BaseResource.Meta):
+                identifier = 'runners'
+                attributes = {'Id': 'id',
+                              'name': 'name'}
+
+        class Model(BaseResource):
+            class Meta(BaseResource.Meta):
+                identifier = 'model'
+                attributes = {'id': 'id'}
+                sub_resources = {'Runners': Runner}
+
+        base_resource = Model(date_time_sent=datetime.datetime(2003, 8, 4, 12, 30, 45),
+                              **mock_response.json())
+        assert base_resource.id == 12345
+        assert base_resource.runners == []
 
     def test_str(self):
         base_resource = BaseResource()

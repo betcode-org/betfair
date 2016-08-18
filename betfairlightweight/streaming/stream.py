@@ -70,7 +70,7 @@ class Stream:
             else:
                 market_book_cache = self._caches.get(market_id)
                 if market_book_cache:
-                    market_book_cache.update_cache(market_book)
+                    market_book_cache.update_cache(market_book, publish_time)
                     self._updates_processed += 1
                 else:
                     logging.error('[Stream: %s] Received update for market not in stream: %s' %
@@ -110,5 +110,5 @@ class Stream:
         self.time_updated = datetime.datetime.utcnow()
 
     @staticmethod
-    def _calc_latency(publish_time):
+    def _calc_latency(publish_time):  # todo gmt /utc?
         return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()
