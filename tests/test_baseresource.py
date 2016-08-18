@@ -153,7 +153,7 @@ class BaseResourceInit(unittest.TestCase):
         base_resource = Model(date_time_sent=datetime.datetime(2003, 8, 4, 12, 30, 45),
                               **mock_response.json())
         assert base_resource.id == 12345
-        assert base_resource.runners is None
+        assert base_resource.runners == []
 
     def test_str(self):
         base_resource = BaseResource()

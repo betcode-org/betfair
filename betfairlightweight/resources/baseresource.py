@@ -37,7 +37,7 @@ class BaseResource:
                     value = resource(**sub_attr)  # So is a single resource
                 setattr(self, resource.Meta.identifier, value)
             else:
-                setattr(self, resource.Meta.identifier, None)
+                setattr(self, resource.Meta.identifier, [])
 
     def set_attributes(self, **kwargs):
         """
