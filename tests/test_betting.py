@@ -42,7 +42,7 @@ class BettingTest(unittest.TestCase):
 
         params = {}
         length = self.betting.get_transaction_count(params)
-        assert length is None
+        assert length == 0
 
     def test_check_transaction_count(self):
         params = {'instructions': [1, 2, 3]}

@@ -1,4 +1,5 @@
 import datetime
+import json
 
 
 class BaseResource:
@@ -12,14 +13,14 @@ class BaseResource:
         attributes = {'id': 'id'}  # Acceptable attributes that you want to display in this resource.
         sub_resources = {}  # sub resources are complex attributes within a resource
         datetime_attributes = ()  # Attributes to be converted to datetime
-        dict_attributes = {}  # Attributes to be converted into a dictionary
-        data_type = []
 
     def __init__(self, **kwargs):
         self.datetime_sent = kwargs.pop('date_time_sent', None)
-        self.datetime_created = datetime.datetime.utcnow()
-        self.datetime_updated = datetime.datetime.utcnow()
+        now = datetime.datetime.utcnow()
+        self.datetime_created = now
+        self.datetime_updated = now
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
+        self.data = kwargs
         self.set_attributes(**kwargs)
 
     def set_sub_resources(self, **kwargs):
@@ -30,14 +31,13 @@ class BaseResource:
         for attribute_name, resource in self._sub_resource_map.items():
             sub_attr = kwargs.get(attribute_name)
             if sub_attr:
-                if attribute_name in self.Meta.dict_attributes.keys():
-                    assign = self.Meta.dict_attributes[attribute_name]
-                    value = {x[assign]: resource(**x) for x in sub_attr}
-                elif isinstance(sub_attr, list):
+                if isinstance(sub_attr, list):
                     value = [resource(**x) for x in sub_attr]  # A list of sub resources is supported
                 else:
                     value = resource(**sub_attr)  # So is a single resource
                 setattr(self, resource.Meta.identifier, value)
+            else:
+                setattr(self, resource.Meta.identifier, [])
 
     def set_attributes(self, **kwargs):
         """
@@ -55,6 +55,9 @@ class BaseResource:
                     value = self.strip_datetime(value) or value
                 setattr(self, self.Meta.attributes[field], value)
 
+    def json(self):
+        return json.dumps(self.data)
+
     @staticmethod
     def strip_datetime(value):
         """
@@ -69,7 +72,7 @@ class BaseResource:
                 return
         elif isinstance(value, int):
             try:
-                return datetime.datetime.fromtimestamp(value / 1e3)
+                return datetime.datetime.utcfromtimestamp(value / 1e3)
             except TypeError:
                 return
             except ValueError:
@@ -83,12 +86,6 @@ class BaseResource:
         if self.datetime_sent:
             return (self.datetime_created-self.datetime_sent).total_seconds()
 
-    @property
-    def sub_resource_mapping(self):
-        return {self.Meta.sub_resources[sub_resource].Meta.identifier:
-                self.Meta.sub_resources[sub_resource].Meta.data_type
-                for sub_resource in self.Meta.sub_resources}
-
     def __getattr__(self, item):
         """
         If item is an expected attribute in Meta
@@ -96,8 +93,6 @@ class BaseResource:
         """
         if item in self.Meta.attributes.values():
             return
-        elif item in self.sub_resource_mapping:
-            return self.sub_resource_mapping.get(item)
         else:
             return self.__getattribute__(item)
 
