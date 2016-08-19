@@ -155,6 +155,7 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource.id == 12345
         assert base_resource.runners == []
 
-    def test_str(self):
+    def test_str_repr(self):
         base_resource = BaseResource()
         assert str(base_resource) == 'BaseResource'
+        assert repr(base_resource) == '<BaseResource>'
