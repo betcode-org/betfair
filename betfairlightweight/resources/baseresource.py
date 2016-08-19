@@ -96,5 +96,8 @@ class BaseResource:
         else:
             return self.__getattribute__(item)
 
+    def __repr__(self):
+        return '<%s>' % self.__class__.__name__
+
     def __str__(self):
         return self.__class__.__name__
