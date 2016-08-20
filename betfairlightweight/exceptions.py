@@ -102,3 +102,10 @@ class SocketError(BetfairError):
 
     def __init__(self, message):
         super(SocketError, self).__init__(message)
+
+
+class RaceCardError(BetfairError):
+    """Exception raised if error with race card request"""
+
+    def __init__(self, message):
+        super(RaceCardError, self).__init__(message)

@@ -21,16 +21,18 @@ export username = "appkey"
 The library can then be used as follows:
 
 ```python
-import betfairlightweight
+>>> import betfairlightweight
 
-trading = betfairlightweight.APIClient('username', 'password', app_key='app_key')
+>>> trading = betfairlightweight.APIClient('username', 'password', app_key='app_key')
 
-trading.login()
+>>> trading.login()
 ```
 
 
 ```python
-event_types = trading.betting.list_event_types({'filter': {}})
+>>> event_types = trading.betting.list_event_types({'filter': {}})
+
+[<EventTypeResult>, <EventTypeResult>, ..]
 ```
 
 
