@@ -7,3 +7,4 @@ from .navigation import Navigation
 from .scores import Scores
 from .inplayservice import InPlayService
 from .streaming import Streaming
+from .racecard import RaceCard
