@@ -4,9 +4,9 @@
 
 Lightweight, super fast pythonic wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations.
 
-python3 only.
-
 [Documentation](https://github.com/LiamPa/betfairlightweight/wiki)
+
+python3 only.
 
 # setup
 
@@ -30,7 +30,7 @@ trading.login()
 
 
 ```python
-event_types = trading.betting.list_event_types()
+event_types = trading.betting.list_event_types({'filter': {}})
 ```
 
 
@@ -42,12 +42,12 @@ Stream listener is able to hold multiple streams, hold a cache and push market_b
 [Exchange Stream API](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
 ```python
-betfair_socket = trading.streaming.create_stream(2, description='Test Market Socket')
-betfair_socket.start(True)
+betfair_socket = trading.streaming.create_stream(unique_id=2, description='Test Market Socket')
+betfair_socket.start(async=True)
 betfair_socket.authenticate()
-betfair_socket.subscribe_to_markets({'eventTypeIds': ['7'],
-                                     'countryCodes': ['GB', 'IE'], 
-                                     'marketTypes': ['WIN']},
-                                    {'fields': ['EX_BEST_OFFERS', 'EX_MARKET_DEF'],
-                                     'ladderLevels': 1})
+betfair_socket.subscribe_to_markets(market_filter={'eventTypeIds': ['7'],
+                                                   'countryCodes': ['GB', 'IE'], 
+                                                   'marketTypes': ['WIN']},
+                                    market_data_filter={'fields': ['EX_BEST_OFFERS', 'EX_MARKET_DEF'],
+                                                        'ladderLevels': 1})
 ```
