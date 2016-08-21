@@ -28,5 +28,8 @@ class InPlayServiceTest(unittest.TestCase):
     def test_request(self):
         pass
 
-    def test_list_event_timeline(self):
+    def test_get_event_timeline(self):
+        pass
+
+    def test_get_scores(self):
         pass
