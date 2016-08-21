@@ -109,18 +109,24 @@ class BaseClient:
 
     @property
     def login_headers(self):
-        return {'X-Application': 1,
-                'content-type': 'application/x-www-form-urlencoded'}
+        return {
+            'X-Application': 1,
+            'content-type': 'application/x-www-form-urlencoded'
+        }
 
     @property
     def keep_alive_headers(self):
-        return {'Accept': 'application/json',
-                'X-Application': self.app_key,
-                'X-Authentication': self.session_token,
-                'content-type': 'application/x-www-form-urlencoded'}
+        return {
+            'Accept': 'application/json',
+            'X-Application': self.app_key,
+            'X-Authentication': self.session_token,
+            'content-type': 'application/x-www-form-urlencoded'
+        }
 
     @property
     def request_headers(self):
-        return {'X-Application': self.app_key,
-                'X-Authentication': self.session_token,
-                'content-type': 'application/json'}
+        return {
+            'X-Application': self.app_key,
+            'X-Authentication': self.session_token,
+            'content-type': 'application/json'
+        }

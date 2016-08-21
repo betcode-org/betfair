@@ -42,15 +42,18 @@ class RaceCard(BaseEndpoint):
     def create_req(method=None, params=None):
         if not params:
             params = ['RACE', 'TIMEFORM_DATA', 'RUNNERS', 'RUNNER_DETAILS']
-        data = {'dataEntries': params,
-                'marketId': ','.join(method)}
-        return data
+        return {
+            'dataEntries': params,
+            'marketId': ','.join(method)
+        }
 
     @property
     def headers(self):
-        return {'Connection': 'keep-alive',
-                'Content-Type': 'application/json',
-                'X-Application': self.app_key}
+        return {
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
+            'X-Application': self.app_key
+        }
 
     @property
     def login_url(self):
