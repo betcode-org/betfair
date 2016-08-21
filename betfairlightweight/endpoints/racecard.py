@@ -1,16 +1,19 @@
 import re
+import datetime
 
 from ..exceptions import APIError, RaceCardError
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
+from .. import resources
 
 
 class RaceCard(BaseEndpoint):
 
     app_key = None
 
-    def login(self):
-        response = self.client.session.get(self.login_url)
+    def login(self, session=None):
+        session = session or self.client.session
+        response = session.get(self.login_url)
         app_key = re.findall(r'''"appKey":\s"(.*?)"''', response.text)
         if app_key:
             self.app_key = app_key[0]
@@ -18,7 +21,9 @@ class RaceCard(BaseEndpoint):
             raise RaceCardError("Unable to find appKey")
 
     def get_race_card(self, market_ids, data_entries=None, session=None):
-        return self.request(method=market_ids, params=data_entries, session=session)
+        date_time_sent = datetime.datetime.utcnow()
+        response = self.request(method=market_ids, params=data_entries, session=session)
+        return self.process_response(response.json(), resources.RaceCard, date_time_sent)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
@@ -35,11 +40,6 @@ class RaceCard(BaseEndpoint):
 
     @staticmethod
     def create_req(method=None, params=None):
-        """
-        :param method: Betfair api-ng method to be used.
-        :param params: Params to be used in request.
-        :return: Json payload.
-        """
         if not params:
             params = ['RACE', 'TIMEFORM_DATA', 'RUNNERS', 'RUNNER_DETAILS']
         data = {'dataEntries': params,

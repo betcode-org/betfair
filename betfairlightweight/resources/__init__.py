@@ -28,3 +28,7 @@ from .accountresources import (
 from .scoresresources import (
     RaceDetails
 )
+
+from .racecardresources import (
+    RaceCard
+)
