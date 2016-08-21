@@ -15,12 +15,12 @@ class BaseResource:
         datetime_attributes = ()  # Attributes to be converted to datetime
 
     def __init__(self, **kwargs):
-        self.datetime_sent = kwargs.pop('date_time_sent', None)
+        self._datetime_sent = kwargs.pop('date_time_sent', None)
         now = datetime.datetime.utcnow()
-        self.datetime_created = now
-        self.datetime_updated = now
+        self._datetime_created = now
+        self._datetime_updated = now
         self._sub_resource_map = getattr(self.Meta, 'sub_resources', {})
-        self.data = kwargs
+        self._data = kwargs
         self.set_attributes(**kwargs)
 
     def set_sub_resources(self, **kwargs):
@@ -56,7 +56,7 @@ class BaseResource:
                 setattr(self, self.Meta.attributes[field], value)
 
     def json(self):
-        return json.dumps(self.data)
+        return json.dumps(self._data)
 
     @staticmethod
     def strip_datetime(value):
@@ -83,8 +83,8 @@ class BaseResource:
         """
         Elapsed time between datetime sent and datetime created
         """
-        if self.datetime_sent:
-            return (self.datetime_created-self.datetime_sent).total_seconds()
+        if self._datetime_sent:
+            return (self._datetime_created-self._datetime_sent).total_seconds()
 
     def __getattr__(self, item):
         """

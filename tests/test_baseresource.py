@@ -15,12 +15,12 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource.Meta.attributes == {'id': 'id'}
         assert base_resource.Meta.sub_resources == {}
         assert base_resource.Meta.datetime_attributes == ()
-        assert base_resource.datetime_sent is None
-        assert base_resource.datetime_created is not None
-        assert base_resource.datetime_updated is not None
+        assert base_resource._datetime_sent is None
+        assert base_resource._datetime_created is not None
+        assert base_resource._datetime_updated is not None
         assert base_resource.elapsed_time is None
         assert base_resource.id is None
-        assert base_resource.data == {}
+        assert base_resource._data == {}
         with self.assertRaises(AttributeError):
             assert base_resource.not_in
 
@@ -29,10 +29,10 @@ class BaseResourceInit(unittest.TestCase):
         base_resource = BaseResource(date_time_sent=datetime.datetime(2003, 8, 4, 12, 30, 45),
                                      **mock_response.json())
 
-        assert base_resource.datetime_sent == datetime.datetime(2003, 8, 4, 12, 30, 45)
+        assert base_resource._datetime_sent == datetime.datetime(2003, 8, 4, 12, 30, 45)
         assert base_resource.id == 12345
         assert base_resource.elapsed_time > 0
-        assert base_resource.data == mock_response.json()
+        assert base_resource._data == mock_response.json()
 
     def test_data_json(self):
         mock_response = create_mock_json('tests/resources/base_resource.json')
