@@ -21,6 +21,9 @@ class RaceCard(BaseEndpoint):
             raise RaceCardError("Unable to find appKey")
 
     def get_race_card(self, market_ids, data_entries=None, session=None):
+        if not self.app_key:
+            raise RaceCardError("You need to login before requesting a race_card\n"
+                                "APIClient.race_card.login()")
         date_time_sent = datetime.datetime.utcnow()
         response = self.request(method=market_ids, params=data_entries, session=session)
         return self.process_response(response.json(), resources.RaceCard, date_time_sent)
