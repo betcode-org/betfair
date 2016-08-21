@@ -5,14 +5,30 @@ from .baseendpoint import BaseEndpoint
 
 class InPlayService(BaseEndpoint):
 
-    def list_scores(self, params, session=None):
-        return self.request(params=params, session=session)
+    def get_event_timeline(self, event_id, session=None):
+        url = '%s%s' % (self.url, 'eventTimeline')
+        params = {
+            'eventId': event_id,
+            'alt': 'json',
+            'regionCode': 'UK',
+            'locale': 'en_GB'
+        }
+        return self.request(params=params, session=session, url=url)
 
-    def request(self, method=None, params=None, session=None):
+    def get_scores(self, event_ids, session=None):
+        url = '%s%s' % (self.url, 'scores')
+        params = {
+            'eventIds': ','.join(str(x) for x in event_ids),
+            'alt': 'json',
+            'regionCode': 'UK',
+            'locale': 'en_GB'
+        }
+        return self.request(params=params, session=session, url=url)
+
+    def request(self, method=None, params=None, session=None, url=None):
         session = session or self.client.session
         try:
-            response = session.get(self.url, data=self.create_req(params=params),
-                                   headers=self.client.request_headers)
+            response = session.get(url, params=params, headers=self.headers)
         except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
@@ -21,20 +37,13 @@ class InPlayService(BaseEndpoint):
         check_status_code(response)
         return response
 
-    @staticmethod
-    def create_req(method=None, params=None):
-        """
-        :param method: Betfair api-ng method to be used.
-        :param params: Params to be used in request.
-        :return: Json payload.
-        """
-        data = {'eventIds': '[%s]' % ', '.join(map(str, params)),
-                'alt': 'json',
-                'productType': 'EXCHANGE',
-                'regionCode': 'UK',
-                'locale': 'en_GB'}
-        return data
+    @property
+    def headers(self):
+        return {
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json'
+        }
 
     @property
     def url(self):
-        return 'https://www.betfair.com/inplayservice/v1.1'
+        return 'https://www.betfair.com/inplayservice/v1.1/'
