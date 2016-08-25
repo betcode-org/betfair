@@ -109,7 +109,7 @@ class BaseClient:
 
     @property
     def login_headers(self):
-        return {'X-Application': 1,
+        return {'X-Application': '1',
                 'content-type': 'application/x-www-form-urlencoded'}
 
     @property
