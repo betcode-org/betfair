@@ -94,7 +94,7 @@ class BaseClientTest(unittest.TestCase):
         assert self.client.get_app_key() is None
 
     def test_client_headers(self):
-        assert self.client.login_headers == {'X-Application': 1,
+        assert self.client.login_headers == {'X-Application': '1',
                                              'content-type': 'application/x-www-form-urlencoded'}
         assert self.client.keep_alive_headers == {'Accept': 'application/json',
                                                   'X-Application': self.client.app_key,
