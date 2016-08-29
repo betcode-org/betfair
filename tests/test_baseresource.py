@@ -16,7 +16,7 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource.Meta.sub_resources == {}
         assert base_resource.Meta.datetime_attributes == ()
         assert base_resource._datetime_sent is None
-        assert base_resource._datetime_created is not None
+        assert base_resource.datetime_created is not None
         assert base_resource._datetime_updated is not None
         assert base_resource.elapsed_time is None
         assert base_resource.id is None
