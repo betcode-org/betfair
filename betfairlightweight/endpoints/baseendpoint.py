@@ -71,7 +71,7 @@ class BaseEndpoint:
         if isinstance(response_json, list):
             return [resource(date_time_sent=date_time_sent, **x) for x in response_json]
         else:
-            response_result = response_json.get('result')
+            response_result = response_json.get('result', response_json)
             if isinstance(response_result, list):
                 return [resource(date_time_sent=date_time_sent, **x) for x in response_result]
             else:

@@ -32,3 +32,7 @@ from .scoresresources import (
 from .racecardresources import (
     RaceCard
 )
+
+from .inplayserviceresources import (
+    EventTimeline
+)
