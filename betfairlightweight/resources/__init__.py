@@ -34,5 +34,6 @@ from .racecardresources import (
 )
 
 from .inplayserviceresources import (
-    EventTimeline
+    EventTimeline,
+    Scores
 )

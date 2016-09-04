@@ -21,6 +21,7 @@ class InPlayService(BaseEndpoint):
         return self.process_response(response.json(), resources.EventTimeline, date_time_sent)
 
     def get_scores(self, event_ids, session=None):
+        date_time_sent = datetime.datetime.utcnow()
         url = '%s%s' % (self.url, 'scores')
         params = {
             'eventIds': ','.join(str(x) for x in event_ids),
@@ -28,7 +29,8 @@ class InPlayService(BaseEndpoint):
             'regionCode': 'UK',
             'locale': 'en_GB'
         }
-        return self.request(params=params, session=session, url=url)
+        response = self.request(params=params, session=session, url=url)
+        return self.process_response(response.json(), resources.Scores, date_time_sent)
 
     def request(self, method=None, params=None, session=None, url=None):
         session = session or self.client.session
