@@ -96,3 +96,32 @@ class EventTimeline(BaseResource):
             'score': Score,
             'updateDetails': UpdateDetail,
         }
+
+
+class FullTimeElapsed(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'full_time_elapsed'
+        attributes = {
+            'hour': 'hour',
+            'min': 'min',
+            'sec': 'sec'
+        }
+
+
+class Scores(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'scores'
+        attributes = {
+            'eventId': 'event_id',
+            'elapsedRegularTime': 'elapsed_regular_time',
+            'elapsedAddedTime': 'elapsed_added_time',
+            'eventTypeId': 'event_type_id',
+            'matchStatus': 'match_status',
+            'timeElapsed': 'time_elapsed',
+            'timeElapsedSeconds': 'time_elapsed_seconds',
+            'status': 'status'
+        }
+        sub_resources = {
+            'fullTimeElapsed': FullTimeElapsed,
+            'score': Score,
+        }
