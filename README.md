@@ -1,10 +1,10 @@
-[![Build Status](https://travis-ci.org/LiamPa/betfairlightweight.svg?branch=master)](https://travis-ci.org/LiamPa/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/LiamPa/betfairlightweight/badge.svg?branch=master)](https://coveralls.io/github/LiamPa/betfairlightweight?branch=master)
+[![Build Status](https://travis-ci.org/liampauling/betfairlightweight.svg?branch=master)](https://travis-ci.org/liampauling/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfairlightweight/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfairlightweight?branch=master)
 
 # betfairlightweight
 
 Lightweight, super fast pythonic wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations.
 
-[Documentation](https://github.com/LiamPa/betfairlightweight/wiki)
+[Documentation](https://github.com/liampauling/betfairlightweight/wiki)
 
 python3 only.
 
