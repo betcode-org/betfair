@@ -1,11 +1,15 @@
+import datetime
+
 from ..exceptions import APIError
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
+from .. import resources
 
 
 class InPlayService(BaseEndpoint):
 
     def get_event_timeline(self, event_id, session=None):
+        date_time_sent = datetime.datetime.utcnow()
         url = '%s%s' % (self.url, 'eventTimeline')
         params = {
             'eventId': event_id,
@@ -13,7 +17,8 @@ class InPlayService(BaseEndpoint):
             'regionCode': 'UK',
             'locale': 'en_GB'
         }
-        return self.request(params=params, session=session, url=url)
+        response = self.request(params=params, session=session, url=url)
+        return self.process_response(response.json(), resources.EventTimeline, date_time_sent)
 
     def get_scores(self, event_ids, session=None):
         url = '%s%s' % (self.url, 'scores')
