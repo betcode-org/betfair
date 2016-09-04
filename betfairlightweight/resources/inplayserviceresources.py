@@ -1,6 +1,16 @@
 from .baseresource import BaseResource
 
 
+class InningOne(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'inning_one'
+        attributes = {
+            'overs': 'overs',
+            'runs': 'runs',
+            'wickets': 'wickets'
+        }
+
+
 class Home(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'home'
@@ -19,7 +29,17 @@ class Home(BaseResource):
             'penaltiesScore': 'penalties_score',
             'penaltiesSequence': 'penalties_sequence',
             'score': 'score',
-            'sets': 'sets'
+            'sets': 'sets',
+            'highlight': 'highlight',
+            'aces': 'aces',
+            'doubleFaults': 'double_faults',
+            'gameSequence': 'game_sequence',
+            'isServing': 'is_serving',
+            'playerSeed': 'player_seed',
+            'serviceBreaks': 'service_breaks',
+        }
+        sub_resources = {
+            'inning1': InningOne
         }
 
 
@@ -41,7 +61,17 @@ class Away(BaseResource):
             'penaltiesScore': 'penalties_score',
             'penaltiesSequence': 'penalties_sequence',
             'score': 'score',
-            'sets': 'sets'
+            'sets': 'sets',
+            'highlight': 'highlight',
+            'aces': 'aces',
+            'doubleFaults': 'double_faults',
+            'gameSequence': 'game_sequence',
+            'isServing': 'is_serving',
+            'playerSeed': 'player_seed',
+            'serviceBreaks': 'service_breaks',
+        }
+        sub_resources = {
+            'inning1': InningOne
         }
 
 
@@ -108,6 +138,27 @@ class FullTimeElapsed(BaseResource):
         }
 
 
+class StateOfBall(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'state_of_ball'
+        attributes = {
+            'appealId': 'appeal_id',
+            'appealTypeName': 'appeal_type_name',
+            'batsmanName': 'batsman_name',
+            'batsmanRuns': 'batsman_runs',
+            'bowlerName': 'bowler_name',
+            'bye': 'bye',
+            'dismissalTypeName': 'dismissal_type_name',
+            'legBye': 'leg_bye',
+            'noBall': 'no_ball',
+            'outcomeId': 'outcome_id',
+            'overBallNumber': 'over_ball_number',
+            'overNumber': 'over_number',
+            'referralOutcome': 'referral_outcome',
+            'wide': 'wide'
+        }
+
+
 class Scores(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'scores'
@@ -119,9 +170,16 @@ class Scores(BaseResource):
             'matchStatus': 'match_status',
             'timeElapsed': 'time_elapsed',
             'timeElapsedSeconds': 'time_elapsed_seconds',
-            'status': 'status'
+            'status': 'status',
+            'currentDay': 'current_day',
+            'currentSet': 'current_set',
+            'description': 'description',
+            'matchType': 'match_type',
+            'currentGame': 'current_game',
+            'currentPoint': 'current_point'
         }
         sub_resources = {
             'fullTimeElapsed': FullTimeElapsed,
             'score': Score,
+            'stateOfBall': StateOfBall
         }
