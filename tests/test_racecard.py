@@ -30,7 +30,7 @@ class RaceCardTest(unittest.TestCase):
 
     def test_create_req(self):
         assert self.race_card.create_req(['1', '2']) == {
-            'dataEntries': ['RACE', 'TIMEFORM_DATA', 'RUNNERS', 'RUNNER_DETAILS'],
+            'dataEntries': "RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS",
             'marketId': '1,2'
         }
         assert self.race_card.create_req(['1', '2'], ['RACE']) == {
