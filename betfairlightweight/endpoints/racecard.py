@@ -44,7 +44,7 @@ class RaceCard(BaseEndpoint):
     @staticmethod
     def create_req(method=None, params=None):
         if not params:
-            params = ['RACE', 'TIMEFORM_DATA', 'RUNNERS', 'RUNNER_DETAILS']
+            params = "RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS"
         return {
             'dataEntries': params,
             'marketId': ','.join(method)
