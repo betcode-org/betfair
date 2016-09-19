@@ -135,7 +135,7 @@ class Trainer(BaseResource):
 
 class Runner(BaseResource):
     class Meta(BaseResource.Meta):
-        identifier = 'runner'
+        identifier = 'runners'
         attributes = {
             'age': 'age',
             'comment': 'comment',
