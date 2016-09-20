@@ -115,7 +115,7 @@ class Jockey(BaseResource):
 
 class Selection(BaseResource):
     class Meta(BaseResource.Meta):
-        identifier = 'selection'
+        identifier = 'selections'
         attributes = {
             'marketId': 'market_id',
             'marketType': 'market_type',
