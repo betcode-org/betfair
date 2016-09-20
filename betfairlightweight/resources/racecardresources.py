@@ -133,6 +133,16 @@ class Trainer(BaseResource):
         }
 
 
+class Wearing(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'wearing'
+        attributes = {
+            'abbr': 'abbr',
+            'full': 'full',
+            'key': 'key'
+        }
+
+
 class Runner(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'runners'
@@ -152,13 +162,16 @@ class Runner(BaseResource):
             'weight': 'weight',
             'winsAtCourse': 'wins_at_course',
             'winsAtCourseAndDistance': 'wins_at_course_and_distance',
-            'winsAtDistance': 'wins_at_distance'
+            'winsAtDistance': 'wins_at_distance',
+            'draw': 'draw',
+            'officialRating': 'official_rating'
         }
         sub_resources = {
             'daysSinceLastRun': DaysSinceLastRun,
             'jockey': Jockey,
             'selections': Selection,
-            'trainer': Trainer
+            'trainer': Trainer,
+            'wearing': Wearing
         }
 
 
