@@ -28,7 +28,7 @@ class BaseClientInit(unittest.TestCase):
         client = APIClient('username', 'password', 'app_key', locale='australia')
         assert client.locale == 'australia'
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
-        assert client.api_uri == 'https://api-au.betfair.com/exchange/'
+        assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
 
         client = APIClient('username', 'password', 'app_key', locale='spain')
