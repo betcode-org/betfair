@@ -18,8 +18,7 @@ class BaseClient:
     )
 
     API_URLS = collections.defaultdict(
-            lambda: 'https://api.betfair.com/exchange/',
-            australia='https://api-au.betfair.com/exchange/',
+            lambda: 'https://api.betfair.com/exchange/'
     )
 
     NAVIGATION_URLS = collections.defaultdict(

@@ -34,10 +34,12 @@ class Account(BaseEndpoint):
         return self.process_response(response.json(), resources.CurrencyRate, date_time_sent)
 
     def transfer_funds(self, params=None, session=None):
-        date_time_sent = datetime.datetime.utcnow()
-        method = '%s%s' % (self.URI, 'transferFunds')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.TransferFunds, date_time_sent)
+        raise DeprecationWarning('As of 20/09/2016 AUS wallet has been removed, function still available for when '
+                                 'accounts are added in 2017.')
+        # date_time_sent = datetime.datetime.utcnow()
+        # method = '%s%s' % (self.URI, 'transferFunds')
+        # response = self.request(method, params, session)
+        # return self.process_response(response.json(), resources.TransferFunds, date_time_sent)
 
     @property
     def url(self):
