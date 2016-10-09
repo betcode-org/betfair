@@ -7,7 +7,7 @@ from .. import resources
 class Account(BaseEndpoint):
 
     URI = 'AccountAPING/v1.0/'
-    timeout = 6.05
+    connect_timeout = 6.05
 
     def get_account_funds(self, params=None, session=None):
         date_time_sent = datetime.datetime.utcnow()

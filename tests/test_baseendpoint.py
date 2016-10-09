@@ -14,7 +14,8 @@ class BaseEndpointInit(unittest.TestCase):
     def test_base_endpoint_init(self):
         client = APIClient('username', 'password', 'app_key')
         base_endpoint = BaseEndpoint(client)
-        assert base_endpoint.timeout == 3.05
+        assert base_endpoint.connect_timeout == 3.05
+        assert base_endpoint.read_timeout == 16
         assert base_endpoint._error == APIError
         assert base_endpoint.client == client
 
@@ -48,7 +49,7 @@ class BaseEndPointTest(unittest.TestCase):
         response = self.base_endpoint.request(None, None, None)
 
         mock_post.assert_called_once_with(url, data=mock_create_req(),
-                                          headers=mock_request_headers, timeout=(3.05, 12))
+                                          headers=mock_request_headers, timeout=(3.05, 16))
         assert response == mock_response
 
     def test_base_endpoint_error_handler(self):

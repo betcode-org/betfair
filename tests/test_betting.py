@@ -14,7 +14,8 @@ class BettingInit(unittest.TestCase):
     def test_base_endpoint_init(self):
         client = APIClient('username', 'password', 'app_key')
         betting = Betting(client)
-        assert betting.timeout == 3.05
+        assert betting.connect_timeout == 3.05
+        assert betting.read_timeout == 16
         assert betting._error == APIError
         assert betting.client == client
         now = datetime.datetime.now()

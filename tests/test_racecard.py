@@ -12,7 +12,7 @@ class RaceCardTest(unittest.TestCase):
         self.race_card = RaceCard(self.client)
 
     def test_init(self):
-        assert self.race_card.timeout == 3.05
+        assert self.race_card.connect_timeout == 3.05
         assert self.race_card._error == APIError
         assert self.race_card.client == self.client
         assert self.race_card.app_key is None
