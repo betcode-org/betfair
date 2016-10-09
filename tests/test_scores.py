@@ -13,7 +13,7 @@ class ScoresInit(unittest.TestCase):
     def test_base_endpoint_init(self):
         client = APIClient('username', 'password', 'app_key')
         scores = Scores(client)
-        assert scores.timeout == 3.05
+        assert scores.connect_timeout == 3.05
         assert scores._error == APIError
         assert scores.client == client
         assert scores.URI == 'ScoresAPING/v1.0/'
