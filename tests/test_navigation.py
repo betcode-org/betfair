@@ -13,7 +13,8 @@ class NavigationInit(unittest.TestCase):
     def test_base_endpoint_init(self):
         client = APIClient('username', 'password', 'app_key')
         navigation = Navigation(client)
-        assert navigation.timeout == 3.05
+        assert navigation.connect_timeout == 3.05
+        assert navigation.read_timeout == 16
         assert navigation._error == APIError
         assert navigation.client == client
 
@@ -48,7 +49,7 @@ class NavigationTest(unittest.TestCase):
         url = 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
         self.navigation.request()
 
-        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 12))
+        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 16))
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
     @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
@@ -68,7 +69,7 @@ class NavigationTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.navigation.request()
 
-        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 12))
+        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 16))
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
     @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
@@ -88,7 +89,7 @@ class NavigationTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.navigation.request()
 
-        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 12))
+        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 16))
 
     def test_url(self):
         assert self.navigation.url == self.navigation.client.navigation_uri

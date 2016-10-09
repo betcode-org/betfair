@@ -12,7 +12,8 @@ class InPlayServiceTest(unittest.TestCase):
         self.in_play_service = InPlayService(self.client)
 
     def test_init(self):
-        assert self.in_play_service.timeout == 3.05
+        assert self.in_play_service.connect_timeout == 3.05
+        assert self.in_play_service.read_timeout == 16
         assert self.in_play_service._error == APIError
         assert self.in_play_service.client == self.client
 

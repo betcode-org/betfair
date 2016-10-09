@@ -324,7 +324,9 @@ class CurrentOrder(BaseResource):
             'sizeMatched': 'size_matched',
             'sizeRemaining': 'size_remaining',
             'sizeVoided': 'size_voided',
-            'status': 'status'
+            'status': 'status',
+            'customerStrategyRef': 'customer_strategy_ref',
+            'customerOrderRef': 'customer_order_ref'
         }
         sub_resources = {
             'priceSize': PriceSize
@@ -368,7 +370,9 @@ class ClearedOrder(BaseResource):
             'selectionId': 'selection_id',
             'settledDate': 'settled_date',
             'side': 'side',
-            'sizeSettled': 'size_settled'
+            'sizeSettled': 'size_settled',
+            'customerStrategyRef': 'customer_strategy_ref',
+            'customerOrderRef': 'customer_order_ref'
         }
         datetime_attributes = (
             'placedDate',
