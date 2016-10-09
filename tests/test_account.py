@@ -10,7 +10,8 @@ class AccountInit(unittest.TestCase):
     def test_base_endpoint_init(self):
         client = APIClient('username', 'password', 'app_key')
         account = Account(client)
-        assert account.timeout == 6.05
+        assert account.connect_timeout == 6.05
+        assert account.read_timeout == 16
         assert account._error == APIError
         assert account.client == client
         assert account.URI == 'AccountAPING/v1.0/'
