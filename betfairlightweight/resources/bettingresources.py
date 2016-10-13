@@ -436,7 +436,8 @@ class PlaceOrderInstruction(BaseResource):
             'selectionId': 'selection_id',
             'side': 'side',
             'orderType': 'order_type',
-            'handicap': 'handicap'
+            'handicap': 'handicap',
+            'customerOrderRef': 'customer_order_ref'
         }
         sub_resources = {
             'limitOrder': LimitOrder
@@ -448,6 +449,7 @@ class PlaceOrderInstructionReports(BaseResource):
         identifier = 'place_instruction_reports'
         attributes = {
             'status': 'status',
+            'orderStatus': 'order_status',
             'betId': 'bet_id',
             'averagePriceMatched': 'average_price_matched',
             'sizeMatched': 'size_matched',
@@ -469,7 +471,6 @@ class PlaceOrders(BaseResource):
             'marketId': 'market_id',
             'status': 'status',
             'customerRef': 'customer_ref',
-            'customerStrategyRef': 'customer_strategy_ref',
             'errorCode': 'error_code'
         }
         sub_resources = {
