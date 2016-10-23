@@ -3,4 +3,6 @@ from .exceptions import BetfairError
 from .streaming import StreamListener
 
 
-__version__ = '0.6.6'
+__title__ = 'betfairlightweight'
+__version__ = '0.7.0'
+__author__ = 'Liam Pauling'
