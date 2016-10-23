@@ -2,19 +2,11 @@ import datetime
 
 from .baseendpoint import BaseEndpoint
 from .. import resources
-from ..exceptions import TransactionCountError
 
 
 class Betting(BaseEndpoint):
 
     URI = 'SportsAPING/v1.0/'
-
-    def __init__(self, parent):
-        super(Betting, self).__init__(parent)
-        self._next_hour = None
-        self.set_next_hour()
-        self.transaction_count = 0
-        self.transaction_limit = 999
 
     def list_event_types(self, params=None, session=None):
         date_time_sent = datetime.datetime.utcnow()
@@ -91,7 +83,6 @@ class Betting(BaseEndpoint):
     def place_orders(self, params=None, session=None):
         date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'placeOrders')
-        self.check_transaction_count(params)
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.PlaceOrders, date_time_sent)
 
@@ -110,27 +101,5 @@ class Betting(BaseEndpoint):
     def replace_orders(self, params=None, session=None):
         date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'replaceOrders')
-        self.check_transaction_count(params)
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.ReplaceOrders, date_time_sent)
-
-    def set_next_hour(self):
-        now = datetime.datetime.now()
-        self._next_hour = (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-
-    def check_transaction_count(self, params):
-        if datetime.datetime.now() > self._next_hour:
-            self.set_next_hour()
-            self.transaction_count = 0
-        count = self.get_transaction_count(params)
-        self.transaction_count += count
-        if self.transaction_count > self.transaction_limit:
-            raise TransactionCountError(self.transaction_count)
-
-    @staticmethod
-    def get_transaction_count(params):
-        instructions = params.get('instructions')
-        if instructions:
-            return len(instructions)
-        else:
-            return 0
