@@ -5,7 +5,7 @@ import mock
 from tests.tools import create_mock_json
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.betting import Betting
-from betfairlightweight.exceptions import APIError, TransactionCountError
+from betfairlightweight.exceptions import APIError
 from betfairlightweight import resources
 
 
@@ -18,10 +18,6 @@ class BettingInit(unittest.TestCase):
         assert betting.read_timeout == 16
         assert betting._error == APIError
         assert betting.client == client
-        now = datetime.datetime.now()
-        assert betting._next_hour == (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-        assert betting.transaction_count == 0
-        assert betting.transaction_limit == 999
         assert betting.URI == 'SportsAPING/v1.0/'
 
 
@@ -31,35 +27,35 @@ class BettingTest(unittest.TestCase):
         client = APIClient('username', 'password', 'app_key', 'UK')
         self.betting = Betting(client)
 
-    def test_set_next_hour(self):
-        self.betting.set_next_hour()
-        now = datetime.datetime.now()
-        assert self.betting._next_hour == (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-
-    def test_get_transaction_count(self):
-        params = {'instructions': [1, 2, 3]}
-        length = self.betting.get_transaction_count(params)
-        assert length == 3
-
-        params = {}
-        length = self.betting.get_transaction_count(params)
-        assert length == 0
-
-    def test_check_transaction_count(self):
-        params = {'instructions': [1, 2, 3]}
-        self.betting.check_transaction_count(params)
-        assert self.betting.transaction_count == 3
-
-        now = datetime.datetime.now()
-        self.betting._next_hour = (now + datetime.timedelta(hours=-1)).replace(minute=0, second=0, microsecond=0)
-        params = {'instructions': [1, 2, 3]}
-        self.betting.check_transaction_count(params)
-        assert self.betting.transaction_count == 3
-
-        self.betting.transaction_limit = 2
-        with self.assertRaises(TransactionCountError):
-            self.betting.check_transaction_count(params)
-        assert self.betting.transaction_count == 6
+    # def test_set_next_hour(self):
+    #     self.betting.set_next_hour()
+    #     now = datetime.datetime.now()
+    #     assert self.betting._next_hour == (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
+    #
+    # def test_get_transaction_count(self):
+    #     params = {'instructions': [1, 2, 3]}
+    #     length = self.betting.get_transaction_count(params)
+    #     assert length == 3
+    #
+    #     params = {}
+    #     length = self.betting.get_transaction_count(params)
+    #     assert length == 0
+    #
+    # def test_check_transaction_count(self):
+    #     params = {'instructions': [1, 2, 3]}
+    #     self.betting.check_transaction_count(params)
+    #     assert self.betting.transaction_count == 3
+    #
+    #     now = datetime.datetime.now()
+    #     self.betting._next_hour = (now + datetime.timedelta(hours=-1)).replace(minute=0, second=0, microsecond=0)
+    #     params = {'instructions': [1, 2, 3]}
+    #     self.betting.check_transaction_count(params)
+    #     assert self.betting.transaction_count == 3
+    #
+    #     self.betting.transaction_limit = 2
+    #     with self.assertRaises(TransactionCountError):
+    #         self.betting.check_transaction_count(params)
+    #     assert self.betting.transaction_count == 6
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_event_types(self, mock_response):
@@ -180,13 +176,10 @@ class BettingTest(unittest.TestCase):
         mock_response.assert_called_with('SportsAPING/v1.0/listClearedOrders', None, None)
         assert isinstance(response, resources.ClearedOrders)
 
-    @mock.patch('betfairlightweight.endpoints.betting.Betting.check_transaction_count')
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
-    def test_place_orders(self, mock_response, mock_check):
+    def test_place_orders(self, mock_response):
         mock = create_mock_json('tests/resources/place_orders.json')
         mock_response.return_value = mock
-
-        mock_check.return_value = None
 
         response = self.betting.place_orders()
         assert mock.json.call_count == 1
@@ -213,13 +206,10 @@ class BettingTest(unittest.TestCase):
         mock_response.assert_called_with('SportsAPING/v1.0/updateOrders', None, None)
         assert isinstance(response, resources.UpdateOrders)
 
-    @mock.patch('betfairlightweight.endpoints.betting.Betting.check_transaction_count')
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
-    def test_replace_orders(self, mock_response, mock_check):
+    def test_replace_orders(self, mock_response):
         mock = create_mock_json('tests/resources/replace_orders.json')
         mock_response.return_value = mock
-
-        mock_check.return_value = None
 
         response = self.betting.replace_orders()
         assert mock.json.call_count == 1

@@ -63,14 +63,6 @@ class APIError(BetfairError):
         super(APIError, self).__init__(message)
 
 
-class TransactionCountError(BetfairError):
-    """Exception raised if transaction count is greater than 999"""
-
-    def __init__(self, transaction_count):
-        message = 'Transaction limit reached: %s' % transaction_count
-        super(TransactionCountError, self).__init__(message)
-
-
 class LogoutError(BetfairError):
     """Exception raised if logout errors"""
 
