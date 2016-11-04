@@ -46,19 +46,27 @@ class RaceCardTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.racecard.check_status_code')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.headers')
-    def test_request(self, mock_login_headers, mock_create_req, mock_check_status_code):
-        mock_session = mock.Mock()
-        mock_session.get.return_value = None
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request(self, mock_get, mock_login_headers, mock_create_req, mock_check_status_code):
+        mock_login_headers.return_value = {}
 
-        mock_headers = mock.Mock()
-        mock_headers.return_value = {}
-        mock_login_headers.return_value = mock_headers
+        self.race_card.request()
 
-        self.race_card.request(session=mock_session)
-
-        mock_session.get.assert_called_with(
+        mock_get.assert_called_with(
                 self.race_card.url, headers=mock_login_headers, params=mock_create_req())
-        assert mock_session.get.call_count == 1
+        assert mock_get.call_count == 1
+
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request_error(self, mock_post, mock_login_headers, mock_create_req):
+        mock_post.side_effect = ConnectionError()
+        with self.assertRaises(APIError):
+            self.race_card.request()
+
+        mock_post.side_effect = ValueError()
+        with self.assertRaises(APIError):
+            self.race_card.request()
 
     def test_create_req(self):
         assert self.race_card.create_req(['1', '2']) == {

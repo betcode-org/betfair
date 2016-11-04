@@ -54,17 +54,30 @@ class InPlayServiceTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.endpoints.inplayservice.check_status_code')
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.headers')
-    def test_request(self, mock_headers, mock_check_status_code):
-        mock_session = mock.Mock()
-        mock_session.get.return_value = None
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request(self, mock_get, mock_headers, mock_check_status_code):
         params = [1, 2, 3]
         url = '123'
 
-        self.in_play_service.request(session=mock_session, params=params, url=url)
+        self.in_play_service.request(params=params, url=url)
 
-        mock_session.get.assert_called_with(
+        mock_get.assert_called_with(
                 url, headers=mock_headers, params=params)
-        assert mock_session.get.call_count == 1
+        assert mock_get.call_count == 1
+        assert mock_check_status_code.call_count == 1
+
+    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.headers')
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request_error(self, mock_get, mock_headers):
+        params = [1, 2, 3]
+        url = '123'
+        mock_get.side_effect = ConnectionError()
+        with self.assertRaises(APIError):
+            self.in_play_service.request(params=params, url=url)
+
+        mock_get.side_effect = ValueError()
+        with self.assertRaises(APIError):
+            self.in_play_service.request(params=params, url=url)
 
     def test_headers(self):
         assert self.in_play_service.headers == {

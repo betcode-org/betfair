@@ -1,6 +1,6 @@
 import unittest
 import json
-import mock
+from unittest import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.baseendpoint import BaseEndpoint
@@ -51,6 +51,19 @@ class BaseEndPointTest(unittest.TestCase):
         mock_post.assert_called_once_with(url, data=mock_create_req(),
                                           headers=mock_request_headers, timeout=(3.05, 16))
         assert response == mock_response
+
+    @mock.patch('betfairlightweight.endpoints.baseendpoint.BaseEndpoint.create_req')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request_error(self, mock_post, mock_request_headers, mock_cert, mock_create_req):
+        mock_post.side_effect = ConnectionError()
+        with self.assertRaises(APIError):
+            self.base_endpoint.request(None, None, None)
+
+        mock_post.side_effect = ValueError()
+        with self.assertRaises(APIError):
+            self.base_endpoint.request(None, None, None)
 
     def test_base_endpoint_error_handler(self):
         mock_response = create_mock_json('tests/resources/base_endpoint_success.json')
