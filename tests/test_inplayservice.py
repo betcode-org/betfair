@@ -30,9 +30,10 @@ class InPlayServiceTest(unittest.TestCase):
         }
         self.in_play_service.get_event_timeline(event_id)
 
-        mock_request.assert_called_once_with(
+        mock_request.assert_called_with(
                 url='https://www.betfair.com/inplayservice/v1.1/eventTimeline', session=None, params=params)
-        mock_process_response.assert_called_once()
+        assert mock_request.call_count == 1
+        assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.process_response')
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request')
@@ -46,9 +47,10 @@ class InPlayServiceTest(unittest.TestCase):
         }
         self.in_play_service.get_scores(event_ids)
 
-        mock_request.assert_called_once_with(
+        mock_request.assert_called_with(
                 url='https://www.betfair.com/inplayservice/v1.1/scores', session=None, params=params)
-        mock_process_response.assert_called_once()
+        assert mock_request.call_count == 1
+        assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.inplayservice.check_status_code')
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.headers')
@@ -60,8 +62,9 @@ class InPlayServiceTest(unittest.TestCase):
 
         self.in_play_service.request(session=mock_session, params=params, url=url)
 
-        mock_session.get.assert_called_once_with(
+        mock_session.get.assert_called_with(
                 url, headers=mock_headers, params=params)
+        assert mock_session.get.call_count == 1
 
     def test_headers(self):
         assert self.in_play_service.headers == {

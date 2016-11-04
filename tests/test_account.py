@@ -35,7 +35,7 @@ class AccountTest(unittest.TestCase):
         self.account.get_account_funds(params=params)
 
         mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountFunds', params, None)
-        mock_process_response.assert_called_once()
+        assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
@@ -44,7 +44,7 @@ class AccountTest(unittest.TestCase):
         self.account.get_account_details(params=params)
 
         mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountDetails', params, None)
-        mock_process_response.assert_called_once()
+        assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
@@ -53,7 +53,7 @@ class AccountTest(unittest.TestCase):
         self.account.get_account_statement(params=params)
 
         mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountStatement', params, None)
-        mock_process_response.assert_called_once()
+        assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
@@ -62,7 +62,7 @@ class AccountTest(unittest.TestCase):
         self.account.list_currency_rates(params=params)
 
         mock_request.assert_called_once_with('AccountAPING/v1.0/listCurrencyRates', params, None)
-        mock_process_response.assert_called_once()
+        assert mock_process_response.call_count == 1
 
     def test_transfer_funds(self):
         with self.assertRaises(DeprecationWarning):
