@@ -160,4 +160,4 @@ class BetfairStreamTest(unittest.TestCase):
         message = {'message': 1}
 
         self.betfair_stream._send(message)
-        assert mock_socket.send.assert_called_once()
+        assert mock_socket.send.call_count == 1
