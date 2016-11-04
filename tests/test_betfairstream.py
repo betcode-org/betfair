@@ -106,7 +106,7 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream._create_socket()
 
         mock_socket.assert_called_with(socket.AF_INET, socket.SOCK_STREAM)
-        mock_wrap_socket.assert_called()
+        assert mock_wrap_socket.call_count == 1
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._data', return_value=False)
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all', return_value='{}\r\n')
