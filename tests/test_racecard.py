@@ -1,8 +1,9 @@
 import unittest
+from unittest import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.racecard import RaceCard
-from betfairlightweight.exceptions import APIError
+from betfairlightweight.exceptions import APIError, RaceCardError
 
 
 class RaceCardTest(unittest.TestCase):
@@ -17,16 +18,45 @@ class RaceCardTest(unittest.TestCase):
         assert self.race_card.client == self.client
         assert self.race_card.app_key is None
 
-    def test_url(self):
-        assert self.race_card.url == 'https://www.betfair.com/rest/v2/raceCard'
-        assert self.race_card.login_url == 'https://www.betfair.com/exchange/plus/'
+    def test_login(self):
+        mock_session = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.text = '"appKey": "1234",'
+        mock_session.get.return_value = mock_response
+        self.race_card.login(mock_session)
 
-    def test_headers(self):
-        assert self.race_card.headers == {
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'X-Application': None
-        }
+        assert self.race_card.app_key == '1234'
+        mock_session.get.assert_called_once_with(self.race_card.login_url)
+
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.process_response')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request')
+    def test_get_race_card(self, mock_request, mock_process_response):
+        market_ids = [1]
+        data_entries = [2]
+        with self.assertRaises(RaceCardError):
+            self.race_card.get_race_card(market_ids)
+
+        self.race_card.app_key = '1234'
+        self.race_card.get_race_card(market_ids=market_ids, data_entries=data_entries)
+
+        mock_request.assert_called_once_with(session=None, params=data_entries, method=market_ids)
+        mock_process_response.assert_called_once()
+
+    @mock.patch('betfairlightweight.endpoints.racecard.check_status_code')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.headers')
+    def test_request(self, mock_login_headers, mock_create_req, mock_check_status_code):
+        mock_session = mock.Mock()
+        mock_session.get.return_value = None
+
+        mock_headers = mock.Mock()
+        mock_headers.return_value = {}
+        mock_login_headers.return_value = mock_headers
+
+        self.race_card.request(session=mock_session)
+
+        mock_session.get.assert_called_once_with(
+                self.race_card.url, headers=mock_login_headers, params=mock_create_req())
 
     def test_create_req(self):
         assert self.race_card.create_req(['1', '2']) == {
@@ -38,11 +68,13 @@ class RaceCardTest(unittest.TestCase):
             'marketId': '1,2'
         }
 
-    def test_request(self):
-        pass
+    def test_headers(self):
+        assert self.race_card.headers == {
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
+            'X-Application': None
+        }
 
-    def test_login(self):
-        pass
-
-    def test_get_race_card(self):
-        pass
+    def test_urls(self):
+        assert self.race_card.url == 'https://www.betfair.com/rest/v2/raceCard'
+        assert self.race_card.login_url == 'https://www.betfair.com/exchange/plus/'

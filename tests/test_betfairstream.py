@@ -1,4 +1,7 @@
 import unittest
+import socket
+import time
+import threading
 from unittest import mock
 
 from betfairlightweight.streaming.betfairstream import BetfairStream
@@ -57,26 +60,104 @@ class BetfairStreamTest(unittest.TestCase):
                 {'id': 999, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
         )
 
-    def test_heartbeat(self):
-        pass
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
+    def test_heartbeat(self, mock_send):
+        self.betfair_stream.heartbeat()
+        mock_send.assert_called_with(
+                {'id': self.unique_id, 'op': 'heartbeat'}
+        )
 
-    def test_subscribe_to_markets(self):
-        pass
+        self.betfair_stream.heartbeat(999)
+        mock_send.assert_called_with(
+                {'id': 999, 'op': 'heartbeat'}
+        )
 
-    def test_subscribe_to_orders(self):
-        pass
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
+    def test_subscribe_to_markets(self, mock_send):
+        market_filter = {'test': 123}
+        market_data_filter = {'another_test': 123}
+        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter)
+        mock_send.assert_called_with(
+                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': self.unique_id,
+                 'marketDataFilter': market_data_filter}
+        )
 
-    def test_create_socket(self):
-        pass
+        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter, 666)
+        mock_send.assert_called_with(
+                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': 666,
+                 'marketDataFilter': market_data_filter}
+        )
 
-    def test_read_loop(self):
-        pass
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
+    def test_subscribe_to_orders(self, mock_send):
+        self.betfair_stream.subscribe_to_orders()
+        mock_send.assert_called_with(
+                {'id': self.unique_id, 'op': 'orderSubscription'}
+        )
+
+        self.betfair_stream.subscribe_to_orders(999)
+        mock_send.assert_called_with(
+                {'id': 999, 'op': 'orderSubscription'}
+        )
+
+    @mock.patch('ssl.wrap_socket')
+    @mock.patch('socket.socket')
+    def test_create_socket(self, mock_socket, mock_wrap_socket):
+        self.betfair_stream._create_socket()
+
+        mock_socket.assert_called_with(socket.AF_INET, socket.SOCK_STREAM)
+        mock_wrap_socket.assert_called()
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._data', return_value=False)
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all', return_value='{}\r\n')
+    def test_read_loop(self, mock_receive_all, mock_data):
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+
+        self.betfair_stream._running = True
+        threading.Thread(target=self.betfair_stream._read_loop).start()
+
+        for i in range(0, 2):
+            time.sleep(0.1)
+        self.betfair_stream._running = False
+        time.sleep(0.1)
+
+        mock_data.assert_called_with('{}')
+        mock_socket.close.assert_called_with()
 
     def test_receive_all(self):
-        pass
+        mock_socket = mock.Mock()
+        data_return_value = b'{"op":"status"}\r\n'
+        mock_socket.recv.return_value = data_return_value
+        self.betfair_stream._socket = mock_socket
 
-    def test_data(self):
-        pass
+        data = self.betfair_stream._receive_all()
+        assert data == ''
+
+        self.betfair_stream._running = True
+        data = self.betfair_stream._receive_all()
+        mock_socket.recv.assert_called_with(self.buffer_size)
+        assert data == data_return_value.decode('utf-8')
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
+    def test_data(self, mock_stop):
+        self.mock_listener.on_data.return_value = False
+        received_data = {"op": "status"}
+        self.betfair_stream._data(received_data)
+
+        self.mock_listener.on_data.assert_called_with(received_data)
+        assert mock_stop.called
+
+        self.mock_listener.on_data.return_value = True
+        self.betfair_stream._data(received_data)
+
+        self.mock_listener.on_data.assert_called_with(received_data)
+        assert mock_stop.call_count == 1
 
     def test_send(self):
-        pass
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+        message = {'message': 1}
+
+        self.betfair_stream._send(message)
+        assert mock_socket.send.assert_called_once()
