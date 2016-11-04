@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest import mock
 
 from betfairlightweight.streaming.betfairstream import BetfairStream
 
@@ -8,28 +8,54 @@ class BetfairStreamTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_listener = mock.Mock()
-        self.betfair_stream = BetfairStream(1, self.mock_listener, 'app_key', 'session_token', 6, 1024, 'test_stream')
+        self.unique_id = 1
+        self.app_key = 'app_key'
+        self.session_token = 'session_token'
+        self.timeout = 6
+        self.buffer_size = 1024
+        self.description = 'test_stream'
+        self.betfair_stream = BetfairStream(self.unique_id, self.mock_listener, self.app_key, self.session_token,
+                                            self.timeout, self.buffer_size, self.description)
 
     def test_init(self):
-        assert self.betfair_stream.unique_id == 1
+        assert self.betfair_stream.unique_id == self.unique_id
         assert self.betfair_stream.listener == self.mock_listener
-        assert self.betfair_stream.app_key == 'app_key'
-        assert self.betfair_stream.session_token == 'session_token'
-        assert self.betfair_stream.timeout == 6
-        assert self.betfair_stream.buffer_size == 1024
-        assert self.betfair_stream.description == 'test_stream'
+        assert self.betfair_stream.app_key == self.app_key
+        assert self.betfair_stream.session_token == self.session_token
+        assert self.betfair_stream.timeout == self.timeout
+        assert self.betfair_stream.buffer_size == self.buffer_size
+        assert self.betfair_stream.description == self.description
 
         assert self.betfair_stream._socket is None
         assert self.betfair_stream._running is False
 
-    def test_start(self):
-        pass
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._read_loop')
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all', return_value={})
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._create_socket')
+    def test_start(self, mock_create_socket, mock_receive_all, mock_read_loop):
+        self.betfair_stream.start()
+
+        assert self.betfair_stream._running is True
+        mock_create_socket.assert_called_with()
+        mock_receive_all.assert_called_with()
+        self.mock_listener.on_data.assert_called_with({}, self.unique_id)
+        mock_read_loop.assert_called_with()
 
     def test_stop(self):
-        pass
+        self.betfair_stream.stop()
+        assert self.betfair_stream._running is False
 
-    def test_authenticate(self):
-        pass
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
+    def test_authenticate(self, mock_send):
+        self.betfair_stream.authenticate()
+        mock_send.assert_called_with(
+                {'id': self.unique_id, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
+        )
+
+        self.betfair_stream.authenticate(999)
+        mock_send.assert_called_with(
+                {'id': 999, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
+        )
 
     def test_heartbeat(self):
         pass
