@@ -1,7 +1,5 @@
 import json
 import threading
-import time
-import logging
 import socket
 import ssl
 
@@ -49,22 +47,21 @@ class BetfairStream:
             self._read_loop()
 
     def stop(self):
-        """Closes socket and stops read loop
+        """Stops read loop which closes socket
         """
         self._running = False
-        time.sleep(1)
-        self._socket.close()
-        logging.info('[Connect: %s]: Socket closed' % self.unique_id)
 
     def authenticate(self, unique_id=None):
         """Authentication request.
 
         :param unique_id: If not supplied 1 is used.
         """
-        message = {'op': 'authentication',
-                   'id': self.unique_id if not unique_id else unique_id,
-                   'appKey': self.app_key,
-                   'session': self.session_token}
+        message = {
+            'op': 'authentication',
+            'id': self.unique_id if not unique_id else unique_id,
+            'appKey': self.app_key,
+            'session': self.session_token
+        }
         self._send(message)
 
     def heartbeat(self, unique_id=None):
@@ -72,8 +69,10 @@ class BetfairStream:
 
         :param unique_id: self.unique_id used if not supplied.
         """
-        message = {'op': 'heartbeat',
-                   'id': self.unique_id if not unique_id else unique_id}
+        message = {
+            'op': 'heartbeat',
+            'id': self.unique_id if not unique_id else unique_id
+        }
         self._send(message)
 
     def subscribe_to_markets(self, market_filter, market_data_filter, unique_id=None):
@@ -83,10 +82,12 @@ class BetfairStream:
         :param market_data_filter: Market data filter.
         :param unique_id: self.unique_id used if not supplied.
         """
-        message = {'op': 'marketSubscription',
-                   'id': self.unique_id if not unique_id else unique_id,
-                   'marketFilter': market_filter,
-                   'marketDataFilter': market_data_filter}
+        message = {
+            'op': 'marketSubscription',
+            'id': self.unique_id if not unique_id else unique_id,
+            'marketFilter': market_filter,
+            'marketDataFilter': market_data_filter
+        }
         self._send(message)
 
     def subscribe_to_orders(self, unique_id=None):
@@ -94,8 +95,10 @@ class BetfairStream:
 
         :param unique_id: self.unique_id used if not supplied.
         """
-        message = {'op': 'orderSubscription',
-                   'id': self.unique_id if not unique_id else unique_id}
+        message = {
+            'op': 'orderSubscription',
+            'id': self.unique_id if not unique_id else unique_id
+        }
         self._send(message)
 
     def _create_socket(self):
@@ -123,6 +126,8 @@ class BetfairStream:
                 pass
             except socket.error as e:
                 raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
+
+        self._socket.close()
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,
