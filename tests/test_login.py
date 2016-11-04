@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest import mock
 from requests.exceptions import ConnectionError
 
 from tests.tools import create_mock_json
@@ -16,12 +16,12 @@ class LoginTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.endpoints.login.Login.request')
     def test_call(self, mock_response):
-        mock = create_mock_json('tests/resources/login_success.json')
-        mock_response.return_value = mock
+        mock_json = create_mock_json('tests/resources/login_success.json')
+        mock_response.return_value = mock_json
         response = self.login()
 
-        assert response == mock.json()
-        assert self.login.client.session_token == mock.json().get('sessionToken')
+        assert response == mock_json.json()
+        assert self.login.client.session_token == mock_json.json().get('sessionToken')
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
     @mock.patch('betfairlightweight.baseclient.BaseClient.login_headers')
