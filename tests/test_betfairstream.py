@@ -48,8 +48,8 @@ class BetfairStreamTest(unittest.TestCase):
 
         self.betfair_stream._running = False
         self.betfair_stream.start(async=False)
-        mock_connect.assert_called()
-        mock_authenticate.assert_called()
+        mock_connect.assert_called_with()
+        mock_authenticate.assert_called_with()
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._create_socket')
     def test_connect(self, mock_create_socket):
