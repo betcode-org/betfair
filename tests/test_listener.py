@@ -61,21 +61,11 @@ class StreamListenerTest(unittest.TestCase):
     def test_init(self):
         assert self.stream_listener.output_queue == self.output_queue
 
-    def test_on_data(self):
-        pass
-
-    def test_on_connection(self):
-        self.stream_listener._on_connection({'connectionId': 1234}, 1)
-        assert self.stream_listener.connection_id == 1234
-
-    def test_on_status(self):
-        self.stream_listener._on_status({}, 1)
-
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._on_connection')
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._on_status')
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._on_change_message')
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._error_handler', return_value=False)
-    def test_on_change_message(self, mock_error_handler, mock_on_change_message, mock_on_status, mock_on_connection):
+    def test_on_data(self, mock_error_handler, mock_on_change_message, mock_on_status, mock_on_connection):
         mock_response = create_mock_json('tests/resources/streaming_connection.json')
         self.stream_listener.on_data(mock_response.content)
         mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
@@ -86,10 +76,46 @@ class StreamListenerTest(unittest.TestCase):
         mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
         mock_on_status.assert_called_with(mock_response.json(), mock_response.json().get('id'))
 
-        mock_response = create_mock_json('tests/resources/streaming_mcm_update.json')
+        mock_response = create_mock_json('tests/resources/streaming_mcm_UPDATE.json')
         self.stream_listener.on_data(mock_response.content)
         mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
         mock_on_change_message.assert_called_with(mock_response.json(), mock_response.json().get('id'))
+
+        on_data = self.stream_listener.on_data('some content')
+        assert on_data is None
+
+        mock_error_handler.return_value = True
+        on_data = self.stream_listener.on_data(mock_response.content)
+        assert on_data is False
+
+    def test_on_connection(self):
+        self.stream_listener._on_connection({'connectionId': 1234}, 1)
+        assert self.stream_listener.connection_id == 1234
+
+    def test_on_status(self):
+        self.stream_listener._on_status({}, 1)
+
+    def test_on_change_message(self):
+        market_stream = mock.Mock()
+        self.stream_listener.market_stream = market_stream
+        order_stream = mock.Mock()
+        self.stream_listener.order_stream = order_stream
+
+        mock_response = create_mock_json('tests/resources/streaming_mcm_SUB_IMAGE.json')
+        self.stream_listener._on_change_message(mock_response.json(), 1)
+        market_stream.on_subscribe.assert_called_with(mock_response.json(), 'mcm')
+
+        mock_response = create_mock_json('tests/resources/streaming_mcm_RESUB_DELTA.json')
+        self.stream_listener._on_change_message(mock_response.json(), 1)
+        market_stream.on_resubscribe.assert_called_with(mock_response.json())
+
+        mock_response = create_mock_json('tests/resources/streaming_mcm_HEARTBEAT.json')
+        self.stream_listener._on_change_message(mock_response.json(), 1)
+        market_stream.on_heartbeat.assert_called_with(mock_response.json())
+
+        mock_response = create_mock_json('tests/resources/streaming_mcm_UPDATE.json')
+        self.stream_listener._on_change_message(mock_response.json(), 1)
+        market_stream.on_update.assert_called_with(mock_response.json(), 'mcm')
 
     @mock.patch('betfairlightweight.streaming.listener.Stream', return_value=123)
     def test_add_stream(self, mock_stream):
