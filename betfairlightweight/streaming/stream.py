@@ -5,15 +5,15 @@ from ..resources.streamingresources import MarketBookCache, OrderBookCache
 from ..utils import strp_betfair_integer_time
 
 
-class Stream:
-    """Separate stream class to hold market caches
+class BaseStream:
+    """Separate stream class to hold market/order caches
     """
 
-    __max_latency = 0.5
+    _max_latency = 0.5
+    _lookup = 'mc'
 
-    def __init__(self, unique_id, stream_type, output_queue):
+    def __init__(self, unique_id, output_queue):
         self.unique_id = unique_id
-        self.stream_type = stream_type
         self.output_queue = output_queue
 
         self._initial_clk = None
@@ -25,42 +25,62 @@ class Stream:
         self.time_created = datetime.datetime.utcnow()
         self.time_updated = datetime.datetime.utcnow()
 
+    def on_subscribe(self, data):
+        self._update_clk(data)
+        publish_time = strp_betfair_integer_time(data.get('pt'))
+
+        book_data = data.get(self._lookup)
+        if book_data:
+            self._process(book_data, publish_time)
+        logging.info('[Stream: %s]: %s markets added' % (self.unique_id, len(self._caches)))
+
     def on_heartbeat(self, data):
         self._update_clk(data)
 
     def on_resubscribe(self, data):
         self._update_clk(data)
 
-    def on_subscribe(self, data, operation):
-        self._update_clk(data)
-        publish_time = strp_betfair_integer_time(data.get('pt'))
-
-        if operation == 'mcm':
-            market_books = data.get('mc', [])
-            if market_books:
-                self._process_market_books(market_books, publish_time)
-            logging.info('[Stream: %s]: %s markets added' % (self.unique_id, len(market_books)))
-        elif operation == 'ocm':
-            order_books = data.get('oc')
-            if order_books:
-                self._process_order_books(order_books, publish_time)
-
-    def on_update(self, data, operation):
+    def on_update(self, data):
         self._update_clk(data)
 
         publish_time = data.get('pt')
         latency = self._calc_latency(publish_time)
-        if latency > self.__max_latency:
+        if latency > self._max_latency:
             logging.warning('[Stream: %s]: Latency high: %s' % (self.unique_id, latency))
 
-        if operation == 'mcm':
-            market_books = data.get('mc')
-            self._process_market_books(market_books, publish_time)
-        elif operation == 'ocm':
-            order_books = data.get('oc')
-            self._process_order_books(order_books, publish_time)
+        book_data = data.get(self._lookup)
+        self._process(book_data, publish_time)
 
-    def _process_market_books(self, market_books, publish_time):
+    def _on_creation(self):
+        logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, str(self)))
+
+    def _process(self, book_data, publish_time):
+        pass
+
+    def _update_clk(self, data):
+        (initial_clk, clk) = (data.get('initialClk'), data.get('clk'))
+        if initial_clk:
+            self._initial_clk = data.get('initialClk')
+        if clk:
+            self._clk = data.get('clk')
+        self.time_updated = datetime.datetime.utcnow()
+
+    @staticmethod
+    def _calc_latency(publish_time):  # todo gmt /utc?
+        return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()
+
+    def __str__(self):
+        return '<BaseStream>'
+
+    def __repr__(self):
+        return str(self)
+
+
+class MarketStream(BaseStream):
+
+    _lookup = 'mc'
+
+    def _process(self, market_books, publish_time):
         output_market_book = []
         for market_book in market_books:
             market_id = market_book.get('id')
@@ -79,7 +99,15 @@ class Stream:
 
         self.output_queue.put(output_market_book)
 
-    def _process_order_books(self, order_books, publish_time):
+    def __str__(self):
+        return '<MarketStream [%s]>' % len(self._caches)
+
+
+class OrderStream(BaseStream):
+
+    _lookup = 'pt'
+
+    def _process(self, order_books, publish_time):
         output_order_book = []
         for order_book in order_books:
             market_id = order_book.get('id')
@@ -98,17 +126,5 @@ class Stream:
 
         self.output_queue.put(output_order_book)
 
-    def _on_creation(self):
-        logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, self.stream_type))
-
-    def _update_clk(self, data):
-        (initial_clk, clk) = (data.get('initialClk'), data.get('clk'))
-        if initial_clk:
-            self._initial_clk = data.get('initialClk')
-        if clk:
-            self._clk = data.get('clk')
-        self.time_updated = datetime.datetime.utcnow()
-
-    @staticmethod
-    def _calc_latency(publish_time):  # todo gmt /utc?
-        return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()
+    def __str__(self):
+        return '<OrderStream [%s]>' % len(self._caches)
