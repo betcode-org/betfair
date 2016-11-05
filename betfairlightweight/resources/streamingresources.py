@@ -403,17 +403,11 @@ class UnmatchedOrder(BaseResource):
         }
 
 
-# class MatchedLays:
-#
-#     class Meta(BaseResource.Meta):
-#         identifier = 'matched_lays'
-#         attributes = {
-#             'matche': 'selection_id'
-#         }
-#
-#     def __init__(self, matched):
-#         self.price = matched[0]
-#         self.size = matched[1]
+class Matched:
+
+    def __init__(self, price, size):
+        self.price = price
+        self.size = size
 
 
 class OrderBookRunner(BaseResource):
@@ -430,33 +424,41 @@ class OrderBookRunner(BaseResource):
             'uo': UnmatchedOrder
         }
 
-    def update_matched_lays(self, matched_lays):
+    def update_unmatched_lays(self, matched_lays):
         for matched_lay in matched_lays:
             updated = False
             (price, size) = matched_lay
-            for matches in self.matched_lays:
-                if matches.price == price:
-                    matches.size = size
-                    updated = True
-                    break
-            # if not updated:
-            #     self.matched_lays.append(Match(matched_lay))
+            if self.matched_lays:
+                for matches in self.matched_lays:
+                    if matches.price == price:
+                        matches.size = size
+                        updated = True
+                        break
+                if not updated:
+                    self.matched_lays.append(Matched(price, size))
+            else:
+                self.matched_lays = [Matched(price, size)]
 
     def update_unmatched_backs(self, matched_backs):
         for matched_back in matched_backs:
             updated = False
             (price, size) = matched_back
-            for matches in self.matched_backs:
-                if matches.price == price:
-                    matches.size = size
-                    updated = True
-                    break
-            # if not updated:
-            #     self.matched_backs.append(Match(matched_back))
+            print(matched_back)
+            if self.matched_backs:
+                for matches in self.matched_backs:
+                    if matches.price == price:
+                        matches.size = size
+                        updated = True
+                        break
+                if not updated:
+                    self.matched_backs.append(Matched(price, size))
+            else:
+                self.matched_backs = [Matched(price, size)]
 
     def update_unmatched(self, unmatched_orders):
+        order_dict = {order.bet_id: order for order in self.unmatched_orders}
         for unmatched_order in unmatched_orders:
-            self.unmatched_orders[unmatched_order.get('id')] = UnmatchedOrder(**unmatched_order)
+            order_dict[unmatched_order.get('id')] = UnmatchedOrder(**unmatched_order)
 
     @property
     def serialise_orders(self):
@@ -477,15 +479,17 @@ class OrderBookCache(BaseResource):
 
     def update_cache(self, order_book):
         self.date_updated = datetime.datetime.utcnow()
+        runner_dict = {runner.selection_id: runner for runner in self.runners}
+
         for order_changes in order_book.get('orc'):
             selection_id = order_changes['id']
-            runner = self.runners.get(selection_id)
+            runner = runner_dict.get(selection_id)
             if runner:
-                runner.update_matched_lays(order_changes.get('ml', []))
+                runner.update_unmatched_lays(order_changes.get('ml', []))
                 runner.update_unmatched_backs(order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
-                self.runners[order_changes.get('id')] = OrderBookRunner(**order_changes)
+                self.runners.append(OrderBookRunner(**order_changes))
 
     @property
     def create_order_book(self):
