@@ -66,7 +66,7 @@ class BaseStream:
         self.time_updated = datetime.datetime.utcnow()
 
     @staticmethod
-    def _calc_latency(publish_time):  # todo gmt /utc?
+    def _calc_latency(publish_time):
         return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()
 
     def __str__(self):
@@ -105,7 +105,7 @@ class MarketStream(BaseStream):
 
 class OrderStream(BaseStream):
 
-    _lookup = 'pt'
+    _lookup = 'oc'
 
     def _process(self, order_books, publish_time):
         output_order_book = []

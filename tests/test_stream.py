@@ -95,8 +95,12 @@ class MarketStreamTest(unittest.TestCase):
         self.stream.on_subscribe({'mc': {123}})
         mock_process.assert_called_once_with({123}, None)
 
-    def test_process(self):
-        pass
+    @mock.patch('betfairlightweight.streaming.stream.MarketBookCache')
+    def test_process(self, mock_market_book_cache):
+        now = mock.Mock()
+        market_books = [mock.Mock()]
+        self.stream._caches = mock.Mock()
+        # self.stream._process(market_books, now)
 
     def test_str(self):
         assert str(self.stream) == '<MarketStream [0]>'
@@ -109,8 +113,8 @@ class OrderStreamTest(unittest.TestCase):
         self.unique_id = 1
         self.stream = OrderStream(self.unique_id, self.output_queue)
 
-    # def test_process(self):
-    #     pass
+    def test_process(self):
+        pass
 
     def test_str(self):
         assert str(self.stream) == '<OrderStream [0]>'

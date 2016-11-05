@@ -14,8 +14,12 @@ class MarketDefinitionRunner(BaseResource):
             'id': 'id',
             'sortPriority': 'sort_priority',
             'status': 'status',
-            'adjustmentFactor': 'adjustment_factor'
+            'adjustmentFactor': 'adjustment_factor',
+            'removalDate': 'removal_date',
         }
+        datetime_attributes = (
+            'removalDate',
+        )
 
 
 class MarketDefinition(BaseResource):
@@ -32,7 +36,7 @@ class MarketDefinition(BaseResource):
             'discountAllowed': 'discount_allowed',
             'eventId': 'event_id',
             'eventTypeId': 'event_type_id',
-            'inplay': 'in_play',
+            'inPlay': 'in_play',
             'marketBaseRate': 'market_base_rate',
             'marketTime': 'market_time',
             'marketType': 'market_type',
@@ -41,6 +45,7 @@ class MarketDefinition(BaseResource):
             'persistenceEnabled': 'persistence_enabled',
             'regulators': 'regulators',
             'runnersVoidable': 'runners_voidable',
+            'settledTime': 'settled_time',
             'openDate': 'open_date',
             'status': 'status',
             'suspendTime': 'suspend_time',
@@ -55,7 +60,8 @@ class MarketDefinition(BaseResource):
         datetime_attributes = (
             'marketTime',
             'openDate',
-            'suspendTime'
+            'suspendTime',
+            'settledTime',
         )
 
 
@@ -347,6 +353,7 @@ class UnmatchedOrder(BaseResource):
         attributes = {
             'id': 'bet_id',
             'p': 'price',
+            's': 'size',
             'bsp': 'bsp_liability',
             'side': 'side',
             'status': 'status',
@@ -362,6 +369,8 @@ class UnmatchedOrder(BaseResource):
             'sv': 'size_voided',
             'rac': 'regulator_auth_code',
             'rc': 'regulator_code',
+            'rfo': 'reference_order',
+            'rfs': 'reference_strategy',
         }
         datetime_attributes = (
             'pd',
