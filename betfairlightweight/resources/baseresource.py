@@ -66,15 +66,11 @@ class BaseResource:
         if isinstance(value, str):
             try:
                 return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
-            except TypeError:
-                return
             except ValueError:
                 return
         elif isinstance(value, int):
             try:
                 return datetime.datetime.utcfromtimestamp(value / 1e3)
-            except TypeError:
-                return
             except ValueError:
                 return
 

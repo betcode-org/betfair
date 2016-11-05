@@ -33,14 +33,21 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream._socket is None
         assert self.betfair_stream._running is False
 
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.authenticate')
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._connect')
     @mock.patch('betfairlightweight.streaming.betfairstream.threading')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._read_loop')
-    def test_start(self, mock_read_loop, mock_threading):
+    def test_start(self, mock_read_loop, mock_threading, mock_connect, mock_authenticate):
+        self.betfair_stream._running = True
         self.betfair_stream.start()
         mock_read_loop.assert_called_with()
 
         self.betfair_stream.start(async=True)
         mock_threading.Thread.assert_called_with(daemon=True, name=self.description, target=mock_read_loop)
+
+        self.betfair_stream._running = False
+        mock_connect.assert_called()
+        mock_authenticate.assert_called()
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._create_socket')
     def test_connect(self, mock_create_socket):

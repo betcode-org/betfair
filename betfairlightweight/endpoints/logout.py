@@ -17,7 +17,7 @@ class Logout(BaseEndpoint):
         session = session or self.client.session
         try:
             response = session.post(self.url, headers=self.client.keep_alive_headers, cert=self.client.cert)
-        except ConnectionError:
+        except session.ConnectionError:
             raise APIError(None, exception='ConnectionError')
         except Exception as e:
             raise APIError(None, exception=e)
