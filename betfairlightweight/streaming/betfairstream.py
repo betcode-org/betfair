@@ -29,20 +29,12 @@ class BetfairStream:
         self._running = False
 
     def start(self, async=False):
-        """Creates socket, registers with listener, waits for
-        initial response and then starts read loop.
+        """Starts read loop, new thread if async.
 
         :param async: If True new thread is started
         """
-        self._running = True
-        self.listener.register_stream(self.unique_id, self.description)
-        self._socket = self._create_socket()
-
-        connection_string = self._receive_all()
-        self.listener.on_data(connection_string, self.unique_id)
-
         if async:
-            threading.Thread(name='BetfairStream', target=self._read_loop, daemon=True).start()
+            threading.Thread(name=self.description, target=self._read_loop, daemon=True).start()
         else:
             self._read_loop()
 
@@ -71,7 +63,7 @@ class BetfairStream:
         """
         message = {
             'op': 'heartbeat',
-            'id': self.unique_id if not unique_id else unique_id
+            'id': unique_id or self.unique_id
         }
         self._send(message)
 
@@ -84,7 +76,7 @@ class BetfairStream:
         """
         message = {
             'op': 'marketSubscription',
-            'id': self.unique_id if not unique_id else unique_id,
+            'id': unique_id or self.unique_id,
             'marketFilter': market_filter,
             'marketDataFilter': market_data_filter
         }
@@ -97,9 +89,16 @@ class BetfairStream:
         """
         message = {
             'op': 'orderSubscription',
-            'id': self.unique_id if not unique_id else unique_id
+            'id': unique_id or self.unique_id
         }
         self._send(message)
+
+    def _connect(self):
+        """Creates socket and registers with listener.
+        """
+        self._running = True
+        self.listener.register_stream(self.unique_id, self.description)
+        self._socket = self._create_socket()
 
     def _create_socket(self):
         """Creates ssl socket, connects to stream api and
@@ -150,9 +149,14 @@ class BetfairStream:
             self.stop()
 
     def _send(self, message):
-        """Adds CRLF and sends message to Betfair.
+        """If not running connects socket and
+        authenticates. Adds CRLF and sends message
+        to Betfair.
 
         :param message: Data to be sent to Betfair.
         """
+        if not self._running:
+            self._connect()
+            self.authenticate()
         message_dumped = json.dumps(message) + self.__CRLF
         self._socket.send(message_dumped.encode())

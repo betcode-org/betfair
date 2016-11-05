@@ -5,6 +5,7 @@ import threading
 from unittest import mock
 
 from betfairlightweight.streaming.betfairstream import BetfairStream
+from betfairlightweight.exceptions import SocketError
 
 
 class BetfairStreamTest(unittest.TestCase):
@@ -32,17 +33,22 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream._socket is None
         assert self.betfair_stream._running is False
 
+    @mock.patch('betfairlightweight.streaming.betfairstream.threading')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._read_loop')
-    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all', return_value={})
-    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._create_socket')
-    def test_start(self, mock_create_socket, mock_receive_all, mock_read_loop):
+    def test_start(self, mock_read_loop, mock_threading):
         self.betfair_stream.start()
+        mock_read_loop.assert_called_with()
+
+        self.betfair_stream.start(async=True)
+        mock_threading.Thread.assert_called_with(daemon=True, name=self.description, target=mock_read_loop)
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._create_socket')
+    def test_connect(self, mock_create_socket):
+        self.betfair_stream._connect()
 
         assert self.betfair_stream._running is True
+        self.mock_listener.register_stream.assert_called_with(self.unique_id, self.description)
         mock_create_socket.assert_called_with()
-        mock_receive_all.assert_called_with()
-        self.mock_listener.on_data.assert_called_with({}, self.unique_id)
-        mock_read_loop.assert_called_with()
 
     def test_stop(self):
         self.betfair_stream.stop()
@@ -125,6 +131,24 @@ class BetfairStreamTest(unittest.TestCase):
         mock_data.assert_called_with('{}')
         mock_socket.close.assert_called_with()
 
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all')
+    def test_read_loop_error(self, mock_receive_all):
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+        self.betfair_stream._running = True
+
+        mock_receive_all.side_effect = socket.error()
+        with self.assertRaises(SocketError):
+            self.betfair_stream._read_loop()
+
+        mock_receive_all.side_effect = socket.timeout()
+        threading.Thread(target=self.betfair_stream._read_loop).start()
+
+        for i in range(0, 2):
+            time.sleep(0.1)
+        self.betfair_stream._running = False
+        time.sleep(0.1)
+
     def test_receive_all(self):
         mock_socket = mock.Mock()
         data_return_value = b'{"op":"status"}\r\n'
@@ -154,10 +178,14 @@ class BetfairStreamTest(unittest.TestCase):
         self.mock_listener.on_data.assert_called_with(received_data)
         assert mock_stop.call_count == 1
 
-    def test_send(self):
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.authenticate')
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._connect')
+    def test_send(self, mock_connect, mock_authenticate):
         mock_socket = mock.Mock()
         self.betfair_stream._socket = mock_socket
         message = {'message': 1}
 
         self.betfair_stream._send(message)
+        assert mock_connect.call_count == 1
+        assert mock_authenticate.call_count == 1
         assert mock_socket.send.call_count == 1
