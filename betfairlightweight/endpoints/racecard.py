@@ -33,7 +33,7 @@ class RaceCard(BaseEndpoint):
         try:
             response = session.get(self.url, params=self.create_req(method, params),
                                    headers=self.headers)
-        except session.ConnectionError:
+        except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)

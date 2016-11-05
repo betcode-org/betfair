@@ -9,9 +9,11 @@ class BaseListener:
 
     def __init__(self):
         self.streams = {}
+        self.market_stream = None
+        self.order_stream = None
 
     def register_stream(self, unique_id, operation):
-        print(unique_id, operation)
+        print('Register:', unique_id, operation)
 
     def on_data(self, raw_data, unique_id=None):
         print(unique_id, raw_data)
@@ -27,11 +29,12 @@ class StreamListener(BaseListener):
         self.output_queue = output_queue
 
     def register_stream(self, unique_id, operation):
-        if self.streams.get(unique_id):
-            logging.warning('[Listener: %s]: Stream already registered, removing data' % unique_id)
-            del self.streams[unique_id]
-        else:
-            self._add_stream(unique_id, operation)
+        if operation in ['marketSubscription', 'orderSubscription']:
+            if self.streams.get(unique_id):
+                logging.warning('[Listener: %s]: Stream already registered, removing data' % unique_id)
+                del self.streams[unique_id]
+            else:
+                self._add_stream(unique_id, operation)
 
     def on_data(self, raw_data, unique_id=None):
         """Called when raw data is received from connection.

@@ -45,10 +45,19 @@ Stream listener is able to hold multiple streams, hold a cache and push market_b
 
 ```python
 betfair_socket = trading.streaming.create_stream(unique_id=2, description='Test Market Socket')
-betfair_socket.subscribe_to_markets(market_filter={'eventTypeIds': ['7'],
-                                                   'countryCodes': ['GB', 'IE'], 
-                                                   'marketTypes': ['WIN']},
-                                    market_data_filter={'fields': ['EX_BEST_OFFERS', 'EX_MARKET_DEF'],
-                                                        'ladderLevels': 1})
+
+market_filter = {
+    'eventTypeIds': ['7'],
+    'countryCodes': ['GB', 'IE'],
+    'marketTypes': ['WIN']
+}
+market_data_filter = {
+    'fields': ['EX_BEST_OFFERS', 'EX_MARKET_DEF'],
+    'ladderLevels': 1
+}
+
+betfair_socket.subscribe_to_markets(unique_id=12345,
+                                    market_filter=market_filter,
+                                    market_data_filter=market_data_filter)
 betfair_socket.start(async=False)
 ```
