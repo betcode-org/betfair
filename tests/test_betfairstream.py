@@ -12,6 +12,7 @@ class BetfairStreamTest(unittest.TestCase):
 
     def setUp(self):
         self.mock_listener = mock.Mock()
+        self.mock_listener.on_data.return_value = False
         self.unique_id = 1
         self.app_key = 'app_key'
         self.session_token = 'session_token'
@@ -46,6 +47,7 @@ class BetfairStreamTest(unittest.TestCase):
         mock_threading.Thread.assert_called_with(daemon=True, name=self.description, target=mock_read_loop)
 
         self.betfair_stream._running = False
+        self.betfair_stream.start(async=False)
         mock_connect.assert_called()
         mock_authenticate.assert_called()
 
@@ -54,7 +56,6 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream._connect()
 
         assert self.betfair_stream._running is True
-        self.mock_listener.register_stream.assert_called_with(self.unique_id, self.description)
         mock_create_socket.assert_called_with()
 
     def test_stop(self):
@@ -89,29 +90,23 @@ class BetfairStreamTest(unittest.TestCase):
     def test_subscribe_to_markets(self, mock_send):
         market_filter = {'test': 123}
         market_data_filter = {'another_test': 123}
-        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter)
-        mock_send.assert_called_with(
-                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': self.unique_id,
-                 'marketDataFilter': market_data_filter}
-        )
+        unique_id = 9876
+        self.betfair_stream.subscribe_to_markets(unique_id, market_filter, market_data_filter)
 
-        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter, 666)
         mock_send.assert_called_with(
-                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': 666,
+                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': unique_id,
                  'marketDataFilter': market_data_filter}
         )
+        self.mock_listener.register_stream.assert_called_with(unique_id, 'marketSubscription')
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_subscribe_to_orders(self, mock_send):
-        self.betfair_stream.subscribe_to_orders()
+        unique_id = 3456
+        self.betfair_stream.subscribe_to_orders(unique_id)
         mock_send.assert_called_with(
-                {'id': self.unique_id, 'op': 'orderSubscription'}
+                {'id': unique_id, 'op': 'orderSubscription'}
         )
-
-        self.betfair_stream.subscribe_to_orders(999)
-        mock_send.assert_called_with(
-                {'id': 999, 'op': 'orderSubscription'}
-        )
+        self.mock_listener.register_stream.assert_called_with(unique_id, 'orderSubscription')
 
     @mock.patch('ssl.wrap_socket')
     @mock.patch('socket.socket')
@@ -172,7 +167,6 @@ class BetfairStreamTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
     def test_data(self, mock_stop):
-        self.mock_listener.on_data.return_value = False
         received_data = {"op": "status"}
         self.betfair_stream._data(received_data)
 

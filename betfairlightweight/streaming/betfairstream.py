@@ -7,7 +7,7 @@ from ..exceptions import SocketError
 
 
 class BetfairStream:
-    """Stream holder, socket connects to betfair,
+    """Socket holder, connects to betfair and
     pushes any received data to listener
     """
 
@@ -29,8 +29,8 @@ class BetfairStream:
         self._running = False
 
     def start(self, async=False):
-        """Starts read loop, new thread if async, connects
-        /authenticates if not already running.
+        """Starts read loop, new thread if async and
+        connects/authenticates if not already running.
 
         :param async: If True new thread is started
         """
@@ -50,14 +50,15 @@ class BetfairStream:
     def authenticate(self, unique_id=None):
         """Authentication request.
 
-        :param unique_id: If not supplied 1 is used.
+        :param unique_id: self.unique_id used if not supplied.
         """
         message = {
             'op': 'authentication',
-            'id': self.unique_id if not unique_id else unique_id,
+            'id': unique_id or self.unique_id,
             'appKey': self.app_key,
             'session': self.session_token
         }
+        self.listener.register_stream(unique_id or self.unique_id, 'authentication')
         self._send(message)
 
     def heartbeat(self, unique_id=None):
@@ -71,37 +72,38 @@ class BetfairStream:
         }
         self._send(message)
 
-    def subscribe_to_markets(self, market_filter, market_data_filter, unique_id=None):
+    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter):
         """Market subscription request.
 
         :param market_filter: Market filter.
         :param market_data_filter: Market data filter.
-        :param unique_id: self.unique_id used if not supplied.
+        :param unique_id: Unique id of stream.
         """
         message = {
             'op': 'marketSubscription',
-            'id': unique_id or self.unique_id,
+            'id': unique_id,
             'marketFilter': market_filter,
             'marketDataFilter': market_data_filter
         }
+        self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
 
-    def subscribe_to_orders(self, unique_id=None):
+    def subscribe_to_orders(self, unique_id):
         """Order subscription request.
 
-        :param unique_id: self.unique_id used if not supplied.
+        :param unique_id: Unique id of stream.
         """
         message = {
             'op': 'orderSubscription',
-            'id': unique_id or self.unique_id
+            'id': unique_id
         }
+        self.listener.register_stream(unique_id, 'orderSubscription')
         self._send(message)
 
     def _connect(self):
         """Creates socket and registers with listener.
         """
         self._running = True
-        self.listener.register_stream(self.unique_id, self.description)
         self._socket = self._create_socket()
 
     def _create_socket(self):

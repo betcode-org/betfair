@@ -71,13 +71,13 @@ class RaceCardTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.headers')
-    @mock.patch('betfairlightweight.baseclient.requests.post')
-    def test_request_error(self, mock_post, mock_login_headers, mock_create_req):
-        mock_post.side_effect = ConnectionError()
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request_error(self, mock_get, mock_login_headers, mock_create_req):
+        mock_get.side_effect = ConnectionError()
         with self.assertRaises(APIError):
             self.race_card.request()
 
-        mock_post.side_effect = ValueError()
+        mock_get.side_effect = ValueError()
         with self.assertRaises(APIError):
             self.race_card.request()
 
