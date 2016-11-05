@@ -75,30 +75,38 @@ class BetfairStream:
         }
         self._send(message)
 
-    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter):
+    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter, initial_clk=None, clk=None):
         """Market subscription request.
 
         :param market_filter: Market filter.
         :param market_data_filter: Market data filter.
         :param unique_id: Unique id of stream.
+        :param initial_clk: Sequence token for reconnect.
+        :param clk: Sequence token for reconnect.
         """
         message = {
             'op': 'marketSubscription',
             'id': unique_id,
             'marketFilter': market_filter,
-            'marketDataFilter': market_data_filter
+            'marketDataFilter': market_data_filter,
+            'initialClk': initial_clk,
+            'clk': clk,
         }
         self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
 
-    def subscribe_to_orders(self, unique_id):
+    def subscribe_to_orders(self, unique_id, initial_clk=None, clk=None):
         """Order subscription request.
 
         :param unique_id: Unique id of stream.
+        :param initial_clk: Sequence token for reconnect.
+        :param clk: Sequence token for reconnect.
         """
         message = {
             'op': 'orderSubscription',
-            'id': unique_id
+            'id': unique_id,
+            'initialClk': initial_clk,
+            'clk': clk,
         }
         self.listener.register_stream(unique_id, 'orderSubscription')
         self._send(message)

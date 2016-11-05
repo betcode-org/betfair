@@ -56,7 +56,6 @@ class StreamListener(BaseListener):
         the stream data
 
         :param raw_data: Received raw data
-        :param unique_id: Unique id, used only on initial connection
         :return: Return False to stop stream and close connection
         """
         try:

@@ -93,20 +93,24 @@ class BetfairStreamTest(unittest.TestCase):
         market_filter = {'test': 123}
         market_data_filter = {'another_test': 123}
         unique_id = 9876
-        self.betfair_stream.subscribe_to_markets(unique_id, market_filter, market_data_filter)
+        initial_clk = 'abcdef'
+        clk = 'abc'
+        self.betfair_stream.subscribe_to_markets(unique_id, market_filter, market_data_filter, initial_clk, clk)
 
         mock_send.assert_called_with(
                 {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': unique_id,
-                 'marketDataFilter': market_data_filter}
+                 'marketDataFilter': market_data_filter, 'initialClk': initial_clk, 'clk': clk}
         )
         self.mock_listener.register_stream.assert_called_with(unique_id, 'marketSubscription')
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_subscribe_to_orders(self, mock_send):
         unique_id = 3456
-        self.betfair_stream.subscribe_to_orders(unique_id)
+        initial_clk = 'abcdef'
+        clk = 'abc'
+        self.betfair_stream.subscribe_to_orders(unique_id, initial_clk, clk)
         mock_send.assert_called_with(
-                {'id': unique_id, 'op': 'orderSubscription'}
+                {'id': unique_id, 'op': 'orderSubscription', 'initialClk': initial_clk, 'clk': clk}
         )
         self.mock_listener.register_stream.assert_called_with(unique_id, 'orderSubscription')
 
