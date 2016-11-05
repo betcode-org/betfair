@@ -3,7 +3,6 @@ import datetime
 import json
 
 from betfairlightweight.resources.baseresource import BaseResource
-
 from tests.tools import create_mock_json
 
 

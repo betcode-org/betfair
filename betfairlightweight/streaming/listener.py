@@ -41,8 +41,9 @@ class BaseListener:
 
 
 class StreamListener(BaseListener):
-    """Stream listener, processes results from unlimited amount
-     of sockets, holds streams which hold market_book caches
+    """Stream listener, processes results from socket,
+    holds a market and order stream which hold
+    market_book caches
     """
 
     def __init__(self, output_queue=None):
