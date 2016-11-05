@@ -1,18 +1,19 @@
 import unittest
-import mock
+from unittest import mock
 
-from betfairlightweight.streaming.stream import Stream
+from betfairlightweight.streaming.stream import BaseStream, MarketStream, OrderStream
+from tests.tools import create_mock_json
 
 
-class BetfairStreamTest(unittest.TestCase):
+class BaseStreamTest(unittest.TestCase):
 
     def setUp(self):
         self.output_queue = mock.Mock()
-        self.stream = Stream(1, 'market', self.output_queue)
+        self.unique_id = 1
+        self.stream = BaseStream(self.unique_id, self.output_queue)
 
     def test_init(self):
-        assert self.stream.unique_id == 1
-        assert self.stream.stream_type == 'market'
+        assert self.stream.unique_id == self.unique_id
         assert self.stream.output_queue == self.output_queue
 
         assert self.stream._initial_clk is None
@@ -22,40 +23,44 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.stream.time_created is not None
         assert self.stream.time_updated is not None
 
-    @mock.patch('betfairlightweight.streaming.stream.Stream._update_clk')
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._process')
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._update_clk')
+    def test_on_subscribe(self, mock_update_clk, mock_process):
+        self.stream.on_subscribe({})
+        mock_update_clk.assert_called_once_with({})
+
+        self.stream.on_subscribe({'mc': {123}})
+        mock_process.assert_called_once_with({123}, None)
+
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._update_clk')
     def test_on_heartbeat(self, mock_update_clk):
         self.stream.on_heartbeat({})
         mock_update_clk.assert_called_once_with({})
 
-    @mock.patch('betfairlightweight.streaming.stream.Stream._update_clk')
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._update_clk')
     def test_on_resubscribe(self, mock_update_clk):
         self.stream.on_resubscribe({})
         mock_update_clk.assert_called_once_with({})
 
-    @mock.patch('betfairlightweight.streaming.stream.Stream._process_order_books')
-    @mock.patch('betfairlightweight.streaming.stream.Stream._process_market_books')
-    @mock.patch('betfairlightweight.streaming.stream.Stream._update_clk')
-    def test_on_subscribe(self, mock_update_clk, mock_process_market_books, mock_process_order_books):
-        self.stream.on_subscribe({}, 'test')
-        mock_update_clk.assert_called_once_with({})
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._process')
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._calc_latency', return_value=0.1)
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream._update_clk')
+    def test_on_update(self, mock_update_clk, mock_calc_latency, mock_process):
+        mock_response = create_mock_json('tests/resources/streaming_mcm_update.json')
+        self.stream.on_update(mock_response.json())
 
-        self.stream.on_subscribe({'mc': {123}}, 'mcm')
-        mock_process_market_books.assert_called_once_with({123}, None)
+        mock_update_clk.assert_called_with(mock_response.json())
+        mock_calc_latency.assert_called_with(mock_response.json().get('pt'))
+        mock_process.assert_called_with(mock_response.json().get('mc'), mock_response.json().get('pt'))
 
-        self.stream.on_subscribe({'oc': {123}}, 'ocm')
-        mock_process_order_books.assert_called_once_with({123}, None)
-
-    def test_on_update(self):
-        pass
-
-    def test_process_market_books(self):
-        pass
-
-    def test_process_order_books(self):
-        pass
+        mock_calc_latency.return_value = 10
+        self.stream.on_update(mock_response.json())
 
     def test_on_creation(self):
         self.stream._on_creation()
+
+    def test_process(self):
+        self.stream._process(None, None)
 
     def test_update_clk(self):
         self.stream._update_clk({'initialClk': 1234})
@@ -66,3 +71,46 @@ class BetfairStreamTest(unittest.TestCase):
 
     def test_calc_latency(self):
         assert self.stream._calc_latency(1234) is not None
+
+    def test_str(self):
+        assert str(self.stream) == '<BaseStream>'
+
+    def test_repr(self):
+        assert repr(self.stream) == '<BaseStream>'
+
+
+class MarketStreamTest(unittest.TestCase):
+
+    def setUp(self):
+        self.output_queue = mock.Mock()
+        self.unique_id = 1
+        self.stream = MarketStream(self.unique_id, self.output_queue)
+
+    @mock.patch('betfairlightweight.streaming.stream.MarketStream._process')
+    @mock.patch('betfairlightweight.streaming.stream.MarketStream._update_clk')
+    def test_on_subscribe(self, mock_update_clk, mock_process):
+        self.stream.on_subscribe({})
+        mock_update_clk.assert_called_once_with({})
+
+        self.stream.on_subscribe({'mc': {123}})
+        mock_process.assert_called_once_with({123}, None)
+
+    def test_process(self):
+        pass
+
+    def test_str(self):
+        assert str(self.stream) == '<MarketStream [0]>'
+
+
+class OrderStreamTest(unittest.TestCase):
+
+    def setUp(self):
+        self.output_queue = mock.Mock()
+        self.unique_id = 1
+        self.stream = OrderStream(self.unique_id, self.output_queue)
+
+    # def test_process(self):
+    #     pass
+
+    def test_str(self):
+        assert str(self.stream) == '<OrderStream [0]>'

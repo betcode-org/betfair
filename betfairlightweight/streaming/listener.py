@@ -2,7 +2,7 @@ import json
 import logging
 import time
 
-from .stream import Stream
+from .stream import MarketStream, OrderStream
 
 
 class BaseListener:
@@ -13,7 +13,7 @@ class BaseListener:
 
     def register_stream(self, unique_id, operation):
         if operation == 'authentication':
-            print('Register: %s %s' % (operation, unique_id))
+            logging.info('[Listener: %s]: %s' % (unique_id, operation))
 
         elif operation == 'marketSubscription':
             if self.market_stream is not None:
@@ -107,16 +107,19 @@ class StreamListener(BaseListener):
         logging.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
 
         if change_type == 'SUB_IMAGE':
-            stream.on_subscribe(data, operation)
+            stream.on_subscribe(data)
         elif change_type == 'RESUB_DELTA':
             stream.on_resubscribe(data)
         elif change_type == 'HEARTBEAT':
             stream.on_heartbeat(data)
         elif change_type == 'UPDATE':
-            stream.on_update(data, operation)
+            stream.on_update(data)
 
     def _add_stream(self, unique_id, stream_type):
-        return Stream(unique_id, stream_type, self.output_queue)
+        if stream_type == 'marketSubscription':
+            return MarketStream(unique_id, self.output_queue)
+        elif stream_type == 'orderSubscription':
+            return OrderStream(unique_id, self.output_queue)
 
     @staticmethod
     def _error_handler(data, unique_id):
