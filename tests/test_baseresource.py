@@ -93,6 +93,9 @@ class BaseResourceInit(unittest.TestCase):
         stripped = base_resource.strip_datetime('45')
         assert not stripped
 
+        stripped = base_resource.strip_datetime(-1230000000345446)
+        assert not stripped
+
     def test_strip_datetime_resource(self):
         mock_response = create_mock_json('tests/resources/base_resource_sub.json')
 

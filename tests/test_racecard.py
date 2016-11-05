@@ -29,6 +29,19 @@ class RaceCardTest(unittest.TestCase):
         mock_session.get.assert_called_with(self.race_card.login_url)
         assert mock_session.get.call_count == 1
 
+    def test_login_error(self):
+        mock_session = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.text = '"applesKey": "1234",'
+        mock_session.get.return_value = mock_response
+
+        with self.assertRaises(RaceCardError):
+            self.race_card.login(mock_session)
+
+        assert self.race_card.app_key is None
+        mock_session.get.assert_called_with(self.race_card.login_url)
+        assert mock_session.get.call_count == 1
+
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.process_response')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request')
     def test_get_race_card(self, mock_request, mock_process_response):

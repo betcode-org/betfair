@@ -29,10 +29,14 @@ class BetfairStream:
         self._running = False
 
     def start(self, async=False):
-        """Starts read loop, new thread if async.
+        """Starts read loop, new thread if async, connects
+        /authenticates if not already running.
 
         :param async: If True new thread is started
         """
+        if not self._running:
+            self._connect()
+            self.authenticate()
         if async:
             threading.Thread(name=self.description, target=self._read_loop, daemon=True).start()
         else:

@@ -13,7 +13,7 @@ class Navigation(BaseEndpoint):
         try:
             response = session.get(self.url, headers=self.client.request_headers,
                                    timeout=(self.connect_timeout, self.read_timeout))
-        except ConnectionError:
+        except session.ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)
