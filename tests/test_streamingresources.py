@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest import mock
 
 from betfairlightweight.resources.streamingresources import MarketDefinition
 from tests.tools import create_mock_json
@@ -14,3 +14,5 @@ class TestMarketDefinition(unittest.TestCase):
     def test_init(self):
         assert self.market_definition._data == self.mock_response.json()
         assert len(self.market_definition.runners) == 7
+        assert self.market_definition.bsp_market is True
+        assert self.market_definition.market_base_rate == 5
