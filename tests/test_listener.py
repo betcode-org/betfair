@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest import mock
 
 from betfairlightweight.streaming.listener import BaseListener, StreamListener
 
@@ -10,13 +10,45 @@ class BaseListenerTest(unittest.TestCase):
         self.base_listener = BaseListener()
 
     def test_init(self):
-        assert self.base_listener.streams == {}
+        assert self.base_listener.market_stream is None
+        assert self.base_listener.order_stream is None
 
-    def test_register_stream(self):
-        self.base_listener.register_stream(1, 'heartbeat')
+    @mock.patch('betfairlightweight.streaming.listener.BaseListener._add_stream', return_value=123)
+    @mock.patch('sys.stdout')
+    def test_register_stream(self, mock_print, mock_add_stream):
+        self.base_listener.register_stream(1, 'authentication')
 
-    def test_on_data(self):
-        self.base_listener.on_data({}, 2)
+        self.base_listener.register_stream(2, 'marketSubscription')
+        mock_add_stream.assert_called_with(2, 'marketSubscription')
+        assert self.base_listener.market_stream == 123
+
+        self.base_listener.market_stream = 'test'
+        self.base_listener.register_stream(2, 'marketSubscription')
+        mock_add_stream.assert_called_with(2, 'marketSubscription')
+        assert self.base_listener.market_stream == 123
+
+        self.base_listener.register_stream(3, 'orderSubscription')
+        mock_add_stream.assert_called_with(3, 'orderSubscription')
+        assert self.base_listener.order_stream == 123
+
+        self.base_listener.order_stream = 'test'
+        self.base_listener.register_stream(3, 'orderSubscription')
+        mock_add_stream.assert_called_with(3, 'orderSubscription')
+        assert self.base_listener.order_stream == 123
+
+    @mock.patch('sys.stdout')
+    def test_on_data(self, mock_print):
+        self.base_listener.on_data({})
+
+    @mock.patch('sys.stdout')
+    def test_add_stream(self, mock_print):
+        self.base_listener._add_stream(1, 'operation')
+
+    def test_str(self):
+        assert str(self.base_listener) == '<BaseListener>'
+
+    def test_repr(self):
+        assert repr(self.base_listener) == '<BaseListener>'
 
 
 class StreamListenerTest(unittest.TestCase):
@@ -49,3 +81,9 @@ class StreamListenerTest(unittest.TestCase):
 
     def test_error_handler(self):
         pass
+
+    def test_str(self):
+        assert str(self.stream_listener) == '<StreamListener>'
+
+    def test_repr(self):
+        assert repr(self.stream_listener) == '<StreamListener>'

@@ -30,6 +30,8 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream.timeout == self.timeout
         assert self.betfair_stream.buffer_size == self.buffer_size
         assert self.betfair_stream.description == self.description
+        assert self.betfair_stream.receive_count == 0
+        assert self.betfair_stream.datetime_last_received is None
 
         assert self.betfair_stream._socket is None
         assert self.betfair_stream._running is False
@@ -132,6 +134,8 @@ class BetfairStreamTest(unittest.TestCase):
 
         mock_data.assert_called_with('{}')
         mock_socket.close.assert_called_with()
+        assert self.betfair_stream.datetime_last_received is not None
+        assert self.betfair_stream.receive_count > 0
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all')
     def test_read_loop_error(self, mock_receive_all):
@@ -190,3 +194,11 @@ class BetfairStreamTest(unittest.TestCase):
         assert mock_connect.call_count == 1
         assert mock_authenticate.call_count == 1
         assert mock_socket.send.call_count == 1
+
+    def test_repr(self):
+        assert repr(self.betfair_stream) == '<BetfairStream>'
+
+    def test_str(self):
+        assert str(self.betfair_stream) == '<BetfairStream [not running]>'
+        self.betfair_stream._running = True
+        assert str(self.betfair_stream) == '<BetfairStream [running]>'

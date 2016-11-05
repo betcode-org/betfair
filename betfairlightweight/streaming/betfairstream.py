@@ -2,6 +2,7 @@ import json
 import threading
 import socket
 import ssl
+import datetime
 
 from ..exceptions import SocketError
 
@@ -24,6 +25,8 @@ class BetfairStream:
         self.timeout = timeout
         self.buffer_size = buffer_size
         self.description = description
+        self.receive_count = 0
+        self.datetime_last_received = None
 
         self._socket = None
         self._running = False
@@ -123,6 +126,8 @@ class BetfairStream:
         while self._running:
             try:
                 received_data_raw = self._receive_all()
+                self.receive_count += 1
+                self.datetime_last_received = datetime.datetime.utcnow()
                 received_data_split = received_data_raw.split(self.__CRLF)
                 for received_data in received_data_split:
                     if received_data:
@@ -166,3 +171,9 @@ class BetfairStream:
             self.authenticate()
         message_dumped = json.dumps(message) + self.__CRLF
         self._socket.send(message_dumped.encode())
+
+    def __str__(self):
+        return '<BetfairStream [%s]>' % ('running' if self._running else 'not running')
+
+    def __repr__(self):
+        return '<BetfairStream>'
