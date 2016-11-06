@@ -140,8 +140,8 @@ class BetfairStream:
                 for received_data in received_data_split:
                     if received_data:
                         self._data(received_data)
-            except socket.timeout:
-                pass
+            except socket.timeout as e:
+                raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
             except socket.error as e:
                 raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
 

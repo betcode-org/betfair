@@ -348,6 +348,7 @@ class MarketBookCache(BaseResource):
 
 
 class UnmatchedOrder(BaseResource):
+
     class Meta(BaseResource.Meta):
         identifier = 'unmatched_orders'
         attributes = {
@@ -424,7 +425,7 @@ class OrderBookRunner(BaseResource):
             'uo': UnmatchedOrder
         }
 
-    def update_unmatched_lays(self, matched_lays):
+    def update_matched_lays(self, matched_lays):
         for matched_lay in matched_lays:
             updated = False
             (price, size) = matched_lay
@@ -439,11 +440,10 @@ class OrderBookRunner(BaseResource):
             else:
                 self.matched_lays = [Matched(price, size)]
 
-    def update_unmatched_backs(self, matched_backs):
+    def update_matched_backs(self, matched_backs):
         for matched_back in matched_backs:
             updated = False
             (price, size) = matched_back
-            print(matched_back)
             if self.matched_backs:
                 for matches in self.matched_backs:
                     if matches.price == price:
@@ -458,7 +458,13 @@ class OrderBookRunner(BaseResource):
     def update_unmatched(self, unmatched_orders):
         order_dict = {order.bet_id: order for order in self.unmatched_orders}
         for unmatched_order in unmatched_orders:
-            order_dict[unmatched_order.get('id')] = UnmatchedOrder(**unmatched_order)
+            if unmatched_order.get('id') in order_dict:
+                for n, order in enumerate(self.unmatched_orders):
+                    if order.bet_id == unmatched_order.get('id'):
+                        self.unmatched_orders[n] = UnmatchedOrder(**unmatched_order)
+                        break
+            else:
+                self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
 
     @property
     def serialise_orders(self):
@@ -485,8 +491,8 @@ class OrderBookCache(BaseResource):
             selection_id = order_changes['id']
             runner = runner_dict.get(selection_id)
             if runner:
-                runner.update_unmatched_lays(order_changes.get('ml', []))
-                runner.update_unmatched_backs(order_changes.get('mb', []))
+                runner.update_matched_lays(order_changes.get('ml', []))
+                runner.update_matched_backs(order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
