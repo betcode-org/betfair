@@ -117,6 +117,10 @@ class StreamListenerTest(unittest.TestCase):
         self.stream_listener._on_change_message(mock_response.json(), 1)
         market_stream.on_update.assert_called_with(mock_response.json())
 
+        mock_response = create_mock_json('tests/resources/streaming_ocm_SUB_IMAGE.json')
+        self.stream_listener._on_change_message(mock_response.json(), 1)
+        order_stream.on_subscribe.assert_called_with(mock_response.json())
+
     @mock.patch('betfairlightweight.streaming.listener.OrderStream', return_value=456)
     @mock.patch('betfairlightweight.streaming.listener.MarketStream', return_value=123)
     def test_add_stream(self, mock_market_stream, mock_order_stream):
