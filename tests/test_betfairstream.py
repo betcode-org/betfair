@@ -152,12 +152,8 @@ class BetfairStreamTest(unittest.TestCase):
             self.betfair_stream._read_loop()
 
         mock_receive_all.side_effect = socket.timeout()
-        threading.Thread(target=self.betfair_stream._read_loop).start()
-
-        for i in range(0, 2):
-            time.sleep(0.1)
-        self.betfair_stream._running = False
-        time.sleep(0.1)
+        with self.assertRaises(SocketError):
+            self.betfair_stream._read_loop()
 
     def test_receive_all(self):
         mock_socket = mock.Mock()

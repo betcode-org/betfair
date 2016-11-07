@@ -75,8 +75,6 @@ class StreamListener(BaseListener):
             self._on_status(data, unique_id)
         elif operation == 'mcm' or operation == 'ocm':
             self._on_change_message(data, unique_id)
-        else:
-            logging.error('[Listener: %s]: Response error: %s' % (unique_id, data))
 
     def _on_connection(self, data, unique_id):
         """Called on collection operation
