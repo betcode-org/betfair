@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from betfairlightweight.resources.streamingresources import MarketDefinition, OrderBookCache
+from betfairlightweight.resources.streamingresources import MarketDefinition, OrderBookCache, OrderBookRunner, Matched
 from tests.tools import create_mock_json
 
 
@@ -59,3 +59,21 @@ class TestOrderBookCache(unittest.TestCase):
         serialised = self.order_book_cache.serialise
 
         assert serialised == {'currentOrders': [], 'moreAvailable': False}
+
+
+class TestOrderBookRunner(unittest.TestCase):
+
+    def setUp(self):
+        self.order_book_runner = OrderBookRunner(**{})
+
+
+class TestMatched(unittest.TestCase):
+
+    def setUp(self):
+        self.price = 1.01
+        self.size = 2.00
+        self.matched = Matched(self.price, self.size)
+
+    def test_init(self):
+        assert self.matched.price == self.price
+        assert self.matched.size == self.size
