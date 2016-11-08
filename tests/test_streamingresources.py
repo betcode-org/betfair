@@ -1,7 +1,9 @@
 import unittest
 from unittest import mock
 
-from betfairlightweight.resources.streamingresources import MarketDefinition, OrderBookCache, OrderBookRunner, Matched
+from betfairlightweight.resources.streamingresources import (
+    MarketDefinition, OrderBookCache, OrderBookRunner, Matched, UnmatchedOrder
+)
 from tests.tools import create_mock_json
 
 
@@ -66,6 +68,40 @@ class TestOrderBookRunner(unittest.TestCase):
     def setUp(self):
         self.order_book_runner = OrderBookRunner(**{})
 
+    @mock.patch('betfairlightweight.resources.streamingresources.Matched')
+    def test_update_matched_fresh(self, mock_matched):
+        matched_lays = [[1.01, 4.00]]
+
+        self.order_book_runner.update_matched_lays(matched_lays)
+        assert len(self.order_book_runner.matched_lays) == 1
+        assert self.order_book_runner.matched_lays[0] == mock_matched()
+
+    @mock.patch('betfairlightweight.resources.streamingresources.Matched')
+    def test_update_matched_lays_new(self, mock_matched):
+        mock_matched_lay = mock.Mock()
+        mock_matched_lay.price = 1.01
+        mock_matched_lay.size = 2.00
+        self.order_book_runner.matched_lays = [mock_matched_lay]
+
+        matched_lays = [[1.03, 2.00]]
+        self.order_book_runner.update_matched_lays(matched_lays)
+
+        assert len(self.order_book_runner.matched_lays) == 2
+
+    @mock.patch('betfairlightweight.resources.streamingresources.Matched')
+    def test_update_matched_lays(self, mock_matched):
+        mock_matched_lay = mock.Mock()
+        mock_matched_lay.price = 1.01
+        mock_matched_lay.size = 2.00
+        self.order_book_runner.matched_lays = [mock_matched_lay]
+
+        matched_lays = [[1.01, 4.00]]
+        self.order_book_runner.update_matched_lays(matched_lays)
+
+        assert len(self.order_book_runner.matched_lays) == 1
+        assert mock_matched_lay.size == 4.00
+        assert mock_matched_lay.price == 1.01
+
 
 class TestMatched(unittest.TestCase):
 
@@ -77,3 +113,12 @@ class TestMatched(unittest.TestCase):
     def test_init(self):
         assert self.matched.price == self.price
         assert self.matched.size == self.size
+
+
+class TestUnmatchedOrder(unittest.TestCase):
+
+    def setUp(self):
+        self.unmatched_order = UnmatchedOrder(**{})
+
+    # def test_serialise(self):
+    #     self.unmatched_order.serialise('1.23', 12345)

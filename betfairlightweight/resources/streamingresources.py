@@ -455,6 +455,22 @@ class OrderBookRunner(BaseResource):
             else:
                 self.matched_backs = [Matched(price, size)]
 
+    # @staticmethod
+    # def update_matched(matched_list, new_matched):
+    #     for matched_lay in new_matched:
+    #         updated = False
+    #         (price, size) = matched_lay
+    #         if matched_list:
+    #             for matches in matched_list:
+    #                 if matches.price == price:
+    #                     matches.size = size
+    #                     updated = True
+    #                     break
+    #             if not updated:
+    #                 matched_list.append(Matched(price, size))
+    #         else:
+    #             matched_list = [Matched(price, size)]
+
     def update_unmatched(self, unmatched_orders):
         order_dict = {order.bet_id: order for order in self.unmatched_orders}
         for unmatched_order in unmatched_orders:
@@ -493,6 +509,8 @@ class OrderBookCache(BaseResource):
             if runner:
                 runner.update_matched_lays(order_changes.get('ml', []))
                 runner.update_matched_backs(order_changes.get('mb', []))
+                # runner.update_matched(runner.matched_lays, order_changes.get('ml', []))
+                # runner.update_matched(runner.matched_backs, order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
