@@ -313,7 +313,8 @@ class MarketBookCache(BaseResource):
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
                 else:
-                    runner_dict[new_data.get('id')] = RunnerBook(**new_data)
+                    self.runners.append(RunnerBook(**new_data))
+                    runner_dict = {runner.selection_id: runner for runner in self.runners}
         self.datetime_updated = datetime.datetime.utcnow()
 
     @property
