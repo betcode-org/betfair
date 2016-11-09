@@ -103,109 +103,68 @@ class RunnerBook(BaseResource):
         if not self.available_to_back:
             self.available_to_back = book_update
         else:
-            for book in book_update:
-                updated = False
-                if book[1] == 0:
-                    for (count, trade) in enumerate(self.available_to_back):
-                        if trade[0] == book[0]:
-                            del self.available_to_back[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.available_to_back):
-                        if trade[0] == book[0]:
-                            self.available_to_back[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.available_to_back.append(book)
-
-    def update_best_available_to_back(self, book_update):
-        if not self.best_available_to_back:
-            self.best_available_to_back = book_update
-        else:
-            for book in book_update:
-                updated = False
-                if book[2] == 0:
-                    for (count, trade) in enumerate(self.best_available_to_back):
-                        if trade[0] == book[0]:
-                            del self.best_available_to_back[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.best_available_to_back):
-                        if trade[0] == book[0]:
-                            self.best_available_to_back[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.best_available_to_back.append(book)
-
-    def update_best_display_available_to_back(self, book_update):
-        if not self.best_display_available_to_back:
-            self.best_display_available_to_back = book_update
-        else:
-            for book in book_update:
-                updated = False
-                for (count, trade) in enumerate(self.best_display_available_to_back):
-                    if trade[0] == book[0]:
-                        self.best_display_available_to_back[count] = book
-                        updated = True
-                        break
-                if not updated:
-                    self.best_display_available_to_back.append(book)
+            self.update_available(self.available_to_back, book_update, 1)
 
     def update_available_to_lay(self, book_update):
         if not self.available_to_lay:
             self.available_to_lay = book_update
         else:
-            for book in book_update:
-                updated = False
-                if book[1] == 0:
-                    for (count, trade) in enumerate(self.available_to_lay):
-                        if trade[0] == book[0]:
-                            del self.available_to_lay[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.available_to_lay):
-                        if trade[0] == book[0]:
-                            self.available_to_lay[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.available_to_lay.append(book)
+            self.update_available(self.available_to_lay, book_update, 1)
+
+    def update_best_available_to_back(self, book_update):
+        if not self.best_available_to_back:
+            self.best_available_to_back = book_update
+        else:
+            self.update_available(self.best_available_to_back, book_update, 2)
 
     def update_best_available_to_lay(self, book_update):
         if not self.best_available_to_lay:
             self.best_available_to_lay = book_update
         else:
-            for book in book_update:
-                updated = False
-                if book[2] == 0:
-                    for (count, trade) in enumerate(self.best_available_to_lay):
-                        if trade[0] == book[0]:
-                            del self.best_available_to_lay[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.best_available_to_lay):
-                        if trade[0] == book[0]:
-                            self.best_available_to_lay[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.best_available_to_lay.append(book)
+            self.update_available(self.best_available_to_lay, book_update, 2)
+
+    @staticmethod
+    def update_available(available, book_update, deletion_select):
+        for book in book_update:
+            updated = False
+            if book[deletion_select] == 0:
+                for (count, trade) in enumerate(available):
+                    if trade[0] == book[0]:
+                        del available[count]
+                        updated = True
+                        break
+            else:
+                for (count, trade) in enumerate(available):
+                    if trade[0] == book[0]:
+                        available[count] = book
+                        updated = True
+                        break
+            if not updated:
+                available.append(book)
+
+    def update_best_display_available_to_back(self, book_update):
+        if not self.best_display_available_to_back:
+            self.best_display_available_to_back = book_update
+        else:
+            self.update_best_display_available(self.best_display_available_to_back, book_update)
 
     def update_best_display_available_to_lay(self, book_update):
         if not self.best_display_available_to_lay:
             self.best_display_available_to_lay = book_update
         else:
-            for book in book_update:
-                updated = False
-                for (count, trade) in enumerate(self.best_display_available_to_lay):
-                    if trade[0] == book[0]:
-                        self.best_display_available_to_lay[count] = book
-                        updated = True
-                        break
-                if not updated:
-                    self.best_display_available_to_lay.append(book)
+            self.update_best_display_available(self.best_display_available_to_lay, book_update)
+
+    @staticmethod
+    def update_best_display_available(available, book_update):
+        for book in book_update:
+            updated = False
+            for (count, trade) in enumerate(available):
+                if trade[0] == book[0]:
+                    available[count] = book
+                    updated = True
+                    break
+            if not updated:
+                available.append(book)
 
     @property
     def serialise_traded_volume(self):

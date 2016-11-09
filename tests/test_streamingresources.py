@@ -208,3 +208,82 @@ class TestRunnerBook(unittest.TestCase):
         self.runner_book.update_traded(traded_update)
         expected = [[18, 297.39], [17.5, 999.99], [17, 222.05], [16.5, 290.74], [16, 2001.00], [15.5, 1858.49], [15, 3112.44], [14.5, 890.52], [9.8, 7.98], [14, 440.84], [13.5, 203.74], [13, 615.1], [12.5, 933.24], [11, 500.12], [10.5, 681.92], [10, 161.78], [12, 603.88], [11.5, 125.91]]
         assert self.runner_book.traded == expected
+
+    def test_update_available_to_back_new(self):
+        book_update = [[30, 6.9]]
+
+        self.runner_book.update_available_to_back(book_update)
+        assert self.runner_book.available_to_back == book_update
+
+    def test_update_available_to_back_new_update(self):
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37], [1.01, 3287.07], [48, 0.83], [50, 2.98], [14, 15.38], [26, 0.44], [46, 3.79], [16, 20], [1.4, 0.5], [24, 0.4], [20, 20.86], [1.06, 4.4], [22, 0.2], [1.6, 2], [2.32, 1], [13.5, 3], [1.35, 14.29], [7.4, 2], [1.43, 1250], [2.5, 0.2], [1.03, 320]]
+        book_update = [[30, 6.9]]
+        self.runner_book.available_to_back = current
+
+        expected = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37], [1.01, 3287.07], [48, 0.83], [50, 2.98], [14, 15.38], [26, 0.44], [46, 3.79], [16, 20], [1.4, 0.5], [24, 0.4], [20, 20.86], [1.06, 4.4], [22, 0.2], [1.6, 2], [2.32, 1], [13.5, 3], [1.35, 14.29], [7.4, 2], [1.43, 1250], [2.5, 0.2], [1.03, 320], [30, 6.9]]
+
+        self.runner_book.update_available_to_back(book_update)
+        assert self.runner_book.available_to_back == expected
+
+    def test_update_available_to_back_new_replace(self):
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37], [1.01, 3287.07], [48, 0.83], [50, 2.98], [14, 15.38], [26, 0.44], [46, 3.79], [16, 20], [1.4, 0.5], [24, 0.4], [20, 20.86], [1.06, 4.4], [22, 0.2], [1.6, 2], [2.32, 1], [13.5, 3], [1.35, 14.29], [7.4, 2], [1.43, 1250], [2.5, 0.2], [1.03, 320]]
+        book_update = [[27, 6.9]]
+        self.runner_book.available_to_back = current
+
+        expected = [[27, 6.9], [13, 28.01], [1.02, 1157.21], [42, 5.37], [1.01, 3287.07], [48, 0.83], [50, 2.98], [14, 15.38], [26, 0.44], [46, 3.79], [16, 20], [1.4, 0.5], [24, 0.4], [20, 20.86], [1.06, 4.4], [22, 0.2], [1.6, 2], [2.32, 1], [13.5, 3], [1.35, 14.29], [7.4, 2], [1.43, 1250], [2.5, 0.2], [1.03, 320]]
+
+        self.runner_book.update_available_to_back(book_update)
+        assert self.runner_book.available_to_back == expected
+
+    def test_update_available_to_back_new_remove(self):
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37], [1.01, 3287.07], [48, 0.83], [50, 2.98], [14, 15.38], [26, 0.44], [46, 3.79], [16, 20], [1.4, 0.5], [24, 0.4], [20, 20.86], [1.06, 4.4], [22, 0.2], [1.6, 2], [2.32, 1], [13.5, 3], [1.35, 14.29], [7.4, 2], [1.43, 1250], [2.5, 0.2], [1.03, 320]]
+        book_update = [[27, 0], [13, 50.00]]
+        self.runner_book.available_to_back = current
+
+        expected = [[13, 50.00], [1.02, 1157.21], [42, 5.37], [1.01, 3287.07], [48, 0.83], [50, 2.98], [14, 15.38], [26, 0.44], [46, 3.79], [16, 20], [1.4, 0.5], [24, 0.4], [20, 20.86], [1.06, 4.4], [22, 0.2], [1.6, 2], [2.32, 1], [13.5, 3], [1.35, 14.29], [7.4, 2], [1.43, 1250], [2.5, 0.2], [1.03, 320]]
+
+        self.runner_book.update_available_to_back(book_update)
+        assert self.runner_book.available_to_back == expected
+
+    def test_update_available_to_lay_new(self):
+        book_update = [[30, 6.9]]
+
+        self.runner_book.update_available_to_lay(book_update)
+        assert self.runner_book.available_to_lay == book_update
+
+    def test_update_best_available_to_back_new(self):
+        book_update = [[0, 36, 2.57]]
+
+        self.runner_book.update_best_available_to_back(book_update)
+        assert self.runner_book.best_available_to_back == book_update
+
+    def test_update_best_available_to_back_update(self):
+        book_update = [[2, 36, 2.57]]
+        current = [[2, 36, 5.37], [1, 38, 8.81], [0, 46, 2.06]]
+        self.runner_book.best_available_to_back = current
+        expected = [[2, 36, 2.57], [1, 38, 8.81], [0, 46, 2.06]]
+
+        self.runner_book.update_best_available_to_back(book_update)
+        assert self.runner_book.best_available_to_back == expected
+
+    def test_update_best_available_to_back_remove(self):
+        book_update = [[2, 36, 0]]
+        current = [[2, 36, 5.37], [1, 38, 8.81], [0, 46, 2.06]]
+        self.runner_book.best_available_to_back = current
+        expected = [[1, 38, 8.81], [0, 46, 2.06]]
+
+        self.runner_book.update_best_available_to_back(book_update)
+        assert self.runner_book.best_available_to_back == expected
+
+    def test_update_best_available_to_lay_new(self):
+        book_update = [[0, 36, 2.57]]
+
+        self.runner_book.update_best_available_to_lay(book_update)
+        assert self.runner_book.best_available_to_lay == book_update
+
+    # this isnt working
+    # def test_update_best_display_available_to_back_new(self):
+    #     book_update = [[0, 36, 2.57]]
+    #
+    #     self.runner_book.update_best_available_to_back(book_update)
+    #     assert self.runner_book.best_available_to_back == book_update
