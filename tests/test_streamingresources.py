@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from betfairlightweight.resources.streamingresources import (
-    MarketDefinition, OrderBookCache, OrderBookRunner, Matched, UnmatchedOrder
+    MarketDefinition, OrderBookCache, OrderBookRunner, Matched, UnmatchedOrder, MarketBookCache, RunnerBook
 )
 from tests.tools import create_mock_json
 
@@ -122,3 +122,89 @@ class TestUnmatchedOrder(unittest.TestCase):
 
     # def test_serialise(self):
     #     self.unmatched_order.serialise('1.23', 12345)
+
+
+class TestMarketBookCache(unittest.TestCase):
+
+    def setUp(self):
+        self.market_book_cache = MarketBookCache(**{})
+
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketDefinition')
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
+    def test_update_cache_md(self, mock_strip_datetime, mock_market_definition):
+        publish_time = mock.Mock()
+        market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_md.json')
+        book_data = market_change.json().get('mc')
+
+        for book in book_data:
+            self.market_book_cache.update_cache(book, publish_time)
+            mock_strip_datetime.assert_called_with(publish_time)
+            mock_market_definition.assert_called_with(**book.get('marketDefinition'))
+
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
+    def test_update_cache_md(self, mock_strip_datetime):
+        publish_time = mock.Mock()
+        market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_tv.json')
+        book_data = market_change.json().get('mc')
+
+        for book in book_data:
+            self.market_book_cache.update_cache(book, publish_time)
+            mock_strip_datetime.assert_called_with(publish_time)
+            assert self.market_book_cache.total_matched == book.get('tv')
+
+    # @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
+    # def test_update_cache_rc(self, mock_strip_datetime):
+    #     publish_time = mock.Mock()
+    #     market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE.json')
+    #     book_data = market_change.json().get('mc')
+    #
+    #     for book in book_data:
+    #         self.market_book_cache.update_cache(book, publish_time)
+    #         mock_strip_datetime.assert_called_with(publish_time)
+    #
+    #         assert self.market_book_cache.total_matched == book.get('tv')
+
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
+    def test_create_market_book(self, mock_market_book, mock_serialise):
+        market_book = self.market_book_cache.create_market_book()
+
+        assert market_book == mock_market_book()()
+        mock_market_book.assert_called_with()
+
+
+class TestRunnerBook(unittest.TestCase):
+
+    def setUp(self):
+        self.runner_book = RunnerBook(**{})
+
+    def test_traded_update_new(self):
+        traded_update = [[18.5, 1.2]]
+
+        self.runner_book.update_traded(traded_update)
+        assert self.runner_book.traded == traded_update
+
+    def test_traded_update_removal(self):
+        traded_update = None
+        self.runner_book.traded = [[18.5, 1.2]]
+
+        self.runner_book.update_traded(traded_update)
+        assert self.runner_book.traded == traded_update
+
+    def test_traded_update_fresh(self):
+        traded_update = [[18.5, 1.2]]
+        current = [[18, 297.39], [17.5, 369.53], [17, 222.05], [16.5, 290.74], [16, 1129.32], [15.5, 1858.49], [15, 3112.44], [14.5, 890.52], [9.8, 7.98], [14, 440.84], [13.5, 203.74], [13, 615.1], [12.5, 933.24], [11, 500.12], [10.5, 681.92], [10, 161.78], [12, 603.88], [11.5, 125.91]]
+        self.runner_book.traded = current
+
+        self.runner_book.update_traded(traded_update)
+        current.append(traded_update[0])
+        assert self.runner_book.traded == current
+
+    def test_traded_update_addition(self):
+        traded_update = [[17.5, 999.99], [16, 2001.00]]
+        current = [[18, 297.39], [17.5, 369.53], [17, 222.05], [16.5, 290.74], [16, 1129.32], [15.5, 1858.49], [15, 3112.44], [14.5, 890.52], [9.8, 7.98], [14, 440.84], [13.5, 203.74], [13, 615.1], [12.5, 933.24], [11, 500.12], [10.5, 681.92], [10, 161.78], [12, 603.88], [11.5, 125.91]]
+        self.runner_book.traded = current
+
+        self.runner_book.update_traded(traded_update)
+        expected = [[18, 297.39], [17.5, 999.99], [17, 222.05], [16.5, 290.74], [16, 2001.00], [15.5, 1858.49], [15, 3112.44], [14.5, 890.52], [9.8, 7.98], [14, 440.84], [13.5, 203.74], [13, 615.1], [12.5, 933.24], [11, 500.12], [10.5, 681.92], [10, 161.78], [12, 603.88], [11.5, 125.91]]
+        assert self.runner_book.traded == expected
