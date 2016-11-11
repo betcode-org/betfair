@@ -89,15 +89,16 @@ class RunnerBook(BaseResource):
         elif not self.traded:
             self.traded = traded_update
         else:
-            for trade_update in traded_update:
-                updated = False
-                for (count, trade) in enumerate(self.traded):
-                    if trade[0] == trade_update[0]:
-                        self.traded[count] = trade_update
-                        updated = True
-                        break
-                if not updated:
-                    self.traded.append(trade_update)
+            self.update_available(self.traded, traded_update, 1)
+            # for trade_update in traded_update:
+            #     updated = False
+            #     for (count, trade) in enumerate(self.traded):
+            #         if trade[0] == trade_update[0]:
+            #             self.traded[count] = trade_update
+            #             updated = True
+            #             break
+            #     if not updated:
+            #         self.traded.append(trade_update)
 
     def update_available_to_back(self, book_update):
         """:param book_update: price, size
