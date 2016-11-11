@@ -248,20 +248,14 @@ class MarketBookCache(BaseResource):
                     if new_data.get('trd'):
                         runner.update_traded(new_data.get('trd'))
                     if new_data.get('atb'):
-                        print(new_data.get('atb'))  # [[14, 0]]
-                        exit()
                         runner.update_available_to_back(new_data.get('atb'))
                     if new_data.get('atl'):
                         runner.update_available_to_lay(new_data.get('atl'))
                     if new_data.get('batb'):
-                        print(new_data.get('batb'))  # [[0, 14.5, 3.33]]
-                        exit()
                         runner.update_best_available_to_back(new_data.get('batb'))
                     if new_data.get('batl'):
                         runner.update_best_available_to_lay(new_data.get('batl'))
                     if new_data.get('bdatb'):
-                        print(new_data.get('bdatb'))  # [[2, 6.6, 72.2]]
-                        exit()
                         runner.update_best_display_available_to_back(new_data.get('bdatb'))
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
