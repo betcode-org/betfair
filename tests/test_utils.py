@@ -1,8 +1,9 @@
 import unittest
 import datetime
-from mock import Mock
+from unittest.mock import Mock
 
-from betfairlightweight.utils import check_status_code, strp_betfair_integer_time, strp_betfair_time, price_check
+from betfairlightweight.utils import (
+    check_status_code, strp_betfair_integer_time, strp_betfair_time, price_check, update_available)
 from betfairlightweight.exceptions import StatusCodeError
 
 
@@ -68,3 +69,66 @@ class UtilsTest(unittest.TestCase):
         data = []
         back_e = price_check(data, 0, 'price')
         assert not back_e
+
+
+
+class UtilsTestUpdateAvailable(unittest.TestCase):
+
+    # update_available()
+
+    def test_update_available_new_update(self):
+        # [price, size]
+        book_update = [[30, 6.9]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [30, 6.9]]
+
+        update_available(current, book_update, 1)
+        assert current == expected
+
+        book_update = [[30, 6.9], [1.01, 12]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [30, 6.9], [1.01, 12]]
+
+        update_available(current, book_update, 1)
+        assert current == expected
+
+        # [position, price, size]
+        book_update = [[0, 36, 0.57]]
+        current = []
+        expected = [[0, 36, 0.57]]
+
+        update_available(current, book_update, 2)
+        assert current == expected
+
+    def test_update_available_new_replace(self):
+        # [price, size]
+        book_update = [[27, 6.9]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[27, 6.9], [13, 28.01], [1.02, 1157.21]]
+
+        update_available(current, book_update, 1)
+        assert current == expected
+
+        # [position, price, size]
+        book_update = [[0, 36, 0.57]]
+        current = [[0, 36, 10.57], [1, 38, 3.57]]
+        expected = [[0, 36, 0.57], [1, 38, 3.57]]
+
+        update_available(current, book_update, 2)
+        assert current == expected
+
+    def test_update_available_new_remove(self):
+        book_update = [[27, 0]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[13, 28.01], [1.02, 1157.21]]
+
+        update_available(current, book_update, 1)
+        assert current == expected
+
+        # [position, price, size]
+        book_update = [[0, 36, 0], [1, 38, 0], [0, 38, 3.57]]
+        current = [[0, 36, 10.57], [1, 38, 3.57]]
+        expected = [[0, 38, 3.57]]
+
+        update_available(current, book_update, 2)
+        assert current == expected
