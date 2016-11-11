@@ -82,6 +82,8 @@ class RunnerBook(BaseResource):
             'bdatl': 'best_display_available_to_lay',
             'spn': 'starting_price_near',
             'spf': 'starting_price_far',
+            'spb': 'starting_price_back',
+            'spl': 'starting_price_lay',
         }
 
     def update_traded(self, traded_update):
@@ -223,9 +225,9 @@ class MarketBookCache(BaseResource):
                         runner.last_price_traded = new_data.get('ltp')
                     if new_data.get('tv'):
                         runner.total_matched = new_data.get('tv')
-                    if new_data.get('starting_price_near'):
+                    if new_data.get('spn'):
                         runner.spn = new_data.get('spn')
-                    if new_data.get('starting_price_far'):
+                    if new_data.get('spf'):
                         runner.spf = new_data.get('spf')
                     if new_data.get('trd'):
                         runner.update_traded(new_data.get('trd'))
@@ -241,6 +243,10 @@ class MarketBookCache(BaseResource):
                         runner.update_best_display_available_to_back(new_data.get('bdatb'))
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
+                    if new_data.get('spb'):
+                        pass
+                    if new_data.get('spl'):
+                        pass
                 else:
                     self.runners.append(RunnerBook(**new_data))
                     runner_dict = {runner.selection_id: runner for runner in self.runners}
