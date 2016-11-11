@@ -301,3 +301,35 @@ class TestRunnerBook(unittest.TestCase):
 
         self.runner_book.update_best_display_available_to_lay(book_update)
         mock_update_available.assert_called_with( current, book_update, 2)
+
+    # SP_TRADED
+
+    def test_update_starting_price_back_new(self):
+        book_update = [[36, 2.57]]
+
+        self.runner_book.update_starting_price_back(book_update)
+        assert self.runner_book.starting_price_back == book_update
+
+    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
+    def test_update_starting_price_back(self, mock_update_available):
+        book_update = [[18.5, 1.2]]
+        current = [[18, 297.39], [17.5, 369.53], [17, 222.05]]
+        self.runner_book.starting_price_back = current
+
+        self.runner_book.update_starting_price_back(book_update)
+        mock_update_available.assert_called_with(current, book_update, 1)
+
+    def test_update_starting_price_lay_new(self):
+        book_update = [[36, 2.57]]
+
+        self.runner_book.update_starting_price_lay(book_update)
+        assert self.runner_book.starting_price_lay == book_update
+
+    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
+    def test_update_starting_price_lay(self, mock_update_available):
+        book_update = [[18.5, 1.2]]
+        current = [[18, 297.39], [17.5, 369.53], [17, 222.05]]
+        self.runner_book.starting_price_lay = current
+
+        self.runner_book.update_starting_price_lay(book_update)
+        mock_update_available.assert_called_with(current, book_update, 1)
