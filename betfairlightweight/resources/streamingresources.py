@@ -84,21 +84,14 @@ class RunnerBook(BaseResource):
         }
 
     def update_traded(self, traded_update):
+        """:param traded_update: price, size
+        """
         if not traded_update:
             self.traded = traded_update
         elif not self.traded:
             self.traded = traded_update
         else:
             self.update_available(self.traded, traded_update, 1)
-            # for trade_update in traded_update:
-            #     updated = False
-            #     for (count, trade) in enumerate(self.traded):
-            #         if trade[0] == trade_update[0]:
-            #             self.traded[count] = trade_update
-            #             updated = True
-            #             break
-            #     if not updated:
-            #         self.traded.append(trade_update)
 
     def update_available_to_back(self, book_update):
         """:param book_update: price, size
@@ -365,13 +358,6 @@ class UnmatchedOrder(BaseResource):
         }
 
 
-class Matched:
-
-    def __init__(self, price, size):
-        self.price = price
-        self.size = size
-
-
 class OrderBookRunner(BaseResource):
 
     class Meta(BaseResource.Meta):
@@ -386,51 +372,21 @@ class OrderBookRunner(BaseResource):
             'uo': UnmatchedOrder
         }
 
-    def update_matched_lays(self, matched_lays):
-        for matched_lay in matched_lays:
-            updated = False
-            (price, size) = matched_lay
-            if self.matched_lays:
-                for matches in self.matched_lays:
-                    if matches.price == price:
-                        matches.size = size
-                        updated = True
-                        break
-                if not updated:
-                    self.matched_lays.append(Matched(price, size))
-            else:
-                self.matched_lays = [Matched(price, size)]
-
     def update_matched_backs(self, matched_backs):
-        for matched_back in matched_backs:
-            updated = False
-            (price, size) = matched_back
-            if self.matched_backs:
-                for matches in self.matched_backs:
-                    if matches.price == price:
-                        matches.size = size
-                        updated = True
-                        break
-                if not updated:
-                    self.matched_backs.append(Matched(price, size))
-            else:
-                self.matched_backs = [Matched(price, size)]
+        if not self.matched_backs:
+            self.matched_backs = []
+            for matched_back in matched_backs:
+                self.matched_backs.append(matched_back)
+        else:
+            RunnerBook.update_available(self.matched_backs, matched_backs, 1)
 
-    # @staticmethod
-    # def update_matched(matched_list, new_matched):
-    #     for matched_lay in new_matched:
-    #         updated = False
-    #         (price, size) = matched_lay
-    #         if matched_list:
-    #             for matches in matched_list:
-    #                 if matches.price == price:
-    #                     matches.size = size
-    #                     updated = True
-    #                     break
-    #             if not updated:
-    #                 matched_list.append(Matched(price, size))
-    #         else:
-    #             matched_list = [Matched(price, size)]
+    def update_matched_lays(self, matched_lays):
+        if not self.matched_lays:
+            self.matched_lays = []
+            for matched_lay in matched_lays:
+                self.matched_lays.append(matched_lay)
+        else:
+            RunnerBook.update_available(self.matched_lays, matched_lays, 1)
 
     def update_unmatched(self, unmatched_orders):
         order_dict = {order.bet_id: order for order in self.unmatched_orders}
