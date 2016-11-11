@@ -39,7 +39,8 @@ The library can then be used as follows:
 # streaming
 
 Currently two listeners available, below will run the base listener which prints anything it receives.
-Stream listener is able to hold multiple streams, hold a cache and push market_books/order_books out via a queue.
+Stream listener is able to hold an order stream and a market stream, although it is recommended to have one socket per
+stream. The listener can hold a cache and push market_books/order_books out via a queue.
 
 [Exchange Stream API](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
