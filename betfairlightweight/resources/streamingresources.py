@@ -105,6 +105,8 @@ class RunnerBook(BaseResource):
             update_available(self.available_to_back, book_update, 1)
 
     def update_available_to_lay(self, book_update):
+        """:param book_update: price, size
+        """
         if not self.available_to_lay:
             self.available_to_lay = book_update
         else:
@@ -119,6 +121,8 @@ class RunnerBook(BaseResource):
             update_available(self.best_available_to_back, book_update, 2)
 
     def update_best_available_to_lay(self, book_update):
+        """:param book_update: level, price, size
+        """
         if not self.best_available_to_lay:
             self.best_available_to_lay = book_update
         else:
@@ -133,10 +137,28 @@ class RunnerBook(BaseResource):
             update_available(self.best_display_available_to_back, book_update, 2)
 
     def update_best_display_available_to_lay(self, book_update):
+        """:param book_update: level, price, size
+        """
         if not self.best_display_available_to_lay:
             self.best_display_available_to_lay = book_update
         else:
             update_available(self.best_display_available_to_lay, book_update, 2)
+
+    def update_starting_price_back(self, book_update):
+        """:param book_update: price, size
+        """
+        if not self.starting_price_back:
+            self.starting_price_back = book_update
+        else:
+            update_available(self.starting_price_back, book_update, 1)
+
+    def update_starting_price_lay(self, book_update):
+        """:param book_update: price, size
+        """
+        if not self.starting_price_lay:
+            self.starting_price_lay = book_update
+        else:
+            update_available(self.starting_price_lay, book_update, 1)
 
     @property
     def serialise_traded_volume(self):
@@ -244,9 +266,9 @@ class MarketBookCache(BaseResource):
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
                     if new_data.get('spb'):
-                        pass
+                        runner.update_starting_price_back(new_data.get('spb'))
                     if new_data.get('spl'):
-                        pass
+                        runner.update_starting_price_back(new_data.get('spl'))
                 else:
                     self.runners.append(RunnerBook(**new_data))
                     runner_dict = {runner.selection_id: runner for runner in self.runners}
