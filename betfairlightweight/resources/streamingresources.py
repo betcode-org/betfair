@@ -1,5 +1,6 @@
 import datetime
 
+from ..utils import update_available
 from .baseresource import BaseResource
 from .bettingresources import MarketBook, CurrentOrders
 from ..enums import (
@@ -91,7 +92,7 @@ class RunnerBook(BaseResource):
         elif not self.traded:
             self.traded = traded_update
         else:
-            self.update_available(self.traded, traded_update, 1)
+            update_available(self.traded, traded_update, 1)
 
     def update_available_to_back(self, book_update):
         """:param book_update: price, size
@@ -99,13 +100,13 @@ class RunnerBook(BaseResource):
         if not self.available_to_back:
             self.available_to_back = book_update
         else:
-            self.update_available(self.available_to_back, book_update, 1)
+            update_available(self.available_to_back, book_update, 1)
 
     def update_available_to_lay(self, book_update):
         if not self.available_to_lay:
             self.available_to_lay = book_update
         else:
-            self.update_available(self.available_to_lay, book_update, 1)
+            update_available(self.available_to_lay, book_update, 1)
 
     def update_best_available_to_back(self, book_update):
         """:param book_update: level, price, size
@@ -113,13 +114,13 @@ class RunnerBook(BaseResource):
         if not self.best_available_to_back:
             self.best_available_to_back = book_update
         else:
-            self.update_available(self.best_available_to_back, book_update, 2)
+            update_available(self.best_available_to_back, book_update, 2)
 
     def update_best_available_to_lay(self, book_update):
         if not self.best_available_to_lay:
             self.best_available_to_lay = book_update
         else:
-            self.update_available(self.best_available_to_lay, book_update, 2)
+            update_available(self.best_available_to_lay, book_update, 2)
 
     def update_best_display_available_to_back(self, book_update):
         """:param book_update: level, price, size
@@ -127,32 +128,13 @@ class RunnerBook(BaseResource):
         if not self.best_display_available_to_back:
             self.best_display_available_to_back = book_update
         else:
-            self.update_available(self.best_display_available_to_back, book_update, 2)
+            update_available(self.best_display_available_to_back, book_update, 2)
 
     def update_best_display_available_to_lay(self, book_update):
         if not self.best_display_available_to_lay:
             self.best_display_available_to_lay = book_update
         else:
-            self.update_available(self.best_display_available_to_lay, book_update, 2)
-
-    @staticmethod
-    def update_available(available, book_update, deletion_select):
-        for book in book_update:
-            updated = False
-            if book[deletion_select] == 0:
-                for (count, trade) in enumerate(available):
-                    if trade[0] == book[0]:
-                        del available[count]
-                        updated = True
-                        break
-            else:
-                for (count, trade) in enumerate(available):
-                    if trade[0] == book[0]:
-                        available[count] = book
-                        updated = True
-                        break
-            if not updated:
-                available.append(book)
+            update_available(self.best_display_available_to_lay, book_update, 2)
 
     @property
     def serialise_traded_volume(self):
@@ -372,7 +354,7 @@ class OrderBookRunner(BaseResource):
             for matched_back in matched_backs:
                 self.matched_backs.append(matched_back)
         else:
-            RunnerBook.update_available(self.matched_backs, matched_backs, 1)
+            update_available(self.matched_backs, matched_backs, 1)
 
     def update_matched_lays(self, matched_lays):
         if not self.matched_lays:
@@ -380,7 +362,7 @@ class OrderBookRunner(BaseResource):
             for matched_lay in matched_lays:
                 self.matched_lays.append(matched_lay)
         else:
-            RunnerBook.update_available(self.matched_lays, matched_lays, 1)
+            update_available(self.matched_lays, matched_lays, 1)
 
     def update_unmatched(self, unmatched_orders):
         order_dict = {order.bet_id: order for order in self.unmatched_orders}
@@ -420,8 +402,6 @@ class OrderBookCache(BaseResource):
             if runner:
                 runner.update_matched_lays(order_changes.get('ml', []))
                 runner.update_matched_backs(order_changes.get('mb', []))
-                # runner.update_matched(runner.matched_lays, order_changes.get('ml', []))
-                # runner.update_matched(runner.matched_backs, order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
