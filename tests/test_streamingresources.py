@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from betfairlightweight.resources.streamingresources import (
-    MarketDefinition, OrderBookCache, OrderBookRunner, Matched, UnmatchedOrder, MarketBookCache, RunnerBook
+    MarketDefinition, OrderBookCache, OrderBookRunner, UnmatchedOrder, MarketBookCache, RunnerBook
 )
 from tests.tools import create_mock_json
 
@@ -68,51 +68,45 @@ class TestOrderBookRunner(unittest.TestCase):
     def setUp(self):
         self.order_book_runner = OrderBookRunner(**{})
 
-    @mock.patch('betfairlightweight.resources.streamingresources.Matched')
-    def test_update_matched_fresh(self, mock_matched):
-        matched_lays = [[1.01, 4.00]]
+    @mock.patch('betfairlightweight.resources.streamingresources.RunnerBook.update_available')
+    def test_update_matched_backs_fresh(self, mock_update_available):
+        matched_backs = [[1.01, 4.00]]
+        self.order_book_runner.update_matched_backs(matched_backs)
 
-        self.order_book_runner.update_matched_lays(matched_lays)
+        assert len(self.order_book_runner.matched_backs) == 1
+
+    @mock.patch('betfairlightweight.resources.streamingresources.RunnerBook.update_available')
+    def test_update_matched_backs_new(self, mock_update_available):
+        mock_matched_back = mock.Mock()
+        mock_matched_back.price = 1.01
+        mock_matched_back.size = 2.00
+        self.order_book_runner.matched_backs = [mock_matched_back]
+
+        matched_backs = [[1.01, 4.00]]
+        self.order_book_runner.update_matched_backs(matched_backs)
+
+        mock_update_available.assert_called_with(self.order_book_runner.matched_backs, matched_backs, 1)
+        assert len(self.order_book_runner.matched_backs) == 1
+
+    @mock.patch('betfairlightweight.resources.streamingresources.RunnerBook.update_available')
+    def test_update_matched_lays_fresh(self, mock_update_available):
+        mock_matched_lay = [[1.01, 4.00]]
+        self.order_book_runner.update_matched_lays(mock_matched_lay)
+
         assert len(self.order_book_runner.matched_lays) == 1
-        assert self.order_book_runner.matched_lays[0] == mock_matched()
 
-    @mock.patch('betfairlightweight.resources.streamingresources.Matched')
-    def test_update_matched_lays_new(self, mock_matched):
+    @mock.patch('betfairlightweight.resources.streamingresources.RunnerBook.update_available')
+    def test_update_matched_backs_new(self, mock_update_available):
         mock_matched_lay = mock.Mock()
         mock_matched_lay.price = 1.01
         mock_matched_lay.size = 2.00
         self.order_book_runner.matched_lays = [mock_matched_lay]
 
-        matched_lays = [[1.03, 2.00]]
-        self.order_book_runner.update_matched_lays(matched_lays)
-
-        assert len(self.order_book_runner.matched_lays) == 2
-
-    @mock.patch('betfairlightweight.resources.streamingresources.Matched')
-    def test_update_matched_lays(self, mock_matched):
-        mock_matched_lay = mock.Mock()
-        mock_matched_lay.price = 1.01
-        mock_matched_lay.size = 2.00
-        self.order_book_runner.matched_lays = [mock_matched_lay]
-
         matched_lays = [[1.01, 4.00]]
         self.order_book_runner.update_matched_lays(matched_lays)
 
+        mock_update_available.assert_called_with(self.order_book_runner.matched_lays, matched_lays, 1)
         assert len(self.order_book_runner.matched_lays) == 1
-        assert mock_matched_lay.size == 4.00
-        assert mock_matched_lay.price == 1.01
-
-
-class TestMatched(unittest.TestCase):
-
-    def setUp(self):
-        self.price = 1.01
-        self.size = 2.00
-        self.matched = Matched(self.price, self.size)
-
-    def test_init(self):
-        assert self.matched.price == self.price
-        assert self.matched.size == self.size
 
 
 class TestUnmatchedOrder(unittest.TestCase):
@@ -140,9 +134,10 @@ class TestMarketBookCache(unittest.TestCase):
             self.market_book_cache.update_cache(book, publish_time)
             mock_strip_datetime.assert_called_with(publish_time)
             mock_market_definition.assert_called_with(**book.get('marketDefinition'))
+            assert self.market_book_cache.market_definition == mock_market_definition(**book.get('marketDefinition'))
 
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
-    def test_update_cache_md(self, mock_strip_datetime):
+    def test_update_cache_tv(self, mock_strip_datetime):
         publish_time = mock.Mock()
         market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_tv.json')
         book_data = market_change.json().get('mc')
