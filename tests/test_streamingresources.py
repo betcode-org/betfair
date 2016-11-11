@@ -281,9 +281,32 @@ class TestRunnerBook(unittest.TestCase):
         self.runner_book.update_best_available_to_lay(book_update)
         assert self.runner_book.best_available_to_lay == book_update
 
-    # this isnt working
-    # def test_update_best_display_available_to_back_new(self):
-    #     book_update = [[0, 36, 2.57]]
-    #
-    #     self.runner_book.update_best_available_to_back(book_update)
-    #     assert self.runner_book.best_available_to_back == book_update
+    def test_update_best_display_available_to_back_new(self):
+        book_update = [[0, 36, 2.57]]
+
+        self.runner_book.update_best_display_available_to_back(book_update)
+        assert self.runner_book.best_display_available_to_back == book_update
+
+    @mock.patch('betfairlightweight.resources.streamingresources.RunnerBook.update_available')
+    def test_update_best_display_available_to_back_update(self, mock_update_available):
+        book_update = [[0, 36, 2.57]]
+        current = [[2, 36, 5.37], [1, 38, 8.81], [0, 46, 2.06]]
+        self.runner_book.best_display_available_to_back = current
+
+        self.runner_book.update_best_display_available_to_back(book_update)
+        mock_update_available.assert_called_with( current, book_update, 2)
+
+    def test_update_best_display_available_to_lay_new(self):
+        book_update = [[0, 36, 2.57]]
+
+        self.runner_book.update_best_display_available_to_lay(book_update)
+        assert self.runner_book.best_display_available_to_lay == book_update
+
+    @mock.patch('betfairlightweight.resources.streamingresources.RunnerBook.update_available')
+    def test_update_best_display_available_to_lay_update(self, mock_update_available):
+        book_update = [[0, 36, 2.57]]
+        current = [[2, 36, 5.37], [1, 38, 8.81], [0, 46, 2.06]]
+        self.runner_book.best_display_available_to_lay = current
+
+        self.runner_book.update_best_display_available_to_lay(book_update)
+        mock_update_available.assert_called_with( current, book_update, 2)
