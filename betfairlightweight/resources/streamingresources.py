@@ -100,6 +100,8 @@ class RunnerBook(BaseResource):
                     self.traded.append(trade_update)
 
     def update_available_to_back(self, book_update):
+        """:param book_update: price, size
+        """
         if not self.available_to_back:
             self.available_to_back = book_update
         else:
@@ -112,6 +114,8 @@ class RunnerBook(BaseResource):
             self.update_available(self.available_to_lay, book_update, 1)
 
     def update_best_available_to_back(self, book_update):
+        """:param book_update: level, price, size
+        """
         if not self.best_available_to_back:
             self.best_available_to_back = book_update
         else:
@@ -122,6 +126,20 @@ class RunnerBook(BaseResource):
             self.best_available_to_lay = book_update
         else:
             self.update_available(self.best_available_to_lay, book_update, 2)
+
+    def update_best_display_available_to_back(self, book_update):
+        """:param book_update: level, price, size
+        """
+        if not self.best_display_available_to_back:
+            self.best_display_available_to_back = book_update
+        else:
+            self.update_available(self.best_display_available_to_back, book_update, 2)
+
+    def update_best_display_available_to_lay(self, book_update):
+        if not self.best_display_available_to_lay:
+            self.best_display_available_to_lay = book_update
+        else:
+            self.update_available(self.best_display_available_to_lay, book_update, 2)
 
     @staticmethod
     def update_available(available, book_update, deletion_select):
@@ -139,30 +157,6 @@ class RunnerBook(BaseResource):
                         available[count] = book
                         updated = True
                         break
-            if not updated:
-                available.append(book)
-
-    def update_best_display_available_to_back(self, book_update):
-        if not self.best_display_available_to_back:
-            self.best_display_available_to_back = book_update
-        else:
-            self.update_best_display_available(self.best_display_available_to_back, book_update)
-
-    def update_best_display_available_to_lay(self, book_update):
-        if not self.best_display_available_to_lay:
-            self.best_display_available_to_lay = book_update
-        else:
-            self.update_best_display_available(self.best_display_available_to_lay, book_update)
-
-    @staticmethod
-    def update_best_display_available(available, book_update):
-        for book in book_update:
-            updated = False
-            for (count, trade) in enumerate(available):
-                if trade[0] == book[0]:
-                    available[count] = book
-                    updated = True
-                    break
             if not updated:
                 available.append(book)
 
@@ -260,14 +254,20 @@ class MarketBookCache(BaseResource):
                     if new_data.get('trd'):
                         runner.update_traded(new_data.get('trd'))
                     if new_data.get('atb'):
+                        print(new_data.get('atb'))  # [[14, 0]]
+                        exit()
                         runner.update_available_to_back(new_data.get('atb'))
                     if new_data.get('atl'):
                         runner.update_available_to_lay(new_data.get('atl'))
                     if new_data.get('batb'):
+                        print(new_data.get('batb'))  # [[0, 14.5, 3.33]]
+                        exit()
                         runner.update_best_available_to_back(new_data.get('batb'))
                     if new_data.get('batl'):
                         runner.update_best_available_to_lay(new_data.get('batl'))
                     if new_data.get('bdatb'):
+                        print(new_data.get('bdatb'))  # [[2, 6.6, 72.2]]
+                        exit()
                         runner.update_best_display_available_to_back(new_data.get('bdatb'))
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
