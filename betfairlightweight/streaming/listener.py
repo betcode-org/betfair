@@ -2,44 +2,60 @@ import json
 import logging
 import time
 
-from .stream import Stream
+from .stream import MarketStream, OrderStream
 
 
 class BaseListener:
 
     def __init__(self):
-        self.streams = {}
+        self.market_stream = None
+        self.order_stream = None
 
     def register_stream(self, unique_id, operation):
-        print(unique_id, operation)
+        if operation == 'authentication':
+            logging.info('[Listener: %s]: %s' % (unique_id, operation))
 
-    def on_data(self, raw_data, unique_id=None):
-        print(unique_id, raw_data)
+        elif operation == 'marketSubscription':
+            if self.market_stream is not None:
+                logging.warning('[Listener: %s]: marketSubscription stream already registered, replacing data' %
+                                unique_id)
+            self.market_stream = self._add_stream(unique_id, operation)
+
+        elif operation == 'orderSubscription':
+            if self.order_stream is not None:
+                logging.warning('[Listener: %s]: orderSubscription stream already registered, replacing data' %
+                                unique_id)
+            self.order_stream = self._add_stream(unique_id, operation)
+
+    def on_data(self, raw_data):
+        print(raw_data)
+
+    def _add_stream(self, unique_id, operation):
+        print('Register: %s %s' % (operation, unique_id))
+
+    def __str__(self):
+        return '<BaseListener>'
+
+    def __repr__(self):
+        return str(self)
 
 
 class StreamListener(BaseListener):
-    """Stream listener, processes results from unlimited amount
-     of sockets, holds streams which hold market_book caches
+    """Stream listener, processes results from socket,
+    holds a market and order stream which hold
+    market_book caches
     """
 
     def __init__(self, output_queue=None):
         super(StreamListener, self).__init__()
         self.output_queue = output_queue
 
-    def register_stream(self, unique_id, operation):
-        if self.streams.get(unique_id):
-            logging.warning('[Listener: %s]: Stream already registered, removing data' % unique_id)
-            del self.streams[unique_id]
-        else:
-            self._add_stream(unique_id, operation)
-
-    def on_data(self, raw_data, unique_id=None):
+    def on_data(self, raw_data):
         """Called when raw data is received from connection.
         Override this method if you wish to manually handle
         the stream data
 
         :param raw_data: Received raw data
-        :param unique_id: Unique id, used only on initial connection
         :return: Return False to stop stream and close connection
         """
         try:
@@ -47,8 +63,8 @@ class StreamListener(BaseListener):
         except ValueError:
             logging.error('value error: %s' % raw_data)
             return
-        if not unique_id:
-            unique_id = data.get('id')
+        unique_id = data.get('id')
+
         if self._error_handler(data, unique_id):
             return False
 
@@ -59,8 +75,6 @@ class StreamListener(BaseListener):
             self._on_status(data, unique_id)
         elif operation == 'mcm' or operation == 'ocm':
             self._on_change_message(data, unique_id)
-        else:
-            logging.error('[Listener: %s]: Response error: %s' % (unique_id, data))
 
     def _on_connection(self, data, unique_id):
         """Called on collection operation
@@ -81,25 +95,29 @@ class StreamListener(BaseListener):
 
     def _on_change_message(self, data, unique_id):
         change_type = data.get('ct', 'UPDATE')
-        stream = self.streams.get(unique_id)
         operation = data.get('op')
-        if not stream:
-            logging.error('[Listener: %s]: Stream not registered' % unique_id)
+
+        if operation == 'mcm':
+            stream = self.market_stream
+        else:
+            stream = self.order_stream
 
         logging.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
 
         if change_type == 'SUB_IMAGE':
-            stream.on_subscribe(data, operation)
+            stream.on_subscribe(data)
         elif change_type == 'RESUB_DELTA':
             stream.on_resubscribe(data)
         elif change_type == 'HEARTBEAT':
             stream.on_heartbeat(data)
         elif change_type == 'UPDATE':
-            stream.on_update(data, operation)
+            stream.on_update(data)
 
     def _add_stream(self, unique_id, stream_type):
-        self.streams[unique_id] = Stream(unique_id, stream_type, self.output_queue)
-        return self.streams[unique_id]
+        if stream_type == 'marketSubscription':
+            return MarketStream(unique_id, self.output_queue)
+        elif stream_type == 'orderSubscription':
+            return OrderStream(unique_id, self.output_queue)
 
     @staticmethod
     def _error_handler(data, unique_id):
@@ -117,3 +135,6 @@ class StreamListener(BaseListener):
             if connection_closed:
                 time.sleep(1)
                 return True
+
+    def __str__(self):
+        return '<StreamListener>'

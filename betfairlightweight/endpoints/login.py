@@ -17,7 +17,7 @@ class Login(BaseEndpoint):
         session = session or self.client.session
         try:
             response = session.post(self.url, data=self.data, headers=self.client.login_headers, cert=self.client.cert)
-        except ConnectionError:
+        except session.ConnectionError:
             raise APIError(None, exception='ConnectionError')
         except Exception as e:
             raise APIError(None, exception=e)

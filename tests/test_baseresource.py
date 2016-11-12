@@ -3,7 +3,6 @@ import datetime
 import json
 
 from betfairlightweight.resources.baseresource import BaseResource
-
 from tests.tools import create_mock_json
 
 
@@ -91,6 +90,9 @@ class BaseResourceInit(unittest.TestCase):
         assert not stripped
 
         stripped = base_resource.strip_datetime('45')
+        assert not stripped
+
+        stripped = base_resource.strip_datetime(-1230000000345446)
         assert not stripped
 
     def test_strip_datetime_resource(self):

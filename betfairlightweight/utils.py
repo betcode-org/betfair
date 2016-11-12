@@ -72,3 +72,21 @@ def price_check(data, number, key):
     except IndexError:
         output = None
     return output
+
+
+def update_available(available, book_update, deletion_select):
+    for book in book_update:
+        updated = False
+        for (count, trade) in enumerate(available):
+            if trade[0] == book[0]:
+                if book[deletion_select] == 0:
+                    del available[count]
+                    updated = True
+                    break
+                else:
+                    available[count] = book
+                    updated = True
+                    break
+
+        if not updated:
+            available.append(book)
