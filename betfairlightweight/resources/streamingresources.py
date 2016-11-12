@@ -1,5 +1,6 @@
 import datetime
 
+from ..utils import update_available
 from .baseresource import BaseResource
 from .bettingresources import MarketBook, CurrentOrders
 from ..enums import (
@@ -14,8 +15,12 @@ class MarketDefinitionRunner(BaseResource):
             'id': 'id',
             'sortPriority': 'sort_priority',
             'status': 'status',
-            'adjustmentFactor': 'adjustment_factor'
+            'adjustmentFactor': 'adjustment_factor',
+            'removalDate': 'removal_date',
         }
+        datetime_attributes = (
+            'removalDate',
+        )
 
 
 class MarketDefinition(BaseResource):
@@ -32,7 +37,7 @@ class MarketDefinition(BaseResource):
             'discountAllowed': 'discount_allowed',
             'eventId': 'event_id',
             'eventTypeId': 'event_type_id',
-            'inplay': 'in_play',
+            'inPlay': 'in_play',
             'marketBaseRate': 'market_base_rate',
             'marketTime': 'market_time',
             'marketType': 'market_type',
@@ -41,6 +46,7 @@ class MarketDefinition(BaseResource):
             'persistenceEnabled': 'persistence_enabled',
             'regulators': 'regulators',
             'runnersVoidable': 'runners_voidable',
+            'settledTime': 'settled_time',
             'openDate': 'open_date',
             'status': 'status',
             'suspendTime': 'suspend_time',
@@ -55,7 +61,8 @@ class MarketDefinition(BaseResource):
         datetime_attributes = (
             'marketTime',
             'openDate',
-            'suspendTime'
+            'suspendTime',
+            'settledTime',
         )
 
 
@@ -75,131 +82,83 @@ class RunnerBook(BaseResource):
             'bdatl': 'best_display_available_to_lay',
             'spn': 'starting_price_near',
             'spf': 'starting_price_far',
+            'spb': 'starting_price_back',
+            'spl': 'starting_price_lay',
         }
 
     def update_traded(self, traded_update):
+        """:param traded_update: price, size
+        """
         if not traded_update:
             self.traded = traded_update
         elif not self.traded:
             self.traded = traded_update
         else:
-            for trade_update in traded_update:
-                updated = False
-                for (count, trade) in enumerate(self.traded):
-                    if trade[0] == trade_update[0]:
-                        self.traded[count] = trade_update
-                        updated = True
-                        break
-                if not updated:
-                    self.traded.append(trade_update)
+            update_available(self.traded, traded_update, 1)
 
     def update_available_to_back(self, book_update):
+        """:param book_update: price, size
+        """
         if not self.available_to_back:
             self.available_to_back = book_update
         else:
-            for book in book_update:
-                updated = False
-                if book[1] == 0:
-                    for (count, trade) in enumerate(self.available_to_back):
-                        if trade[0] == book[0]:
-                            del self.available_to_back[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.available_to_back):
-                        if trade[0] == book[0]:
-                            self.available_to_back[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.available_to_back.append(book)
-
-    def update_best_available_to_back(self, book_update):
-        if not self.best_available_to_back:
-            self.best_available_to_back = book_update
-        else:
-            for book in book_update:
-                updated = False
-                if book[2] == 0:
-                    for (count, trade) in enumerate(self.best_available_to_back):
-                        if trade[0] == book[0]:
-                            del self.best_available_to_back[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.best_available_to_back):
-                        if trade[0] == book[0]:
-                            self.best_available_to_back[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.best_available_to_back.append(book)
-
-    def update_best_display_available_to_back(self, book_update):
-        if not self.best_display_available_to_back:
-            self.best_display_available_to_back = book_update
-        else:
-            for book in book_update:
-                updated = False
-                for (count, trade) in enumerate(self.best_display_available_to_back):
-                    if trade[0] == book[0]:
-                        self.best_display_available_to_back[count] = book
-                        updated = True
-                        break
-                if not updated:
-                    self.best_display_available_to_back.append(book)
+            update_available(self.available_to_back, book_update, 1)
 
     def update_available_to_lay(self, book_update):
+        """:param book_update: price, size
+        """
         if not self.available_to_lay:
             self.available_to_lay = book_update
         else:
-            for book in book_update:
-                updated = False
-                if book[1] == 0:
-                    for (count, trade) in enumerate(self.available_to_lay):
-                        if trade[0] == book[0]:
-                            del self.available_to_lay[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.available_to_lay):
-                        if trade[0] == book[0]:
-                            self.available_to_lay[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.available_to_lay.append(book)
+            update_available(self.available_to_lay, book_update, 1)
+
+    def update_best_available_to_back(self, book_update):
+        """:param book_update: level, price, size
+        """
+        if not self.best_available_to_back:
+            self.best_available_to_back = book_update
+        else:
+            update_available(self.best_available_to_back, book_update, 2)
 
     def update_best_available_to_lay(self, book_update):
+        """:param book_update: level, price, size
+        """
         if not self.best_available_to_lay:
             self.best_available_to_lay = book_update
         else:
-            for book in book_update:
-                updated = False
-                if book[2] == 0:
-                    for (count, trade) in enumerate(self.best_available_to_lay):
-                        if trade[0] == book[0]:
-                            del self.best_available_to_lay[count]
-                            updated = True
-                else:
-                    for (count, trade) in enumerate(self.best_available_to_lay):
-                        if trade[0] == book[0]:
-                            self.best_available_to_lay[count] = book
-                            updated = True
-                            break
-                if not updated:
-                    self.best_available_to_lay.append(book)
+            update_available(self.best_available_to_lay, book_update, 2)
+
+    def update_best_display_available_to_back(self, book_update):
+        """:param book_update: level, price, size
+        """
+        if not self.best_display_available_to_back:
+            self.best_display_available_to_back = book_update
+        else:
+            update_available(self.best_display_available_to_back, book_update, 2)
 
     def update_best_display_available_to_lay(self, book_update):
+        """:param book_update: level, price, size
+        """
         if not self.best_display_available_to_lay:
             self.best_display_available_to_lay = book_update
         else:
-            for book in book_update:
-                updated = False
-                for (count, trade) in enumerate(self.best_display_available_to_lay):
-                    if trade[0] == book[0]:
-                        self.best_display_available_to_lay[count] = book
-                        updated = True
-                        break
-                if not updated:
-                    self.best_display_available_to_lay.append(book)
+            update_available(self.best_display_available_to_lay, book_update, 2)
+
+    def update_starting_price_back(self, book_update):
+        """:param book_update: price, size
+        """
+        if not self.starting_price_back:
+            self.starting_price_back = book_update
+        else:
+            update_available(self.starting_price_back, book_update, 1)
+
+    def update_starting_price_lay(self, book_update):
+        """:param book_update: price, size
+        """
+        if not self.starting_price_lay:
+            self.starting_price_lay = book_update
+        else:
+            update_available(self.starting_price_lay, book_update, 1)
 
     @property
     def serialise_traded_volume(self):
@@ -288,9 +247,9 @@ class MarketBookCache(BaseResource):
                         runner.last_price_traded = new_data.get('ltp')
                     if new_data.get('tv'):
                         runner.total_matched = new_data.get('tv')
-                    if new_data.get('starting_price_near'):
+                    if new_data.get('spn'):
                         runner.spn = new_data.get('spn')
-                    if new_data.get('starting_price_far'):
+                    if new_data.get('spf'):
                         runner.spf = new_data.get('spf')
                     if new_data.get('trd'):
                         runner.update_traded(new_data.get('trd'))
@@ -306,8 +265,13 @@ class MarketBookCache(BaseResource):
                         runner.update_best_display_available_to_back(new_data.get('bdatb'))
                     if new_data.get('bdatl'):
                         runner.update_best_display_available_to_lay(new_data.get('bdatl'))
+                    if new_data.get('spb'):
+                        runner.update_starting_price_back(new_data.get('spb'))
+                    if new_data.get('spl'):
+                        runner.update_starting_price_back(new_data.get('spl'))
                 else:
-                    runner_dict[new_data.get('id')] = RunnerBook(**new_data)
+                    self.runners.append(RunnerBook(**new_data))
+                    runner_dict = {runner.selection_id: runner for runner in self.runners}
         self.datetime_updated = datetime.datetime.utcnow()
 
     @property
@@ -342,11 +306,13 @@ class MarketBookCache(BaseResource):
 
 
 class UnmatchedOrder(BaseResource):
+
     class Meta(BaseResource.Meta):
         identifier = 'unmatched_orders'
         attributes = {
             'id': 'bet_id',
             'p': 'price',
+            's': 'size',
             'bsp': 'bsp_liability',
             'side': 'side',
             'status': 'status',
@@ -362,6 +328,8 @@ class UnmatchedOrder(BaseResource):
             'sv': 'size_voided',
             'rac': 'regulator_auth_code',
             'rc': 'regulator_code',
+            'rfo': 'reference_order',
+            'rfs': 'reference_strategy',
         }
         datetime_attributes = (
             'pd',
@@ -394,19 +362,6 @@ class UnmatchedOrder(BaseResource):
         }
 
 
-# class MatchedLays:
-#
-#     class Meta(BaseResource.Meta):
-#         identifier = 'matched_lays'
-#         attributes = {
-#             'matche': 'selection_id'
-#         }
-#
-#     def __init__(self, matched):
-#         self.price = matched[0]
-#         self.size = matched[1]
-
-
 class OrderBookRunner(BaseResource):
 
     class Meta(BaseResource.Meta):
@@ -421,33 +376,32 @@ class OrderBookRunner(BaseResource):
             'uo': UnmatchedOrder
         }
 
-    def update_matched_lays(self, matched_lays):
-        for matched_lay in matched_lays:
-            updated = False
-            (price, size) = matched_lay
-            for matches in self.matched_lays:
-                if matches.price == price:
-                    matches.size = size
-                    updated = True
-                    break
-            # if not updated:
-            #     self.matched_lays.append(Match(matched_lay))
+    def update_matched_backs(self, matched_backs):
+        if not self.matched_backs:
+            self.matched_backs = []
+            for matched_back in matched_backs:
+                self.matched_backs.append(matched_back)
+        else:
+            update_available(self.matched_backs, matched_backs, 1)
 
-    def update_unmatched_backs(self, matched_backs):
-        for matched_back in matched_backs:
-            updated = False
-            (price, size) = matched_back
-            for matches in self.matched_backs:
-                if matches.price == price:
-                    matches.size = size
-                    updated = True
-                    break
-            # if not updated:
-            #     self.matched_backs.append(Match(matched_back))
+    def update_matched_lays(self, matched_lays):
+        if not self.matched_lays:
+            self.matched_lays = []
+            for matched_lay in matched_lays:
+                self.matched_lays.append(matched_lay)
+        else:
+            update_available(self.matched_lays, matched_lays, 1)
 
     def update_unmatched(self, unmatched_orders):
+        order_dict = {order.bet_id: order for order in self.unmatched_orders}
         for unmatched_order in unmatched_orders:
-            self.unmatched_orders[unmatched_order.get('id')] = UnmatchedOrder(**unmatched_order)
+            if unmatched_order.get('id') in order_dict:
+                for n, order in enumerate(self.unmatched_orders):
+                    if order.bet_id == unmatched_order.get('id'):
+                        self.unmatched_orders[n] = UnmatchedOrder(**unmatched_order)
+                        break
+            else:
+                self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
 
     @property
     def serialise_orders(self):
@@ -468,15 +422,17 @@ class OrderBookCache(BaseResource):
 
     def update_cache(self, order_book):
         self.date_updated = datetime.datetime.utcnow()
+        runner_dict = {runner.selection_id: runner for runner in self.runners}
+
         for order_changes in order_book.get('orc'):
             selection_id = order_changes['id']
-            runner = self.runners.get(selection_id)
+            runner = runner_dict.get(selection_id)
             if runner:
                 runner.update_matched_lays(order_changes.get('ml', []))
-                runner.update_unmatched_backs(order_changes.get('mb', []))
+                runner.update_matched_backs(order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
-                self.runners[order_changes.get('id')] = OrderBookRunner(**order_changes)
+                self.runners.append(OrderBookRunner(**order_changes))
 
     @property
     def create_order_book(self):
