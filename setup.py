@@ -1,11 +1,9 @@
-import sys
-from distutils.core import setup, Extension
-from setuptools.command.test import test as TestCommand
+from setuptools import setup
 from betfairlightweight.__init__ import __version__
 
 
 INSTALL_REQUIRES = [
-    'requests == 2.10.0',
+    'requests',
 ]
 TEST_REQUIRES = [
     'mock'
