@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/liampauling/betfairlightweight.svg?branch=master)](https://travis-ci.org/liampauling/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfairlightweight/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfairlightweight?branch=master)
-
 # betfairlightweight
+
+[![Build Status](https://travis-ci.org/liampauling/betfairlightweight.svg?branch=master)](https://travis-ci.org/liampauling/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfairlightweight/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfairlightweight?branch=master)
 
 Lightweight, super fast pythonic wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations.
 
@@ -11,7 +11,7 @@ python3 only.
 # installation
 
 ```
-pip install betfairlightweight
+$ pip install betfairlightweight
 ```
 
 # setup
@@ -20,7 +20,6 @@ Add your certificates to '/certs/' and app_key to environment variables with use
 
 .bash_profile
 ```
-# betfair
 export username = "appkey"
 ```
 
