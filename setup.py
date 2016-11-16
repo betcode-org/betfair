@@ -5,7 +5,7 @@ from betfairlightweight.__init__ import __version__
 
 
 INSTALL_REQUIRES = [
-    'requests=2.10.0',
+    'requests == 2.10.0',
 ]
 TEST_REQUIRES = [
     'mock'
