@@ -8,9 +8,15 @@ Lightweight, super fast pythonic wrapper for [Betfair API-NG](http://docs.develo
 
 python3 only.
 
+# installation
+
+```
+pip install betfairlightweight
+```
+
 # setup
 
-Add your certificates to '/certs/' and app_key to environment variables with username as key before installing.
+Add your certificates to '/certs/' and app_key to environment variables with username as key before using.
 
 .bash_profile
 ```
