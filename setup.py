@@ -5,7 +5,7 @@ from betfairlightweight.__init__ import __version__
 
 
 INSTALL_REQUIRES = [
-    'requests>=2.6.2',
+    'requests == 2.10.0',
 ]
 TEST_REQUIRES = [
     'mock'
@@ -19,8 +19,8 @@ setup(
         package_dir={'betfairlightweight': 'betfairlightweight'},
         install_requires=INSTALL_REQUIRES,
         requires=['requests'],
-        url='https://github.com/LiamPa/betfairlightweight',
-        license='',
+        url='https://github.com/liampauling/betfairlightweight',
+        license='MIT',
         author='liampauling',
         author_email='',
         description='Lightweight python wrapper for Betfair API-NG',
