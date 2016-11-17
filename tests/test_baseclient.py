@@ -1,6 +1,6 @@
 import datetime
 import unittest
-import mock
+from unittest import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import AppKeyError, CertsError

@@ -46,7 +46,7 @@ class BetfairStreamTest(unittest.TestCase):
         mock_read_loop.assert_called_with()
 
         self.betfair_stream.start(async=True)
-        mock_threading.Thread.assert_called_with(daemon=True, name=self.description, target=mock_read_loop)
+        mock_threading.Thread.assert_called_with(daemon=False, name=self.description, target=mock_read_loop)
 
         self.betfair_stream._running = False
         self.betfair_stream.start(async=False)
