@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.streaming import Streaming
