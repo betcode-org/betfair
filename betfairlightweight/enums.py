@@ -124,7 +124,7 @@ class ApingException(Enum):
                     "status of your bets before placing further orders. Please allow up to 2 minutes for timed out " \
                     "order to appear."
     REQUEST_SIZE_EXCEEDS_LIMIT = "The request exceeds the request size limit. Requests are limited to a total of 250 " \
-                                 "betId’s/marketId’s (or a combination of both)."
+                                 "betId's/marketId's (or a combination of both)."
     ACCESS_DENIED = "The calling client is not permitted to perform the specific action e.g. the using a Delayed " \
                     "App Key when placing bets or attempting to place a bet from a restricted jurisdiction."
 
