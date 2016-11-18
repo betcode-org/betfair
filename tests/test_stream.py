@@ -56,6 +56,12 @@ class BaseStreamTest(unittest.TestCase):
         mock_calc_latency.return_value = 10
         self.stream.on_update(mock_response.json())
 
+    def test_clear_cache(self):
+        self.stream._caches = {1: 'abc'}
+        self.stream.clear_cache()
+
+        assert self.stream._caches == {}
+
     def test_on_creation(self):
         self.stream._on_creation()
 
