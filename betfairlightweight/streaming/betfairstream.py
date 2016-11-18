@@ -48,6 +48,7 @@ class BetfairStream:
     def stop(self):
         """Stops read loop which closes socket
         """
+        # self._socket.shutdown(socket.SHUT_WR)
         self._running = False
 
     def authenticate(self, unique_id=None):
@@ -134,12 +135,13 @@ class BetfairStream:
         while self._running:
             try:
                 received_data_raw = self._receive_all()
-                self.receive_count += 1
-                self.datetime_last_received = datetime.datetime.utcnow()
-                received_data_split = received_data_raw.split(self.__CRLF)
-                for received_data in received_data_split:
-                    if received_data:
-                        self._data(received_data)
+                if self._running:
+                    self.receive_count += 1
+                    self.datetime_last_received = datetime.datetime.utcnow()
+                    received_data_split = received_data_raw.split(self.__CRLF)
+                    for received_data in received_data_split:
+                        if received_data:
+                            self._data(received_data)
             except socket.timeout as e:
                 raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
             except socket.error as e:
