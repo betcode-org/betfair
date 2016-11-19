@@ -48,7 +48,6 @@ class BetfairStream:
     def stop(self):
         """Stops read loop which closes socket
         """
-        # self._socket.shutdown(socket.SHUT_WR)
         self._running = False
 
     def authenticate(self, unique_id=None):
