@@ -147,7 +147,12 @@ class BetfairStream:
             except socket.error as e:
                 raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
 
-        self._socket.close()
+        if not self._socket._closed:
+            try:
+                self._socket.shutdown(2)
+            except OSError:
+                pass
+            self._socket.close()
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,
