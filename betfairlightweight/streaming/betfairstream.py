@@ -134,18 +134,24 @@ class BetfairStream:
         while self._running:
             try:
                 received_data_raw = self._receive_all()
-                self.receive_count += 1
-                self.datetime_last_received = datetime.datetime.utcnow()
-                received_data_split = received_data_raw.split(self.__CRLF)
-                for received_data in received_data_split:
-                    if received_data:
-                        self._data(received_data)
+                if self._running:
+                    self.receive_count += 1
+                    self.datetime_last_received = datetime.datetime.utcnow()
+                    received_data_split = received_data_raw.split(self.__CRLF)
+                    for received_data in received_data_split:
+                        if received_data:
+                            self._data(received_data)
             except socket.timeout as e:
                 raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
             except socket.error as e:
                 raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
 
-        self._socket.close()
+        if not self._socket._closed:
+            try:
+                self._socket.shutdown(2)
+            except OSError:
+                pass
+            self._socket.close()
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,

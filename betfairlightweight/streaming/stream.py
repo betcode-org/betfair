@@ -51,6 +51,9 @@ class BaseStream:
         book_data = data.get(self._lookup)
         self._process(book_data, publish_time)
 
+    def clear_cache(self):
+        self._caches.clear()
+
     def _on_creation(self):
         logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, str(self)))
 
