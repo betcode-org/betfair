@@ -133,7 +133,6 @@ class StreamListener(BaseListener):
             logging.error('[Subscription: %s] %s: %s' %
                           (unique_id, data.get('errorCode'), data.get('errorMessage')))
             if connection_closed:
-                time.sleep(1)
                 return True
 
     def __str__(self):
