@@ -3,7 +3,7 @@ import collections
 import datetime
 import os
 
-from .exceptions import AppKeyError, CertsError
+from .exceptions import PasswordError, AppKeyError, CertsError
 
 
 class BaseClient:
@@ -27,7 +27,7 @@ class BaseClient:
             italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
     )
 
-    def __init__(self, username, password, app_key=None, certs=None, locale=None):
+    def __init__(self, username, password=None, app_key=None, certs=None, locale=None):
         """
         :param username:
             Betfair username.
@@ -53,6 +53,7 @@ class BaseClient:
         self.api_uri = self.API_URLS[locale]
         self.navigation_uri = self.NAVIGATION_URLS[locale]
 
+        self.get_password()
         self.get_app_key()
 
     def set_session_token(self, session_token):
@@ -62,8 +63,18 @@ class BaseClient:
         self.session_token = session_token
         self._login_time = datetime.datetime.now()
 
+    def get_password(self):
+        """If password is not provided will look in environment
+        variables for username+'password'
+        """
+        if self.password is None:
+            if os.environ.get(self.username):
+                self.password = os.environ.get(self.username+'password')
+            else:
+                raise PasswordError(self.username)
+
     def get_app_key(self):
-        """If app_key is not set will look in environment
+        """If app_key is not provided will look in environment
         variables for username
         """
         if self.app_key is None:
