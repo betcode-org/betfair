@@ -32,9 +32,9 @@ class BaseClient:
         :param username:
             Betfair username.
         :param password:
-            Password for supplied username.
+            Password for supplied username, if None will look in .bashprofile.
         :param app_key:
-            App Key for account, if None will look in .bashprofile
+            App Key for account, if None will look in .bashprofile.
         :param certs:
             Directory for certificates, if None will look in /certs/
         :param locale:
@@ -68,7 +68,7 @@ class BaseClient:
         variables for username+'password'
         """
         if self.password is None:
-            if os.environ.get(self.username):
+            if os.environ.get(self.username+'password'):
                 self.password = os.environ.get(self.username+'password')
             else:
                 raise PasswordError(self.username)
