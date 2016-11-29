@@ -4,7 +4,7 @@ from . import endpoints
 
 class APIClient(BaseClient):
 
-    def __init__(self, username, password, app_key=None, certs=None, locale=None):
+    def __init__(self, username, password=None, app_key=None, certs=None, locale=None):
         super(APIClient, self).__init__(username, password, app_key=app_key, certs=certs, locale=locale)
 
         self.login = endpoints.Login(self)
