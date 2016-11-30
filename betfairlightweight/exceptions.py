@@ -5,6 +5,14 @@ class BetfairError(Exception):
     pass
 
 
+class PasswordError(BetfairError):
+    """Exception raised if password is not found"""
+
+    def __init__(self, username):
+        message = 'Password not found in .bashprofile for %s, add or pass to APIClient' % username
+        super(PasswordError, self).__init__(message)
+
+
 class AppKeyError(BetfairError):
     """Exception raised if appkey is not found"""
 

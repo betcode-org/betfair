@@ -3,7 +3,7 @@ import unittest
 from unittest import mock
 
 from betfairlightweight import APIClient
-from betfairlightweight.exceptions import AppKeyError, CertsError
+from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 
 
 class BaseClientInit(unittest.TestCase):
@@ -80,6 +80,11 @@ class BaseClientTest(unittest.TestCase):
         self.client.set_session_token('session_token')
         assert self.client.session_token == 'session_token'
         assert self.client._login_time is not None
+
+    def test_get_password(self):
+        self.client.password = None
+        with self.assertRaises(PasswordError):
+            self.client.get_password()
 
     def test_get_app_key(self):
         self.client.app_key = None
