@@ -2,7 +2,7 @@ import unittest
 import socket
 import time
 import threading
-from unittest import mock
+from tests import mock
 
 from betfairlightweight.streaming.betfairstream import BetfairStream
 from betfairlightweight.exceptions import SocketError

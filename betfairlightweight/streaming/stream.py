@@ -5,7 +5,7 @@ from ..resources.streamingresources import MarketBookCache, OrderBookCache
 from ..utils import strp_betfair_integer_time
 
 
-class BaseStream:
+class BaseStream(object):
     """Separate stream class to hold market/order caches
     """
 
