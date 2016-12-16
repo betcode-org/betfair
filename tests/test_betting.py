@@ -1,6 +1,5 @@
 import unittest
-import datetime
-from unittest import mock
+from tests import mock
 
 from tests.tools import create_mock_json
 from betfairlightweight import APIClient

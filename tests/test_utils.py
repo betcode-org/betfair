@@ -1,6 +1,6 @@
 import unittest
 import datetime
-from unittest.mock import Mock
+from mock import Mock
 
 from betfairlightweight.utils import (
     check_status_code, strp_betfair_integer_time, strp_betfair_time, price_check, update_available)

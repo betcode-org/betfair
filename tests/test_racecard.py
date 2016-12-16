@@ -1,5 +1,6 @@
 import unittest
-from unittest import mock
+from tests import mock
+from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.racecard import RaceCard
