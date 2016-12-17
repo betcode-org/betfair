@@ -1,3 +1,5 @@
+import sys
+
 from setuptools import setup
 from betfairlightweight.__init__ import __version__
 
@@ -8,6 +10,11 @@ INSTALL_REQUIRES = [
 TEST_REQUIRES = [
     'mock'
 ]
+
+if sys.version_info < (3,4):
+    INSTALL_REQUIRES.extend([
+        'enum34',
+    ])
 
 setup(
         name='betfairlightweight',
