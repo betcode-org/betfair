@@ -4,7 +4,7 @@ from ..exceptions import APIError
 from ..utils import check_status_code
 
 
-class BaseEndpoint:
+class BaseEndpoint(object):
 
     connect_timeout = 3.05
     read_timeout = 16
@@ -27,7 +27,7 @@ class BaseEndpoint:
         try:
             response = session.post(self.url, data=request, headers=self.client.request_headers,
                                     timeout=(self.connect_timeout, self.read_timeout))
-        except ConnectionError:
+        except session.ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)

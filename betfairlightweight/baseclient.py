@@ -4,9 +4,10 @@ import datetime
 import os
 
 from .exceptions import PasswordError, AppKeyError, CertsError
+from .compat import FileNotFoundError
 
 
-class BaseClient:
+class BaseClient(object):
 
     IDENTITY_URLS = collections.defaultdict(
             lambda: 'https://identitysso.betfair.com/api/',
@@ -109,6 +110,9 @@ class BaseClient:
             cert_path = os.listdir(ssl_path)
         except FileNotFoundError:
             raise CertsError
+        except OSError:   # Python 2 compatability
+            raise CertsError
+
         for file in cert_path:
             ext = file.rpartition('.')[2]
             if ext in ['key', 'crt', 'pem']:

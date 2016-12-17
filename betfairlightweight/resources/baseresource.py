@@ -1,8 +1,10 @@
 import datetime
 import json
 
+from ..compat import basestring
 
-class BaseResource:
+
+class BaseResource(object):
     """
     Data structure based on a becket resource
         https://github.com/phalt/beckett
@@ -63,7 +65,7 @@ class BaseResource:
         """
         Converts value to datetime if string or int.
         """
-        if isinstance(value, str):
+        if isinstance(value, basestring):
             try:
                 return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
             except ValueError:
