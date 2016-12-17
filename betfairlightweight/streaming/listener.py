@@ -1,11 +1,12 @@
+from __future__ import print_function
+
 import json
 import logging
-import time
 
 from .stream import MarketStream, OrderStream
 
 
-class BaseListener:
+class BaseListener(object):
 
     def __init__(self):
         self.market_stream = None

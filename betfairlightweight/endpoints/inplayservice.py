@@ -36,7 +36,7 @@ class InPlayService(BaseEndpoint):
         session = session or self.client.session
         try:
             response = session.get(url, params=params, headers=self.headers)
-        except ConnectionError:
+        except session.ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)

@@ -1,5 +1,5 @@
 import unittest
-from unittest import mock
+from tests import mock
 
 from betfairlightweight.resources.streamingresources import (
     MarketDefinition, OrderBookCache, OrderBookRunner, UnmatchedOrder, MarketBookCache, RunnerBook

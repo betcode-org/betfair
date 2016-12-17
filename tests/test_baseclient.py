@@ -1,6 +1,8 @@
+from __future__ import print_function
+
 import datetime
 import unittest
-from unittest import mock
+from tests import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError

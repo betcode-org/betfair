@@ -1,7 +1,7 @@
 from ..streaming import BaseListener, BetfairStream
 
 
-class Streaming:
+class Streaming(object):
 
     def __init__(self, parent):
         """

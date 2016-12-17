@@ -5,9 +5,10 @@ import ssl
 import datetime
 
 from ..exceptions import SocketError
+from ..compat import is_py3
 
 
-class BetfairStream:
+class BetfairStream(object):
     """Socket holder, connects to betfair and
     pushes any received data to listener
     """
@@ -158,7 +159,12 @@ class BetfairStream:
         till CRLF is detected.
         """
         (data, part) = ('', '')
-        while self._running and part[-2:] != bytes(self.__CRLF, encoding=self.__encoding):
+        if is_py3:
+            crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
+        else:
+            crlf_bytes = self.__CRLF
+
+        while self._running and part[-2:] != crlf_bytes:
             part = self._socket.recv(self.buffer_size)
             if part:
                 data += part.decode(self.__encoding)

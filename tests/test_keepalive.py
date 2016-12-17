@@ -1,5 +1,5 @@
 import unittest
-from unittest import mock
+from tests import mock
 from requests.exceptions import ConnectionError
 
 from tests.tools import create_mock_json

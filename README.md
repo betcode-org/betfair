@@ -6,7 +6,7 @@ Lightweight, super fast pythonic wrapper for [Betfair API-NG](http://docs.develo
 
 [Documentation](https://github.com/liampauling/betfairlightweight/wiki)
 
-python3 only.
+Currently tested on Python 2.7, 3.4 and 3.5.
 
 # installation
 
