@@ -1,4 +1,5 @@
 import datetime
+from requests import ConnectionError
 
 from ..exceptions import APIError
 from ..utils import check_status_code
@@ -36,7 +37,7 @@ class InPlayService(BaseEndpoint):
         session = session or self.client.session
         try:
             response = session.get(url, params=params, headers=self.headers)
-        except session.ConnectionError:
+        except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)
