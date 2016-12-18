@@ -1,5 +1,6 @@
 import re
 import datetime
+from requests import ConnectionError
 
 from ..exceptions import APIError, RaceCardError
 from ..utils import check_status_code
@@ -33,7 +34,7 @@ class RaceCard(BaseEndpoint):
         try:
             response = session.get(self.url, params=self.create_req(method, params),
                                    headers=self.headers)
-        except session.ConnectionError:
+        except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)
