@@ -1,3 +1,5 @@
+from requests import ConnectionError
+
 from ..exceptions import APIError
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
@@ -13,7 +15,7 @@ class Navigation(BaseEndpoint):
         try:
             response = session.get(self.url, headers=self.client.request_headers,
                                    timeout=(self.connect_timeout, self.read_timeout))
-        except session.ConnectionError:
+        except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)

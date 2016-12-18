@@ -1,3 +1,5 @@
+from requests import ConnectionError
+
 from .baseendpoint import BaseEndpoint
 from ..exceptions import LogoutError, APIError
 from ..utils import check_status_code
@@ -17,7 +19,7 @@ class Logout(BaseEndpoint):
         session = session or self.client.session
         try:
             response = session.post(self.url, headers=self.client.keep_alive_headers, cert=self.client.cert)
-        except session.ConnectionError:
+        except ConnectionError:
             raise APIError(None, exception='ConnectionError')
         except Exception as e:
             raise APIError(None, exception=e)
