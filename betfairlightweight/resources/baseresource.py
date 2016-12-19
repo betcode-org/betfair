@@ -73,7 +73,7 @@ class BaseResource(object):
         elif isinstance(value, integer_types):
             try:
                 return datetime.datetime.utcfromtimestamp(value / 1e3)
-            except ValueError:
+            except (ValueError, OverflowError, OSError):
                 return
 
     @property
