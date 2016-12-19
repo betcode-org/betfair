@@ -11,8 +11,8 @@ from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 class BaseClientInit(unittest.TestCase):
 
     def test_base_client_init(self):
-        client = APIClient('username', 'password', 'app_key')
-        assert client.username == 'username'
+        client = APIClient('bf_username', 'password', 'app_key')
+        assert client.username == 'bf_username'
         assert client.password == 'password'
         assert client.app_key == 'app_key'
         assert client.certs is None
@@ -21,43 +21,43 @@ class BaseClientInit(unittest.TestCase):
         assert client.session_token is None
 
     def test_uri(self):
-        client = APIClient('username', 'password', 'app_key')
+        client = APIClient('bf_username', 'password', 'app_key')
         assert client.locale is None
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
 
-        client = APIClient('username', 'password', 'app_key', locale='australia')
+        client = APIClient('bf_username', 'password', 'app_key', locale='australia')
         assert client.locale == 'australia'
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
 
-        client = APIClient('username', 'password', 'app_key', locale='spain')
+        client = APIClient('bf_username', 'password', 'app_key', locale='spain')
         assert client.locale == 'spain'
         assert client.identity_uri == 'https://identitysso.betfair.es'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'
 
-        client = APIClient('username', 'password', 'app_key', locale='italy')
+        client = APIClient('bf_username', 'password', 'app_key', locale='italy')
         assert client.locale == 'italy'
         assert client.identity_uri == 'https://identitysso.betfair.it/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
 
-        client = APIClient('username', 'password', 'app_key', locale='romania')
+        client = APIClient('bf_username', 'password', 'app_key', locale='romania')
         assert client.locale == 'romania'
         assert client.identity_uri == 'https://idenititysso.betfair.ro'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
 
-        client = APIClient('username', 'password', 'app_key', locale='w_con')
+        client = APIClient('bf_username', 'password', 'app_key', locale='w_con')
         assert client.locale == 'w_con'
         assert client.identity_uri == 'https://identitysso.w-con.betfair.com'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
 
-        client = APIClient('username', 'password', 'app_key', locale='europe')
+        client = APIClient('bf_username', 'password', 'app_key', locale='europe')
         assert client.locale == 'europe'
         assert client.identity_uri == 'https://identitysso.betfaironline.eu'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
@@ -67,7 +67,7 @@ class BaseClientInit(unittest.TestCase):
 class BaseClientTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = APIClient('username', 'password', 'app_key', '/fail/')
+        self.client = APIClient('bf_username', 'password', 'app_key', '/fail/')
 
     def test_client_certs(self):
         with self.assertRaises(CertsError):

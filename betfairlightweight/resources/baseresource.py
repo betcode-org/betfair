@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from ..compat import basestring
+from ..compat import basestring, integer_types
 
 
 class BaseResource(object):
@@ -70,7 +70,7 @@ class BaseResource(object):
                 return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")
             except ValueError:
                 return
-        elif isinstance(value, int):
+        elif isinstance(value, integer_types):
             try:
                 return datetime.datetime.utcfromtimestamp(value / 1e3)
             except ValueError:

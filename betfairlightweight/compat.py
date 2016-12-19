@@ -19,5 +19,9 @@ except ImportError:
 
 if is_py2:
     basestring = basestring
+    numeric_types = (int, long, float)
+    integer_types = (int, long)
 elif is_py3:
     basestring = (str, bytes)
+    numeric_types = (int, float)
+    integer_types = (int,)
