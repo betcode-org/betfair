@@ -424,7 +424,7 @@ class OrderBookCache(BaseResource):
         self.date_updated = datetime.datetime.utcnow()
         runner_dict = {runner.selection_id: runner for runner in self.runners}
 
-        for order_changes in order_book.get('orc'):
+        for order_changes in order_book.get('orc', []):
             selection_id = order_changes['id']
             runner = runner_dict.get(selection_id)
             if runner:
