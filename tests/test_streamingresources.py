@@ -26,7 +26,7 @@ class TestOrderBookCache(unittest.TestCase):
         self.order_book_cache = OrderBookCache(**{})
         self.runner = mock.Mock()
         self.runner.selection_id = 10895629
-        self.runner.serialise_orders = []
+        self.runner.serialise_orders = mock.Mock(return_value=[])
         self.order_book_cache.runners = [self.runner]
 
     def test_update_cache(self):
