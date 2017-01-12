@@ -1,5 +1,3 @@
-import datetime
-
 from ..utils import update_available
 from .baseresource import BaseResource
 from .bettingresources import MarketBook, CurrentOrders
@@ -419,8 +417,8 @@ class OrderBookCache(BaseResource):
             'orc': OrderBookRunner
         }
 
-    def update_cache(self, order_book):
-        self._datetime_updated = datetime.datetime.utcnow()
+    def update_cache(self, order_book, publish_time):
+        self._datetime_updated = self.strip_datetime(publish_time)
         runner_dict = {runner.selection_id: runner for runner in self.runners}
 
         for order_changes in order_book.get('orc', []):
