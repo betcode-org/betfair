@@ -32,7 +32,7 @@ class TestOrderBookCache(unittest.TestCase):
     def test_update_cache(self):
         mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
         for order_book in mock_response.json().get('oc'):
-            self.order_book_cache.update_cache(order_book)
+            self.order_book_cache.update_cache(order_book, 1234)
 
             for order_changes in order_book.get('orc'):
                 self.runner.update_matched_lays.assert_called_with(order_changes.get('ml', []))
@@ -44,7 +44,7 @@ class TestOrderBookCache(unittest.TestCase):
         self.runner.selection_id = 108956
         mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
         for order_book in mock_response.json().get('oc'):
-            self.order_book_cache.update_cache(order_book)
+            self.order_book_cache.update_cache(order_book, 1234)
 
             for order_changes in order_book.get('orc'):
                 mock_order_book_runner.assert_called_with(**order_changes)
