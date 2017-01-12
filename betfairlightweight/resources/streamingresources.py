@@ -212,7 +212,6 @@ class RunnerBook(BaseResource):
 
 
 class MarketBookCache(BaseResource):
-    publish_time = None
 
     class Meta(BaseResource.Meta):
         identifier = 'market_book_cache'
@@ -227,7 +226,8 @@ class MarketBookCache(BaseResource):
         }
 
     def update_cache(self, market_change, publish_time):
-        self.publish_time = self.strip_datetime(publish_time)
+        self._datetime_updated = self.strip_datetime(publish_time)
+
         market_definition = market_change.get('marketDefinition')
         if market_definition:
             self.market_definition = MarketDefinition(**market_definition)
@@ -272,11 +272,9 @@ class MarketBookCache(BaseResource):
                 else:
                     self.runners.append(RunnerBook(**new_data))
                     runner_dict = {runner.selection_id: runner for runner in self.runners}
-        self.datetime_updated = datetime.datetime.utcnow()
 
-    @property
-    def create_market_book(self):
-        return MarketBook(date_time_sent=self.publish_time, **self.serialise)
+    def create_market_book(self, unique_id):
+        return MarketBook(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
 
     @property
     def serialise(self):
@@ -422,11 +420,11 @@ class OrderBookCache(BaseResource):
         }
 
     def update_cache(self, order_book):
-        self.date_updated = datetime.datetime.utcnow()
+        self._datetime_updated = datetime.datetime.utcnow()
         runner_dict = {runner.selection_id: runner for runner in self.runners}
 
         for order_changes in order_book.get('orc', []):
-            selection_id = order_changes['id']
+            selection_id = order_changes.get('id')
             runner = runner_dict.get(selection_id)
             if runner:
                 runner.update_matched_lays(order_changes.get('ml', []))
@@ -435,9 +433,8 @@ class OrderBookCache(BaseResource):
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
-    @property
-    def create_order_book(self):
-        return CurrentOrders(**self.serialise)
+    def create_order_book(self, unique_id):
+        return CurrentOrders(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
 
     @property
     def serialise(self):
