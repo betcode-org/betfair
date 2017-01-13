@@ -42,7 +42,9 @@ class BetfairStream(object):
             self._connect()
             self.authenticate()
         if async:
-            threading.Thread(name=self.description, target=self._read_loop, daemon=False).start()
+            t = threading.Thread(name=self.description, target=self._read_loop)
+            t.daemon = False
+            t.start()
         else:
             self._read_loop()
 
