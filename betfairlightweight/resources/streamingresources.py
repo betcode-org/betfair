@@ -1,5 +1,3 @@
-import datetime
-
 from ..utils import update_available
 from .baseresource import BaseResource
 from .bettingresources import MarketBook, CurrentOrders
@@ -212,7 +210,6 @@ class RunnerBook(BaseResource):
 
 
 class MarketBookCache(BaseResource):
-    publish_time = None
 
     class Meta(BaseResource.Meta):
         identifier = 'market_book_cache'
@@ -227,7 +224,8 @@ class MarketBookCache(BaseResource):
         }
 
     def update_cache(self, market_change, publish_time):
-        self.publish_time = self.strip_datetime(publish_time)
+        self._datetime_updated = self.strip_datetime(publish_time)
+
         market_definition = market_change.get('marketDefinition')
         if market_definition:
             self.market_definition = MarketDefinition(**market_definition)
@@ -272,11 +270,9 @@ class MarketBookCache(BaseResource):
                 else:
                     self.runners.append(RunnerBook(**new_data))
                     runner_dict = {runner.selection_id: runner for runner in self.runners}
-        self.datetime_updated = datetime.datetime.utcnow()
 
-    @property
-    def create_market_book(self):
-        return MarketBook(date_time_sent=self.publish_time, **self.serialise)
+    def create_market_book(self, unique_id):
+        return MarketBook(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
 
     @property
     def serialise(self):
@@ -338,27 +334,30 @@ class UnmatchedOrder(BaseResource):
 
     def serialise(self, market_id, selection_id):
         return {
-            "averagePriceMatched": self.average_price_matched,
-            "betId": self.bet_id,
-            "bspLiability": self.bsp_liability,
-            "handicap": 0.0,
-            "marketId": market_id,
-            "orderType": StreamingOrderType[self.order_type].value,
-            "persistenceType": StreamingPersistenceType[self.persistence_type].value,
-            "placedDate": self.placed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "priceSize": {
-                "price": self.price,
-                "size": self.size
+            'averagePriceMatched': self.average_price_matched,
+            'betId': self.bet_id,
+            'bspLiability': self.bsp_liability,
+            'handicap': 0.0,
+            'marketId': market_id,
+            'matchedDate': self.matched_date,
+            'orderType': StreamingOrderType[self.order_type].value,
+            'persistenceType': StreamingPersistenceType[self.persistence_type].value,
+            'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'priceSize': {
+                'price': self.price,
+                'size': self.size
             },
-            "regulatorCode": self.regulator_code,
-            "selectionId": selection_id,
-            "side": StreamingSide[self.side].value,
-            "sizeCancelled": self.size_cancelled,
-            "sizeLapsed": self.size_lapsed,
-            "sizeMatched": self.size_matched,
-            "sizeRemaining": self.size_remaining,
-            "sizeVoided": self.size_voided,
-            "status": StreamingStatus[self.status].value
+            'regulatorCode': self.regulator_code,
+            'selectionId': selection_id,
+            'side': StreamingSide[self.side].value,
+            'sizeCancelled': self.size_cancelled,
+            'sizeLapsed': self.size_lapsed,
+            'sizeMatched': self.size_matched,
+            'sizeRemaining': self.size_remaining,
+            'sizeVoided': self.size_voided,
+            'status': StreamingStatus[self.status].value,
+            'customerStrategyRef': self.reference_strategy,
+            'customerOrderRef': self.reference_order,
         }
 
 
@@ -367,7 +366,6 @@ class OrderBookRunner(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'runners'
         attributes = {
-            'market_id': 'market_id',
             'id': 'selection_id',
             'ml': 'matched_lays',
             'mb': 'matched_backs',
@@ -403,9 +401,8 @@ class OrderBookRunner(BaseResource):
             else:
                 self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
 
-    @property
-    def serialise_orders(self):
-        return [order.serialise(self.market_id, self.selection_id) for order in self.unmatched_orders]
+    def serialise_orders(self, market_id):
+        return [order.serialise(market_id, self.selection_id) for order in self.unmatched_orders]
 
 
 class OrderBookCache(BaseResource):
@@ -420,12 +417,12 @@ class OrderBookCache(BaseResource):
             'orc': OrderBookRunner
         }
 
-    def update_cache(self, order_book):
-        self.date_updated = datetime.datetime.utcnow()
+    def update_cache(self, order_book, publish_time):
+        self._datetime_updated = self.strip_datetime(publish_time)
         runner_dict = {runner.selection_id: runner for runner in self.runners}
 
-        for order_changes in order_book.get('orc'):
-            selection_id = order_changes['id']
+        for order_changes in order_book.get('orc', []):
+            selection_id = order_changes.get('id')
             runner = runner_dict.get(selection_id)
             if runner:
                 runner.update_matched_lays(order_changes.get('ml', []))
@@ -434,16 +431,15 @@ class OrderBookCache(BaseResource):
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
-    @property
-    def create_order_book(self):
-        return CurrentOrders(**self.serialise)
+    def create_order_book(self, unique_id):
+        return CurrentOrders(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
 
     @property
     def serialise(self):
         orders = []
         for runner in self.runners:
-            orders.extend(runner.serialise_orders)
+            orders.extend(runner.serialise_orders(self.market_id))
         return {
-            "currentOrders": orders,
-            "moreAvailable": False
+            'currentOrders': orders,
+            'moreAvailable': False
         }
