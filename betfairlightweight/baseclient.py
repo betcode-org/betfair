@@ -116,7 +116,7 @@ class BaseClient(object):
         for file in cert_path:
             ext = file.rpartition('.')[2]
             if ext in ['key', 'crt', 'pem']:
-                cert_path = ssl_path + file
+                cert_path = os.path.join(ssl_path, file)
                 cert_paths.append(cert_path)
         cert_paths.sort()
         return cert_paths
