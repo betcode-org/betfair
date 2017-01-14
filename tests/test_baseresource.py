@@ -94,9 +94,8 @@ class BaseResourceInit(unittest.TestCase):
         stripped = base_resource.strip_datetime('45')
         assert not stripped
 
-        stripped = base_resource.strip_datetime(-1230000000345446)
-        print(stripped)
-        # assert not stripped
+        # stripped = base_resource.strip_datetime(-1230000000345446)
+        # assert not stripped  py3.6 is able to strip this
 
     def test_strip_datetime_resource(self):
         mock_response = create_mock_json('tests/resources/base_resource_sub.json')
