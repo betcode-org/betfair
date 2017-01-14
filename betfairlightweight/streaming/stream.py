@@ -88,7 +88,7 @@ class MarketStream(BaseStream):
         for market_book in market_books:
             market_id = market_book.get('id')
             if market_book.get('img'):
-                self._caches[market_id] = MarketBookCache(date_time_sent=publish_time, **market_book)
+                self._caches[market_id] = MarketBookCache(publish_time=publish_time, **market_book)
                 logging.debug('[MarketStream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache = self._caches.get(market_id)

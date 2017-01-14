@@ -22,6 +22,8 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource._data == {}
         with self.assertRaises(AttributeError):
             assert base_resource.not_in
+        assert base_resource.publish_time is None
+        assert base_resource.streaming_unique_id is None
 
     def test_data(self):
         mock_response = create_mock_json('tests/resources/base_resource.json')
