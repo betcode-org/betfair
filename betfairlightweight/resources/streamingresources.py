@@ -225,6 +225,7 @@ class MarketBookCache(BaseResource):
 
     def update_cache(self, market_change, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
+        self.publish_time = publish_time
 
         market_definition = market_change.get('marketDefinition')
         if market_definition:
@@ -297,7 +298,8 @@ class MarketBookCache(BaseResource):
             'numberOfWinners': self.market_definition.number_of_winners,
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
             'runners': [runner.serialise(market_definition_dict.get(runner.selection_id).status)
-                        for runner in self.runners]
+                        for runner in self.runners],
+            'publishTime': self.publish_time,
         }
 
 
