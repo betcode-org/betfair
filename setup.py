@@ -1,7 +1,7 @@
 import sys
+import re
 
 from setuptools import setup
-from betfairlightweight.__init__ import __version__
 
 
 INSTALL_REQUIRES = [
@@ -16,9 +16,13 @@ if sys.version_info < (3,4):
         'enum34',
     ])
 
+with open('betfairlightweight/__init__.py', 'r') as f:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                        f.read(), re.MULTILINE).group(1)
+
 setup(
         name='betfairlightweight',
-        version=__version__,
+        version=version,
         packages=['betfairlightweight', 'betfairlightweight.endpoints',
                   'betfairlightweight.resources', 'betfairlightweight.streaming'],
         package_dir={'betfairlightweight': 'betfairlightweight'},
