@@ -96,9 +96,11 @@ class MarketStream(BaseStream):
                     market_book_cache.update_cache(market_book, publish_time)
                     self._updates_processed += 1
                 else:
-                    logging.error('[MarketStream: %s] Received update for market not in stream: %s' %
+                    logging.error('[MarketStream: %s] Received update for market not in cache: %s' %
                                   (self.unique_id, market_book))
-            output_market_book.append(self._caches[market_id].create_market_book)
+            output_market_book.append(
+                self._caches[market_id].create_market_book(self.unique_id)
+            )
 
         self.output_queue.put(output_market_book)
 
@@ -116,7 +118,7 @@ class OrderStream(BaseStream):
             market_id = order_book.get('id')
             order_book_cache = self._caches.get(market_id)
             if order_book_cache:
-                order_book_cache.update_cache(order_book)
+                order_book_cache.update_cache(order_book, publish_time)
             else:
                 self._caches[market_id] = OrderBookCache(**order_book)
                 logging.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
@@ -125,7 +127,9 @@ class OrderStream(BaseStream):
             closed = order_book.get('closed')
             if closed:
                 logging.info('[OrderStream: %s] %s closed' % (self.unique_id, market_id))
-            output_order_book.append(self._caches[market_id].create_order_book)
+            output_order_book.append(
+                self._caches[market_id].create_order_book(self.unique_id)
+            )
 
         self.output_queue.put(output_order_book)
 

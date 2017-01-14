@@ -26,13 +26,13 @@ class TestOrderBookCache(unittest.TestCase):
         self.order_book_cache = OrderBookCache(**{})
         self.runner = mock.Mock()
         self.runner.selection_id = 10895629
-        self.runner.serialise_orders = []
+        self.runner.serialise_orders = mock.Mock(return_value=[])
         self.order_book_cache.runners = [self.runner]
 
     def test_update_cache(self):
         mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
         for order_book in mock_response.json().get('oc'):
-            self.order_book_cache.update_cache(order_book)
+            self.order_book_cache.update_cache(order_book, 1234)
 
             for order_changes in order_book.get('orc'):
                 self.runner.update_matched_lays.assert_called_with(order_changes.get('ml', []))
@@ -44,7 +44,7 @@ class TestOrderBookCache(unittest.TestCase):
         self.runner.selection_id = 108956
         mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
         for order_book in mock_response.json().get('oc'):
-            self.order_book_cache.update_cache(order_book)
+            self.order_book_cache.update_cache(order_book, 1234)
 
             for order_changes in order_book.get('orc'):
                 mock_order_book_runner.assert_called_with(**order_changes)
@@ -52,9 +52,10 @@ class TestOrderBookCache(unittest.TestCase):
     @mock.patch('betfairlightweight.resources.streamingresources.OrderBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.CurrentOrders')
     def test_create_order_book(self, mock_current_orders, mock_serialise):
-        current_orders = self.order_book_cache.create_order_book
+        current_orders = self.order_book_cache.create_order_book(123)
 
-        mock_current_orders.assert_called_with(**mock_serialise)
+        mock_current_orders.assert_called_with(date_time_sent=self.order_book_cache._datetime_updated,
+                                               streaming_unique_id=123, **mock_serialise)
         assert current_orders == mock_current_orders()
 
     def test_serialise(self):
@@ -162,10 +163,11 @@ class TestMarketBookCache(unittest.TestCase):
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
     def test_create_market_book(self, mock_market_book, mock_serialise):
-        market_book = self.market_book_cache.create_market_book()
+        market_book = self.market_book_cache.create_market_book(1234)
 
-        assert market_book == mock_market_book()()
-        mock_market_book.assert_called_with()
+        # assert market_book == mock_market_book(date_time_sent=self.market_book_cache._datetime_updated,
+        #                                        streaming_unique_id=1234)()
+        # mock_market_book.assert_called()
 
 
 class TestRunnerBook(unittest.TestCase):

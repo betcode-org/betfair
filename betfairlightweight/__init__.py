@@ -4,5 +4,5 @@ from .streaming import StreamListener
 
 
 __title__ = 'betfairlightweight'
-__version__ = '0.9.2'
+__version__ = '0.9.3'
 __author__ = 'Liam Pauling'
