@@ -27,7 +27,7 @@ class BaseStream(object):
 
     def on_subscribe(self, data):
         self._update_clk(data)
-        publish_time = strp_betfair_integer_time(data.get('pt'))
+        publish_time = data.get('pt')
 
         book_data = data.get(self._lookup)
         if book_data:
