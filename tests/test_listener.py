@@ -150,7 +150,7 @@ class StreamListenerTest(unittest.TestCase):
         assert return_value is None
 
     def test_str(self):
-        assert str(self.stream_listener) == '<StreamListener>'
+        assert str(self.stream_listener) == 'StreamListener'
 
     def test_repr(self):
         assert repr(self.stream_listener) == '<StreamListener>'

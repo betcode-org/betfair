@@ -236,11 +236,10 @@ class MarketBookCache(BaseResource):
             self.total_matched = traded_volume
 
         runner_change = market_change.get('rc')
-        runner_dict = {runner.selection_id: runner for runner in self.runners}
         if runner_change:
             for new_data in runner_change:
                 selection_id = new_data.get('id')
-                runner = runner_dict.get(selection_id)
+                runner = self.runner_dict.get(selection_id)
                 if runner:
                     if new_data.get('ltp'):
                         runner.last_price_traded = new_data.get('ltp')
@@ -270,16 +269,23 @@ class MarketBookCache(BaseResource):
                         runner.update_starting_price_back(new_data.get('spl'))
                 else:
                     self.runners.append(RunnerBook(**new_data))
-                    runner_dict = {runner.selection_id: runner for runner in self.runners}
 
     def create_market_book(self, unique_id):
         return MarketBook(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
 
     @property
+    def runner_dict(self):
+        return {runner.selection_id: runner for runner in self.runners}
+
+    @property
+    def market_definition_dict(self):
+        return {runner.id: runner for runner in self.market_definition.runners}
+
+    @property
     def serialise(self):
-        """Creates standard market book json response
+        """Creates standard market book json response,
+        will error if EX_MARKET_DEF not incl.
         """
-        market_definition_dict = {runner.id: runner for runner in self.market_definition.runners}
         return {
             'marketId': self.market_id,
             'totalAvailable': None,
@@ -297,7 +303,7 @@ class MarketBookCache(BaseResource):
             'inplay': self.market_definition.in_play,
             'numberOfWinners': self.market_definition.number_of_winners,
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-            'runners': [runner.serialise(market_definition_dict.get(runner.selection_id).status)
+            'runners': [runner.serialise(self.market_definition_dict.get(runner.selection_id).status)
                         for runner in self.runners],
             'publishTime': self.publish_time,
         }
@@ -421,11 +427,10 @@ class OrderBookCache(BaseResource):
 
     def update_cache(self, order_book, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
-        runner_dict = {runner.selection_id: runner for runner in self.runners}
 
         for order_changes in order_book.get('orc', []):
             selection_id = order_changes.get('id')
-            runner = runner_dict.get(selection_id)
+            runner = self.runner_dict.get(selection_id)
             if runner:
                 runner.update_matched_lays(order_changes.get('ml', []))
                 runner.update_matched_backs(order_changes.get('mb', []))
@@ -435,6 +440,10 @@ class OrderBookCache(BaseResource):
 
     def create_order_book(self, unique_id):
         return CurrentOrders(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
+
+    @property
+    def runner_dict(self):
+        return {runner.selection_id: runner for runner in self.runners}
 
     @property
     def serialise(self):

@@ -112,7 +112,10 @@ class MarketStreamTest(unittest.TestCase):
         # self.stream._process(market_books, now)
 
     def test_str(self):
-        assert str(self.stream) == '<MarketStream [0]>'
+        assert str(self.stream) == 'MarketStream'
+
+    def test_repr(self):
+        assert repr(self.stream) == '<MarketStream [0]>'
 
 
 class OrderStreamTest(unittest.TestCase):
@@ -127,4 +130,7 @@ class OrderStreamTest(unittest.TestCase):
         pass
 
     def test_str(self):
-        assert str(self.stream) == '<OrderStream [0]>'
+        assert str(self.stream) == 'OrderStream'
+
+    def test_repr(self):
+        assert repr(self.stream) == '<OrderStream [0]>'
