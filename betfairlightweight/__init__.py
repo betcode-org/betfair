@@ -1,6 +1,7 @@
 from .apiclient import APIClient
 from .exceptions import BetfairError
 from .streaming import StreamListener
+from .filters import MarketFilter, StreamingMarketFilter, StreamingMarketDataFilter
 
 
 __title__ = 'betfairlightweight'

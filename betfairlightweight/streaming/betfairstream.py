@@ -4,6 +4,7 @@ import socket
 import ssl
 import datetime
 
+from ..filters import BaseFilter
 from ..exceptions import SocketError
 from ..compat import is_py3
 
@@ -90,8 +91,9 @@ class BetfairStream(object):
         message = {
             'op': 'marketSubscription',
             'id': unique_id,
-            'marketFilter': market_filter,
-            'marketDataFilter': market_data_filter,
+            'marketFilter': market_filter.serialise if isinstance(market_filter, BaseFilter) else market_filter,
+            'marketDataFilter': market_data_filter.serialise if isinstance(
+                market_data_filter, BaseFilter) else market_data_filter,
             'initialClk': initial_clk,
             'clk': clk,
         }

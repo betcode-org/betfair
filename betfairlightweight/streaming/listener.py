@@ -138,4 +138,7 @@ class StreamListener(BaseListener):
                 return True
 
     def __str__(self):
+        return 'StreamListener'
+
+    def __repr__(self):
         return '<StreamListener>'

@@ -55,7 +55,7 @@ class BaseStream(object):
         self._caches.clear()
 
     def _on_creation(self):
-        logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, str(self)))
+        logging.info('[Stream: %s]: "%s" created' % (self.unique_id, str(self)))
 
     def _process(self, book_data, publish_time):
         pass
@@ -105,6 +105,9 @@ class MarketStream(BaseStream):
         self.output_queue.put(output_market_book)
 
     def __str__(self):
+        return 'MarketStream'
+
+    def __repr__(self):
         return '<MarketStream [%s]>' % len(self._caches)
 
 
@@ -131,4 +134,7 @@ class OrderStream(BaseStream):
         self.output_queue.put(output_order_book)
 
     def __str__(self):
+        return 'OrderStream'
+
+    def __repr__(self):
         return '<OrderStream [%s]>' % len(self._caches)
