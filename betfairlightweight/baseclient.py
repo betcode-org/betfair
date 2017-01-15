@@ -117,9 +117,9 @@ class BaseClient(object):
         try:
             cert_path = os.listdir(ssl_path)
         except FileNotFoundError:
-            raise CertsError
+            raise CertsError(certs)
         except OSError:   # Python 2 compatability
-            raise CertsError
+            raise CertsError(certs)
 
         cert = None
         key = None
@@ -130,7 +130,7 @@ class BaseClient(object):
             elif ext == '.key':
                 key = os.path.join(ssl_path, file)
         if cert is None or key is None:
-            raise CertsError
+            raise CertsError(certs)
         return [cert, key]
 
     @property
