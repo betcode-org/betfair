@@ -9,12 +9,12 @@ class BaseStream(object):
     """Separate stream class to hold market/order caches
     """
 
-    _max_latency = 0.5
     _lookup = 'mc'
 
-    def __init__(self, unique_id, output_queue):
+    def __init__(self, unique_id, output_queue, max_latency):
         self.unique_id = unique_id
         self.output_queue = output_queue
+        self._max_latency = max_latency
 
         self._initial_clk = None
         self._clk = None
@@ -32,7 +32,7 @@ class BaseStream(object):
         book_data = data.get(self._lookup)
         if book_data:
             self._process(book_data, publish_time)
-        logging.info('[Stream: %s]: %s markets added' % (self.unique_id, len(self._caches)))
+        logging.info('[Stream: %s]: %s %s added' % (self.unique_id, len(self._caches), self._lookup))
 
     def on_heartbeat(self, data):
         self._update_clk(data)
@@ -124,9 +124,6 @@ class OrderStream(BaseStream):
                 logging.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
             self._updates_processed += 1
 
-            closed = order_book.get('closed')
-            if closed:
-                logging.info('[OrderStream: %s] %s closed' % (self.unique_id, market_id))
             output_order_book.append(
                 self._caches[market_id].create_order_book(self.unique_id)
             )
