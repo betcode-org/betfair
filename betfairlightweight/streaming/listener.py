@@ -8,7 +8,8 @@ from .stream import MarketStream, OrderStream
 
 class BaseListener(object):
 
-    def __init__(self):
+    def __init__(self, max_latency=0.5):
+        self.max_latency = max_latency
         self.market_stream = None
         self.order_stream = None
 
@@ -47,8 +48,8 @@ class StreamListener(BaseListener):
     market_book caches
     """
 
-    def __init__(self, output_queue=None):
-        super(StreamListener, self).__init__()
+    def __init__(self, output_queue, max_latency=0.5):
+        super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
 
     def on_data(self, raw_data):
@@ -74,7 +75,7 @@ class StreamListener(BaseListener):
             self._on_connection(data, unique_id)
         elif operation == 'status':
             self._on_status(data, unique_id)
-        elif operation == 'mcm' or operation == 'ocm':
+        elif operation in ['mcm', 'ocm']:
             self._on_change_message(data, unique_id)
 
     def _on_connection(self, data, unique_id):
@@ -116,9 +117,9 @@ class StreamListener(BaseListener):
 
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':
-            return MarketStream(unique_id, self.output_queue)
+            return MarketStream(unique_id, self.output_queue, self.max_latency)
         elif stream_type == 'orderSubscription':
-            return OrderStream(unique_id, self.output_queue)
+            return OrderStream(unique_id, self.output_queue, self.max_latency)
 
     @staticmethod
     def _error_handler(data, unique_id):
