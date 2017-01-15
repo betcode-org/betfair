@@ -1,5 +1,4 @@
 import unittest
-from unittest import mock
 
 from betfairlightweight.filters import MarketFilter, StreamingMarketDataFilter, StreamingMarketFilter
 
