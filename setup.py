@@ -11,7 +11,7 @@ TEST_REQUIRES = [
     'mock'
 ]
 
-if sys.version_info < (3,4):
+if sys.version_info < (3, 4):
     INSTALL_REQUIRES.extend([
         'enum34',
     ])
@@ -23,8 +23,12 @@ with open('betfairlightweight/__init__.py', 'r') as f:
 setup(
         name='betfairlightweight',
         version=version,
-        packages=['betfairlightweight', 'betfairlightweight.endpoints',
-                  'betfairlightweight.resources', 'betfairlightweight.streaming'],
+        packages=[
+            'betfairlightweight',
+            'betfairlightweight.endpoints',
+            'betfairlightweight.resources',
+            'betfairlightweight.streaming',
+        ],
         package_dir={'betfairlightweight': 'betfairlightweight'},
         install_requires=INSTALL_REQUIRES,
         requires=['requests'],
@@ -39,6 +43,6 @@ setup(
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
-            ],
+        ],
         test_suite='tests'
 )
