@@ -78,6 +78,12 @@ class BaseClientTest(unittest.TestCase):
         mock_listdir.return_value = ['.DS_Store', 'client-2048.crt', 'client-2048.key']
         assert self.client.cert == ['/fail/client-2048.crt', '/fail/client-2048.key']
 
+    @mock.patch('betfairlightweight.baseclient.os.listdir')
+    def test_client_certs_missing(self, mock_listdir):
+        mock_listdir.return_value = ['.DS_Store', 'client-2048.key']
+        with self.assertRaises(CertsError):
+            print(self.client.cert)
+
     def test_set_session_token(self):
         self.client.set_session_token('session_token')
         assert self.client.session_token == 'session_token'
@@ -122,3 +128,24 @@ class BaseClientTest(unittest.TestCase):
         self.client.client_logout()
         assert self.client._login_time is None
         assert self.client.session_token is None
+
+
+class BaseClientRelativePathTest(unittest.TestCase):
+
+    def setUp(self):
+        self.client = APIClient('bf_username', 'password', 'app_key', 'fail/')
+
+    @mock.patch('betfairlightweight.baseclient.os.listdir')
+    def test_client_certs_mocked(self, mock_listdir):
+        mock_listdir.return_value = ['.DS_Store', 'client-2048.crt', 'client-2048.key']
+        assert self.client.cert == ['../fail/client-2048.crt', '../fail/client-2048.key']
+
+
+class BaseClientCertFilesTest(unittest.TestCase):
+
+    def setUp(self):
+        self.client = APIClient('bf_username', 'password', 'app_key',
+                                cert_files=['/fail/client-2048.crt', '/fail/client-2048.key'])
+
+    def test_client_cert_files(self):
+        assert self.client.cert == ['/fail/client-2048.crt', '/fail/client-2048.key']

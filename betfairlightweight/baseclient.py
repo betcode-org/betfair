@@ -28,7 +28,7 @@ class BaseClient(object):
             italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
     )
 
-    def __init__(self, username, password=None, app_key=None, certs=None, locale=None):
+    def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None):
         """
         :param username:
             Betfair username.
@@ -40,12 +40,15 @@ class BaseClient(object):
             Directory for certificates, if None will look in /certs/
         :param locale:
             Exchange to be used, defaults to UK for login and global for api.
+        :param cert_files:
+            Certificate and key files. If None will look in `certs`
         """
         self.username = username
         self.password = password
         self.app_key = app_key
         self.certs = certs
         self.locale = locale
+        self.cert_files = cert_files
 
         self.session = requests
         self._login_time = None
@@ -100,11 +103,16 @@ class BaseClient(object):
 
     @property
     def cert(self):
-        """Looks in /certs/ for betfair certs.
+        """The betfair certificates.
+
+        By default, it looks for the certificates in /certs/.
+
         :return: Path of cert files
         """
+        if self.cert_files is not None:
+            return self.cert_files
+
         certs = self.certs or '/certs/'
-        cert_paths = []
         ssl_path = os.path.join(os.pardir, certs)
         try:
             cert_path = os.listdir(ssl_path)
@@ -113,13 +121,17 @@ class BaseClient(object):
         except OSError:   # Python 2 compatability
             raise CertsError
 
+        cert = None
+        key = None
         for file in cert_path:
-            ext = file.rpartition('.')[2]
-            if ext in ['key', 'crt', 'pem']:
-                cert_path = ssl_path + file
-                cert_paths.append(cert_path)
-        cert_paths.sort()
-        return cert_paths
+            ext = os.path.splitext(file)[-1]
+            if ext in ['.crt', '.cert']:
+                cert = os.path.join(ssl_path, file)
+            elif ext == '.key':
+                key = os.path.join(ssl_path, file)
+        if cert is None or key is None:
+            raise CertsError
+        return [cert, key]
 
     @property
     def login_headers(self):
