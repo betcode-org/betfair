@@ -24,8 +24,8 @@ class AppKeyError(BetfairError):
 class CertsError(BetfairError):
     """Exception raised if certs folder is not found"""
 
-    def __init__(self):
-        message = 'Certificate folder not found in /certs/'
+    def __init__(self, path='/certs/'):
+        message = 'Certificate folder not found in %s' % path
         super(CertsError, self).__init__(message)
 
 
