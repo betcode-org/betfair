@@ -4,8 +4,8 @@ from . import endpoints
 
 class APIClient(BaseClient):
 
-    def __init__(self, username, password=None, app_key=None, certs=None, locale=None):
-        super(APIClient, self).__init__(username, password, app_key=app_key, certs=certs, locale=locale)
+    def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None):
+        super(APIClient, self).__init__(username, password, app_key=app_key, certs=certs, locale=locale, cert_files=cert_files)
 
         self.login = endpoints.Login(self)
         self.keep_alive = endpoints.KeepAlive(self)

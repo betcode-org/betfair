@@ -19,6 +19,7 @@ class BaseResource(object):
     def __init__(self, **kwargs):
         self._datetime_sent = kwargs.pop('date_time_sent', None)
         self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
+        self.publish_time = kwargs.pop('publish_time', None)
 
         now = datetime.datetime.utcnow()
         self.datetime_created = now

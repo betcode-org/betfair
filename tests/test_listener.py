@@ -15,6 +15,7 @@ class BaseListenerTest(unittest.TestCase):
     def test_init(self):
         assert self.base_listener.market_stream is None
         assert self.base_listener.order_stream is None
+        assert self.base_listener.max_latency == 0.5
 
     @mock.patch('betfairlightweight.streaming.listener.BaseListener._add_stream', return_value=123)
     @mock.patch('sys.stdout')
@@ -58,10 +59,12 @@ class StreamListenerTest(unittest.TestCase):
 
     def setUp(self):
         self.output_queue = mock.Mock()
-        self.stream_listener = StreamListener(self.output_queue)
+        self.max_latency = 10.0
+        self.stream_listener = StreamListener(self.output_queue, self.max_latency)
 
     def test_init(self):
         assert self.stream_listener.output_queue == self.output_queue
+        assert self.stream_listener.max_latency == self.max_latency
 
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._on_connection')
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._on_status')
@@ -128,11 +131,11 @@ class StreamListenerTest(unittest.TestCase):
     def test_add_stream(self, mock_market_stream, mock_order_stream):
         new_stream = self.stream_listener._add_stream(1, 'marketSubscription')
         assert new_stream == 123
-        mock_market_stream.assert_called_with(1, self.output_queue)
+        mock_market_stream.assert_called_with(1, self.output_queue, self.max_latency)
 
         new_stream = self.stream_listener._add_stream(1, 'orderSubscription')
         assert new_stream == 456
-        mock_order_stream.assert_called_with(1, self.output_queue)
+        mock_order_stream.assert_called_with(1, self.output_queue, self.max_latency)
 
     def test_error_handler(self):
         mock_response = create_mock_json('tests/resources/streaming_connection.json')
@@ -147,7 +150,7 @@ class StreamListenerTest(unittest.TestCase):
         assert return_value is None
 
     def test_str(self):
-        assert str(self.stream_listener) == '<StreamListener>'
+        assert str(self.stream_listener) == 'StreamListener'
 
     def test_repr(self):
         assert repr(self.stream_listener) == '<StreamListener>'
