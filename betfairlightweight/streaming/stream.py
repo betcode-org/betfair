@@ -9,12 +9,12 @@ class BaseStream(object):
     """Separate stream class to hold market/order caches
     """
 
-    _max_latency = 0.5
     _lookup = 'mc'
 
-    def __init__(self, unique_id, output_queue):
+    def __init__(self, unique_id, output_queue, max_latency):
         self.unique_id = unique_id
         self.output_queue = output_queue
+        self._max_latency = max_latency
 
         self._initial_clk = None
         self._clk = None
@@ -27,12 +27,12 @@ class BaseStream(object):
 
     def on_subscribe(self, data):
         self._update_clk(data)
-        publish_time = strp_betfair_integer_time(data.get('pt'))
+        publish_time = data.get('pt')
 
         book_data = data.get(self._lookup)
         if book_data:
             self._process(book_data, publish_time)
-        logging.info('[Stream: %s]: %s markets added' % (self.unique_id, len(self._caches)))
+        logging.info('[Stream: %s]: %s %s added' % (self.unique_id, len(self._caches), self._lookup))
 
     def on_heartbeat(self, data):
         self._update_clk(data)
@@ -55,7 +55,7 @@ class BaseStream(object):
         self._caches.clear()
 
     def _on_creation(self):
-        logging.info('[Stream: %s]: "%s" stream created' % (self.unique_id, str(self)))
+        logging.info('[Stream: %s]: "%s" created' % (self.unique_id, str(self)))
 
     def _process(self, book_data, publish_time):
         pass
@@ -88,7 +88,7 @@ class MarketStream(BaseStream):
         for market_book in market_books:
             market_id = market_book.get('id')
             if market_book.get('img'):
-                self._caches[market_id] = MarketBookCache(date_time_sent=publish_time, **market_book)
+                self._caches[market_id] = MarketBookCache(publish_time=publish_time, **market_book)
                 logging.debug('[MarketStream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache = self._caches.get(market_id)
@@ -105,6 +105,9 @@ class MarketStream(BaseStream):
         self.output_queue.put(output_market_book)
 
     def __str__(self):
+        return 'MarketStream'
+
+    def __repr__(self):
         return '<MarketStream [%s]>' % len(self._caches)
 
 
@@ -124,9 +127,6 @@ class OrderStream(BaseStream):
                 logging.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
             self._updates_processed += 1
 
-            closed = order_book.get('closed')
-            if closed:
-                logging.info('[OrderStream: %s] %s closed' % (self.unique_id, market_id))
             output_order_book.append(
                 self._caches[market_id].create_order_book(self.unique_id)
             )
@@ -134,4 +134,7 @@ class OrderStream(BaseStream):
         self.output_queue.put(output_order_book)
 
     def __str__(self):
+        return 'OrderStream'
+
+    def __repr__(self):
         return '<OrderStream [%s]>' % len(self._caches)

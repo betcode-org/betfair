@@ -10,11 +10,13 @@ class BaseStreamTest(unittest.TestCase):
     def setUp(self):
         self.output_queue = mock.Mock()
         self.unique_id = 1
-        self.stream = BaseStream(self.unique_id, self.output_queue)
+        self.max_latency = 1.5
+        self.stream = BaseStream(self.unique_id, self.output_queue, self.max_latency)
 
     def test_init(self):
         assert self.stream.unique_id == self.unique_id
         assert self.stream.output_queue == self.output_queue
+        assert self.stream._max_latency == self.max_latency
 
         assert self.stream._initial_clk is None
         assert self.stream._clk is None
@@ -90,7 +92,8 @@ class MarketStreamTest(unittest.TestCase):
     def setUp(self):
         self.output_queue = mock.Mock()
         self.unique_id = 1
-        self.stream = MarketStream(self.unique_id, self.output_queue)
+        self.max_latency = 1.5
+        self.stream = MarketStream(self.unique_id, self.output_queue, self.max_latency)
 
     @mock.patch('betfairlightweight.streaming.stream.MarketStream._process')
     @mock.patch('betfairlightweight.streaming.stream.MarketStream._update_clk')
@@ -109,7 +112,10 @@ class MarketStreamTest(unittest.TestCase):
         # self.stream._process(market_books, now)
 
     def test_str(self):
-        assert str(self.stream) == '<MarketStream [0]>'
+        assert str(self.stream) == 'MarketStream'
+
+    def test_repr(self):
+        assert repr(self.stream) == '<MarketStream [0]>'
 
 
 class OrderStreamTest(unittest.TestCase):
@@ -117,10 +123,14 @@ class OrderStreamTest(unittest.TestCase):
     def setUp(self):
         self.output_queue = mock.Mock()
         self.unique_id = 1
-        self.stream = OrderStream(self.unique_id, self.output_queue)
+        self.max_latency = 1.5
+        self.stream = OrderStream(self.unique_id, self.output_queue, self.max_latency)
 
     def test_process(self):
         pass
 
     def test_str(self):
-        assert str(self.stream) == '<OrderStream [0]>'
+        assert str(self.stream) == 'OrderStream'
+
+    def test_repr(self):
+        assert repr(self.stream) == '<OrderStream [0]>'

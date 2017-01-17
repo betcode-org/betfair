@@ -285,12 +285,14 @@ class MarketBook(BaseResource):
             'totalAvailable': 'total_available',
             'totalMatched': 'total_matched',
             'version': 'version',
+            'publishTime': 'publish_time',
         }
         sub_resources = {
             'runners': RunnerBook
         }
         datetime_attributes = (
             'lastMatchTime',
+            'publishTime',
         )
 
 

@@ -58,6 +58,17 @@ class TestOrderBookCache(unittest.TestCase):
                                                streaming_unique_id=123, **mock_serialise)
         assert current_orders == mock_current_orders()
 
+    def test_runner_dict(self):
+
+        class Runner:
+            def __init__(self, selection_id, name):
+                self.selection_id = selection_id
+                self.name = name
+
+        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        self.order_book_cache.runners = [a, b]
+        assert self.order_book_cache.runner_dict == {123: a, 456: b}
+
     def test_serialise(self):
         serialised = self.order_book_cache.serialise
 
@@ -168,6 +179,30 @@ class TestMarketBookCache(unittest.TestCase):
         # assert market_book == mock_market_book(date_time_sent=self.market_book_cache._datetime_updated,
         #                                        streaming_unique_id=1234)()
         # mock_market_book.assert_called()
+
+    def test_runner_dict(self):
+        assert self.market_book_cache.runner_dict == {}
+
+        class Runner:
+            def __init__(self, selection_id, name):
+                self.selection_id = selection_id
+                self.name = name
+
+        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        self.market_book_cache.runners = [a, b]
+        assert self.market_book_cache.runner_dict == {123: a, 456: b}
+
+    def test_market_definition_dict(self):
+
+        class Runner:
+            def __init__(self, selection_id, name):
+                self.id = selection_id
+                self.name = name
+
+        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        self.market_book_cache.market_definition = MarketDefinition(**{})
+        self.market_book_cache.market_definition.runners = [a, b]
+        assert self.market_book_cache.market_definition_dict == {123: a, 456: b}
 
 
 class TestRunnerBook(unittest.TestCase):
