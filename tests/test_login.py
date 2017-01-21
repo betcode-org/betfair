@@ -6,6 +6,7 @@ from tests.tools import create_mock_json
 from betfairlightweight.endpoints.login import Login
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import LoginError, APIError
+from betfairlightweight.resources import LoginResource
 
 
 class LoginTest(unittest.TestCase):
@@ -20,7 +21,7 @@ class LoginTest(unittest.TestCase):
         mock_response.return_value = mock_json
         response = self.login()
 
-        assert response == mock_json.json()
+        assert isinstance(response, LoginResource)
         assert self.login.client.session_token == mock_json.json().get('sessionToken')
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
