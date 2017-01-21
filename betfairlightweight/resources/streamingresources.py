@@ -342,7 +342,7 @@ class UnmatchedOrder(BaseResource):
 
     def serialise(self, market_id, selection_id):
         return {
-            'averagePriceMatched': self.average_price_matched,
+            'averagePriceMatched': self.average_price_matched or 0.0,
             'betId': self.bet_id,
             'bspLiability': self.bsp_liability,
             'handicap': 0.0,
