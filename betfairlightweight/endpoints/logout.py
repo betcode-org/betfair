@@ -1,6 +1,8 @@
+import datetime
 from requests import ConnectionError
 
 from .baseendpoint import BaseEndpoint
+from ..resources import LogoutResource
 from ..exceptions import LogoutError, APIError
 from ..utils import check_status_code
 
@@ -10,10 +12,11 @@ class Logout(BaseEndpoint):
     _error = LogoutError
 
     def __call__(self, session=None):
+        date_time_sent = datetime.datetime.utcnow()
         response = self.request(session=session)
         response_json = response.json()
         self.client.client_logout()
-        return response_json
+        return self.process_response(response_json, LogoutResource, date_time_sent)
 
     def request(self, payload=None, params=None, session=None):
         session = session or self.client.session

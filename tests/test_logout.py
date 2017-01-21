@@ -6,6 +6,7 @@ from tests.tools import create_mock_json
 from betfairlightweight.endpoints.logout import Logout
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import LogoutError, APIError
+from betfairlightweight.resources import LogoutResource
 
 
 class LogoutTest(unittest.TestCase):
@@ -20,7 +21,7 @@ class LogoutTest(unittest.TestCase):
         mock_response.return_value = mock
         response = self.logout()
 
-        assert response == mock.json()
+        assert isinstance(response, LogoutResource)
         assert self.logout.client.session_token is None
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
