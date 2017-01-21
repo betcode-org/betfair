@@ -1,6 +1,8 @@
+import datetime
 from requests import ConnectionError
 
 from .baseendpoint import BaseEndpoint
+from ..resources import LoginResource
 from ..exceptions import LoginError, APIError
 from ..utils import check_status_code
 
@@ -10,10 +12,11 @@ class Login(BaseEndpoint):
     _error = LoginError
 
     def __call__(self, session=None):
+        date_time_sent = datetime.datetime.utcnow()
         response = self.request(self.url, session=session)
         response_json = response.json()
         self.client.set_session_token(response_json.get('sessionToken'))
-        return response_json
+        return self.process_response(response_json, LoginResource, date_time_sent)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
