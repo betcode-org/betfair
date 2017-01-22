@@ -1,4 +1,5 @@
 import datetime
+from bisect import bisect_right
 
 from .enums import MockParams
 from .exceptions import StatusCodeError
@@ -157,3 +158,15 @@ def get_bf_prices():
         elif level < 1001.0:
             level += 10.0
     return bet_levels
+
+
+def clean_locals(data):
+    """
+    Clean up locals dict, remove empty and self params.
+
+    :param data: locals dicts from a function.
+    :type data: dict
+    :returns: dict
+
+    """
+    return dict((k, v) for k, v in data.iteritems() if v is not None and k != 'self' and k != 'session')
