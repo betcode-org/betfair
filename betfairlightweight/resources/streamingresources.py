@@ -271,7 +271,10 @@ class MarketBookCache(BaseResource):
                     self.runners.append(RunnerBook(**new_data))
 
     def create_market_book(self, unique_id):
-        return MarketBook(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
+        return MarketBook(
+            date_time_sent=self._datetime_updated, streaming_unique_id=unique_id,
+            market_definition=self.market_definition, **self.serialise
+        )
 
     @property
     def runner_dict(self):
