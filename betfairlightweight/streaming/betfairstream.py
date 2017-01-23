@@ -4,7 +4,7 @@ import socket
 import ssl
 import datetime
 
-from ..filters import BaseFilter
+from ..filters import BaseFilter, StreamingOrderDataFilter, MarketFilter, StreamingMarketDataFilter
 from ..exceptions import SocketError
 from ..compat import is_py3
 
@@ -79,11 +79,11 @@ class BetfairStream(object):
         }
         self._send(message)
 
-    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter, initial_clk=None, clk=None):
+    def subscribe_to_markets(self, unique_id, market_filter=MarketFilter(), market_data_filter=StreamingMarketDataFilter(), initial_clk=None, clk=None):
         """Market subscription request.
 
-        :param market_filter: Market filter.
-        :param market_data_filter: Market data filter.
+        :param market_filter: Market filter, can be easily configured using the MarketFilter method.
+        :param market_data_filter: Market data filter, can be easily configured using the StreamingMarketDataFilter method.
         :param unique_id: Unique id of stream.
         :param initial_clk: Sequence token for reconnect.
         :param clk: Sequence token for reconnect.
@@ -92,24 +92,25 @@ class BetfairStream(object):
             'op': 'marketSubscription',
             'id': unique_id,
             'marketFilter': market_filter.serialise if isinstance(market_filter, BaseFilter) else market_filter,
-            'marketDataFilter': market_data_filter.serialise if isinstance(
-                market_data_filter, BaseFilter) else market_data_filter,
+            'marketDataFilter': market_data_filter.serialise if isinstance(market_data_filter, BaseFilter) else market_data_filter,
             'initialClk': initial_clk,
             'clk': clk,
         }
         self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
 
-    def subscribe_to_orders(self, unique_id, initial_clk=None, clk=None):
+    def subscribe_to_orders(self, unique_id, order_filter=StreamingOrderDataFilter(), initial_clk=None, clk=None):
         """Order subscription request.
 
         :param unique_id: Unique id of stream.
         :param initial_clk: Sequence token for reconnect.
+        :param order_filter: apply filters to orders to which we subscribe.
         :param clk: Sequence token for reconnect.
         """
         message = {
             'op': 'orderSubscription',
             'id': unique_id,
+            'orderFilter': order_filter,
             'initialClk': initial_clk,
             'clk': clk,
         }

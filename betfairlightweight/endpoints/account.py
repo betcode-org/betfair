@@ -13,7 +13,6 @@ class Account(BaseEndpoint):
     def get_account_funds(self, session=None, wallet=Wallet.UK):
         """
         Get account funds for specific wallet.
-
         :param session: requests session to be used. reduces latency.
         :type session: requests instance.
         :param wallet: Determine whether to get info on UK or Aus wallet (deprecated UK only now).
@@ -29,7 +28,6 @@ class Account(BaseEndpoint):
     def get_account_details(self, session=None):
         """
         Get details of the current logged in account.
-
         :param session: requests session to be used. reduces latency.
         :type session: requests instance.
         :returns: Personal information and account information of the logged in user.
@@ -43,7 +41,6 @@ class Account(BaseEndpoint):
                               includeItem=IncludeItem.All, wallet=Wallet.UK, locale=None):
         """
         Get statement of accounts transactions filtered by specified arguments.
-
         :param session: requests session to be used. reduces latency.
         :type session: requests instance.
         :param fromRecord: Starting point for records returned
@@ -61,7 +58,6 @@ class Account(BaseEndpoint):
         :returns: Transaction statement breakdown.
         :rtype: Dataframe
         :raises: BetfairAPI.bin.exceptions.ApiError
-
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
@@ -72,7 +68,6 @@ class Account(BaseEndpoint):
     def list_currency_rates(self, session=None, fromCurrency='GBP'):
         """
         Get the rates used in currency conversions from a specified currency.
-
         :param fromCurrency: only supports GBP at the moment.
         :type fromCurrency: str
         :returns: Exchange rates for a list of currencies covered.
@@ -86,7 +81,6 @@ class Account(BaseEndpoint):
     def transfer_funds(self, session=None, account_from=None, account_to=None):
         """
         *** DEPRECATED *** Transfer funds between aus and uk wallets.
-
         :param account_from: Wallet to transfer from.
         :type account_from: BetfairAPI.bin.enums.Wallet
         :param account_to: Wallet to transfer to.
@@ -104,3 +98,4 @@ class Account(BaseEndpoint):
     @property
     def url(self):
         return '%s%s' % (self.client.api_uri, 'account/json-rpc/v1')
+

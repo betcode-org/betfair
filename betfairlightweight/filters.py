@@ -4,6 +4,36 @@ class BaseFilter:
     ''''''
 
 
+def StreamingDataFields(EX_BEST_OFFERS_DISP=False, EX_BEST_OFFERS=False, EX_ALL_OFFERS=True, EX_TRADED=True,
+                        EX_TRADED_VOL=False, EX_LTP=False, EX_MARKET_DEF=True, SP_TRADED=False, SP_PROJECTED=False):
+    """
+    Create PriceData filter list from all args passed as True.
+
+    :param EX_BEST_OFFERS_DISP: Best prices including virtual prices - depth is controlled by ladderLevels (1 to 10).
+                                Data fields returned: bdatb, bdatl. Data format returned: level, price, size.
+    :param EX_BEST_OFFERS: Best prices not including virtual prices - depth is controlled by ladderLevels (1 to 10).
+                           Data fields returned: batb, batl. Data format returned: level, price, size.
+    :param EX_ALL_OFFERS: Full available to BACK/LAY ladder.
+                          Data fields returned: atb, atl. Data format returned: price, size.
+    :param EX_TRADED: Full traded ladder.
+                      Data fields returned: trd. Data format returned: price, size.
+    :param EX_TRADED_VOL: Market and runner level traded volume.
+                          Data fields returned: tv. Data format returned: size.
+    :param EX_LTP: Last traded price.
+                   Data fields returned: ltp. Data format returned: price.
+    :param EX_MARKET_DEF: Send market definitions.
+                          Data fields returned: marketDefinition. Data format returned: MarketDefinition.
+    :param SP_TRADED: Starting price ladder.
+                      Data fields returned: spb, spl. Data format returned: price, size.
+    :param SP_PROJECTED: Starting price projection prices.
+                      Data fields returned: spn, spf. Data format returned: price.
+    :returns: string values of all args specified as True.
+    :rtype: list
+    """
+    args = locals()
+    return [k for k, v in args.iteritems() if v is True]
+
+
 def StreamingMarketFilter(market_ids=None, bsp_market=None, betting_types=None, event_type_ids=None, event_ids=None,
                  turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None):
     args = {
@@ -21,16 +51,38 @@ def StreamingMarketFilter(market_ids=None, bsp_market=None, betting_types=None, 
     return filters
 
 
-def StreamingMarketDataFilter(fields=None, ladder_levels=None):
+def StreamingMarketDataFilter(fields=StreamingDataFields(), ladder_levels=3):
     """
-    fields: EX_BEST_OFFERS_DISP, EX_BEST_OFFERS, EX_ALL_OFFERS, EX_TRADED,
-            EX_TRADED_VOL, EX_LTP, EX_MARKET_DEF, SP_TRADED, SP_PROJECTED
-    ladder_levels: 1->10
+    Filter the level of detail to subscribe to in streaming.
+
+    :param fields: Data fields to subscribe to.
+    :type fields: StreamingDataFields
+    :param ladder_levels: the depth of ladder information to include.
+    :type ladder_levels: int(1-10)
     """
     return {
         'fields': fields,
         'ladderLevels': ladder_levels
     }
+
+
+def StreamingOrderDataFilter(includeOverallPosition=True, customerStrategyRefs=None, partitionMatchedByStrategyRef=False):
+    """
+    Filter the orders to which a stream subscribes.
+
+    :param includeOverallPosition: Returns overall / net position (OrderRunnerChange.mb / OrderRunnerChange.ml).
+    :type includeOverallPosition: bool
+    :param customerStrategyRefs: Restricts to specified customerStrategyRefs; this will filter orders and
+                                 StrategyMatchChanges accordingly (Note: overall postition is not filtered)
+    :type customerStrategyRefs: list of strings
+    :param partitionMatchedByStrategyRef: Returns strategy positions (OrderRunnerChange.smc=Map<customerStrategyRef, StrategyMatchChange>)
+                                          - these are sent in delta format as per overall position.
+    :type partitionMatchedByStrategyRef: bool
+    :return: dictionary containing filter information.
+
+    """
+    filters = dict((k, v) for k, v in locals().iteritems() if v is not None)
+    return filters
 
 
 def MarketFilter(textQuery=None, exchangeIds=None, eventTypeIds=None, eventIds=None, competitionIds=None,
@@ -105,6 +157,7 @@ def MarketProjection(COMPETITION=True, MARKET_DESCRIPTION=True, EVENT=True, EVEN
     """
     args = locals()
     return [k for k, v in args.iteritems() if v is True]
+
 
 
 def PriceData(SP_AVAILABLE=False, SP_TRADED=False, EX_BEST_OFFERS=True, EX_ALL_OFFERS=False, EX_TRADED=True):
