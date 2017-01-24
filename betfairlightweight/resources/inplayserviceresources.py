@@ -103,7 +103,9 @@ class UpdateDetail(BaseResource):
             'type': 'type',
             'updateId': 'update_id',
             'updateTime': 'update_time',
-            'updateType': 'update_type'
+            'updateType': 'update_type',
+            'team': 'team',
+            'teamName': 'team_name',
         }
         datetime_attributes = (
             'updateTime'
