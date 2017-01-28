@@ -1,8 +1,8 @@
 import datetime
+import time
 import logging
 
 from ..resources.streamingresources import MarketBookCache, OrderBookCache
-from ..utils import strp_betfair_integer_time
 
 
 class BaseStream(object):
@@ -70,7 +70,7 @@ class BaseStream(object):
 
     @staticmethod
     def _calc_latency(publish_time):
-        return (datetime.datetime.utcnow() - strp_betfair_integer_time(publish_time)).total_seconds()
+        return time.time() - publish_time / 1e3
 
     def __str__(self):
         return '<BaseStream>'

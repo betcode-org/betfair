@@ -18,8 +18,11 @@ class BaseResource(object):
 
     def __init__(self, **kwargs):
         self._datetime_sent = kwargs.pop('date_time_sent', None)
+
+        # todo, move the following to just MarketBook and CurrentOrders
         self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
         self.publish_time = kwargs.pop('publish_time', None)
+        self.market_definition = kwargs.pop('market_definition', None)
 
         now = datetime.datetime.utcnow()
         self.datetime_created = now

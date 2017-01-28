@@ -6,6 +6,7 @@ from tests.tools import create_mock_json
 from betfairlightweight.endpoints.keepalive import KeepAlive, APIError
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import KeepAliveError
+from betfairlightweight.resources.authresources import KeepAliveResource
 
 
 class KeepAliveTest(unittest.TestCase):
@@ -20,7 +21,7 @@ class KeepAliveTest(unittest.TestCase):
         mock_response.return_value = mock
         response = self.keep_alive()
 
-        assert response == mock.json()
+        assert isinstance(response, KeepAliveResource)
         assert self.keep_alive.client.session_token == mock.json().get('token')
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')

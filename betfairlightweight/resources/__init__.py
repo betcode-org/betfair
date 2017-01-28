@@ -1,3 +1,9 @@
+from .authresources import (
+    LoginResource,
+    KeepAliveResource,
+    LogoutResource,
+)
+
 from .bettingresources import (
     EventTypeResult,
     CompetitionResult,
