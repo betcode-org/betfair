@@ -271,7 +271,10 @@ class MarketBookCache(BaseResource):
                     self.runners.append(RunnerBook(**new_data))
 
     def create_market_book(self, unique_id):
-        return MarketBook(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
+        return MarketBook(
+            date_time_sent=self._datetime_updated, streaming_unique_id=unique_id,
+            market_definition=self.market_definition, **self.serialise
+        )
 
     @property
     def runner_dict(self):
@@ -342,7 +345,7 @@ class UnmatchedOrder(BaseResource):
 
     def serialise(self, market_id, selection_id):
         return {
-            'averagePriceMatched': self.average_price_matched,
+            'averagePriceMatched': self.average_price_matched or 0.0,
             'betId': self.bet_id,
             'bspLiability': self.bsp_liability,
             'handicap': 0.0,

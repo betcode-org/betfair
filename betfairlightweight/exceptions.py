@@ -77,7 +77,7 @@ class LogoutError(BetfairError):
     def __init__(self, response):
         logout_status = response.get('status', 'UNKNOWN')
         logout_error = response.get('error')
-        message = 'API keepAlive %s: %s' % (logout_status, logout_error)
+        message = 'API logout %s: %s' % (logout_status, logout_error)
         super(LogoutError, self).__init__(message)
 
 
