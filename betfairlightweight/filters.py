@@ -35,7 +35,32 @@ def StreamingDataFields(EX_BEST_OFFERS_DISP=False, EX_BEST_OFFERS=False, EX_ALL_
 
 
 def StreamingMarketFilter(market_ids=None, bsp_market=None, betting_types=None, event_type_ids=None, event_ids=None,
-                 turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None):
+                          turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None):
+    """
+    Create a filter dictionary to apply to market subscriptions for streaming.
+
+    :param event_type_ids: filter markets to those pertaining to specific event_type ids.
+    :type event_type_ids: list
+    :param event_ids: filter markets to those pertaining to specific event ids.
+    :type event_ids: list
+    :param market_ids: filter markets to those pertaining to specific marketIds.
+    :type market_ids: list
+    :param venues: restrict markets by venue (only horse racing has venue at the moment)
+    :type venues: list
+    :param bettingTypes: restrict to markets that match the betting type of the market
+    :type: list
+    :param bsp_market: restriction on bsp, not supplied will return all.
+    :type bsp_market: bool
+    :param turn_in_play_enabled: restriction on whether market will turn in play or not, not supplied returns all.
+    :type turn_in_play_enabled: bool
+    :param country_codes: filter markets by country they take place in.
+    :type country_codes: list
+    :param market_types: filter markets to match the type of market e.g. MATCH_ODDS.
+    :type market_types: list
+    :returns: filter dictionary to be applied to market data request.
+    :rtype: dict
+
+    """
     args = {
         'marketIds': market_ids,
         'bspMarket': bsp_market,
@@ -206,8 +231,7 @@ def ExBestOffersOverrides(bestPricesDepth=3, rollupModel=RollUpModel.NoRoll, rol
     return dict((k, v) for k, v in args.iteritems() if v is not None)
 
 
-def PriceProjection(priceData=PriceData(), exBestOffersOverrides=ExBestOffersOverrides(),
-                    virtualise="true",
+def PriceProjection(priceData=PriceData(), exBestOffersOverrides=ExBestOffersOverrides(), virtualise="true",
                     rolloverStakes="false"):
     """
     Selection criteria of the returning price data.
