@@ -2,6 +2,13 @@ from .baseresource import BaseResource
 
 
 class EventType(BaseResource):
+    """
+    :type id: unicode
+    :type name: unicode
+    """
+    id = None
+    name = None
+
     class Meta(BaseResource.Meta):
         identifier = 'event_type'
         attributes = {
@@ -11,6 +18,13 @@ class EventType(BaseResource):
 
 
 class EventTypeResult(BaseResource):
+    """
+    :type event_type: EventType
+    :type market_count: int
+    """
+    event_type = None
+    market_count = None
+
     class Meta(BaseResource.Meta):
         identifier = 'event_type_result'
         attributes = {
@@ -22,6 +36,13 @@ class EventTypeResult(BaseResource):
 
 
 class Competition(BaseResource):
+    """
+    :type id: unicode
+    :type name: unicode
+    """
+    id = None
+    name = None
+
     class Meta(BaseResource.Meta):
         identifier = 'competition'
         attributes = {
@@ -31,6 +52,15 @@ class Competition(BaseResource):
 
 
 class CompetitionResult(BaseResource):
+    """
+    :type competition: Competition
+    :type competition_region: unicode
+    :type market_count: int
+    """
+    competition = None
+    competition_region = None
+    market_count = None
+
     class Meta(BaseResource.Meta):
         identifier = 'competition_result'
         attributes = {
@@ -43,6 +73,13 @@ class CompetitionResult(BaseResource):
 
 
 class TimeRange(BaseResource):
+    """
+    :type _from: datetime.datetime
+    :type to: datetime.datetime
+    """
+    _from = None
+    to = None
+
     class Meta(BaseResource.Meta):
         identifier = 'time_range'
         attributes = {
@@ -56,6 +93,13 @@ class TimeRange(BaseResource):
 
 
 class TimeRangeResult(BaseResource):
+    """
+    :type market_count: int
+    :type time_range: TimeRange
+    """
+    market_count = None
+    time_range = None
+
     class Meta(BaseResource.Meta):
         identifier = 'time_range_result'
         attributes = {
@@ -67,6 +111,21 @@ class TimeRangeResult(BaseResource):
 
 
 class Event(BaseResource):
+    """
+    :type country_code: unicode
+    :type id: unicode
+    :type name: unicode
+    :type open_date: datetime.datetime
+    :type time_zone: unicode
+    :type venue: unicode
+    """
+    country_code = None
+    id = None
+    name = None
+    open_date = None
+    time_zone = None
+    venue = None
+
     class Meta(BaseResource.Meta):
         identifier = 'event'
         attributes = {
@@ -83,6 +142,13 @@ class Event(BaseResource):
 
 
 class EventResult(BaseResource):
+    """
+    :type event: Event
+    :type market_count: int
+    """
+    event = None
+    market_count = None
+
     class Meta(BaseResource.Meta):
         identifier = 'event_result'
         attributes = {
@@ -94,6 +160,13 @@ class EventResult(BaseResource):
 
 
 class MarketTypeResult(BaseResource):
+    """
+    :type market_count: int
+    :type market_type: unicode
+    """
+    market_count = None
+    market_type = None
+
     class Meta(BaseResource.Meta):
         identifier = 'market_type_result'
         attributes = {
@@ -103,6 +176,13 @@ class MarketTypeResult(BaseResource):
 
 
 class CountryResult(BaseResource):
+    """
+    :type country_code: unicode
+    :type market_count: int
+    """
+    country_code = None
+    market_count = None
+
     class Meta(BaseResource.Meta):
         identifier = 'country_result'
         attributes = {
@@ -112,6 +192,13 @@ class CountryResult(BaseResource):
 
 
 class VenueResult(BaseResource):
+    """
+    :type market_count: int
+    :type venue: unicode
+    """
+    market_count = None
+    venue = None
+
     class Meta(BaseResource.Meta):
         identifier = 'venue_result'
         attributes = {
@@ -121,6 +208,39 @@ class VenueResult(BaseResource):
 
 
 class MarketCatalogueDescription(BaseResource):
+    """
+    :type betting_type: unicode
+    :type bsp_market: bool
+    :type clarifications: unicode
+    :type discount_allowed: bool
+    :type each_way_divisor: float
+    :type market_base_rate: float
+    :type market_time: datetime.datetime
+    :type market_type: unicode
+    :type persistence_enabled: bool
+    :type regulator: unicode
+    :type rules: unicode
+    :type rules_has_date: bool
+    :type suspend_time: datetime.datetime
+    :type turn_in_play_enabled: bool
+    :type wallet: unicode
+    """
+    betting_type = None
+    bsp_market = None
+    clarifications = None
+    discount_allowed = None
+    each_way_divisor = None
+    market_base_rate = None
+    market_time = None
+    market_type = None
+    persistence_enabled = None
+    regulator = None
+    rules = None
+    rules_has_date = None
+    suspend_time = None
+    turn_in_play_enabled = None
+    wallet = None
+
     class Meta(BaseResource.Meta):
         identifier = 'description'
         attributes = {
@@ -147,6 +267,19 @@ class MarketCatalogueDescription(BaseResource):
 
 
 class RunnerCatalogue(BaseResource):
+    """
+    :type handicap: float
+    :type metadata: dict
+    :type runner_name: unicode
+    :type selection_id: int
+    :type sort_priority: int
+    """
+    handicap = None
+    metadata = None
+    runner_name = None
+    selection_id = None
+    sort_priority = None
+
     class Meta(BaseResource.Meta):
         identifier = 'runners'
         attributes = {
@@ -159,6 +292,27 @@ class RunnerCatalogue(BaseResource):
 
 
 class MarketCatalogue(BaseResource):
+    """
+    :type competition: Competition
+    :type description: MarketCatalogueDescription
+    :type event: Event
+    :type event_type: EventType
+    :type market_id: unicode
+    :type market_name: unicode
+    :type market_start_time: datetime.datetime
+    :type runners: list[RunnerCatalogue]
+    :type total_matched: float
+    """
+    competition = None
+    description = None
+    event = None
+    event_type = None
+    market_id = None
+    market_name = None
+    market_start_time = None
+    runners = None
+    total_matched = None
+
     class Meta(BaseResource.Meta):
         identifier = 'market_catalogue'
         attributes = {
@@ -180,6 +334,13 @@ class MarketCatalogue(BaseResource):
 
 
 class PriceSize(BaseResource):
+    """
+    :type price: float
+    :type size: float
+    """
+    price = None
+    size = None
+
     class Meta(BaseResource.Meta):
         identifier = 'price_size'
         attributes = {
@@ -189,6 +350,19 @@ class PriceSize(BaseResource):
 
 
 class RunnerBookSP(BaseResource):
+    """
+    :type actual_sp: float
+    :type back_stake_taken: list[PriceSize]
+    :type far_price: float
+    :type lay_liability_taken: list[PriceSize]
+    :type near_price: float
+    """
+    actual_sp = None
+    back_stake_taken = None
+    far_price = None
+    lay_liability_taken = None
+    near_price = None
+
     class Meta(BaseResource.Meta):
         identifier = 'sp'
         attributes = {
@@ -205,6 +379,15 @@ class RunnerBookSP(BaseResource):
 
 
 class RunnerBookEX(BaseResource):
+    """
+    :type available_to_back: list[PriceSize]
+    :type available_to_lay: list[PriceSize]
+    :type traded_volume: list[PriceSize]
+    """
+    available_to_back = None
+    available_to_lay = None
+    traded_volume = None
+
     class Meta(BaseResource.Meta):
         identifier = 'ex'
         attributes = {
@@ -220,6 +403,39 @@ class RunnerBookEX(BaseResource):
 
 
 class RunnerBookOrder(BaseResource):
+    """
+    :type avg_price_matched: float
+    :type bet_id: unicode
+    :type bsp_liability: float
+    :type order_type: unicode
+    :type persistence_type: unicode
+    :type placed_date: datetime.datetime
+    :type price: float
+    :type side: unicode
+    :type size: float
+    :type size_cancelled: float
+    :type size_lapsed: float
+    :type size_matched: float
+    :type size_remaining: float
+    :type size_voided: float
+    :type status: unicode
+    """
+    avg_price_matched = None
+    bet_id = None
+    bsp_liability = None
+    order_type = None
+    persistence_type = None
+    placed_date = None
+    price = None
+    side = None
+    size = None
+    size_cancelled = None
+    size_lapsed = None
+    size_matched = None
+    size_remaining = None
+    size_voided = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'orders'
         attributes = {
@@ -245,6 +461,21 @@ class RunnerBookOrder(BaseResource):
 
 
 class RunnerBookMatch(BaseResource):
+    """
+    :type bet_id: unicode
+    :type match_date: datetime.datetime
+    :type match_id: unicode
+    :type price: float
+    :type side: unicode
+    :type size: float
+    """
+    bet_id = None
+    match_date = None
+    match_id = None
+    price = None
+    side = None
+    size = None
+
     class Meta(BaseResource.Meta):
         identifier = 'matches'
         attributes = {
@@ -261,6 +492,31 @@ class RunnerBookMatch(BaseResource):
 
 
 class RunnerBook(BaseResource):
+    """
+    :type adjustment_factor: float
+    :type ex: RunnerBookEX
+    :type handicap: float
+    :type last_price_traded: float
+    :type matches: list[RunnerBookMatch]
+    :type orders: list[RunnerBookOrder]
+    :type removal_date: datetime.datetime
+    :type selection_id: int
+    :type sp: RunnerBookSP
+    :type status: unicode
+    :type total_matched: float
+    """
+    adjustment_factor = None
+    ex = None
+    handicap = None
+    last_price_traded = None
+    matches = None
+    orders = None
+    removal_date = None
+    selection_id = None
+    sp = None
+    status = None
+    total_matched = None
+
     class Meta(BaseResource.Meta):
         identifier = 'runners'
         attributes = {
@@ -284,6 +540,45 @@ class RunnerBook(BaseResource):
 
 
 class MarketBook(BaseResource):
+    """
+    :type bet_delay: int
+    :type bsp_reconciled: bool
+    :type complete: bool
+    :type cross_matching: bool
+    :type inplay: bool
+    :type is_market_data_delayed: bool
+    :type last_match_time: datetime.datetime
+    :type market_id: unicode
+    :type number_of_active_runners: int
+    :type number_of_runners: int
+    :type number_of_winners: int
+    :type publish_time: datetime.datetime
+    :type runners: list[RunnerBook]
+    :type runners_voidable: bool
+    :type status: unicode
+    :type total_available: float
+    :type total_matched: float
+    :type version: int
+    """
+    bet_delay = None
+    bsp_reconciled = None
+    complete = None
+    cross_matching = None
+    inplay = None
+    is_market_data_delayed = None
+    last_match_time = None
+    market_id = None
+    number_of_active_runners = None
+    number_of_runners = None
+    number_of_winners = None
+    publish_time = None
+    runners = None
+    runners_voidable = None
+    status = None
+    total_available = None
+    total_matched = None
+    version = None
+
     class Meta(BaseResource.Meta):
         identifier = 'market_book'
         attributes = {
@@ -315,6 +610,51 @@ class MarketBook(BaseResource):
 
 
 class CurrentOrder(BaseResource):
+    """
+    :type average_price_matched: float
+    :type bet_id: unicode
+    :type bsp_liability: float
+    :type customer_order_ref: unicode
+    :type customer_strategy_ref: unicode
+    :type handicap: float
+    :type market_id: unicode
+    :type matched_date: datetime.datetime
+    :type order_type: unicode
+    :type persistence_type: unicode
+    :type placed_date: datetime.datetime
+    :type price_size: PriceSize
+    :type regulator_code: unicode
+    :type selection_id: int
+    :type side: unicode
+    :type size_cancelled: float
+    :type size_lapsed: float
+    :type size_matched: float
+    :type size_remaining: float
+    :type size_voided: float
+    :type status: unicode
+    """
+    average_price_matched = None
+    bet_id = None
+    bsp_liability = None
+    customer_order_ref = None
+    customer_strategy_ref = None
+    handicap = None
+    market_id = None
+    matched_date = None
+    order_type = None
+    persistence_type = None
+    placed_date = None
+    price_size = None
+    regulator_code = None
+    selection_id = None
+    side = None
+    size_cancelled = None
+    size_lapsed = None
+    size_matched = None
+    size_remaining = None
+    size_voided = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'orders'
         attributes = {
@@ -349,6 +689,13 @@ class CurrentOrder(BaseResource):
 
 
 class CurrentOrders(BaseResource):
+    """
+    :type more_available: bool
+    :type orders: list[CurrentOrder]
+    """
+    more_available = None
+    orders = None
+
     class Meta(BaseResource.Meta):
         identifier = 'current_orders'
         attributes = {
@@ -360,6 +707,51 @@ class CurrentOrders(BaseResource):
 
 
 class ClearedOrder(BaseResource):
+    """
+    :type bet_count: int
+    :type bet_id: unicode
+    :type bet_outcome: unicode
+    :type customer_order_ref: unicode
+    :type customer_strategy_ref: unicode
+    :type event_id: unicode
+    :type event_type_id: unicode
+    :type handicap: float
+    :type last_matched_date: datetime.datetime
+    :type market_id: unicode
+    :type order_type: unicode
+    :type persistence_type: unicode
+    :type placed_date: datetime.datetime
+    :type price_matched: float
+    :type price_reduced: bool
+    :type price_requested: float
+    :type profit: float
+    :type selection_id: int
+    :type settled_date: datetime.datetime
+    :type side: unicode
+    :type size_settled: float
+    """
+    bet_count = None
+    bet_id = None
+    bet_outcome = None
+    customer_order_ref = None
+    customer_strategy_ref = None
+    event_id = None
+    event_type_id = None
+    handicap = None
+    last_matched_date = None
+    market_id = None
+    order_type = None
+    persistence_type = None
+    placed_date = None
+    price_matched = None
+    price_reduced = None
+    price_requested = None
+    profit = None
+    selection_id = None
+    settled_date = None
+    side = None
+    size_settled = None
+
     class Meta(BaseResource.Meta):
         identifier = 'orders'
         attributes = {
@@ -393,6 +785,13 @@ class ClearedOrder(BaseResource):
 
 
 class ClearedOrders(BaseResource):
+    """
+    :type more_available: bool
+    :type orders: list[ClearedOrder]
+    """
+    more_available = None
+    orders = None
+
     class Meta(BaseResource.Meta):
         identifier = 'cleared_orders'
         attributes = {
@@ -404,6 +803,17 @@ class ClearedOrders(BaseResource):
 
 
 class ProfitAndLosses(BaseResource):
+    """
+    :type if_lose: float
+    :type if_place: float
+    :type if_win: float
+    :type selection_id: int
+    """
+    if_lose = None
+    if_place = None
+    if_win = None
+    selection_id = None
+
     class Meta(BaseResource.Meta):
         identifier = 'profit_and_losses'
         attributes = {
@@ -415,6 +825,15 @@ class ProfitAndLosses(BaseResource):
 
 
 class MarketProfitLoss(BaseResource):
+    """
+    :type commission_applied: float
+    :type market_id: unicode
+    :type profit_and_losses: list[ProfitAndLosses]
+    """
+    commission_applied = None
+    market_id = None
+    profit_and_losses = None
+
     class Meta(BaseResource.Meta):
         identifier = 'market_profit_loss'
         attributes = {
@@ -427,6 +846,23 @@ class MarketProfitLoss(BaseResource):
 
 
 class LimitOrder(BaseResource):
+    """
+    :type bet_target_size: float
+    :type bet_target_type: unicode
+    :type min_fill_size: float
+    :type persistence_type: unicode
+    :type price: float
+    :type size: float
+    :type time_in_force: unicode
+    """
+    bet_target_size = None
+    bet_target_type = None
+    min_fill_size = None
+    persistence_type = None
+    price = None
+    size = None
+    time_in_force = None
+
     class Meta(BaseResource.Meta):
         identifier = 'order'
         attributes = {
@@ -441,6 +877,21 @@ class LimitOrder(BaseResource):
 
 
 class PlaceOrderInstruction(BaseResource):
+    """
+    :type customer_order_ref: unicode
+    :type handicap: float
+    :type order: LimitOrder
+    :type order_type: unicode
+    :type selection_id: int
+    :type side: unicode
+    """
+    customer_order_ref = None
+    handicap = None
+    order = None
+    order_type = None
+    selection_id = None
+    side = None
+
     class Meta(BaseResource.Meta):
         identifier = 'instruction'
         attributes = {
@@ -456,6 +907,25 @@ class PlaceOrderInstruction(BaseResource):
 
 
 class PlaceOrderInstructionReports(BaseResource):
+    """
+    :type average_price_matched: float
+    :type bet_id: unicode
+    :type error_code: str
+    :type instruction: PlaceOrderInstruction
+    :type order_status: unicode
+    :type placed_date: datetime.datetime
+    :type size_matched: float
+    :type status: unicode
+    """
+    average_price_matched = None
+    bet_id = None
+    error_code = None
+    instruction = None
+    order_status = None
+    placed_date = None
+    size_matched = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'place_instruction_reports'
         attributes = {
@@ -476,6 +946,19 @@ class PlaceOrderInstructionReports(BaseResource):
 
 
 class PlaceOrders(BaseResource):
+    """
+    :type customer_ref: unicode
+    :type error_code: str
+    :type market_id: unicode
+    :type place_instruction_reports: list[PlaceOrderInstructionReports]
+    :type status: unicode
+    """
+    customer_ref = None
+    error_code = None
+    market_id = None
+    place_instruction_reports = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'place_orders'
         attributes = {
@@ -490,6 +973,13 @@ class PlaceOrders(BaseResource):
 
 
 class CancelOrderInstruction(BaseResource):
+    """
+    :type bet_id: unicode
+    :type size_reduction: float
+    """
+    bet_id = None
+    size_reduction = None
+
     class Meta(BaseResource.Meta):
         identifier = 'instruction'
         attributes = {
@@ -499,6 +989,19 @@ class CancelOrderInstruction(BaseResource):
 
 
 class CancelOrderInstructionReports(BaseResource):
+    """
+    :type cancelled_date: datetime.datetime
+    :type error_code: str
+    :type instruction: CancelOrderInstruction
+    :type size_cancelled: float
+    :type status: unicode
+    """
+    cancelled_date = None
+    error_code = None
+    instruction = None
+    size_cancelled = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'cancel_instruction_reports'
         attributes = {
@@ -516,6 +1019,19 @@ class CancelOrderInstructionReports(BaseResource):
 
 
 class CancelOrders(BaseResource):
+    """
+    :type cancel_instruction_reports: list[CancelOrderInstructionReports]
+    :type customer_ref: unicode
+    :type error_code: str
+    :type market_id: unicode
+    :type status: unicode
+    """
+    cancel_instruction_reports = None
+    customer_ref = None
+    error_code = None
+    market_id = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'cancel_orders'
         attributes = {
@@ -530,6 +1046,13 @@ class CancelOrders(BaseResource):
 
 
 class UpdateOrderInstruction(BaseResource):
+    """
+    :type bet_id: unicode
+    :type new_persistence_type: unicode
+    """
+    bet_id = None
+    new_persistence_type = None
+
     class Meta(BaseResource.Meta):
         identifier = 'instruction'
         attributes = {
@@ -539,6 +1062,15 @@ class UpdateOrderInstruction(BaseResource):
 
 
 class UpdateOrderInstructionReports(BaseResource):
+    """
+    :type error_code: str
+    :type instruction: UpdateOrderInstruction
+    :type status: unicode
+    """
+    error_code = None
+    instruction = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'update_instruction_reports'
         attributes = {
@@ -551,6 +1083,19 @@ class UpdateOrderInstructionReports(BaseResource):
 
 
 class UpdateOrders(BaseResource):
+    """
+    :type customer_ref: unicode
+    :type error_code: str
+    :type market_id: unicode
+    :type status: unicode
+    :type update_instruction_reports: list[UpdateOrderInstructionReports]
+    """
+    customer_ref = None
+    error_code = None
+    market_id = None
+    status = None
+    update_instruction_reports = None
+
     class Meta(BaseResource.Meta):
         identifier = 'update_orders'
         attributes = {
@@ -565,6 +1110,17 @@ class UpdateOrders(BaseResource):
 
 
 class ReplaceOrderInstructionReports(BaseResource):
+    """
+    :type cancel_instruction_reports: CancelOrderInstructionReports
+    :type error_code: str
+    :type place_instruction_reports: PlaceOrderInstructionReports
+    :type status: unicode
+    """
+    cancel_instruction_reports = None
+    error_code = None
+    place_instruction_reports = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'replace_instruction_reports'
         attributes = {
@@ -578,6 +1134,19 @@ class ReplaceOrderInstructionReports(BaseResource):
 
 
 class ReplaceOrders(BaseResource):
+    """
+    :type customer_ref: unicode
+    :type error_code: str
+    :type market_id: unicode
+    :type replace_instruction_reports: list[ReplaceOrderInstructionReports]
+    :type status: unicode
+    """
+    customer_ref = None
+    error_code = None
+    market_id = None
+    replace_instruction_reports = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'replace_orders'
         attributes = {

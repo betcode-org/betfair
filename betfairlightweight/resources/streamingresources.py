@@ -7,6 +7,19 @@ from ..enums import (
 
 
 class MarketDefinitionRunner(BaseResource):
+    """
+    :type adjustment_factor: float
+    :type id: int
+    :type removal_date: datetime.datetime
+    :type sort_priority: int
+    :type status: unicode
+    """
+    adjustment_factor = None
+    id = None
+    removal_date = None
+    sort_priority = None
+    status = None
+
     class Meta(BaseResource.Meta):
         identifier = 'runners'
         attributes = {
@@ -22,6 +35,65 @@ class MarketDefinitionRunner(BaseResource):
 
 
 class MarketDefinition(BaseResource):
+    """
+    :type bet_delay: int
+    :type betting_type: unicode
+    :type bsp_market: bool
+    :type bsp_reconciled: bool
+    :type complete: bool
+    :type country_code: unicode
+    :type cross_matching: bool
+    :type discount_allowed: bool
+    :type event_id: unicode
+    :type event_type_id: unicode
+    :type in_play: bool
+    :type market_base_rate: int
+    :type market_time: datetime.datetime
+    :type market_type: unicode
+    :type number_of_active_runners: int
+    :type number_of_winners: int
+    :type open_date: datetime.datetime
+    :type persistence_enabled: bool
+    :type regulators: list[unicode]
+    :type runners: list[MarketDefinitionRunner]
+    :type runners_voidable: bool
+    :type settled_time: datetime.datetime
+    :type status: unicode
+    :type suspend_time: datetime.datetime
+    :type timezone: unicode
+    :type turn_in_play_enabled: bool
+    :type venue: unicode
+    :type version: int
+    """
+    bet_delay = None
+    betting_type = None
+    bsp_market = None
+    bsp_reconciled = None
+    complete = None
+    country_code = None
+    cross_matching = None
+    discount_allowed = None
+    event_id = None
+    event_type_id = None
+    in_play = None
+    market_base_rate = None
+    market_time = None
+    market_type = None
+    number_of_active_runners = None
+    number_of_winners = None
+    open_date = None
+    persistence_enabled = None
+    regulators = None
+    runners = None
+    runners_voidable = None
+    settled_time = None
+    status = None
+    suspend_time = None
+    timezone = None
+    turn_in_play_enabled = None
+    venue = None
+    version = None
+
     class Meta(BaseResource.Meta):
         identifier = 'market_definition'
         attributes = {
