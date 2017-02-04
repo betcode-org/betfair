@@ -38,14 +38,16 @@ class BaseResource(object):
         """
         for attribute_name, resource in self._sub_resource_map.items():
             sub_attr = kwargs.get(attribute_name)
+            sub_attr_name = self.Meta.attributes.get(attribute_name,
+                                                     resource.Meta.identifier)
             if sub_attr:
                 if isinstance(sub_attr, list):
                     value = [resource(**x) for x in sub_attr]  # A list of sub resources is supported
                 else:
                     value = resource(**sub_attr)  # So is a single resource
-                setattr(self, resource.Meta.identifier, value)
+                setattr(self, sub_attr_name, value)
             else:
-                setattr(self, resource.Meta.identifier, [])  # [] = Empty resource
+                setattr(self, sub_attr_name, [])  # [] = Empty resource
 
     def set_attributes(self, **kwargs):
         """

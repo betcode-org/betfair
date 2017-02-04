@@ -179,6 +179,15 @@ class MarketCatalogue(BaseResource):
         )
 
 
+class PriceSize(BaseResource):
+    class Meta(BaseResource.Meta):
+        identifier = 'price_size'
+        attributes = {
+            'price': 'price',
+            'size': 'size'
+        }
+
+
 class RunnerBookSP(BaseResource):
     class Meta(BaseResource.Meta):
         identifier = 'sp'
@@ -189,6 +198,10 @@ class RunnerBookSP(BaseResource):
             'layLiabilityTaken': 'lay_liability_taken',
             'actualSP': 'actual_sp'
         }
+        sub_resources = {
+            'backStakeTaken': PriceSize,
+            'layLiabilityTaken': PriceSize
+        }
 
 
 class RunnerBookEX(BaseResource):
@@ -198,6 +211,11 @@ class RunnerBookEX(BaseResource):
             'availableToBack': 'available_to_back',
             'availableToLay': 'available_to_lay',
             'tradedVolume': 'traded_volume'
+        }
+        sub_resources = {
+            'availableToBack': PriceSize,
+            'availableToLay': PriceSize,
+            'tradedVolume': PriceSize
         }
 
 
@@ -294,15 +312,6 @@ class MarketBook(BaseResource):
             'lastMatchTime',
             'publishTime',
         )
-
-
-class PriceSize(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'price_size'
-        attributes = {
-            'price': 'price',
-            'size': 'size'
-        }
 
 
 class CurrentOrder(BaseResource):
