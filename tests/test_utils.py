@@ -55,20 +55,20 @@ class UtilsTest(unittest.TestCase):
         data = [PriceSize(**{'price': 12, 'size': 13}),
                 PriceSize(**{'price': 2, 'size': 3})]
 
-        back_a = price_check(data, 0)
+        back_a = price_check(data, 0, None)
         assert back_a == 12
 
-        back_b = price_check(data, 1)
+        back_b = price_check(data, 1, None)
         assert back_b == 2
 
-        back_c = price_check(data, 2)
+        back_c = price_check(data, 2, None)
         assert not back_c
 
-        back_d = price_check(data, 5)
+        back_d = price_check(data, 5, None)
         assert not back_d
 
         data = []
-        back_e = price_check(data, 0)
+        back_e = price_check(data, 0, None)
         assert not back_e
 
 
