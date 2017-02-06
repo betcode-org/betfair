@@ -1,0 +1,343 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "numberOfRunners": 7,
+    "prize": "$20000.00",
+    "minimumWeight": 0,
+    "comment": "comment",
+    "bettingForecastText": "betting_forecast_text",
+    "timeform123Text": "timeform_123_text",
+    "inPlayHints": {
+      "hintName": "hint_name",
+      "hintValue": "hint_value"
+    },
+    "race": {
+      "startDate": "2017-02-03T18:50:00.000Z",
+      "numberOfRunners": 7,
+      "meetingId": "2.18.1170203",
+      "raceId": "2.18.1170203.3",
+      "distance": 1320,
+      "eligibility": "4yo+",
+      "raceClassification": {
+        "code": "CF",
+        "displayName": "Claiming Stakes",
+        "classificationAbbr": "Cl",
+        "classification": "Claiming Stakes",
+        "displayNameAbbr": "Cl"
+      },
+      "raceTitle": "Race Three",
+      "raceType": {
+        "full": "Flat",
+        "abbr": "Flat",
+        "key": "F"
+      },
+      "course": {
+        "name": "Aqueduct",
+        "countryCode": "US",
+        "courseId": "2.18",
+        "courseType": "pretty",
+        "country": "USA",
+        "surfaceType": "Dirt",
+        "timeformCourseCode": "AQU",
+        "timezone": "America/New_York"
+      },
+      "meetingGoing": "meeting_going",
+      "raceClass": 1,
+      "going": {
+        "full": "Fast",
+        "abbr": "Fs",
+        "key": "F"
+      },
+      "isResultAvailable": true,
+      "markets": [
+        {
+          "marketType": "OTHER_PLACE",
+          "numberOfWinners": 2,
+          "marketId": "1.129495659"
+        },
+        {
+          "marketType": "WIN",
+          "numberOfWinners": 1,
+          "marketId": "1.129495658"
+        },
+        {
+          "marketType": "OTHER_PLACE",
+          "numberOfWinners": 3,
+          "marketId": "1.129495660"
+        }
+      ],
+      "resultsStatus": "FullResults",
+      "betfairMeetingId": "28098517"
+    },
+    "numberOfNonRunners": 0,
+    "runners": [
+      {
+        "comment": "5y mare: 2 wins/11 runs, $45k in US/Can in 2016; 0 wins/1 run, $1k 2017: 2.35/1, 2.25 lengths 1st of 5 from Tough Temper in $14k clmr (6f dirt) at Finger Lakes, 94 days ago: best effort at 7f: best recent form on dirt: races mid-field.",
+        "trainer": {
+          "trainerId": "2.00232191",
+          "name": "Jeremiah C. Englehart",
+          "location": "USA"
+        },
+        "draw": 1,
+        "jockey": {
+          "name": "Kendrick Carmouche",
+          "jockeyId": "2.00082464"
+        },
+        "name": "Spectacular Flash",
+        "weight": 120,
+        "selections": [
+          {
+            "selectionId": "9979020",
+            "bsp": 6.8,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 5,
+        "ownerColours": "Black, Silver Braces, Silver Seams on Sleeves, Silver and Black Cap",
+        "starRating": 4,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "timeform123Place": 2,
+        "horseId": "2.12001808",
+        "saddleCloth": "1",
+        "officialRating": 1,
+        "winsAtDistance": 1,
+        "winsAtCourse": 1,
+        "winsAtCourseAndDistance": 1,
+        "recentForm": "recent_form",
+        "daysSinceLastRun": {
+          "type": "type",
+          "days": 2
+        }
+      },
+      {
+        "comment": "6y mare: 2 wins/13 runs, $50k in US/Can in 2016; 0 wins/2 runs, $1k 2017: 6.5/1, 19 lengths 5th of 8 to Maddizaskar in $25k clmr (8f dirt) at Aqueduct, 18 days ago: effective from 6f to 8.3f: raced only on dirt: races mid-field.",
+        "trainer": {
+          "trainerId": "2.00949699",
+          "name": "Emron Ibrahim",
+          "location": "USA"
+        },
+        "draw": 2,
+        "jockey": {
+          "name": "Rayan Gazader",
+          "jockeyId": "2.00157103",
+          "allowance": 7
+        },
+        "name": "Is She Hot",
+        "weight": 111,
+        "selections": [
+          {
+            "selectionId": "10092652",
+            "bsp": 24.68652,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 6,
+        "starRating": 3,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "ownerColours": "Royal Blue, White Star, White Sleeves and Cap",
+        "horseId": "2.11015939",
+        "saddleCloth": "2"
+      },
+      {
+        "comment": "9y mare: 1 win/9 runs, $40k in US/Can in 2016; 1 win/2 runs, $16k 2017: 6.7/1, 5.5 lengths 2nd of 5 to Julie D in $20k clmr (6f dirt) at Aqueduct, 29 days ago: effective from 6f to 7f: raced only on dirt: races mid to rear.",
+        "trainer": {
+          "trainerId": "2.00002881",
+          "name": "Gary P. Gullo",
+          "location": "USA"
+        },
+        "draw": 3,
+        "jockey": {
+          "name": "Angel S. Arroyo",
+          "jockeyId": "2.00126902"
+        },
+        "name": "Aix En Provence",
+        "weight": 118,
+        "selections": [
+          {
+            "selectionId": "6612158",
+            "bsp": 5.58179,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 9,
+        "ownerColours": "Red, Black Ball, Red 'RGT,' Black Stripes on Sleeves, Red Cap",
+        "starRating": 3,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "timeform123Place": 3,
+        "horseId": "2.08036915",
+        "saddleCloth": "3"
+      },
+      {
+        "comment": "5y mare: 1 win/7 runs, $52k in US/Can in 2016; 0 wins/2 runs, $6k 2017: 2.05/1, 6.75 lengths 3rd of 5 to Julie D in $20k clmr (6f dirt) at Aqueduct, 29 days ago: best effort at 6.5f: best recent form on dirt: races mid-field: should be thereabouts.",
+        "trainer": {
+          "trainerId": "2.00133441",
+          "name": "Danny Gargan",
+          "location": "USA"
+        },
+        "draw": 4,
+        "jockey": {
+          "name": "Hector Rafael Diaz, Jr.",
+          "jockeyId": "2.00159913",
+          "allowance": 10
+        },
+        "name": "Northern Screamer",
+        "weight": 110,
+        "selections": [
+          {
+            "selectionId": "10175316",
+            "bsp": 4.7037,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 5,
+        "ownerColours": "Light Green, Black Yoke and Emblem, Black Cap",
+        "starRating": 5,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "timeform123Place": 1,
+        "horseId": "2.12023393",
+        "saddleCloth": "4"
+      },
+      {
+        "comment": "5y mare: 2 wins/5 runs, $37k in US/Can in 2016; 0 wins/1 run, $2k 2017: 14.1/1, 11.5 lengths 4th of 10 to Hold Me Down in $42k stks (7f dirt) at Parx Racing, 55 days ago: best effort at 6f: best recent form on dirt: tracks pace: has left Ronald Dandy.",
+        "trainer": {
+          "trainerId": "2.00110000",
+          "name": "Steve Klesaris",
+          "location": "USA"
+        },
+        "draw": 5,
+        "jockey": {
+          "name": "Manuel Franco",
+          "jockeyId": "2.00150157"
+        },
+        "name": "Midnight Bounty",
+        "weight": 123,
+        "selections": [
+          {
+            "selectionId": "10107024",
+            "bsp": 5.06007,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 5,
+        "starRating": 3,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "ownerColours": "Gold and Green Diamonds, Gold and Green Diagonal Quartered Sleeves, Go ld Cap",
+        "horseId": "2.12020587",
+        "saddleCloth": "5"
+      },
+      {
+        "comment": "5y mare: 1 win/7 runs, $56k in US/Can in 2016; 0 wins/2 runs, $0k 2017: 4.7/1, 19.35 lengths 9th of 9 to Splendid Gold in $47k clmr (6f dirt) at Aqueduct, 18 days ago: effective from 6f to 6.5f: best recent form on dirt: races close to pace: inconsistent.",
+        "trainer": {
+          "trainerId": "2.00001073",
+          "name": "Bruce N. Levine",
+          "location": "USA"
+        },
+        "draw": 6,
+        "jockey": {
+          "name": "Michael J. Luzzi",
+          "jockeyId": "2.00002153"
+        },
+        "name": "Dreamboat Annie",
+        "weight": 118,
+        "selections": [
+          {
+            "selectionId": "10108629",
+            "bsp": 11.64081,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 5,
+        "starRating": 2,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "ownerColours": "Hot Pink, Black Diamond Frame and 'P,' Black Hoop on Sleeves, Pink Cap , Black Visor",
+        "horseId": "2.12009643",
+        "saddleCloth": "6"
+      },
+      {
+        "comment": "6y mare: 0 wins/9 runs, $18k in US/Can in 2016; 0 wins/2 runs, $0k 2017: 18.2/1, 19.4 lengths 10th of 12 to Special Dividend in $57k stks (6f dirt) at Aqueduct, 32 days ago: effective from 5.5f to 8f: best recent form on turf/dirt: races mid to rear.",
+        "trainer": {
+          "trainerId": "2.00232191",
+          "name": "Jeremiah C. Englehart",
+          "location": "USA"
+        },
+        "draw": 7,
+        "jockey": {
+          "name": "Dylan Davis",
+          "jockeyId": "2.00149157"
+        },
+        "name": "Roman Reign",
+        "weight": 118,
+        "selections": [
+          {
+            "selectionId": "9990892",
+            "bsp": 12.5,
+            "marketType": "WIN",
+            "marketId": "1.129495658"
+          }
+        ],
+        "wearing": {
+          "full": "Lasix",
+          "abbr": "L",
+          "key": "1"
+        },
+        "gender": "Mare",
+        "age": 6,
+        "starRating": 1,
+        "longHandicap": 0,
+        "isNonRunner": false,
+        "ownerColours": "Purple and White Blocks, Purple Cap",
+        "horseId": "2.11004999",
+        "saddleCloth": "7"
+      }
+    ]
+  },
+  "id": 1
+}
