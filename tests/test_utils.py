@@ -5,6 +5,7 @@ from mock import Mock
 from betfairlightweight.utils import (
     check_status_code, strp_betfair_integer_time, strp_betfair_time, price_check, update_available)
 from betfairlightweight.exceptions import StatusCodeError
+from betfairlightweight.resources.bettingresources import PriceSize
 
 
 class UtilsTest(unittest.TestCase):
@@ -51,23 +52,23 @@ class UtilsTest(unittest.TestCase):
         assert not stripped
 
     def test_price_check(self):
-        data = [{'price': 12, 'size': 13},
-                {'price': 2, 'size': 3}]
+        data = [PriceSize(**{'price': 12, 'size': 13}),
+                PriceSize(**{'price': 2, 'size': 3})]
 
-        back_a = price_check(data, 0, 'price')
+        back_a = price_check(data, 0)
         assert back_a == 12
 
-        back_b = price_check(data, 1, 'price')
+        back_b = price_check(data, 1)
         assert back_b == 2
 
-        back_c = price_check(data, 2, 'price')
+        back_c = price_check(data, 2)
         assert not back_c
 
-        back_d = price_check(data, 0, 'pricer')
+        back_d = price_check(data, 5)
         assert not back_d
 
         data = []
-        back_e = price_check(data, 0, 'price')
+        back_e = price_check(data, 0)
         assert not back_e
 
 

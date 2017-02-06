@@ -58,15 +58,14 @@ def strp_betfair_integer_time(datetime_integer):
         return None
 
 
-def price_check(data, number, key):
+def price_check(data, number):
     """Access data from dictionary.
 
     :param data: Dict object.
     :param number: Number.
-    :param key: Key.
     """
     try:
-        output = data[number][key]
+        output = data[number].price
     except KeyError:
         output = None
     except IndexError:
