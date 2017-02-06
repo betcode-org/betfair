@@ -58,7 +58,7 @@ def strp_betfair_integer_time(datetime_integer):
         return None
 
 
-def price_check(data, number):
+def price_check(data, number, key):  # todo remove key
     """Access data from dictionary.
 
     :param data: Dict object.
