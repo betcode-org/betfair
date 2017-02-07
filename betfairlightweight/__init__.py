@@ -5,5 +5,5 @@ from .filters import MarketFilter, StreamingMarketFilter, StreamingMarketDataFil
 
 
 __title__ = 'betfairlightweight'
-__version__ = '0.9.6'
+__version__ = '0.9.7'
 __author__ = 'Liam Pauling'
