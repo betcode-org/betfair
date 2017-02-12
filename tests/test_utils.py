@@ -3,7 +3,13 @@ import datetime
 from mock import Mock
 
 from betfairlightweight.utils import (
-    check_status_code, strp_betfair_integer_time, strp_betfair_time, price_check, update_available)
+    check_status_code,
+    strp_betfair_integer_time,
+    strp_betfair_time,
+    price_check,
+    size_check,
+    update_available
+)
 from betfairlightweight.exceptions import StatusCodeError
 from betfairlightweight.resources.bettingresources import PriceSize
 
@@ -55,20 +61,40 @@ class UtilsTest(unittest.TestCase):
         data = [PriceSize(**{'price': 12, 'size': 13}),
                 PriceSize(**{'price': 2, 'size': 3})]
 
-        back_a = price_check(data, 0, None)
+        back_a = price_check(data, 0)
         assert back_a == 12
 
-        back_b = price_check(data, 1, None)
+        back_b = price_check(data, 1)
         assert back_b == 2
 
-        back_c = price_check(data, 2, None)
+        back_c = price_check(data, 2)
         assert not back_c
 
-        back_d = price_check(data, 5, None)
+        back_d = price_check(data, 5)
         assert not back_d
 
         data = []
-        back_e = price_check(data, 0, None)
+        back_e = price_check(data, 0)
+        assert not back_e
+
+    def test_size_check(self):
+        data = [PriceSize(**{'price': 12, 'size': 13}),
+                PriceSize(**{'price': 2, 'size': 3})]
+
+        back_a = size_check(data, 0)
+        assert back_a == 13
+
+        back_b = size_check(data, 1)
+        assert back_b == 3
+
+        back_c = size_check(data, 2)
+        assert not back_c
+
+        back_d = size_check(data, 5)
+        assert not back_d
+
+        data = []
+        back_e = size_check(data, 0)
         assert not back_e
 
 
