@@ -422,7 +422,7 @@ class UnmatchedOrder(BaseResource):
             'bspLiability': self.bsp_liability,
             'handicap': 0.0,
             'marketId': market_id,
-            'matchedDate': self.matched_date,
+            'matchedDate': self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
             'orderType': StreamingOrderType[self.order_type].value,
             'persistenceType': StreamingPersistenceType[self.persistence_type].value,
             'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
