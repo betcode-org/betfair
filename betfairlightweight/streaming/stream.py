@@ -55,7 +55,7 @@ class BaseStream(object):
         self._caches.clear()
 
     def _on_creation(self):
-        logging.info('[Stream: %s]: "%s" created' % (self.unique_id, str(self)))
+        logging.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
 
     def _process(self, book_data, publish_time):
         pass
@@ -63,9 +63,9 @@ class BaseStream(object):
     def _update_clk(self, data):
         (initial_clk, clk) = (data.get('initialClk'), data.get('clk'))
         if initial_clk:
-            self._initial_clk = data.get('initialClk')
+            self._initial_clk = initial_clk
         if clk:
-            self._clk = data.get('clk')
+            self._clk = clk
         self.time_updated = datetime.datetime.utcnow()
 
     @staticmethod
@@ -89,7 +89,7 @@ class MarketStream(BaseStream):
             market_id = market_book.get('id')
             if market_book.get('img'):
                 self._caches[market_id] = MarketBookCache(publish_time=publish_time, **market_book)
-                logging.debug('[MarketStream: %s] %s added' % (self.unique_id, market_id))
+                logging.info('[MarketStream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache = self._caches.get(market_id)
                 if market_book_cache:
