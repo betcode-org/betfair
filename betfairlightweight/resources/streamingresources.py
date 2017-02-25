@@ -1,8 +1,16 @@
+from operator import itemgetter
+
 from ..utils import update_available
 from .baseresource import BaseResource
-from .bettingresources import MarketBook, CurrentOrders
+from .bettingresources import (
+    MarketBook,
+    CurrentOrders,
+)
 from ..enums import (
-    StreamingOrderType, StreamingPersistenceType, StreamingSide, StreamingStatus
+    StreamingOrderType,
+    StreamingPersistenceType,
+    StreamingSide,
+    StreamingStatus,
 )
 
 
@@ -234,7 +242,7 @@ class RunnerBook(BaseResource):
     def serialise_traded_volume(self):
         if self.traded:
             return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.traded, key=lambda x: x[0])]
+                    for volume in sorted(self.traded, key=itemgetter(0))]
         else:
             return []
 
@@ -242,13 +250,13 @@ class RunnerBook(BaseResource):
     def serialise_available_to_back(self):
         if self.available_to_back:
             return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.available_to_back, key=lambda x: x[0], reverse=True)]
+                    for volume in sorted(self.available_to_back, key=itemgetter(0), reverse=True)]
         elif self.best_display_available_to_back:
             return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_display_available_to_back, key=lambda x: x[0])]
+                    for volume in sorted(self.best_display_available_to_back, key=itemgetter(0))]
         elif self.best_available_to_back:
             return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_available_to_back, key=lambda x: x[0])]
+                    for volume in sorted(self.best_available_to_back, key=itemgetter(0))]
         else:
             return []
 
@@ -256,13 +264,13 @@ class RunnerBook(BaseResource):
     def serialise_available_to_lay(self):
         if self.available_to_lay:
             return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.available_to_lay, key=lambda x: x[0])]
+                    for volume in sorted(self.available_to_lay, key=itemgetter(0))]
         elif self.best_display_available_to_lay:
             return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_display_available_to_lay, key=lambda x: x[0])]
+                    for volume in sorted(self.best_display_available_to_lay, key=itemgetter(0))]
         elif self.best_available_to_lay:
             return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_available_to_lay, key=lambda x: x[0])]
+                    for volume in sorted(self.best_available_to_lay, key=itemgetter(0))]
         return []
 
     def serialise(self, status):
@@ -344,8 +352,10 @@ class MarketBookCache(BaseResource):
 
     def create_market_book(self, unique_id):
         return MarketBook(
-            date_time_sent=self._datetime_updated, streaming_unique_id=unique_id,
-            market_definition=self.market_definition, **self.serialise
+            date_time_sent=self._datetime_updated,
+            streaming_unique_id=unique_id,
+            market_definition=self.market_definition,
+            **self.serialise
         )
 
     @property
@@ -459,17 +469,13 @@ class OrderBookRunner(BaseResource):
 
     def update_matched_backs(self, matched_backs):
         if not self.matched_backs:
-            self.matched_backs = []
-            for matched_back in matched_backs:
-                self.matched_backs.append(matched_back)
+            self.matched_backs = [matched_back for matched_back in matched_backs]
         else:
             update_available(self.matched_backs, matched_backs, 1)
 
     def update_matched_lays(self, matched_lays):
         if not self.matched_lays:
-            self.matched_lays = []
-            for matched_lay in matched_lays:
-                self.matched_lays.append(matched_lay)
+            self.matched_lays = [matched_lay for matched_lay in matched_lays]
         else:
             update_available(self.matched_lays, matched_lays, 1)
 

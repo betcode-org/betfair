@@ -117,9 +117,13 @@ class StreamListener(BaseListener):
 
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':
-            return MarketStream(unique_id, self.output_queue, self.max_latency)
+            return MarketStream(
+                unique_id, self.output_queue, self.max_latency
+            )
         elif stream_type == 'orderSubscription':
-            return OrderStream(unique_id, self.output_queue, self.max_latency)
+            return OrderStream(
+                unique_id, self.output_queue, self.max_latency
+            )
 
     @staticmethod
     def _error_handler(data, unique_id):
@@ -129,12 +133,9 @@ class StreamListener(BaseListener):
         :param unique_id: Unique id
         :return: True if error present
         """
-        status_code = data.get('statusCode')
-        connection_closed = data.get('connectionClosed')
-        if status_code == 'FAILURE':
-            logging.error('[Subscription: %s] %s: %s' %
-                          (unique_id, data.get('errorCode'), data.get('errorMessage')))
-            if connection_closed:
+        if data.get('statusCode') == 'FAILURE':
+            logging.error('[Subscription: %s] %s: %s' % (unique_id, data.get('errorCode'), data.get('errorMessage')))
+            if data.get('connectionClosed'):
                 return True
 
     def __str__(self):
