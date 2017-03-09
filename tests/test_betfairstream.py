@@ -1,11 +1,11 @@
-import unittest
 import socket
-import time
 import threading
-from tests import mock
+import time
+import unittest
 
-from betfairlightweight.streaming.betfairstream import BetfairStream
 from betfairlightweight.exceptions import SocketError
+from betfairlightweight.streaming.betfairstream import BetfairStream
+from tests import mock
 
 
 class BetfairStreamTest(unittest.TestCase):
@@ -150,6 +150,8 @@ class BetfairStreamTest(unittest.TestCase):
         mock_receive_all.side_effect = socket.error()
         with self.assertRaises(SocketError):
             self.betfair_stream._read_loop()
+
+        self.betfair_stream._running = True
 
         mock_receive_all.side_effect = socket.timeout()
         with self.assertRaises(SocketError):
