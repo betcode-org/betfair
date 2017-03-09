@@ -1,12 +1,12 @@
+import datetime
 import json
-import threading
 import socket
 import ssl
-import datetime
+import threading
 
-from ..filters import BaseFilter
-from ..exceptions import SocketError
 from ..compat import is_py3
+from ..exceptions import SocketError
+from ..filters import BaseFilter
 
 
 class BetfairStream(object):
@@ -150,6 +150,8 @@ class BetfairStream(object):
                 raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
             except socket.error as e:
                 raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
+            finally:
+                self._running = False
 
         if not self._socket._closed:
             try:
