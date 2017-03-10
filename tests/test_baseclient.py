@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import datetime
+import os
 import unittest
 from tests import mock
 
@@ -130,22 +131,26 @@ class BaseClientTest(unittest.TestCase):
         assert self.client.session_token is None
 
 
+def normpaths(p):
+    return list(map(os.path.normpath, p))
+
+
 class BaseClientRelativePathTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = APIClient('bf_username', 'password', 'app_key', 'fail/')
+        self.client = APIClient('bf_username', 'password', 'app_key', os.path.normpath('fail/'))
 
     @mock.patch('betfairlightweight.baseclient.os.listdir')
     def test_client_certs_mocked(self, mock_listdir):
-        mock_listdir.return_value = ['.DS_Store', 'client-2048.crt', 'client-2048.key']
-        assert self.client.cert == ['../fail/client-2048.crt', '../fail/client-2048.key']
+        mock_listdir.return_value = normpaths(['.DS_Store', 'client-2048.crt', 'client-2048.key'])
+        assert self.client.cert == normpaths(['../fail/client-2048.crt', '../fail/client-2048.key'])
 
 
 class BaseClientCertFilesTest(unittest.TestCase):
 
     def setUp(self):
         self.client = APIClient('bf_username', 'password', 'app_key',
-                                cert_files=['/fail/client-2048.crt', '/fail/client-2048.key'])
+                                cert_files=normpaths(['/fail/client-2048.crt', '/fail/client-2048.key']))
 
     def test_client_cert_files(self):
-        assert self.client.cert == ['/fail/client-2048.crt', '/fail/client-2048.key']
+        assert self.client.cert == normpaths(['/fail/client-2048.crt', '/fail/client-2048.key'])
