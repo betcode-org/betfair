@@ -1,11 +1,11 @@
 import datetime
 import json
+import logging
 import socket
 import ssl
 import threading
 
 from ..compat import is_py3
-from ..exceptions import SocketError
 from ..filters import BaseFilter
 
 
@@ -147,11 +147,11 @@ class BetfairStream(object):
                         if received_data:
                             self._data(received_data)
             except socket.timeout as e:
-                raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
+                logging.error('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
+                self.stop()
             except socket.error as e:
-                raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
-            finally:
-                self._running = False
+                logging.error('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
+                self.stop()
 
         if not self._socket._closed:
             try:
