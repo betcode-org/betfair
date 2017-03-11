@@ -144,6 +144,14 @@ class UtilsTestUpdateAvailable(unittest.TestCase):
         update_available(current, book_update, 2)
         assert current == expected
 
+        # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
+        book_update = [[2, 0, 0], [1, 1.01, 9835.74], [0, 1.02, 1126.22]]
+        current = [[1, 1.01, 9835.74], [0, 1.02, 1126.22]]
+        expected = [[1, 1.01, 9835.74], [0, 1.02, 1126.22]]
+
+        update_available(current, book_update, 2)
+        assert current == expected
+
     def test_update_available_new_remove(self):
         book_update = [[27, 0]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
