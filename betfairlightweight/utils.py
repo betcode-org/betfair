@@ -102,5 +102,6 @@ def update_available(available, book_update, deletion_select):
                     updated = True
                     break
 
-        if not updated:
+        if not updated and book[deletion_select] != 0:
+            # handles betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
             available.append(book)
