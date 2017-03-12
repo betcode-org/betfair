@@ -154,8 +154,10 @@ class BetfairStream(object):
                         if received_data:
                             self._data(received_data)
             except socket.timeout as e:
+                self.stop()
                 raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
             except socket.error as e:
+                self.stop()
                 raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
 
     def _receive_all(self):
