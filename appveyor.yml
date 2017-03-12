@@ -1,1 +1,17 @@
 build: off
+
+environment:
+  matrix:
+    - PYTHON: "C:\\Python27"
+    - PYTHON: "C:\\Python34"
+    - PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python36"
+
+install:
+  - cmd: if %PYTHON_VERSION% == 2.7 pip install enum34 mock
+  - pip install -r requirements.txt
+  - "%PYTHON%\\python.exe setup.py install"
+
+test_script:
+  - "%PYTHON%\\python.exe setup.py test"
+
