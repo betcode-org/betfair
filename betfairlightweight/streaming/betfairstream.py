@@ -50,7 +50,7 @@ class BetfairStream(object):
             self._read_loop()
 
     def stop(self):
-        """Stops read loop which closes socket
+        """Stops read loop and closes socket if it has been created.
         """
         self._running = False
 
