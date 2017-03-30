@@ -63,7 +63,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_event_types()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listEventTypes', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listEventTypes', {'filter': {}}, None)
         assert isinstance(response[0], resources.EventTypeResult)
         assert len(response) == 2
 

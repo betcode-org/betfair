@@ -90,3 +90,31 @@ class StreamingMarketDataFilter(BaseFilter):
             'fields': self.fields,
             'ladderLevels': self.ladder_levels
         }
+
+
+def market_filter(textQuery=None, eventTypeIds=None, eventIds=None, competitionIds=None, marketIds=None, venues=None,
+                  bspOnly=None, turnInPlayEnabled=None, inPlayOnly=None, marketBettingTypes=None, marketCountries=None,
+                  marketTypeCodes=None, marketStartTime=None, withOrders=None):
+    """
+    Create filters to apply to market data we wish to receive.
+    :param str textQuery: restrict markets by text associated with it, e.g name, event, comp.
+    :param list eventTypeIds: filter market data to data pertaining to specific event_type ids.
+    :param list eventIds: filter market data to data pertaining to specific event ids.
+    :param list competitionIds: filter market data to data pertaining to specific competition ids.
+    :param list marketIds: filter market data to data pertaining to specific marketIds.
+    :param list venues: restrict markets by venue (only horse racing has venue at the moment)
+    :param bool bspOnly: restriction on bsp, not supplied will return all.
+    :param bool turnInPlayEnabled: restriction on whether market will turn in play or not, not supplied returns all.
+    :param bool inPlayOnly: restriction to currently inplay, not supplied returns all.
+    :param list marketBettingTypes: filter market data by market betting types.
+    :param list marketCountries: filter market data by country codes.
+    :param list marketTypeCodes: filter market data to match the type of market e.g. MATCH_ODDS.
+    :param betfairlightweight.utils.create_timerange marketStartTime: filter market data by time at which it starts.
+    :param betfairlightweight.enums.OrderStatus withOrders: filter market data by specified order status.
+    :returns: filter dictionary to be applied to market data request.
+    :rtype: dict
+    """
+    args = locals()
+    return {
+        k: v for k, v in args.items() if v is not None
+    }

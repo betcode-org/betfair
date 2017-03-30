@@ -1,46 +1,51 @@
 import unittest
 
-from betfairlightweight.filters import MarketFilter, StreamingMarketDataFilter, StreamingMarketFilter
+from betfairlightweight.filters import (
+    MarketFilter,
+    StreamingMarketDataFilter,
+    StreamingMarketFilter,
+    market_filter,
+)
 
 
-class MarketFilterTest(unittest.TestCase):
-
-    def setUp(self):
-        self.market_filter = MarketFilter()
-
-    def test_init(self):
-        assert self.market_filter.text_query is None
-        assert self.market_filter.event_type_ids == []
-        assert self.market_filter.event_ids == []
-        assert self.market_filter.competition_ids == []
-        assert self.market_filter.market_ids == []
-        assert self.market_filter.venues == []
-        assert self.market_filter.bsp_only is None
-        assert self.market_filter.turn_in_play_enabled is None
-        assert self.market_filter.in_play_only is None
-        assert self.market_filter.market_betting_types == []
-        assert self.market_filter.market_type_codes == []
-        assert self.market_filter.market_countries == []
-        assert self.market_filter.market_start_time is None
-        assert self.market_filter.with_orders == []
-
-    def test_serialise(self):
-        assert self.market_filter.serialise == {
-            'marketIds': [],
-            'textQuery': None,
-            'marketBettingTypes': [],
-            'eventTypeIds': [],
-            'eventIds': [],
-            'turnInPlayEnabled': None,
-            'inPlayOnly': None,
-            'marketTypeCodes': [],
-            'venues': [],
-            'marketCountries': [],
-            'bspOnly': None,
-            'competitionIds': [],
-            'marketStartTime': None,
-            'withOrders': [],
-        }
+# class MarketFilterTest(unittest.TestCase):
+#
+#     def setUp(self):
+#         self.market_filter = MarketFilter()
+#
+#     def test_init(self):
+#         assert self.market_filter.text_query is None
+#         assert self.market_filter.event_type_ids == []
+#         assert self.market_filter.event_ids == []
+#         assert self.market_filter.competition_ids == []
+#         assert self.market_filter.market_ids == []
+#         assert self.market_filter.venues == []
+#         assert self.market_filter.bsp_only is None
+#         assert self.market_filter.turn_in_play_enabled is None
+#         assert self.market_filter.in_play_only is None
+#         assert self.market_filter.market_betting_types == []
+#         assert self.market_filter.market_type_codes == []
+#         assert self.market_filter.market_countries == []
+#         assert self.market_filter.market_start_time is None
+#         assert self.market_filter.with_orders == []
+#
+#     def test_serialise(self):
+#         assert self.market_filter.serialise == {
+#             'marketIds': [],
+#             'textQuery': None,
+#             'marketBettingTypes': [],
+#             'eventTypeIds': [],
+#             'eventIds': [],
+#             'turnInPlayEnabled': None,
+#             'inPlayOnly': None,
+#             'marketTypeCodes': [],
+#             'venues': [],
+#             'marketCountries': [],
+#             'bspOnly': None,
+#             'competitionIds': [],
+#             'marketStartTime': None,
+#             'withOrders': [],
+#         }
 
 
 class StreamingMarketFilterTest(unittest.TestCase):
@@ -89,3 +94,14 @@ class StreamingMarketDataFilterTest(unittest.TestCase):
             'fields': self.fields,
             'ladderLevels': self.ladder_levels
         }
+
+
+class FilterTest(unittest.TestCase):
+
+    def test_market_filter(self):
+        response = market_filter()
+        assert response == {}
+
+    def test_market_filter_with(self):
+        response = market_filter(marketIds=['1.123'])
+        assert response == {'marketIds': ['1.123']}

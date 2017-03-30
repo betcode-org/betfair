@@ -2,16 +2,23 @@ import datetime
 
 from .baseendpoint import BaseEndpoint
 from .. import resources
+from ..filters import market_filter
+from ..utils import clean_locals
 
 
 class Betting(BaseEndpoint):
 
     URI = 'SportsAPING/v1.0/'
 
-    def list_event_types(self, params=None, session=None):
+    def list_event_types(self, filter=market_filter(), locale=None, params=None, session=None):
         """
+        :param dict filter: market_filter
+        :param str locale: The language used for the response
+        :param requests.session session: Requests session object
+        :param dict params: Json request, default if not None
         :rtype: list[resources.EventTypeResult]
         """
+        params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listEventTypes')
         response = self.request(method, params, session)
