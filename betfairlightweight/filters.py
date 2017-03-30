@@ -90,3 +90,175 @@ def market_filter(textQuery=None, eventTypeIds=None, eventIds=None, competitionI
     return {
         k: v for k, v in args.items() if v is not None
     }
+
+
+def price_data(sp_available=False, sp_traded=False, ex_best_offers=False, ex_all_offers=False, ex_traded=False):
+    """
+    Create PriceData filter list from all args passed as True.
+    :param bool sp_available: Amount available for the BSP auction.
+    :param bool sp_traded: Amount traded in the BSP auction.
+    :param bool ex_best_offers: Only the best prices available for each runner, to requested price depth.
+    :param bool ex_all_offers: trumps EX_BEST_OFFERS if both settings are present
+    :param bool ex_traded: Amount traded on the exchange.
+
+    :returns: string values of all args specified as True.
+    :rtype: list
+    """
+    args = locals()
+    return [
+        k.upper() for k, v in args.items() if v is True
+    ]
+
+
+def ex_best_offers_overrides(bestPricesDepth=None, rollupModel=None, rollupLimit=None,
+                             rollupLiabilityThreshold=None, rollupLiabilityFactor=None):
+    """
+    Create filter to specify whether to accumulate market volume info, how deep a book to return and rollup methods if
+    accumulation is selected.
+    :param int bestPricesDepth: The maximum number of prices to return on each side for each runner.
+    :param str rollupModel: method to use to accumulate market orders.
+    :param int rollupLimit: The volume limit to use when rolling up returned sizes. The exact definition of the limit
+    depends on the rollupModel.
+                        If no limit is provided it will use minimum stake
+    :param float rollupLiabilityThreshold: Only applicable when rollupModel is MANAGED_LIABILITY. The rollup model
+    switches from being stake based to liability based at the smallest lay price which is >= rollupLiabilityThreshold
+    :param int rollupLiabilityFactor: Only applicable when rollupModel is MANAGED_LIABILITY. (rollupLiabilityFactor *
+    rollupLimit) is the minimum liabilty the user is deemed to be comfortable with. After the rollupLiabilityThreshold
+    price subsequent volumes will be rolled up to minimum value such that the liability >= the minimum liability.
+
+    :returns: parameters for inclusion in market data requests.
+    :rtype: dict
+    """
+
+    args = locals()
+    return {
+        k: v for k, v in args.items() if v is not None
+    }
+
+
+def price_projection(priceData=price_data(), exBestOffersOverrides=ex_best_offers_overrides(), virtualise=True,
+                     rolloverStakes=False):
+    """
+    Selection criteria of the returning price data.
+    :param list priceData: PriceData filter to specify what market data we wish to receive.
+    :param dict exBestOffersOverrides: define order book depth, rollup method.
+    :param bool virtualise: whether to receive virtualised prices also.
+    :param bool rolloverStakes: whether to accumulate volume at each price as sum of volume at that price and all better
+    prices.
+
+    :returns: price data criteria for market data.
+    :rtype: dict
+    """
+    args = locals()
+    return {
+        k: v for k, v in args.items() if v is not None
+    }
+
+
+def place_instruction(orderType, selectionId, side, handicap=None, limitOrder=None, limitOnCloseOrder=None,
+                      marketOnCloseOrder=None, customerOrderRef=None):
+    """
+    Create order instructions to place an order at exchange.
+    :param str orderType: define type of order to place.
+    :param int selectionId: selection on which to place order
+    :param float handicap: handicap if placing order on asianhandicap type market
+    :param str side: side of order
+    :param ? limitOrder: if orderType is a limitOrder structure details of the order.
+    :param ? limitOnCloseOrder: if orderType is a limitOnCloseOrder structure details of the order.
+    :param ? marketOnCloseOrder: if orderType is a marketOnCloseOrder structure details of the order.
+    :param str customerOrderRef: an optional reference customers can set to identify instructions..
+
+    :return: orders to place.
+    :rtype: dict
+    """
+
+    args = locals()
+    return {
+        k: v for k, v in args.items() if v is not None
+    }
+
+
+def limit_order(size, price, persistenceType, timeInForce=None, minFillSize=None, betTargetType=None,
+                betTargetSize=None):
+    """
+    Create a limit order to send to exchange.
+    :param float size: amount in account currency to be sent.
+    :param float price: price at which the order is to be sent.
+    :param str persistenceType: what happens to order at turn in play.
+    :param str timeInForce: specify if it is FillOrKill/FillAndKill. This value takes precedence over any
+    PersistenceType value chosen.
+    :param float minFillSize: the minimum amount to be filled for FillAndKill.
+    :param str betTargetType: Specify the type of Target, bet to certain backer profit or certain payout value.
+                          Used to adjust to lower stakes if filled at better levels.
+    :param float betTargetSize: Size of payout of profit to bet.
+
+    :returns: Order information to place a limit order.
+    :rtype: dict
+    """
+    args = locals()
+    return {
+        k: v for k, v in args.items() if v is not None
+    }
+
+
+def limit_on_close_order(liability, price):
+    """
+    Create limit order for the closing auction.
+    :param float liability: amount to bet.
+    :param float price: price at which to bet
+
+    :returns: Order information to place a limit on close order.
+    :rtype: dict
+    """
+    return locals()
+
+
+def market_on_close_order(liability):
+    """
+    Create market order to be placed in the closing auction.
+    :param float liability: amount to bet.
+
+    :returns: Order information to place a market on close order.
+    :rtype: dict
+    """
+    return locals()
+
+
+def cancel_instruction(betId, sizeReduction=None):
+    """
+    Instruction to fully or partially cancel an order (only applies to LIMIT orders)
+    :param str betId: identifier of the bet to cancel.
+    :param float sizeReduction: If supplied then this is a partial cancel.
+
+    :returns: cancellation report detailing status, cancellation requested and actual cancellation details.
+    :rtype: Dataframe
+    """
+    args = locals()
+    return {
+        k: v for k, v in args.items() if v is not None
+    }
+
+
+def replace_instruction(betId, newPrice):
+    """
+    Instruction to replace a LIMIT or LIMIT_ON_CLOSE order at a new price.
+    Original order will be cancelled and a new order placed at the new price for the remaining stake.
+    :param str betId: Unique identifier for the bet
+    :param float newPrice: The price to replace the bet at
+
+    :returns: replace report detailing status, replace requested and actual replace details.
+    :rtype: Dataframe
+    """
+    return locals()
+
+
+def update_instruction(betId, newPersistenceType):
+    """
+    Instruction to update LIMIT bet's persistence of an order that do not affect exposure
+    :param str betId: Unique identifier for the bet
+    :param str newPersistenceType: The new persistence type to update this bet to.
+
+    :returns: update report detailing status, update requested and update details.
+    :rtype: Dataframe
+    """
+    return locals()
