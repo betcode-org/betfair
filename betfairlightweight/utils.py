@@ -105,3 +105,18 @@ def update_available(available, book_update, deletion_select):
         if not updated and book[deletion_select] != 0:
             # handles betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
             available.append(book)
+
+
+def clean_locals(data):
+    """Clean up locals dict, remove empty and self/session/params params.
+
+    :param data: locals dicts from a function.
+    :type data: dict
+    :returns: dict
+    """
+    if data.get('params') is not None:
+        return data.get('params')
+    else:
+        return {
+            k: v for k, v in data.items() if v is not None and k not in ['self', 'session', 'params']
+        }

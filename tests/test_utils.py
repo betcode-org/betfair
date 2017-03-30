@@ -8,7 +8,8 @@ from betfairlightweight.utils import (
     strp_betfair_time,
     price_check,
     size_check,
-    update_available
+    update_available,
+    clean_locals,
 )
 from betfairlightweight.exceptions import StatusCodeError
 from betfairlightweight.resources.bettingresources import PriceSize
@@ -98,7 +99,6 @@ class UtilsTest(unittest.TestCase):
         assert not back_e
 
 
-
 class UtilsTestUpdateAvailable(unittest.TestCase):
 
     # update_available()
@@ -167,3 +167,14 @@ class UtilsTestUpdateAvailable(unittest.TestCase):
 
         update_available(current, book_update, 2)
         assert current == expected
+
+
+class UtilsTestCleanLocals(unittest.TestCase):
+
+    def test_clean_locals(self, params=None, filter=123):
+        params = clean_locals(locals())
+        assert params == {'filter': 123}
+
+    def test_clean_locals_params(self, params={'test': 456}, filter=123):
+        params = clean_locals(locals())
+        assert params == {'test': 456}
