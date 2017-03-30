@@ -74,7 +74,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_competitions()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listCompetitions', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listCompetitions', {'filter': {}}, None)
         assert isinstance(response[0], resources.CompetitionResult)
         assert len(response) == 22
 
@@ -85,7 +85,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_time_ranges()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listTimeRanges', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listTimeRanges', {'granularity': 'DAYS', 'filter': {}}, None)
         assert isinstance(response[0], resources.TimeRangeResult)
         assert len(response) == 30
 
@@ -96,7 +96,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_events()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listEvents', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listEvents', {'filter': {}}, None)
         assert isinstance(response[0], resources.EventResult)
         assert len(response) == 7
 
@@ -107,7 +107,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_market_types()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listMarketTypes', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listMarketTypes', {'filter': {}}, None)
         assert isinstance(response[0], resources.MarketTypeResult)
         assert len(response) == 25
 
@@ -118,7 +118,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_countries()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listCountries', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listCountries', {'filter': {}}, None)
         assert isinstance(response[0], resources.CountryResult)
         assert len(response) == 4
 
@@ -129,7 +129,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_venues()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listVenues', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listVenues', {'filter': {}}, None)
         assert isinstance(response[0], resources.VenueResult)
         assert len(response) == 30
 
@@ -140,7 +140,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_market_catalogue()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listMarketCatalogue', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listMarketCatalogue', {'maxResults': 1, 'filter': {}}, None)
         assert isinstance(response[0], resources.MarketCatalogue)
         assert len(response) == 1
 
@@ -151,7 +151,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_market_book()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listMarketBook', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listMarketBook', {}, None)
         assert isinstance(response[0], resources.MarketBook)
         assert len(response) == 1
 
@@ -162,7 +162,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_current_orders()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listCurrentOrders', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listCurrentOrders', {'dateRange': {'from': None, 'to': None}}, None)
         assert isinstance(response, resources.CurrentOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
@@ -172,7 +172,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.list_cleared_orders()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listClearedOrders', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listClearedOrders', {'settledDateRange': {'to': None, 'from': None}, 'betStatus': 'SETTLED'}, None)
         assert isinstance(response, resources.ClearedOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
@@ -182,7 +182,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.place_orders()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/placeOrders', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/placeOrders', {}, None)
         assert isinstance(response, resources.PlaceOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
@@ -192,7 +192,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.cancel_orders()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/cancelOrders', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/cancelOrders', {}, None)
         assert isinstance(response, resources.CancelOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
@@ -202,7 +202,7 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.update_orders()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/updateOrders', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/updateOrders', {}, None)
         assert isinstance(response, resources.UpdateOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
@@ -212,5 +212,5 @@ class BettingTest(unittest.TestCase):
 
         response = self.betting.replace_orders()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/replaceOrders', None, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/replaceOrders', {}, None)
         assert isinstance(response, resources.ReplaceOrders)
