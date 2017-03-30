@@ -14,8 +14,9 @@ class Betting(BaseEndpoint):
         """
         :param dict filter: market_filter
         :param str locale: The language used for the response
-        :param requests.session session: Requests session object
         :param dict params: Json request, default if not None
+        :param requests.session session: Requests session object
+
         :rtype: list[resources.EventTypeResult]
         """
         params = clean_locals(locals())
