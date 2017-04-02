@@ -14,11 +14,10 @@ class Account(BaseEndpoint):
     URI = 'AccountAPING/v1.0/'
     connect_timeout = 6.05
 
-    def get_account_funds(self, params=None, wallet=None, session=None):
+    def get_account_funds(self, wallet=None, session=None):
         """
         Get available to bet amount.
 
-        :param dict params: json request, will be default if provided
         :param str wallet: Name of the wallet in question
         :param requests.session session: Requests session object
 
@@ -30,12 +29,11 @@ class Account(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.AccountFunds, date_time_sent)
 
-    def get_account_details(self, params=None, session=None):
+    def get_account_details(self, session=None):
         """
         Returns the details relating your account, including your discount
         rate and Betfair point balance.
 
-        :param dict params: json request, will be default if provided
         :param requests.session session: Requests session object
 
         :rtype: resources.AccountDetails
@@ -46,12 +44,11 @@ class Account(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.AccountDetails, date_time_sent)
 
-    def get_account_statement(self, params=None, locale=None, fromRecord=None, recordCount=None,
-                              itemDateRange=time_range(), includeItem=None, wallet=None, session=None):
+    def get_account_statement(self, locale=None, fromRecord=None, recordCount=None, itemDateRange=time_range(),
+                              includeItem=None, wallet=None, session=None):
         """
         Get account statement.
 
-        :param dict params: json request, will be default if provided
         :param str locale: The language to be used where applicable.
         :param int fromRecord: Specifies the first record that will be returned
         :param int recordCount: Specifies the maximum number of records to be returned.
@@ -68,11 +65,10 @@ class Account(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.AccountStatementResult, date_time_sent)
 
-    def list_currency_rates(self, params=None, fromCurrency=None, session=None):
+    def list_currency_rates(self, fromCurrency=None, session=None):
         """
         Returns a list of currency rates based on given currency
 
-        :param dict params: json request, will be default if provided
         :param str fromCurrency: The currency from which the rates are computed
         :param requests.session session: Requests session object
 
@@ -84,11 +80,10 @@ class Account(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.CurrencyRate, date_time_sent)
 
-    def transfer_funds(self, params=None, session=None):
+    def transfer_funds(self, session=None):
         """
         Transfer funds between the UK Exchange and other wallets
 
-        :param dict params: json request, will be default if provided
         :param requests.session session: Requests session object
 
         :rtype: resources.TransferFunds

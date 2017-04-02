@@ -31,37 +31,33 @@ class AccountTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
     def test_get_account_funds(self, mock_request, mock_process_response):
-        params = {'test': 123}
-        self.account.get_account_funds(params=params)
+        self.account.get_account_funds()
 
-        mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountFunds', params, None)
+        mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountFunds', {}, None)
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
     def test_get_account_details(self, mock_request, mock_process_response):
-        params = {'test': 123}
-        self.account.get_account_details(params=params)
+        self.account.get_account_details()
 
-        mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountDetails', params, None)
+        mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountDetails', {}, None)
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
     def test_get_account_statement(self, mock_request, mock_process_response):
-        params = {'test': 123}
-        self.account.get_account_statement(params=params)
+        self.account.get_account_statement()
 
-        mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountStatement', params, None)
+        mock_request.assert_called_once_with('AccountAPING/v1.0/getAccountStatement', {'itemDateRange': {'from': None, 'to': None}}, None)
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
     @mock.patch('betfairlightweight.endpoints.account.Account.request')
     def test_list_currency_rates(self, mock_request, mock_process_response):
-        params = {'test': 123}
-        self.account.list_currency_rates(params=params)
+        self.account.list_currency_rates()
 
-        mock_request.assert_called_once_with('AccountAPING/v1.0/listCurrencyRates', params, None)
+        mock_request.assert_called_once_with('AccountAPING/v1.0/listCurrencyRates', {}, None)
         assert mock_process_response.call_count == 1
 
     def test_transfer_funds(self):
