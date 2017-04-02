@@ -26,36 +26,6 @@ class BettingTest(unittest.TestCase):
         client = APIClient('username', 'password', 'app_key', 'UK')
         self.betting = Betting(client)
 
-    # def test_set_next_hour(self):
-    #     self.betting.set_next_hour()
-    #     now = datetime.datetime.now()
-    #     assert self.betting._next_hour == (now + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-    #
-    # def test_get_transaction_count(self):
-    #     params = {'instructions': [1, 2, 3]}
-    #     length = self.betting.get_transaction_count(params)
-    #     assert length == 3
-    #
-    #     params = {}
-    #     length = self.betting.get_transaction_count(params)
-    #     assert length == 0
-    #
-    # def test_check_transaction_count(self):
-    #     params = {'instructions': [1, 2, 3]}
-    #     self.betting.check_transaction_count(params)
-    #     assert self.betting.transaction_count == 3
-    #
-    #     now = datetime.datetime.now()
-    #     self.betting._next_hour = (now + datetime.timedelta(hours=-1)).replace(minute=0, second=0, microsecond=0)
-    #     params = {'instructions': [1, 2, 3]}
-    #     self.betting.check_transaction_count(params)
-    #     assert self.betting.transaction_count == 3
-    #
-    #     self.betting.transaction_limit = 2
-    #     with self.assertRaises(TransactionCountError):
-    #         self.betting.check_transaction_count(params)
-    #     assert self.betting.transaction_count == 6
-
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_event_types(self, mock_response):
         mock = create_mock_json('tests/resources/list_event_types.json')
@@ -148,10 +118,11 @@ class BettingTest(unittest.TestCase):
     def test_list_market_book(self, mock_response):
         mock = create_mock_json('tests/resources/list_market_book.json')
         mock_response.return_value = mock
+        marketIds = mock.Mock()
 
-        response = self.betting.list_market_book()
+        response = self.betting.list_market_book(marketIds)
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/listMarketBook', {}, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/listMarketBook', {'marketIds': marketIds}, None)
         assert isinstance(response[0], resources.MarketBook)
         assert len(response) == 1
 
@@ -179,38 +150,50 @@ class BettingTest(unittest.TestCase):
     def test_place_orders(self, mock_response):
         mock = create_mock_json('tests/resources/place_orders.json')
         mock_response.return_value = mock
+        marketId = mock.Mock()
+        instructions = mock.Mock()
 
-        response = self.betting.place_orders()
+        response = self.betting.place_orders(marketId, instructions)
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/placeOrders', {}, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/placeOrders',
+                                         {'marketId': marketId, 'instructions': instructions}, None)
         assert isinstance(response, resources.PlaceOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_cancel_orders(self, mock_response):
         mock = create_mock_json('tests/resources/cancel_orders.json')
         mock_response.return_value = mock
+        marketId = mock.Mock()
+        instructions = mock.Mock()
 
-        response = self.betting.cancel_orders()
+        response = self.betting.cancel_orders(marketId, instructions)
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/cancelOrders', {}, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/cancelOrders',
+                                         {'marketId': marketId, 'instructions': instructions}, None)
         assert isinstance(response, resources.CancelOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_update_orders(self, mock_response):
         mock = create_mock_json('tests/resources/update_orders.json')
         mock_response.return_value = mock
+        marketId = mock.Mock()
+        instructions = mock.Mock()
 
-        response = self.betting.update_orders()
+        response = self.betting.update_orders(marketId, instructions)
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/updateOrders', {}, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/updateOrders',
+                                         {'marketId': marketId, 'instructions': instructions}, None)
         assert isinstance(response, resources.UpdateOrders)
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_replace_orders(self, mock_response):
         mock = create_mock_json('tests/resources/replace_orders.json')
         mock_response.return_value = mock
+        marketId = mock.Mock()
+        instructions = mock.Mock()
 
-        response = self.betting.replace_orders()
+        response = self.betting.replace_orders(marketId, instructions)
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('SportsAPING/v1.0/replaceOrders', {}, None)
+        mock_response.assert_called_with('SportsAPING/v1.0/replaceOrders',
+                                         {'marketId': marketId, 'instructions': instructions}, None)
         assert isinstance(response, resources.ReplaceOrders)

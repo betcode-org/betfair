@@ -12,11 +12,10 @@ class Scores(BaseEndpoint):
 
     URI = 'ScoresAPING/v1.0/'
 
-    def list_race_details(self, params=None, meetingIds=None, raceIds=None, session=None):
+    def list_race_details(self, meetingIds=None, raceIds=None, session=None):
         """
         Search for races to get their details.
 
-        :param dict params: json request, will be default if provided
         :param dict meetingIds: Optionally restricts the results to the specified meeting IDs.
         The unique Id for the meeting equivalent to the eventId for that specific race as
         returned by listEvents

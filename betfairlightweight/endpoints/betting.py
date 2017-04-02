@@ -16,12 +16,11 @@ class Betting(BaseEndpoint):
 
     URI = 'SportsAPING/v1.0/'
 
-    def list_event_types(self, params=None, filter=market_filter(), locale=None, session=None):
+    def list_event_types(self, filter=market_filter(), locale=None, session=None):
         """
         Returns a list of Event Types (i.e. Sports) associated with the markets
         selected by the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
@@ -34,12 +33,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.EventTypeResult, date_time_sent)
 
-    def list_competitions(self, params=None, filter=market_filter(), locale=None, session=None):
+    def list_competitions(self, filter=market_filter(), locale=None, session=None):
         """
         Returns a list of Competitions (i.e., World Cup 2013) associated with
         the markets selected by the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
@@ -52,13 +50,12 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.CompetitionResult, date_time_sent)
 
-    def list_time_ranges(self, params=None, filter=market_filter(), granularity='DAYS', session=None):
+    def list_time_ranges(self, filter=market_filter(), granularity='DAYS', session=None):
         """
         Returns a list of time ranges in the granularity specified in the
         request (i.e. 3PM to 4PM, Aug 14th to Aug 15th) associated with
         the markets selected by the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str granularity: The granularity of time periods that correspond
         to markets selected by the market filter
@@ -72,12 +69,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.TimeRangeResult, date_time_sent)
 
-    def list_events(self, params=None, filter=market_filter(), locale=None, session=None):
+    def list_events(self, filter=market_filter(), locale=None, session=None):
         """
         Returns a list of Events (i.e, Reading vs. Man United) associated with
         the markets selected by the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
@@ -90,12 +86,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.EventResult, date_time_sent)
 
-    def list_market_types(self, params=None, filter=market_filter(), locale=None, session=None):
+    def list_market_types(self, filter=market_filter(), locale=None, session=None):
         """
         Returns a list of market types (i.e. MATCH_ODDS, NEXT_GOAL) associated with
         the markets selected by the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
@@ -108,12 +103,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.MarketTypeResult, date_time_sent)
 
-    def list_countries(self, params=None, filter=market_filter(), locale=None, session=None):
+    def list_countries(self, filter=market_filter(), locale=None, session=None):
         """
         Returns a list of Countries associated with the markets selected by
         the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
@@ -126,12 +120,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.CountryResult, date_time_sent)
 
-    def list_venues(self, params=None, filter=market_filter(), locale=None, session=None):
+    def list_venues(self, filter=market_filter(), locale=None, session=None):
         """
         Returns a list of Venues (i.e. Cheltenham, Ascot) associated with
         the markets selected by the MarketFilter.
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
@@ -144,13 +137,12 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.VenueResult, date_time_sent)
 
-    def list_market_catalogue(self, params=None, filter=market_filter(), marketProjection=None, sort=None,
-                              maxResults=1, locale=None, session=None):
+    def list_market_catalogue(self, filter=market_filter(), marketProjection=None, sort=None, maxResults=1,
+                              locale=None, session=None):
         """
         Returns a list of information about published (ACTIVE/SUSPENDED) markets
         that does not change (or changes very rarely).
 
-        :param dict params: json request, will be default if provided
         :param dict filter: The filter to select desired markets
         :param list marketProjection: The type and amount of data returned about the market
         :param str sort: The order of the results
@@ -167,7 +159,7 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.MarketCatalogue, date_time_sent)
 
-    def list_market_book(self, params=None, marketIds=None, priceProjection=None, orderProjection=None,
+    def list_market_book(self, marketIds, priceProjection=None, orderProjection=None,
                          matchProjection=None, includeOverallPosition=None, partitionMatchedByStrategyRef=None,
                          customerStrategyRefs=None, currencyCode=None, matchedSince=None, betIds=None, locale=None,
                          session=None):
@@ -176,8 +168,6 @@ class Betting(BaseEndpoint):
         the status of the market, the status of selections, the traded volume, and
         the status of any orders you have placed in the market
 
-        :param dict params: json request, will be default if provided
-        :param dict filter: The filter to select desired markets
         :param list marketIds: One or more market ids
         :param dict priceProjection: The projection of price data you want to receive in the response
         :param str orderProjection: The orders you want to receive in the response
@@ -202,13 +192,12 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.MarketBook, date_time_sent)
 
-    def list_current_orders(self, params=None, betIds=None, marketIds=None, orderProjection=None,
+    def list_current_orders(self, betIds=None, marketIds=None, orderProjection=None,
                             customerOrderRefs=None, customerStrategyRefs=None, dateRange=time_range(), orderBy=None,
                             sortDir=None, fromRecord=None, recordCount=None, session=None):
         """
         Returns a list of your current orders.
 
-        :param dict params: json request, will be default if provided
         :param list betIds: If you ask for orders, restricts the results to orders with the specified bet IDs
         :param list marketIds: One or more market ids
         :param str orderProjection: Optionally restricts the results to the specified order status
@@ -231,7 +220,7 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.CurrentOrders, date_time_sent)
 
-    def list_cleared_orders(self, params=None, betStatus='SETTLED', eventTypeIds=None, eventIds=None, marketIds=None,
+    def list_cleared_orders(self, betStatus='SETTLED', eventTypeIds=None, eventIds=None, marketIds=None,
                             runnerIds=None, betIds=None, customerOrderRefs=None, customerStrategyRefs=None, side=None,
                             settledDateRange=time_range(), groupBy=None, includeItemDescription=None, locale=None,
                             fromRecord=None, recordCount=None, session=None):
@@ -239,7 +228,6 @@ class Betting(BaseEndpoint):
         Returns a list of settled bets based on the bet status,
         ordered by settled date.
 
-        :param dict params: json request, will be default if provided
         :param str betStatus: Restricts the results to the specified status
         :param list eventTypeIds: Optionally restricts the results to the specified Event Type IDs
         :param list eventIds: Optionally restricts the results to the specified Event IDs
@@ -265,12 +253,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.ClearedOrders, date_time_sent)
 
-    def list_market_profit_and_loss(self, params=None, marketIds=None, includeSettledBets=None, includeBspBets=None,
+    def list_market_profit_and_loss(self, marketIds, includeSettledBets=None, includeBspBets=None,
                                     netOfCommission=None, session=None):
         """
         Retrieve profit and loss for a given list of OPEN markets.
 
-        :param dict params: json request, will be default if provided
         :param list marketIds: List of markets to calculate profit and loss
         :param bool includeSettledBets: Option to include settled bets (partially settled markets only)
         :param bool includeBspBets: Option to include BSP bets
@@ -286,12 +273,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.MarketProfitLoss, date_time_sent)
 
-    def place_orders(self, params=None, marketId=None, instructions=None, customerRef=None, marketVersion=None,
+    def place_orders(self, marketId, instructions, customerRef=None, marketVersion=None,
                      customerStrategyRef=None, async=None, session=None):
         """
         Place new orders into market.
 
-        :param dict params: json request, will be default if provided
         :param str marketId: The market id these orders are to be placed on
         :param list instructions: The number of place instructions
         :param str customerRef: Optional parameter allowing the client to pass a unique string
@@ -312,12 +298,11 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.PlaceOrders, date_time_sent)
 
-    def cancel_orders(self, params=None, marketId=None, instructions=None, customerRef=None, session=None):
+    def cancel_orders(self, marketId, instructions, customerRef=None, session=None):
         """
         Cancel all bets OR cancel all bets on a market OR fully or partially
         cancel particular orders on a market.
 
-        :param dict params: json request, will be default if provided
         :param str marketId: If marketId and betId aren't supplied all bets are cancelled
         :param list instructions: All instructions need to be on the same market
         :param str customerRef: Optional parameter allowing the client to pass a unique
@@ -332,12 +317,10 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.CancelOrders, date_time_sent)
 
-    def update_orders(self, params=None, marketId=None, instructions=None, customerRef=None, session=None):
+    def update_orders(self, marketId, instructions, customerRef=None, session=None):
         """
-        This operation is logically a bulk cancel followed by a bulk place.
-        The cancel is completed first then the new orders are placed.
+        Update non-exposure changing field.
 
-        :param dict params: json request, will be default if provided
         :param str marketId: The market id these orders are to be placed on
         :param list instructions: The update instructions
         :param str customerRef: Optional parameter allowing the client to pass a unique
@@ -352,12 +335,12 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.UpdateOrders, date_time_sent)
 
-    def replace_orders(self, params=None, marketId=None, instructions=None, customerRef=None, marketVersion=None,
+    def replace_orders(self, marketId, instructions, customerRef=None, marketVersion=None,
                        async=None, session=None):
         """
-        Update non-exposure changing fields.
+        This operation is logically a bulk cancel followed by a bulk place.
+        The cancel is completed first then the new orders are placed.
 
-        :param dict params: json request, will be default if provided
         :param str marketId: The market id these orders are to be placed on
         :param list instructions: The number of replace instructions.  The limit
         of replace instructions per request is 60
