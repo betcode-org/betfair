@@ -231,7 +231,7 @@ def cancel_instruction(betId, sizeReduction=None):
     :param float sizeReduction: If supplied then this is a partial cancel.
 
     :returns: cancellation report detailing status, cancellation requested and actual cancellation details.
-    :rtype: Dataframe
+    :rtype: dict
     """
     args = locals()
     return {
@@ -247,7 +247,7 @@ def replace_instruction(betId, newPrice):
     :param float newPrice: The price to replace the bet at
 
     :returns: replace report detailing status, replace requested and actual replace details.
-    :rtype: Dataframe
+    :rtype: dict
     """
     return locals()
 
@@ -259,6 +259,6 @@ def update_instruction(betId, newPersistenceType):
     :param str newPersistenceType: The new persistence type to update this bet to.
 
     :returns: update report detailing status, update requested and update details.
-    :rtype: Dataframe
+    :rtype: dict
     """
     return locals()

@@ -15,8 +15,11 @@ class Betting(BaseEndpoint):
 
     def list_event_types(self, params=None, filter=market_filter(), locale=None, session=None):
         """
+        Returns a list of Event Types (i.e. Sports) associated with the markets
+        selected by the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
+        :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -30,8 +33,11 @@ class Betting(BaseEndpoint):
 
     def list_competitions(self, params=None, filter=market_filter(), locale=None, session=None):
         """
+        Returns a list of Competitions (i.e., World Cup 2013) associated with
+        the markets selected by the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
+        :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -45,9 +51,14 @@ class Betting(BaseEndpoint):
 
     def list_time_ranges(self, params=None, filter=market_filter(), granularity='DAYS', session=None):
         """
+        Returns a list of time ranges in the granularity specified in the
+        request (i.e. 3PM to 4PM, Aug 14th to Aug 15th) associated with
+        the markets selected by the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
-        :param str granularity: granularity filter
+        :param dict filter: The filter to select desired markets
+        :param str granularity: The granularity of time periods that correspond
+        to markets selected by the market filter
         :param requests.session session: Requests session object
 
         :rtype: list[resources.TimeRangeResult]
@@ -60,8 +71,11 @@ class Betting(BaseEndpoint):
 
     def list_events(self, params=None, filter=market_filter(), locale=None, session=None):
         """
+        Returns a list of Events (i.e, Reading vs. Man United) associated with
+        the markets selected by the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
+        :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -75,8 +89,11 @@ class Betting(BaseEndpoint):
 
     def list_market_types(self, params=None, filter=market_filter(), locale=None, session=None):
         """
+        Returns a list of market types (i.e. MATCH_ODDS, NEXT_GOAL) associated with
+        the markets selected by the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
+        :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -90,8 +107,11 @@ class Betting(BaseEndpoint):
 
     def list_countries(self, params=None, filter=market_filter(), locale=None, session=None):
         """
+        Returns a list of Countries associated with the markets selected by
+        the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
+        :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -105,8 +125,11 @@ class Betting(BaseEndpoint):
 
     def list_venues(self, params=None, filter=market_filter(), locale=None, session=None):
         """
+        Returns a list of Venues (i.e. Cheltenham, Ascot) associated with
+        the markets selected by the MarketFilter.
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
+        :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -121,11 +144,15 @@ class Betting(BaseEndpoint):
     def list_market_catalogue(self, params=None, filter=market_filter(), marketProjection=None, sort=None,
                               maxResults=1, locale=None, session=None):
         """
+        Returns a list of information about published (ACTIVE/SUSPENDED) markets
+        that does not change (or changes very rarely).
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
-        :param list marketProjection: the type and amount of data returned about the market
-        :param str sort: the order of the results
-        :param int maxResults: must be greater than 0 and less than or equal to 1000
+        :param dict filter: The filter to select desired markets
+        :param list marketProjection: The type and amount of data returned about the market
+        :param str sort: The order of the results
+        :param int maxResults: Limit on the total number of results returned, must be greater
+        than 0 and less than or equal to 10000
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -142,19 +169,25 @@ class Betting(BaseEndpoint):
                          customerStrategyRefs=None, currencyCode=None, matchedSince=None, betIds=None, locale=None,
                          session=None):
         """
+        Returns a list of dynamic data about markets. Dynamic data includes prices,
+        the status of the market, the status of selections, the traded volume, and
+        the status of any orders you have placed in the market
+
         :param dict params: json request, will be default if provided
-        :param dict filter: market_filter
-        :param list marketIds:
-        :param dict priceProjection:
-        :param str orderProjection:
-        :param str matchProjection:
-        :param str orderProjection:
-        :param bool includeOverallPosition:
-        :param bool partitionMatchedByStrategyRef:
-        :param list customerStrategyRefs:
-        :param str currencyCode:
-        :param str matchedSince: #todo str?
-        :param list betIds:
+        :param dict filter: The filter to select desired markets
+        :param list marketIds: One or more market ids
+        :param dict priceProjection: The projection of price data you want to receive in the response
+        :param str orderProjection: The orders you want to receive in the response
+        :param str matchProjection: If you ask for orders, specifies the representation of matches
+        :param bool includeOverallPosition: If you ask for orders, returns matches for each selection
+        :param bool partitionMatchedByStrategyRef: If you ask for orders, returns the breakdown of matches
+        by strategy for each selection
+        :param list customerStrategyRefs: f you ask for orders, restricts the results to orders matching
+        any of the specified set of customer defined strategies
+        :param str currencyCode: A Betfair standard currency code
+        :param str matchedSince: If you ask for orders, restricts the results to orders that have at
+        least one fragment matched since the specified date
+        :param list betIds: If you ask for orders, restricts the results to orders with the specified bet IDs
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
 
@@ -170,20 +203,24 @@ class Betting(BaseEndpoint):
                             customerOrderRefs=None, customerStrategyRefs=None, dateRange=time_range(), orderBy=None,
                             sortDir=None, fromRecord=None, recordCount=None, session=None):
         """
+        Returns a list of your current orders.
+
         :param dict params: json request, will be default if provided
-        :param list betIds:
-        :param list marketIds:
-        :param str orderProjection:
-        :param list customerOrderRefs:
-        :param list customerStrategyRefs:
-        :param dict dateRange:
-        :param str orderBy:
-        :param str sortDir:
-        :param int fromRecord:
-        :param int recordCount:
+        :param list betIds: If you ask for orders, restricts the results to orders with the specified bet IDs
+        :param list marketIds: One or more market ids
+        :param str orderProjection: Optionally restricts the results to the specified order status
+        :param list customerOrderRefs: Optionally restricts the results to the specified customer order references
+        :param list customerStrategyRefs: Optionally restricts the results to the specified customer strategy references
+        :param dict dateRange: Optionally restricts the results to be from/to the specified date, these dates
+        are contextual to the orders being returned and therefore the dates used to filter on will change
+        to placed, matched, voided or settled dates depending on the orderBy
+        :param str orderBy: Specifies how the results will be ordered. If no value is passed in, it defaults to BY_BET
+        :param str sortDir: Specifies the direction the results will be sorted in
+        :param int fromRecord: Specifies the first record that will be returned
+        :param int recordCount: Specifies how many records will be returned from the index position 'fromRecord'
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.CurrentOrders]
+        :rtype: resources.CurrentOrders
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
@@ -196,25 +233,28 @@ class Betting(BaseEndpoint):
                             settledDateRange=time_range(), groupBy=None, includeItemDescription=None, locale=None,
                             fromRecord=None, recordCount=None, session=None):
         """
+        Returns a list of settled bets based on the bet status,
+        ordered by settled date.
+
         :param dict params: json request, will be default if provided
-        :param str betStatus:
-        :param list eventTypeIds:
-        :param list eventIds:
-        :param list marketIds:
-        :param list runnerIds:
-        :param list betIds:
-        :param list customerOrderRefs:
-        :param list customerStrategyRefs:
-        :param str side:
-        :param dict settledDateRange:
-        :param str groupBy:
-        :param bool includeItemDescription:
-        :param str locale:
-        :param int fromRecord:
-        :param int recordCount:
+        :param str betStatus: Restricts the results to the specified status
+        :param list eventTypeIds: Optionally restricts the results to the specified Event Type IDs
+        :param list eventIds: Optionally restricts the results to the specified Event IDs
+        :param list marketIds: Optionally restricts the results to the specified market IDs
+        :param list runnerIds: Optionally restricts the results to the specified Runners
+        :param list betIds: If you ask for orders, restricts the results to orders with the specified bet IDs
+        :param list customerOrderRefs: Optionally restricts the results to the specified customer order references
+        :param list customerStrategyRefs: Optionally restricts the results to the specified customer strategy references
+        :param str side: Optionally restricts the results to the specified side
+        :param dict settledDateRange: Optionally restricts the results to be from/to the specified settled date
+        :param str groupBy: How to aggregate the lines, if not supplied then the lowest level is returned
+        :param bool includeItemDescription: If true then an ItemDescription object is included in the response
+        :param str locale: The language used for the response
+        :param int fromRecord: Specifies the first record that will be returned
+        :param int recordCount: Specifies how many records will be returned from the index position 'fromRecord'
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.ClearedOrders]
+        :rtype: resources.ClearedOrders
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
@@ -225,11 +265,14 @@ class Betting(BaseEndpoint):
     def list_market_profit_and_loss(self, params=None, marketIds=None, includeSettledBets=None, includeBspBets=None,
                                     netOfCommission=None, session=None):
         """
+        Retrieve profit and loss for a given list of OPEN markets.
+
         :param dict params: json request, will be default if provided
-        :param list marketIds: required
-        :param bool includeSettledBets:
-        :param bool includeBspBets:
-        :param bool netOfCommission:
+        :param list marketIds: List of markets to calculate profit and loss
+        :param bool includeSettledBets: Option to include settled bets (partially settled markets only)
+        :param bool includeBspBets: Option to include BSP bets
+        :param bool netOfCommission: Option to return profit and loss net of users current commission
+        rate for this market including any special tariffs
         :param requests.session session: Requests session object
 
         :rtype: list[resources.MarketProfitLoss]
@@ -243,16 +286,22 @@ class Betting(BaseEndpoint):
     def place_orders(self, params=None, marketId=None, instructions=None, customerRef=None, marketVersion=None,
                      customerStrategyRef=None, async=None, session=None):
         """
+        Place new orders into market.
+
         :param dict params: json request, will be default if provided
-        :param str marketId: required
-        :param list instructions: required
-        :param str customerRef:
-        :param str marketVersion:
-        :param str customerStrategyRef:
-        :param bool async:
+        :param str marketId: The market id these orders are to be placed on
+        :param list instructions: The number of place instructions
+        :param str customerRef: Optional parameter allowing the client to pass a unique string
+        (up to 32 chars) that is used to de-dupe mistaken re-submissions
+        :param str marketVersion: Optional parameter allowing the client to specify which
+        version of the market the orders should be placed on
+        :param str customerStrategyRef: An optional reference customers can use to specify
+        which strategy has sent the order
+        :param bool async: An optional flag (not setting equates to false) which specifies if
+        the orders should be placed asynchronously
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.PlaceOrders]
+        :rtype: resources.PlaceOrders
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
@@ -262,13 +311,17 @@ class Betting(BaseEndpoint):
 
     def cancel_orders(self, params=None, marketId=None, instructions=None, customerRef=None, session=None):
         """
+        Cancel all bets OR cancel all bets on a market OR fully or partially
+        cancel particular orders on a market.
+
         :param dict params: json request, will be default if provided
-        :param str marketId: required
-        :param list instructions: required
-        :param str customerRef:
+        :param str marketId: If marketId and betId aren't supplied all bets are cancelled
+        :param list instructions: All instructions need to be on the same market
+        :param str customerRef: Optional parameter allowing the client to pass a unique
+        string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.CancelOrders]
+        :rtype: resources.CancelOrders
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
@@ -278,13 +331,17 @@ class Betting(BaseEndpoint):
 
     def update_orders(self, params=None, marketId=None, instructions=None, customerRef=None, session=None):
         """
+        This operation is logically a bulk cancel followed by a bulk place.
+        The cancel is completed first then the new orders are placed.
+
         :param dict params: json request, will be default if provided
-        :param str marketId: required
-        :param list instructions: required
-        :param str customerRef:
+        :param str marketId: The market id these orders are to be placed on
+        :param list instructions: The update instructions
+        :param str customerRef: Optional parameter allowing the client to pass a unique
+        string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.UpdateOrders]
+        :rtype: resources.UpdateOrders
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()
@@ -295,15 +352,21 @@ class Betting(BaseEndpoint):
     def replace_orders(self, params=None, marketId=None, instructions=None, customerRef=None, marketVersion=None,
                        async=None, session=None):
         """
+        Update non-exposure changing fields.
+
         :param dict params: json request, will be default if provided
-        :param str marketId: required
-        :param list instructions: required
-        :param str customerRef:
-        :param str marketVersion:
-        :param str async:
+        :param str marketId: The market id these orders are to be placed on
+        :param list instructions: The number of replace instructions.  The limit
+        of replace instructions per request is 60
+        :param str customerRef: Optional parameter allowing the client to pass a unique
+        string (up to 32 chars) that is used to de-dupe mistaken re-submissions
+        :param str marketVersion: Optional parameter allowing the client to specify
+        which version of the market the orders should be placed on
+        :param str async: An optional flag (not setting equates to false) which specifies
+        if the orders should be replaced asynchronously
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.ReplaceOrders]
+        :rtype: resources.ReplaceOrders
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()

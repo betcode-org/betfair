@@ -32,7 +32,7 @@ class ScoresTest(unittest.TestCase):
 
         response = self.scores.list_race_details()
         assert mock.json.call_count == 1
-        mock_response.assert_called_with('ScoresAPING/v1.0/listRaceDetails', None, None)
+        mock_response.assert_called_with('ScoresAPING/v1.0/listRaceDetails', {}, None)
         assert isinstance(response[0], resources.RaceDetails)
         assert len(response) == 475
 

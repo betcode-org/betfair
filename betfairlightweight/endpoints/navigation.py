@@ -8,6 +8,14 @@ from .baseendpoint import BaseEndpoint
 class Navigation(BaseEndpoint):
 
     def list_navigation(self, session=None):
+        """
+        This Navigation Data for Applications service allows the retrieval of the
+        full Betfair market navigation menu from a compressed file.
+
+        :param requests.session session: Requests session object
+
+        :rtype: json
+        """
         return self.request(session=session)
 
     def request(self, method=None, params=None, session=None):
