@@ -46,15 +46,15 @@ class RaceCardTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.process_response')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request')
     def test_get_race_card(self, mock_request, mock_process_response):
-        market_ids = [1]
-        data_entries = [2]
+        market_ids = ['1', '2']
+        data_entries = 'test'
         with self.assertRaises(RaceCardError):
             self.race_card.get_race_card(market_ids)
 
         self.race_card.app_key = '1234'
         self.race_card.get_race_card(market_ids=market_ids, data_entries=data_entries)
 
-        mock_request.assert_called_once_with(session=None, params=data_entries, method=market_ids)
+        mock_request.assert_called_once_with(session=None, params={'marketId': '1,2', 'dataEntries': 'test'})
         assert mock_request.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.racecard.check_status_code')
@@ -67,7 +67,7 @@ class RaceCardTest(unittest.TestCase):
         self.race_card.request()
 
         mock_get.assert_called_with(
-                self.race_card.url, headers=mock_login_headers, params=mock_create_req())
+                self.race_card.url, headers=mock_login_headers, params=None)
         assert mock_get.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
@@ -83,11 +83,11 @@ class RaceCardTest(unittest.TestCase):
             self.race_card.request()
 
     def test_create_req(self):
-        assert self.race_card.create_req(['1', '2']) == {
+        assert self.race_card.create_race_card_req(['1', '2'], None) == {
             'dataEntries': "RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS",
             'marketId': '1,2'
         }
-        assert self.race_card.create_req(['1', '2'], ['RACE']) == {
+        assert self.race_card.create_race_card_req(['1', '2'], ['RACE']) == {
             'dataEntries': ['RACE'],
             'marketId': '1,2'
         }
