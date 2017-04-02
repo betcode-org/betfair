@@ -50,22 +50,27 @@ stream. The listener can hold a cache and push market_books/order_books out via 
 [Exchange Stream API](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
 ```python
-from betfairlightweight import StreamingMarketFilter, StreamingMarketDataFilter
+from betfairlightweight.filters import (
+    streaming_market_filter,
+    streaming_market_data_filter,
+)
 
 betfair_socket = trading.streaming.create_stream(unique_id=2, description='Test Market Socket')
 
-market_filter = StreamingMarketFilter(
-    event_type_ids=['7'],
-    country_codes=['IE'],
-    market_types=['WIN'],
+market_filter = streaming_market_filter(
+    eventTypeIds=['7'],
+    countryCodes=['IE'],
+    marketTypes=['WIN'],
 )
-market_data_filter = StreamingMarketDataFilter(
+market_data_filter = streaming_market_data_filter(
     fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF'],
-    ladder_levels=3
+    ladderLevels=3
 )
 
-betfair_socket.subscribe_to_markets(unique_id=12345,
-                                    market_filter=market_filter,
-                                    market_data_filter=market_data_filter)
+betfair_socket.subscribe_to_markets(
+    unique_id=12345,
+    market_filter=market_filter,
+    market_data_filter=market_data_filter
+)
 betfair_socket.start(async=False)
 ```
