@@ -10,6 +10,9 @@ from ..utils import clean_locals
 
 
 class Betting(BaseEndpoint):
+    """
+    Betting operations.
+    """
 
     URI = 'SportsAPING/v1.0/'
 

@@ -4,10 +4,11 @@ from .exceptions import StatusCodeError
 
 
 def check_status_code(response, codes=None):
-    """Checks response.status_code is in codes
+    """
+    Checks response.status_code is in codes.
 
-    :param response: Requests response
-    :param codes: List of accepted codes or callable
+    :param requests.request response: Requests response
+    :param list codes: List of accepted codes or callable
     :raises: StatusCodeError if code invalid
     """
     codes = codes or [200]
@@ -16,9 +17,10 @@ def check_status_code(response, codes=None):
 
 
 def strp_betfair_time(datetime_string):
-    """Converts Betfair string to datetime.
+    """
+    Converts Betfair string to datetime.
 
-    :param datetime_string: Datetime string.
+    :param str datetime_string: Datetime string.
     """
     try:
         return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -29,9 +31,10 @@ def strp_betfair_time(datetime_string):
 
 
 def strp_betfair_integer_time(datetime_integer):
-    """Converts Betfair integer to utc datetime.
+    """
+    Converts Betfair integer to utc datetime.
 
-    :param datetime_integer: Datetime integer.
+    :param int datetime_integer: Datetime integer.
     """
     try:
         return datetime.datetime.utcfromtimestamp(datetime_integer / 1e3)
@@ -40,10 +43,11 @@ def strp_betfair_integer_time(datetime_integer):
 
 
 def price_check(data, number):
-    """Access price data from dictionary.
+    """
+    Access price data from dictionary.
 
-    :param data: Dict object.
-    :param number: Number.
+    :param {} data: Dict object.
+    :param int number: Number.
     """
     try:
         output = data[number].price
@@ -55,10 +59,11 @@ def price_check(data, number):
 
 
 def size_check(data, number):
-    """Access size data from dictionary.
+    """
+    Access size data from dictionary.
 
-    :param data: Dict object.
-    :param number: Number.
+    :param {} data: Dict object.
+    :param int number: Number.
     """
     try:
         output = data[number].size
@@ -89,10 +94,10 @@ def update_available(available, book_update, deletion_select):
 
 
 def clean_locals(data):
-    """Clean up locals dict, remove empty and self/session/params params.
+    """
+    Clean up locals dict, remove empty and self/session/params params.
 
-    :param data: locals dicts from a function.
-    :type data: dict
+    :param {} data: locals dicts from a function.
     :returns: dict
     """
     if data.get('params') is not None:

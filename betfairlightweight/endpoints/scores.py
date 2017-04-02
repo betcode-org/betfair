@@ -6,6 +6,9 @@ from ..utils import clean_locals
 
 
 class Scores(BaseEndpoint):
+    """
+    Scores operations.
+    """
 
     URI = 'ScoresAPING/v1.0/'
 

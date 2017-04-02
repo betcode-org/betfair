@@ -9,6 +9,9 @@ from .. import resources
 
 
 class RaceCard(BaseEndpoint):
+    """
+    RaceCard operations.
+    """
 
     app_key = None
 
