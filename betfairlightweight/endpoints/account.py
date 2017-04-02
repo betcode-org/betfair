@@ -7,6 +7,9 @@ from ..filters import time_range
 
 
 class Account(BaseEndpoint):
+    """
+    Account operations.
+    """
 
     URI = 'AccountAPING/v1.0/'
     connect_timeout = 6.05
@@ -57,7 +60,7 @@ class Account(BaseEndpoint):
         :param str wallet: Which wallet to return statementItems for.
         :param requests.session session: Requests session object
 
-        :rtype: resources.AccountStatement
+        :rtype: resources.AccountStatementResult
         """
         params = clean_locals(locals())
         date_time_sent = datetime.datetime.utcnow()

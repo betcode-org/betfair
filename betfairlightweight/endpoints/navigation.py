@@ -6,6 +6,9 @@ from .baseendpoint import BaseEndpoint
 
 
 class Navigation(BaseEndpoint):
+    """
+    Navigation operations.
+    """
 
     def list_navigation(self, session=None):
         """
