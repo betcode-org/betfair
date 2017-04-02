@@ -3,7 +3,10 @@ from __future__ import print_function
 import json
 import logging
 
-from .stream import MarketStream, OrderStream
+from .stream import (
+    MarketStream,
+    OrderStream,
+)
 
 
 class BaseListener(object):

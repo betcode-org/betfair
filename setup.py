@@ -17,8 +17,11 @@ if sys.version_info < (3, 4):
     ])
 
 with open('betfairlightweight/__init__.py', 'r') as f:
-    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                        f.read(), re.MULTILINE).group(1)
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+        f.read(),
+        re.MULTILINE
+    ).group(1)
 
 setup(
         name='betfairlightweight',
@@ -29,7 +32,9 @@ setup(
             'betfairlightweight.resources',
             'betfairlightweight.streaming',
         ],
-        package_dir={'betfairlightweight': 'betfairlightweight'},
+        package_dir={
+            'betfairlightweight': 'betfairlightweight'
+        },
         install_requires=INSTALL_REQUIRES,
         requires=['requests'],
         url='https://github.com/liampauling/betfairlightweight',
@@ -43,6 +48,7 @@ setup(
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
         ],
         test_suite='tests'
 )
