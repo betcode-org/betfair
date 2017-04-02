@@ -6,7 +6,7 @@ Lightweight, super fast pythonic wrapper for [Betfair API-NG](http://docs.develo
 
 [Documentation](https://github.com/liampauling/betfairlightweight/wiki)
 
-Currently tested on Python 2.7, 3.4 and 3.5.
+Currently tested on Python 2.7, 3.4, 3.5 and 3.6.
 
 # installation
 
@@ -35,7 +35,7 @@ The library can then be used as follows:
 
 
 ```python
->>> event_types = trading.betting.list_event_types({'filter': {}})
+>>> event_types = trading.betting.list_event_types()
 
 [<EventTypeResult>, <EventTypeResult>, ..]
 ```

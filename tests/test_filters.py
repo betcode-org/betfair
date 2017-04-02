@@ -13,10 +13,34 @@ from betfairlightweight.filters import (
     market_on_close_order,
     replace_instruction,
     update_instruction,
+    streaming_market_data_filter,
+    streaming_market_filter,
+    streaming_order_filter,
 )
 
 
 class FilterTest(unittest.TestCase):
+
+    def test_streaming_market_filter(self):
+        response = streaming_market_filter()
+        assert response == {}
+
+        response = streaming_market_filter(marketIds=[1, 2])
+        assert response == {'marketIds': [1, 2]}
+
+    def test_streaming_market_data_filter(self):
+        response = streaming_market_data_filter()
+        assert response == {}
+
+        response = streaming_market_data_filter(ladderLevels=3)
+        assert response == {'ladderLevels': 3}
+
+    def test_streaming_order_filter(self):
+        response = streaming_order_filter()
+        assert response == {}
+
+        response = streaming_order_filter(includeOverallPosition=True)
+        assert response == {'includeOverallPosition': True}
 
     def test_time_range(self):
         response = time_range()
