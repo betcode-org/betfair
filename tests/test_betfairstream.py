@@ -110,7 +110,7 @@ class BetfairStreamTest(unittest.TestCase):
         clk = 'abc'
         self.betfair_stream.subscribe_to_orders(unique_id, initial_clk, clk)
         mock_send.assert_called_with(
-                {'id': unique_id, 'op': 'orderSubscription', 'initialClk': initial_clk, 'clk': clk}
+            {'orderFilter': 'abcdef', 'id': 3456, 'op': 'orderSubscription', 'initialClk': 'abc', 'clk': None}
         )
         self.mock_listener.register_stream.assert_called_with(unique_id, 'orderSubscription')
 

@@ -38,7 +38,7 @@ def streaming_market_data_filter(fields=None, ladderLevels=None):
 def streaming_order_filter(includeOverallPosition=None, customerStrategyRefs=None, partitionMatchedByStrategyRef=None):
     """
     :param bool includeOverallPosition: Returns overall / net position (OrderRunnerChange.mb / OrderRunnerChange.ml)
-    :param str customerStrategyRefs: Restricts to specified customerStrategyRefs; this will filter orders and
+    :param list customerStrategyRefs: Restricts to specified customerStrategyRefs; this will filter orders and
     StrategyMatchChanges accordingly (Note: overall postition is not filtered)
     :param bool partitionMatchedByStrategyRef: Returns strategy positions (OrderRunnerChange.smc=
     Map<customerStrategyRef, StrategyMatchChange>) - these are sent in delta format as per overall position.
