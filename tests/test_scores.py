@@ -36,5 +36,40 @@ class ScoresTest(unittest.TestCase):
         assert isinstance(response[0], resources.RaceDetails)
         assert len(response) == 475
 
+    @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
+    def test_list_scores(self, mock_response):
+        mock = create_mock_json('tests/resources/list_race_details.json')  # todo
+        mock_response.return_value = mock
+        mock_update_keys = mock.Mock()
+
+        response = self.scores.list_scores(mock_update_keys)
+        assert mock.json.call_count == 1
+        mock_response.assert_called_with('ScoresAPING/v1.0/listScores', {'updateKeys': mock_update_keys}, None)
+        assert isinstance(response[0], resources.Score)
+        assert len(response) == 475
+
+    @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
+    def test_list_incidents(self, mock_response):
+        mock = create_mock_json('tests/resources/list_race_details.json')  # todo
+        mock_response.return_value = mock
+        mock_update_keys = mock.Mock()
+
+        response = self.scores.list_incidents(mock_update_keys)
+        assert mock.json.call_count == 1
+        mock_response.assert_called_with('ScoresAPING/v1.0/listIncidents', {'updateKeys': mock_update_keys}, None)
+        assert isinstance(response[0], resources.Incidents)
+        assert len(response) == 475
+
+    @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
+    def test_list_available_events(self, mock_response):
+        mock = create_mock_json('tests/resources/list_race_details.json')  # todo
+        mock_response.return_value = mock
+
+        response = self.scores.list_available_events()
+        assert mock.json.call_count == 1
+        mock_response.assert_called_with('ScoresAPING/v1.0/listAvailableEvents', {}, None)
+        assert isinstance(response[0], resources.AvailableEvent)
+        assert len(response) == 475
+
     def test_url(self):
         assert self.scores.url == '%s%s' % (self.scores.client.api_uri, 'scores/json-rpc/v1')

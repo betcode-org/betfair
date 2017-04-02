@@ -55,7 +55,10 @@ from betfairlightweight.filters import (
     streaming_market_data_filter,
 )
 
-betfair_socket = trading.streaming.create_stream(unique_id=2, description='Test Market Socket')
+betfair_socket = trading.streaming.create_stream(
+    unique_id=2,
+    description='Test Market Socket',
+)
 
 market_filter = streaming_market_filter(
     eventTypeIds=['7'],
@@ -70,7 +73,7 @@ market_data_filter = streaming_market_data_filter(
 betfair_socket.subscribe_to_markets(
     unique_id=12345,
     market_filter=market_filter,
-    market_data_filter=market_data_filter
+    market_data_filter=market_data_filter,
 )
 betfair_socket.start(async=False)
 ```
