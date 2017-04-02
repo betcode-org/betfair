@@ -13,8 +13,10 @@ class Account(BaseEndpoint):
 
     def get_account_funds(self, params=None, wallet=None, session=None):
         """
+        Get available to bet amount.
+
         :param dict params: json request, will be default if provided
-        :param str wallet:
+        :param str wallet: Name of the wallet in question
         :param requests.session session: Requests session object
 
         :rtype: resources.AccountFunds
@@ -27,6 +29,9 @@ class Account(BaseEndpoint):
 
     def get_account_details(self, params=None, session=None):
         """
+        Returns the details relating your account, including your discount
+        rate and Betfair point balance.
+
         :param dict params: json request, will be default if provided
         :param requests.session session: Requests session object
 
@@ -41,13 +46,16 @@ class Account(BaseEndpoint):
     def get_account_statement(self, params=None, locale=None, fromRecord=None, recordCount=None,
                               itemDateRange=time_range(), includeItem=None, wallet=None, session=None):
         """
+        Get account statement.
+
         :param dict params: json request, will be default if provided
-        :param str locale:
-        :param int fromRecord:
-        :param int recordCount:
-        :param dict itemDateRange:
-        :param str includeItem:
-        :param str wallet:
+        :param str locale: The language to be used where applicable.
+        :param int fromRecord: Specifies the first record that will be returned
+        :param int recordCount: Specifies the maximum number of records to be returned.
+        :param dict itemDateRange: Return items with an itemDate within this date range.
+        :param str includeItem: Which items to include, if not specified then defaults to ALL.
+        :param str wallet: Which wallet to return statementItems for.
+        :param requests.session session: Requests session object
 
         :rtype: resources.AccountStatement
         """
@@ -59,8 +67,11 @@ class Account(BaseEndpoint):
 
     def list_currency_rates(self, params=None, fromCurrency=None, session=None):
         """
+        Returns a list of currency rates based on given currency
+
         :param dict params: json request, will be default if provided
-        :param str fromCurrency:
+        :param str fromCurrency: The currency from which the rates are computed
+        :param requests.session session: Requests session object
 
         :rtype: list[resources.CurrencyRate]
         """
@@ -71,12 +82,17 @@ class Account(BaseEndpoint):
         return self.process_response(response.json(), resources.CurrencyRate, date_time_sent)
 
     def transfer_funds(self, params=None, session=None):
-        raise DeprecationWarning('As of 20/09/2016 AUS wallet has been removed, function still available for when '
-                                 'accounts are added in 2017.')
-        # date_time_sent = datetime.datetime.utcnow()
-        # method = '%s%s' % (self.URI, 'transferFunds')
-        # response = self.request(method, params, session)
-        # return self.process_response(response.json(), resources.TransferFunds, date_time_sent)
+        """
+        Transfer funds between the UK Exchange and other wallets
+
+        :param dict params: json request, will be default if provided
+        :param requests.session session: Requests session object
+
+        :rtype: resources.TransferFunds
+        """
+        raise DeprecationWarning(
+            'As of 20/09/2016 AUS wallet has been removed, function still available for when '
+            'accounts are added in 2017.')
 
     @property
     def url(self):
