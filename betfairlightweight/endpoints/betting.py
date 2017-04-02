@@ -175,7 +175,7 @@ class Betting(BaseEndpoint):
         :param bool includeOverallPosition: If you ask for orders, returns matches for each selection
         :param bool partitionMatchedByStrategyRef: If you ask for orders, returns the breakdown of matches
         by strategy for each selection
-        :param list customerStrategyRefs: f you ask for orders, restricts the results to orders matching
+        :param list customerStrategyRefs: If you ask for orders, restricts the results to orders matching
         any of the specified set of customer defined strategies
         :param str currencyCode: A Betfair standard currency code
         :param str matchedSince: If you ask for orders, restricts the results to orders that have at
