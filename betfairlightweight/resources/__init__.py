@@ -32,7 +32,10 @@ from .accountresources import (
 )
 
 from .scoresresources import (
-    RaceDetails
+    RaceDetails,
+    Score,
+    Incidents,
+    AvailableEvent,
 )
 
 from .racecardresources import (
