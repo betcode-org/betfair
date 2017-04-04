@@ -44,16 +44,16 @@ class Account(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.AccountDetails, date_time_sent)
 
-    def get_account_statement(self, locale=None, fromRecord=None, recordCount=None, itemDateRange=time_range(),
-                              includeItem=None, wallet=None, session=None):
+    def get_account_statement(self, locale=None, from_record=None, record_count=None, item_date_range=time_range(),
+                              include_item=None, wallet=None, session=None):
         """
         Get account statement.
 
         :param str locale: The language to be used where applicable.
-        :param int fromRecord: Specifies the first record that will be returned
-        :param int recordCount: Specifies the maximum number of records to be returned.
-        :param dict itemDateRange: Return items with an itemDate within this date range.
-        :param str includeItem: Which items to include, if not specified then defaults to ALL.
+        :param int from_record: Specifies the first record that will be returned
+        :param int record_count: Specifies the maximum number of records to be returned.
+        :param dict item_date_range: Return items with an itemDate within this date range.
+        :param str include_item: Which items to include, if not specified then defaults to ALL.
         :param str wallet: Which wallet to return statementItems for.
         :param requests.session session: Requests session object
 
@@ -65,11 +65,11 @@ class Account(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.AccountStatementResult, date_time_sent)
 
-    def list_currency_rates(self, fromCurrency=None, session=None):
+    def list_currency_rates(self, from_currency=None, session=None):
         """
         Returns a list of currency rates based on given currency
 
-        :param str fromCurrency: The currency from which the rates are computed
+        :param str from_currency: The currency from which the rates are computed
         :param requests.session session: Requests session object
 
         :rtype: list[resources.CurrencyRate]

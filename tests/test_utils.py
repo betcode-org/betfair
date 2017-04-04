@@ -10,6 +10,7 @@ from betfairlightweight.utils import (
     size_check,
     update_available,
     clean_locals,
+    to_camel_case,
 )
 from betfairlightweight.exceptions import StatusCodeError
 from betfairlightweight.resources.bettingresources import PriceSize
@@ -97,6 +98,9 @@ class UtilsTest(unittest.TestCase):
         data = []
         back_e = size_check(data, 0)
         assert not back_e
+
+    def test_convert_to_camel_case(self):
+        assert to_camel_case('hello_world') == 'helloWorld'
 
 
 class UtilsTestUpdateAvailable(unittest.TestCase):

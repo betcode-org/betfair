@@ -95,7 +95,8 @@ def update_available(available, book_update, deletion_select):
 
 def clean_locals(data):
     """
-    Clean up locals dict, remove empty and self/session/params params.
+    Clean up locals dict, remove empty and self/session/params params
+    and convert to camelCase.
 
     :param {} data: locals dicts from a function.
     :returns: dict
@@ -104,5 +105,16 @@ def clean_locals(data):
         return data.get('params')
     else:
         return {
-            k: v for k, v in data.items() if v is not None and k not in ['self', 'session', 'params']
+            to_camel_case(k): v for k, v in data.items() if v is not None and k not in ['self', 'session', 'params']
         }
+
+
+def to_camel_case(snake_str):
+    """
+    Converts snake_string to camelCase
+
+    :param str snake_str:
+    :returns: str
+    """
+    components = snake_str.split('_')
+    return components[0] + "".join(x.title() for x in components[1:])
