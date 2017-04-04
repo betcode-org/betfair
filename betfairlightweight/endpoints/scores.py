@@ -12,14 +12,14 @@ class Scores(BaseEndpoint):
 
     URI = 'ScoresAPING/v1.0/'
 
-    def list_race_details(self, meetingIds=None, raceIds=None, session=None):
+    def list_race_details(self, meeting_ids=None, race_ids=None, session=None):
         """
         Search for races to get their details.
 
-        :param dict meetingIds: Optionally restricts the results to the specified meeting IDs.
+        :param dict meeting_ids: Optionally restricts the results to the specified meeting IDs.
         The unique Id for the meeting equivalent to the eventId for that specific race as
         returned by listEvents
-        :param str raceIds: Optionally restricts the results to the specified race IDs. The
+        :param str race_ids: Optionally restricts the results to the specified race IDs. The
         unique Id for the race in the format meetingid.raceTime (hhmm). raceTime is in GMT
         :param requests.session session: Requests session object
 
@@ -33,11 +33,11 @@ class Scores(BaseEndpoint):
 
     # Following requires app key to be authorised and has not been tested.
 
-    def list_scores(self, updateKeys, session=None):
+    def list_scores(self, update_keys, session=None):
         """
         Returns a list of current scores for the given events.
 
-        :param dict updateKeys: The filter to select desired markets. All markets that match
+        :param dict update_keys: The filter to select desired markets. All markets that match
         the criteria in the filter are selected
         :param requests.session session: Requests session object
 
@@ -49,11 +49,11 @@ class Scores(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.Score, date_time_sent)
 
-    def list_incidents(self, updateKeys, session=None):
+    def list_incidents(self, update_keys, session=None):
         """
         Returns a list of incidents for the given events.
 
-        :param dict updateKeys: The filter to select desired markets. All markets that match
+        :param dict update_keys: The filter to select desired markets. All markets that match
         the criteria in the filter are selected
         :param requests.session session: Requests session object
 
@@ -65,13 +65,13 @@ class Scores(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.Incidents, date_time_sent)
 
-    def list_available_events(self, eventIds=None, eventTypeIds=None, eventStatus=None, session=None):
+    def list_available_events(self, event_ids=None, event_type_ids=None, event_status=None, session=None):
         """
         Search for events that have live score data available.
 
-        :param list eventIds: Optionally restricts the results to the specified event IDs
-        :param list eventTypeIds: Optionally restricts the results to the specified event type IDs
-        :param list eventStatus: Optionally restricts the results to the specified event status
+        :param list event_ids: Optionally restricts the results to the specified event IDs
+        :param list event_type_ids: Optionally restricts the results to the specified event type IDs
+        :param list event_status: Optionally restricts the results to the specified event status
         :param requests.session session: Requests session object
 
         :rtype: list[resources.AvailableEvent]

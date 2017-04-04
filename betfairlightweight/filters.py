@@ -1,53 +1,55 @@
+from .utils import to_camel_case
 
 
-def streaming_market_filter(marketIds=None, bspMarket=None, bettingTypes=None, eventTypeIds=None, eventIds=None,
-                            turnInPlayEnabled=None, marketTypes=None, venues=None, countryCodes=None):
+def streaming_market_filter(market_ids=None, bsp_market=None, betting_types=None, event_type_ids=None, event_ids=None,
+                            turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None):
     """
-    :param list marketIds: filter market data to data pertaining to specific marketIds.
-    :param list eventTypeIds: filter market data to data pertaining to specific event_type ids.
-    :param list eventIds: filter market data to data pertaining to specific event ids.
-    :param bool turnInPlayEnabled: restriction on whether market will turn in play or not, not supplied returns all.
+    :param list market_ids: filter market data to data pertaining to specific marketIds.
+    :param list event_type_ids: filter market data to data pertaining to specific event_type ids.
+    :param list event_ids: filter market data to data pertaining to specific event ids.
+    :param bool turn_in_play_enabled: restriction on whether market will turn in play or not, not supplied returns all.
     :param list venues: restrict markets by venue (only horse racing has venue at the moment)
-    :param bool bspMarket: restriction on bsp, not supplied will return all.
-    :param list bettingTypes: filter on betting types
-    :param list marketTypes: filter market data by market types.
-    :param list countryCodes: filter based on country codes
+    :param bool bsp_market: restriction on bsp, not supplied will return all.
+    :param list betting_types: filter on betting types
+    :param list market_types: filter market data by market types.
+    :param list country_codes: filter based on country codes
 
     :return: dict
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
-def streaming_market_data_filter(fields=None, ladderLevels=None):
+def streaming_market_data_filter(fields=None, ladder_levels=None):
     """
     :param list fields: EX_BEST_OFFERS_DISP, EX_BEST_OFFERS, EX_ALL_OFFERS, EX_TRADED,
     EX_TRADED_VOL, EX_LTP, EX_MARKET_DEF, SP_TRADED, SP_PROJECTED
-    :param int ladderLevels: 1->10
+    :param int ladder_levels: 1->10
 
     :return: dict
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
-def streaming_order_filter(includeOverallPosition=None, customerStrategyRefs=None, partitionMatchedByStrategyRef=None):
+def streaming_order_filter(include_overall_position=None, customer_strategy_refs=None,
+                           partition_matched_by_strategy_ref=None):
     """
-    :param bool includeOverallPosition: Returns overall / net position (OrderRunnerChange.mb / OrderRunnerChange.ml)
-    :param list customerStrategyRefs: Restricts to specified customerStrategyRefs; this will filter orders and
+    :param bool include_overall_position: Returns overall / net position (OrderRunnerChange.mb / OrderRunnerChange.ml)
+    :param list customer_strategy_refs: Restricts to specified customerStrategyRefs; this will filter orders and
     StrategyMatchChanges accordingly (Note: overall postition is not filtered)
-    :param bool partitionMatchedByStrategyRef: Returns strategy positions (OrderRunnerChange.smc=
+    :param bool partition_matched_by_strategy_ref: Returns strategy positions (OrderRunnerChange.smc=
     Map<customerStrategyRef, StrategyMatchChange>) - these are sent in delta format as per overall position.
 
     :return: dict
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
@@ -64,30 +66,30 @@ def time_range(from_=None, to=None):  # todo datetime conversion
     }
 
 
-def market_filter(textQuery=None, eventTypeIds=None, eventIds=None, competitionIds=None, marketIds=None, venues=None,
-                  bspOnly=None, turnInPlayEnabled=None, inPlayOnly=None, marketBettingTypes=None, marketCountries=None,
-                  marketTypeCodes=None, marketStartTime=None, withOrders=None):
+def market_filter(text_query=None, event_type_ids=None, event_ids=None, competition_ids=None, market_ids=None,
+                  venues=None, bsp_only=None, turn_in_play_enabled=None, in_play_only=None, market_betting_types=None,
+                  market_countries=None, market_type_codes=None, market_start_time=None, with_orders=None):
     """
-    :param str textQuery: restrict markets by text associated with it, e.g name, event, comp.
-    :param list eventTypeIds: filter market data to data pertaining to specific event_type ids.
-    :param list eventIds: filter market data to data pertaining to specific event ids.
-    :param list competitionIds: filter market data to data pertaining to specific competition ids.
-    :param list marketIds: filter market data to data pertaining to specific marketIds.
+    :param str text_query: restrict markets by text associated with it, e.g name, event, comp.
+    :param list event_type_ids: filter market data to data pertaining to specific event_type ids.
+    :param list event_ids: filter market data to data pertaining to specific event ids.
+    :param list competition_ids: filter market data to data pertaining to specific competition ids.
+    :param list market_ids: filter market data to data pertaining to specific marketIds.
     :param list venues: restrict markets by venue (only horse racing has venue at the moment)
-    :param bool bspOnly: restriction on bsp, not supplied will return all.
-    :param bool turnInPlayEnabled: restriction on whether market will turn in play or not, not supplied returns all.
-    :param bool inPlayOnly: restriction to currently inplay, not supplied returns all.
-    :param list marketBettingTypes: filter market data by market betting types.
-    :param list marketCountries: filter market data by country codes.
-    :param list marketTypeCodes: filter market data to match the type of market e.g. MATCH_ODDS.
-    :param dict marketStartTime: filter market data by time at which it starts.
-    :param str withOrders: filter market data by specified order status.
+    :param bool bsp_only: restriction on bsp, not supplied will return all.
+    :param bool turn_in_play_enabled: restriction on whether market will turn in play or not, not supplied returns all.
+    :param bool in_play_only: restriction to currently inplay, not supplied returns all.
+    :param list market_betting_types: filter market data by market betting types.
+    :param list market_countries: filter market data by country codes.
+    :param list market_type_codes: filter market data to match the type of market e.g. MATCH_ODDS.
+    :param dict market_start_time: filter market data by time at which it starts.
+    :param str with_orders: filter market data by specified order status.
 
     :return: dict
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
@@ -109,19 +111,19 @@ def price_data(sp_available=False, sp_traded=False, ex_best_offers=False, ex_all
     ]
 
 
-def ex_best_offers_overrides(bestPricesDepth=None, rollupModel=None, rollupLimit=None,
-                             rollupLiabilityThreshold=None, rollupLiabilityFactor=None):
+def ex_best_offers_overrides(best_prices_depth=None, rollup_model=None, rollup_limit=None,
+                             rollup_liability_threshold=None, rollup_liability_factor=None):
     """
     Create filter to specify whether to accumulate market volume info, how deep a book to return and rollup methods if
     accumulation is selected.
-    :param int bestPricesDepth: The maximum number of prices to return on each side for each runner.
-    :param str rollupModel: method to use to accumulate market orders.
-    :param int rollupLimit: The volume limit to use when rolling up returned sizes. The exact definition of the limit
+    :param int best_prices_depth: The maximum number of prices to return on each side for each runner.
+    :param str rollup_model: method to use to accumulate market orders.
+    :param int rollup_limit: The volume limit to use when rolling up returned sizes. The exact definition of the limit
     depends on the rollupModel.
                         If no limit is provided it will use minimum stake
-    :param float rollupLiabilityThreshold: Only applicable when rollupModel is MANAGED_LIABILITY. The rollup model
+    :param float rollup_liability_threshold: Only applicable when rollupModel is MANAGED_LIABILITY. The rollup model
     switches from being stake based to liability based at the smallest lay price which is >= rollupLiabilityThreshold
-    :param int rollupLiabilityFactor: Only applicable when rollupModel is MANAGED_LIABILITY. (rollupLiabilityFactor *
+    :param int rollup_liability_factor: Only applicable when rollupModel is MANAGED_LIABILITY. (rollupLiabilityFactor *
     rollupLimit) is the minimum liabilty the user is deemed to be comfortable with. After the rollupLiabilityThreshold
     price subsequent volumes will be rolled up to minimum value such that the liability >= the minimum liability.
 
@@ -131,18 +133,18 @@ def ex_best_offers_overrides(bestPricesDepth=None, rollupModel=None, rollupLimit
 
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
-def price_projection(priceData=price_data(), exBestOffersOverrides=ex_best_offers_overrides(), virtualise=True,
-                     rolloverStakes=False):
+def price_projection(price_data=price_data(), ex_best_offers_overrides=ex_best_offers_overrides(), virtualise=True,
+                     rollover_stakes=False):
     """
     Selection criteria of the returning price data.
-    :param list priceData: PriceData filter to specify what market data we wish to receive.
-    :param dict exBestOffersOverrides: define order book depth, rollup method.
+    :param list price_data: PriceData filter to specify what market data we wish to receive.
+    :param dict ex_best_offers_overrides: define order book depth, rollup method.
     :param bool virtualise: whether to receive virtualised prices also.
-    :param bool rolloverStakes: whether to accumulate volume at each price as sum of volume at that price and all better
+    :param bool rollover_stakes: whether to accumulate volume at each price as sum of volume at that price and all better
     prices.
 
     :returns: price data criteria for market data.
@@ -150,22 +152,24 @@ def price_projection(priceData=price_data(), exBestOffersOverrides=ex_best_offer
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
-def place_instruction(orderType, selectionId, side, handicap=None, limitOrder=None, limitOnCloseOrder=None,
-                      marketOnCloseOrder=None, customerOrderRef=None):
+def place_instruction(order_type, selection_id, side, handicap=None, limit_order=None, limit_on_close_order=None,
+                      market_on_close_order=None, customer_order_ref=None):
     """
     Create order instructions to place an order at exchange.
-    :param str orderType: define type of order to place.
-    :param int selectionId: selection on which to place order
+    :param str order_type: define type of order to place.
+    :param int selection_id: selection on which to place order
     :param float handicap: handicap if placing order on asianhandicap type market
     :param str side: side of order
-    :param ? limitOrder: if orderType is a limitOrder structure details of the order.
-    :param ? limitOnCloseOrder: if orderType is a limitOnCloseOrder structure details of the order.
-    :param ? marketOnCloseOrder: if orderType is a marketOnCloseOrder structure details of the order.
-    :param str customerOrderRef: an optional reference customers can set to identify instructions..
+    :param resources.LimitOrder limit_order: if orderType is a limitOrder structure details of the order.
+    :param resources.LimitOnCloseOrder limit_on_close_order: if orderType is a
+    limitOnCloseOrder structure details of the order.
+    :param resources.MarketOnCloseOrder market_on_close_order: if orderType is
+    a marketOnCloseOrder structure details of the order.
+    :param str customer_order_ref: an optional reference customers can set to identify instructions..
 
     :return: orders to place.
     :rtype: dict
@@ -173,30 +177,30 @@ def place_instruction(orderType, selectionId, side, handicap=None, limitOrder=No
 
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
-def limit_order(size, price, persistenceType, timeInForce=None, minFillSize=None, betTargetType=None,
-                betTargetSize=None):
+def limit_order(size, price, persistence_type, time_in_force=None, min_fill_size=None, bet_target_type=None,
+                bet_target_size=None):
     """
     Create a limit order to send to exchange.
     :param float size: amount in account currency to be sent.
     :param float price: price at which the order is to be sent.
-    :param str persistenceType: what happens to order at turn in play.
-    :param str timeInForce: specify if it is FillOrKill/FillAndKill. This value takes precedence over any
+    :param str persistence_type: what happens to order at turn in play.
+    :param str time_in_force: specify if it is FillOrKill/FillAndKill. This value takes precedence over any
     PersistenceType value chosen.
-    :param float minFillSize: the minimum amount to be filled for FillAndKill.
-    :param str betTargetType: Specify the type of Target, bet to certain backer profit or certain payout value.
+    :param float min_fill_size: the minimum amount to be filled for FillAndKill.
+    :param str bet_target_type: Specify the type of Target, bet to certain backer profit or certain payout value.
                           Used to adjust to lower stakes if filled at better levels.
-    :param float betTargetSize: Size of payout of profit to bet.
+    :param float bet_target_size: Size of payout of profit to bet.
 
     :returns: Order information to place a limit order.
     :rtype: dict
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
@@ -223,41 +227,47 @@ def market_on_close_order(liability):
     return locals()
 
 
-def cancel_instruction(betId, sizeReduction=None):
+def cancel_instruction(bet_id, size_reduction=None):
     """
     Instruction to fully or partially cancel an order (only applies to LIMIT orders)
-    :param str betId: identifier of the bet to cancel.
-    :param float sizeReduction: If supplied then this is a partial cancel.
+    :param str bet_id: identifier of the bet to cancel.
+    :param float size_reduction: If supplied then this is a partial cancel.
 
     :returns: cancellation report detailing status, cancellation requested and actual cancellation details.
     :rtype: dict
     """
     args = locals()
     return {
-        k: v for k, v in args.items() if v is not None
+        to_camel_case(k): v for k, v in args.items() if v is not None
     }
 
 
-def replace_instruction(betId, newPrice):
+def replace_instruction(bet_id, new_price):
     """
     Instruction to replace a LIMIT or LIMIT_ON_CLOSE order at a new price.
     Original order will be cancelled and a new order placed at the new price for the remaining stake.
-    :param str betId: Unique identifier for the bet
-    :param float newPrice: The price to replace the bet at
+    :param str bet_id: Unique identifier for the bet
+    :param float new_price: The price to replace the bet at
 
     :returns: replace report detailing status, replace requested and actual replace details.
     :rtype: dict
     """
-    return locals()
+    args = locals()
+    return {
+        to_camel_case(k): v for k, v in args.items() if v is not None
+    }
 
 
-def update_instruction(betId, newPersistenceType):
+def update_instruction(bet_id, new_persistence_type):
     """
     Instruction to update LIMIT bet's persistence of an order that do not affect exposure
-    :param str betId: Unique identifier for the bet
-    :param str newPersistenceType: The new persistence type to update this bet to.
+    :param str bet_id: Unique identifier for the bet
+    :param str new_persistence_type: The new persistence type to update this bet to.
 
     :returns: update report detailing status, update requested and update details.
     :rtype: dict
     """
-    return locals()
+    args = locals()
+    return {
+        to_camel_case(k): v for k, v in args.items() if v is not None
+    }

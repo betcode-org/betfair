@@ -25,21 +25,21 @@ class FilterTest(unittest.TestCase):
         response = streaming_market_filter()
         assert response == {}
 
-        response = streaming_market_filter(marketIds=[1, 2])
+        response = streaming_market_filter(market_ids=[1, 2])
         assert response == {'marketIds': [1, 2]}
 
     def test_streaming_market_data_filter(self):
         response = streaming_market_data_filter()
         assert response == {}
 
-        response = streaming_market_data_filter(ladderLevels=3)
+        response = streaming_market_data_filter(ladder_levels=3)
         assert response == {'ladderLevels': 3}
 
     def test_streaming_order_filter(self):
         response = streaming_order_filter()
         assert response == {}
 
-        response = streaming_order_filter(includeOverallPosition=True)
+        response = streaming_order_filter(include_overall_position=True)
         assert response == {'includeOverallPosition': True}
 
     def test_time_range(self):
@@ -53,7 +53,7 @@ class FilterTest(unittest.TestCase):
         response = market_filter()
         assert response == {}
 
-        response = market_filter(marketIds=['1.123'])
+        response = market_filter(market_ids=['1.123'])
         assert response == {'marketIds': ['1.123']}
 
     def test_price_data(self):
