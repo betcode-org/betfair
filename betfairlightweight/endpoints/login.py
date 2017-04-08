@@ -8,10 +8,20 @@ from ..utils import check_status_code
 
 
 class Login(BaseEndpoint):
+    """
+    Login operations.
+    """
 
     _error = LoginError
 
     def __call__(self, session=None):
+        """
+        Makes login request.
+
+        :param requests.session session: Requests session object
+
+        :rtype: LoginResource
+        """
         date_time_sent = datetime.datetime.utcnow()
         response = self.request(self.url, session=session)
         response_json = response.json()

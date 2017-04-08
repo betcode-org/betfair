@@ -1,91 +1,102 @@
 import unittest
 
-from betfairlightweight.filters import MarketFilter, StreamingMarketDataFilter, StreamingMarketFilter
+from betfairlightweight.filters import (
+    market_filter,
+    time_range,
+    price_data,
+    ex_best_offers_overrides,
+    price_projection,
+    place_instruction,
+    limit_on_close_order,
+    limit_order,
+    cancel_instruction,
+    market_on_close_order,
+    replace_instruction,
+    update_instruction,
+    streaming_market_data_filter,
+    streaming_market_filter,
+    streaming_order_filter,
+)
 
 
-class MarketFilterTest(unittest.TestCase):
+class FilterTest(unittest.TestCase):
 
-    def setUp(self):
-        self.market_filter = MarketFilter()
+    def test_streaming_market_filter(self):
+        response = streaming_market_filter()
+        assert response == {}
 
-    def test_init(self):
-        assert self.market_filter.text_query is None
-        assert self.market_filter.event_type_ids == []
-        assert self.market_filter.event_ids == []
-        assert self.market_filter.competition_ids == []
-        assert self.market_filter.market_ids == []
-        assert self.market_filter.venues == []
-        assert self.market_filter.bsp_only is None
-        assert self.market_filter.turn_in_play_enabled is None
-        assert self.market_filter.in_play_only is None
-        assert self.market_filter.market_betting_types == []
-        assert self.market_filter.market_type_codes == []
-        assert self.market_filter.market_countries == []
-        assert self.market_filter.market_start_time is None
-        assert self.market_filter.with_orders == []
+        response = streaming_market_filter(market_ids=[1, 2])
+        assert response == {'marketIds': [1, 2]}
 
-    def test_serialise(self):
-        assert self.market_filter.serialise == {
-            'marketIds': [],
-            'textQuery': None,
-            'marketBettingTypes': [],
-            'eventTypeIds': [],
-            'eventIds': [],
-            'turnInPlayEnabled': None,
-            'inPlayOnly': None,
-            'marketTypeCodes': [],
-            'venues': [],
-            'marketCountries': [],
-            'bspOnly': None,
-            'competitionIds': [],
-            'marketStartTime': None,
-            'withOrders': [],
+    def test_streaming_market_data_filter(self):
+        response = streaming_market_data_filter()
+        assert response == {}
+
+        response = streaming_market_data_filter(ladder_levels=3)
+        assert response == {'ladderLevels': 3}
+
+    def test_streaming_order_filter(self):
+        response = streaming_order_filter()
+        assert response == {}
+
+        response = streaming_order_filter(include_overall_position=True)
+        assert response == {'includeOverallPosition': True}
+
+    def test_time_range(self):
+        response = time_range()
+        assert response == {'from': None, 'to': None}
+
+        response = time_range(from_='123', to='456')
+        assert response == {'from': '123', 'to': '456'}
+
+    def test_market_filter(self):
+        response = market_filter()
+        assert response == {}
+
+        response = market_filter(market_ids=['1.123'])
+        assert response == {'marketIds': ['1.123']}
+
+    def test_price_data(self):
+        response = price_data()
+        assert response == []
+
+        response = price_data(ex_best_offers=True)
+        assert response == ['EX_BEST_OFFERS']
+
+    def test_ex_best_offers_overrides(self):
+        response = ex_best_offers_overrides()
+        assert response == {}
+
+    def test_price_projection(self):
+        response = price_projection()
+        assert response == {
+            'rolloverStakes': False, 'priceData': [], 'exBestOffersOverrides': {}, 'virtualise': True
         }
 
+    def test_place_instruction(self):
+        response = place_instruction('LIMIT', 123, 'LAY')
+        assert response == {'orderType': 'LIMIT', 'selectionId': 123, 'side': 'LAY'}
 
-class StreamingMarketFilterTest(unittest.TestCase):
+    def test_limit_order(self):
+        response = limit_order(1.1, 123, 'LAPSE')
+        assert response == {'size': 1.1, 'price': 123, 'persistenceType': 'LAPSE'}
 
-    def setUp(self):
-        self.market_filter = StreamingMarketFilter()
+    def test_limit_on_close_order(self):
+        response = limit_on_close_order(1.1, 2.2)
+        assert response == {'liability': 1.1, 'price': 2.2}
 
-    def test_init(self):
-        assert self.market_filter.market_ids == []
-        assert self.market_filter.bsp_market is None
-        assert self.market_filter.betting_types == []
-        assert self.market_filter.event_type_ids == []
-        assert self.market_filter.event_ids == []
-        assert self.market_filter.turn_in_play_enabled is None
-        assert self.market_filter.market_types == []
-        assert self.market_filter.venues == []
-        assert self.market_filter.country_codes == []
+    def test_market_on_close_order(self):
+        response = market_on_close_order(1.1)
+        assert response == {'liability': 1.1}
 
-    def test_serialise(self):
-        assert self.market_filter.serialise == {
-            'marketIds': [],
-            'bspMarket': None,
-            'bettingTypes': [],
-            'eventTypeIds': [],
-            'eventIds': [],
-            'turnInPlayEnabled': None,
-            'marketTypes': [],
-            'venues': [],
-            'countryCodes': [],
-        }
+    def test_cancel_instruction(self):
+        response = cancel_instruction('1.123')
+        assert response == {'betId': '1.123'}
 
+    def test_replace_instruction(self):
+        response = replace_instruction('1.123', 12)
+        assert response == {'betId': '1.123', 'newPrice': 12}
 
-class StreamingMarketDataFilterTest(unittest.TestCase):
-
-    def setUp(self):
-        self.fields = [1, 2, 3]
-        self.ladder_levels = 69
-        self.market_filter = StreamingMarketDataFilter(self.fields, self.ladder_levels)
-
-    def test_init(self):
-        assert self.market_filter.fields == self.fields
-        assert self.market_filter.ladder_levels == self.ladder_levels
-
-    def test_serialise(self):
-        assert self.market_filter.serialise == {
-            'fields': self.fields,
-            'ladderLevels': self.ladder_levels
-        }
+    def test_update_instruction(self):
+        response = update_instruction('1.123', 'LAPSE')
+        assert response == {'betId': '1.123', 'newPersistenceType': 'LAPSE'}

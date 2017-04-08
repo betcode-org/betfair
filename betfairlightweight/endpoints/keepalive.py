@@ -8,10 +8,20 @@ from ..utils import check_status_code
 
 
 class KeepAlive(BaseEndpoint):
+    """
+    KeepAlive operations.
+    """
 
     _error = KeepAliveError
 
     def __call__(self, session=None):
+        """
+        Makes keep alive request.
+
+        :param requests.session session: Requests session object
+
+        :rtype: KeepAliveResource
+        """
         date_time_sent = datetime.datetime.utcnow()
         response = self.request(session=session)
         response_json = response.json()

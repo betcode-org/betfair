@@ -1,43 +1,12 @@
 from enum import Enum
 
 
-GENERIC_JSON_RPC_EXCEPTIONS = {-32700: 'Invalid JSON was received by the server. An error occurred on the server while '
-                                       'parsing the JSON text.',
-                               -32601: 'Method not found',
-                               -32602: 'Problem parsing the parameters, or a mandatory parameter was not found',
-                               -32603: 'Internal JSON-RPC error'}
-
-
-class MockParams(Enum):
-    list_event_types = {'filter': {}}
-    list_competitions = {'filter': {}}
-    list_time_ranges = {'filter': {},
-                        'granularity': 'DAYS'}
-    list_events = {'filter': {}}
-    list_market_types = {'filter': {}}
-    list_countries = {'filter': {}}
-    list_venues = {'filter': {}}
-    list_market_catalogue = {'filter': {},
-                             'maxResults': '1'}
-    list_market_book = {'marketIds': ['1.122618187']}
-    place_orders = {}
-    cancel_orders = {}
-    update_orders = {}
-    replace_orders = {}
-    list_current_orders = {'dateRange': {}}
-    list_cleared_orders = {'betStatus': 'SETTLED',
-                           'settledDateRange': {},
-                           'recordCount': '1000'}
-    list_market_profit_and_loss = {'marketIds': ['1.122617964']}
-    list_race_status = {}
-    get_account_funds = {'wallet': None}
-    get_account_details = {}
-    get_account_statement = {'itemDateRange': {},
-                             'includeItem': 'ALL'}
-    list_currency_rates = {'fromCurrency': 'GBP'}
-    transfer_funds = {'from': 'UK',
-                      'to': 'AUSTRALIAN',
-                      'amount': '0.00'}
+GENERIC_JSON_RPC_EXCEPTIONS = {
+    -32700: 'Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.',
+    -32601: 'Method not found',
+    -32602: 'Problem parsing the parameters, or a mandatory parameter was not found',
+    -32603: 'Internal JSON-RPC error'
+}
 
 
 class RaceStatusEnum(Enum):

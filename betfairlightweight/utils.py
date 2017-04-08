@@ -1,14 +1,14 @@
 import datetime
 
-from .enums import MockParams
 from .exceptions import StatusCodeError
 
 
 def check_status_code(response, codes=None):
-    """Checks response.status_code is in codes
+    """
+    Checks response.status_code is in codes.
 
-    :param response: Requests response
-    :param codes: List of accepted codes or callable
+    :param requests.request response: Requests response
+    :param list codes: List of accepted codes or callable
     :raises: StatusCodeError if code invalid
     """
     codes = codes or [200]
@@ -16,28 +16,11 @@ def check_status_code(response, codes=None):
         raise StatusCodeError(response.status_code)
 
 
-# def api_request(func):
-#     """Checks params and provides MockParams if None
-#
-#     :param func: api request function.
-#     """
-#     api_request_name = func.__name__
-#
-#     def _api_request(api, params=None, session=None, exchange=None):
-#         if not api.check_session:
-#             raise SessionTokenError()
-#         if not params:
-#             params = MockParams[api_request_name].value
-#             return func(api, params, session, exchange)
-#         else:
-#             return func(api, params, session, exchange)
-#     return _api_request
-
-
 def strp_betfair_time(datetime_string):
-    """Converts Betfair string to datetime.
+    """
+    Converts Betfair string to datetime.
 
-    :param datetime_string: Datetime string.
+    :param str datetime_string: Datetime string.
     """
     try:
         return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -48,9 +31,10 @@ def strp_betfair_time(datetime_string):
 
 
 def strp_betfair_integer_time(datetime_integer):
-    """Converts Betfair integer to utc datetime.
+    """
+    Converts Betfair integer to utc datetime.
 
-    :param datetime_integer: Datetime integer.
+    :param int datetime_integer: Datetime integer.
     """
     try:
         return datetime.datetime.utcfromtimestamp(datetime_integer / 1e3)
@@ -59,10 +43,11 @@ def strp_betfair_integer_time(datetime_integer):
 
 
 def price_check(data, number):
-    """Access price data from dictionary.
+    """
+    Access price data from dictionary.
 
-    :param data: Dict object.
-    :param number: Number.
+    :param {} data: Dict object.
+    :param int number: Number.
     """
     try:
         output = data[number].price
@@ -74,10 +59,11 @@ def price_check(data, number):
 
 
 def size_check(data, number):
-    """Access size data from dictionary.
+    """
+    Access size data from dictionary.
 
-    :param data: Dict object.
-    :param number: Number.
+    :param {} data: Dict object.
+    :param int number: Number.
     """
     try:
         output = data[number].size
@@ -105,3 +91,30 @@ def update_available(available, book_update, deletion_select):
         if not updated and book[deletion_select] != 0:
             # handles betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
             available.append(book)
+
+
+def clean_locals(data):
+    """
+    Clean up locals dict, remove empty and self/session/params params
+    and convert to camelCase.
+
+    :param {} data: locals dicts from a function.
+    :returns: dict
+    """
+    if data.get('params') is not None:
+        return data.get('params')
+    else:
+        return {
+            to_camel_case(k): v for k, v in data.items() if v is not None and k not in ['self', 'session', 'params']
+        }
+
+
+def to_camel_case(snake_str):
+    """
+    Converts snake_string to camelCase
+
+    :param str snake_str:
+    :returns: str
+    """
+    components = snake_str.split('_')
+    return components[0] + "".join(x.title() for x in components[1:])

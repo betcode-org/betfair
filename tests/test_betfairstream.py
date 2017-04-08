@@ -110,7 +110,7 @@ class BetfairStreamTest(unittest.TestCase):
         clk = 'abc'
         self.betfair_stream.subscribe_to_orders(unique_id, initial_clk, clk)
         mock_send.assert_called_with(
-                {'id': unique_id, 'op': 'orderSubscription', 'initialClk': initial_clk, 'clk': clk}
+            {'orderFilter': 'abcdef', 'id': 3456, 'op': 'orderSubscription', 'initialClk': 'abc', 'clk': None}
         )
         self.mock_listener.register_stream.assert_called_with(unique_id, 'orderSubscription')
 
@@ -141,8 +141,9 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream.datetime_last_received is not None
         assert self.betfair_stream.receive_count > 0
 
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all')
-    def test_read_loop_error(self, mock_receive_all):
+    def test_read_loop_error(self, mock_receive_all, mock_stop):
         mock_socket = mock.Mock()
         self.betfair_stream._socket = mock_socket
         self.betfair_stream._running = True

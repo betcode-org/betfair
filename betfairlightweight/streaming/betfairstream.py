@@ -4,7 +4,6 @@ import socket
 import ssl
 import datetime
 
-from ..filters import BaseFilter
 from ..exceptions import SocketError
 from ..compat import is_py3
 
@@ -50,9 +49,16 @@ class BetfairStream(object):
             self._read_loop()
 
     def stop(self):
-        """Stops read loop which closes socket
+        """Stops read loop and closes socket if it has been created.
         """
         self._running = False
+
+        if self._socket is not None and not self._socket._closed:
+            try:
+                self._socket.shutdown(2)
+            except OSError:
+                pass
+            self._socket.close()
 
     def authenticate(self, unique_id=None):
         """Authentication request.
@@ -80,36 +86,39 @@ class BetfairStream(object):
         self._send(message)
 
     def subscribe_to_markets(self, unique_id, market_filter, market_data_filter, initial_clk=None, clk=None):
-        """Market subscription request.
+        """
+        Market subscription request.
 
-        :param market_filter: Market filter.
-        :param market_data_filter: Market data filter.
-        :param unique_id: Unique id of stream.
-        :param initial_clk: Sequence token for reconnect.
-        :param clk: Sequence token for reconnect.
+        :param dict market_filter: Market filter
+        :param dict market_data_filter: Market data filter
+        :param int unique_id: Unique id of stream
+        :param str initial_clk: Sequence token for reconnect
+        :param str clk: Sequence token for reconnect
         """
         message = {
             'op': 'marketSubscription',
             'id': unique_id,
-            'marketFilter': market_filter.serialise if isinstance(market_filter, BaseFilter) else market_filter,
-            'marketDataFilter': market_data_filter.serialise if isinstance(
-                market_data_filter, BaseFilter) else market_data_filter,
+            'marketFilter': market_filter,
+            'marketDataFilter': market_data_filter,
             'initialClk': initial_clk,
             'clk': clk,
         }
         self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
 
-    def subscribe_to_orders(self, unique_id, initial_clk=None, clk=None):
-        """Order subscription request.
+    def subscribe_to_orders(self, unique_id, order_filter=None, initial_clk=None, clk=None):
+        """
+        Order subscription request.
 
-        :param unique_id: Unique id of stream.
-        :param initial_clk: Sequence token for reconnect.
-        :param clk: Sequence token for reconnect.
+        :param int unique_id: Unique id of stream
+        :param dict order_filter: Order filter to be applied
+        :param str initial_clk: Sequence token for reconnect
+        :param str clk: Sequence token for reconnect
         """
         message = {
             'op': 'orderSubscription',
             'id': unique_id,
+            'orderFilter': order_filter,
             'initialClk': initial_clk,
             'clk': clk,
         }
@@ -146,17 +155,9 @@ class BetfairStream(object):
                     for received_data in received_data_split:
                         if received_data:
                             self._data(received_data)
-            except socket.timeout as e:
-                raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
-            except socket.error as e:
-                raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
-
-        if not self._socket._closed:
-            try:
-                self._socket.shutdown(2)
-            except OSError:
-                pass
-            self._socket.close()
+            except (socket.timeout, socket.error) as e:
+                self.stop()
+                raise SocketError('[Connect: %s]: Socket %s' % (self.unique_id, e))
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,
