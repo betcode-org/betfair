@@ -8,6 +8,8 @@ from .stream import (
     OrderStream,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class BaseListener(object):
 
@@ -18,18 +20,18 @@ class BaseListener(object):
 
     def register_stream(self, unique_id, operation):
         if operation == 'authentication':
-            logging.info('[Listener: %s]: %s' % (unique_id, operation))
+            logger.info('[Listener: %s]: %s' % (unique_id, operation))
 
         elif operation == 'marketSubscription':
             if self.market_stream is not None:
-                logging.warning('[Listener: %s]: marketSubscription stream already registered, replacing data' %
-                                unique_id)
+                logger.warning('[Listener: %s]: marketSubscription stream already registered, replacing data' %
+                               unique_id)
             self.market_stream = self._add_stream(unique_id, operation)
 
         elif operation == 'orderSubscription':
             if self.order_stream is not None:
-                logging.warning('[Listener: %s]: orderSubscription stream already registered, replacing data' %
-                                unique_id)
+                logger.warning('[Listener: %s]: orderSubscription stream already registered, replacing data' %
+                               unique_id)
             self.order_stream = self._add_stream(unique_id, operation)
 
     def on_data(self, raw_data):
@@ -66,7 +68,7 @@ class StreamListener(BaseListener):
         try:
             data = json.loads(raw_data)
         except ValueError:
-            logging.error('value error: %s' % raw_data)
+            logger.error('value error: %s' % raw_data)
             return
         unique_id = data.get('id')
 
@@ -87,7 +89,7 @@ class StreamListener(BaseListener):
         :param data: Received data
         """
         self.connection_id = data.get('connectionId')
-        logging.info('[Connect: %s]: connection_id: %s' % (unique_id, self.connection_id))
+        logger.info('[Connect: %s]: connection_id: %s' % (unique_id, self.connection_id))
 
     @staticmethod
     def _on_status(data, unique_id):
@@ -96,7 +98,7 @@ class StreamListener(BaseListener):
         :param data: Received data
         """
         status_code = data.get('statusCode')
-        logging.info('[Subscription: %s]: %s' % (unique_id, status_code))
+        logger.info('[Subscription: %s]: %s' % (unique_id, status_code))
 
     def _on_change_message(self, data, unique_id):
         change_type = data.get('ct', 'UPDATE')
@@ -107,7 +109,7 @@ class StreamListener(BaseListener):
         else:
             stream = self.order_stream
 
-        logging.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
+        logger.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
 
         if change_type == 'SUB_IMAGE':
             stream.on_subscribe(data)
@@ -137,7 +139,7 @@ class StreamListener(BaseListener):
         :return: True if error present
         """
         if data.get('statusCode') == 'FAILURE':
-            logging.error('[Subscription: %s] %s: %s' % (unique_id, data.get('errorCode'), data.get('errorMessage')))
+            logger.error('[Subscription: %s] %s: %s' % (unique_id, data.get('errorCode'), data.get('errorMessage')))
             if data.get('connectionClosed'):
                 return True
 

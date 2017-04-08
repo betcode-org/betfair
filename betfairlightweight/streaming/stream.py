@@ -1,8 +1,10 @@
 import datetime
-import time
 import logging
+import time
 
 from ..resources.streamingresources import MarketBookCache, OrderBookCache
+
+logger = logging.getLogger(__name__)
 
 
 class BaseStream(object):
@@ -32,7 +34,7 @@ class BaseStream(object):
         book_data = data.get(self._lookup)
         if book_data:
             self._process(book_data, publish_time)
-        logging.info('[Stream: %s]: %s %s added' % (self.unique_id, len(self._caches), self._lookup))
+        logger.info('[Stream: %s]: %s %s added' % (self.unique_id, len(self._caches), self._lookup))
 
     def on_heartbeat(self, data):
         self._update_clk(data)
@@ -46,7 +48,7 @@ class BaseStream(object):
         publish_time = data.get('pt')
         latency = self._calc_latency(publish_time)
         if latency > self._max_latency:
-            logging.warning('[Stream: %s]: Latency high: %s' % (self.unique_id, latency))
+            logger.warning('[Stream: %s]: Latency high: %s' % (self.unique_id, latency))
 
         book_data = data.get(self._lookup)
         self._process(book_data, publish_time)
@@ -55,7 +57,7 @@ class BaseStream(object):
         self._caches.clear()
 
     def _on_creation(self):
-        logging.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
+        logger.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
 
     def _process(self, book_data, publish_time):
         pass
@@ -89,15 +91,15 @@ class MarketStream(BaseStream):
             market_id = market_book.get('id')
             if market_book.get('img'):
                 self._caches[market_id] = MarketBookCache(publish_time=publish_time, **market_book)
-                logging.info('[MarketStream: %s] %s added' % (self.unique_id, market_id))
+                logger.info('[MarketStream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache = self._caches.get(market_id)
                 if market_book_cache:
                     market_book_cache.update_cache(market_book, publish_time)
                     self._updates_processed += 1
                 else:
-                    logging.error('[MarketStream: %s] Received update for market not in cache: %s' %
-                                  (self.unique_id, market_book))
+                    logger.error('[MarketStream: %s] Received update for market not in cache: %s' %
+                                 (self.unique_id, market_book))
             output_market_book.append(
                 self._caches[market_id].create_market_book(self.unique_id)
             )
@@ -124,7 +126,7 @@ class OrderStream(BaseStream):
                 order_book_cache.update_cache(order_book, publish_time)
             else:
                 self._caches[market_id] = OrderBookCache(**order_book)
-                logging.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
+                logger.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
             self._updates_processed += 1
 
             output_order_book.append(
