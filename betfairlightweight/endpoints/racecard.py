@@ -9,10 +9,18 @@ from .. import resources
 
 
 class RaceCard(BaseEndpoint):
+    """
+    RaceCard operations.
+    """
 
     app_key = None
 
     def login(self, session=None):
+        """
+        Parses app key from betfair exchange site.
+
+        :param requests.session session: Requests session object
+        """
         session = session or self.client.session
         response = session.get(self.login_url)
         app_key = re.findall(r'''"appKey":\s"(.*?)"''', response.text)
@@ -23,20 +31,26 @@ class RaceCard(BaseEndpoint):
 
     def get_race_card(self, market_ids, data_entries=None, session=None):
         """
+        Returns a list of race cards based on market ids provided.
+
+        :param list market_ids: The filter to select desired markets
+        :param str data_entries: Data to be returned
+        :param requests.session session: Requests session object
+
         :rtype: list[resources.RaceCard]
         """
         if not self.app_key:
             raise RaceCardError("You need to login before requesting a race_card\n"
                                 "APIClient.race_card.login()")
+        params = self.create_race_card_req(market_ids, data_entries)
         date_time_sent = datetime.datetime.utcnow()
-        response = self.request(method=market_ids, params=data_entries, session=session)
+        response = self.request(params=params, session=session)
         return self.process_response(response.json(), resources.RaceCard, date_time_sent)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
         try:
-            response = session.get(self.url, params=self.create_req(method, params),
-                                   headers=self.headers)
+            response = session.get(self.url, params=params, headers=self.headers)
         except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
@@ -46,12 +60,12 @@ class RaceCard(BaseEndpoint):
         return response
 
     @staticmethod
-    def create_req(method=None, params=None):
-        if not params:
-            params = "RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS"
+    def create_race_card_req(market_ids, data_entries):
+        if not data_entries:
+            data_entries = 'RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS'
         return {
-            'dataEntries': params,
-            'marketId': ','.join(method)
+            'dataEntries': data_entries,
+            'marketId': ','.join(market_ids)
         }
 
     @property

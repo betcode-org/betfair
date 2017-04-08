@@ -8,10 +8,20 @@ from ..utils import check_status_code
 
 
 class Logout(BaseEndpoint):
+    """
+    Logout operations.
+    """
 
     _error = LogoutError
 
     def __call__(self, session=None):
+        """
+        Makes logout request.
+
+        :param requests.session session: Requests session object
+
+        :rtype: LogoutResource
+        """
         date_time_sent = datetime.datetime.utcnow()
         response = self.request(session=session)
         response_json = response.json()

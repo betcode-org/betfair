@@ -8,7 +8,9 @@ from betfairlightweight.utils import (
     strp_betfair_time,
     price_check,
     size_check,
-    update_available
+    update_available,
+    clean_locals,
+    to_camel_case,
 )
 from betfairlightweight.exceptions import StatusCodeError
 from betfairlightweight.resources.bettingresources import PriceSize
@@ -97,6 +99,8 @@ class UtilsTest(unittest.TestCase):
         back_e = size_check(data, 0)
         assert not back_e
 
+    def test_convert_to_camel_case(self):
+        assert to_camel_case('hello_world') == 'helloWorld'
 
 
 class UtilsTestUpdateAvailable(unittest.TestCase):
@@ -167,3 +171,14 @@ class UtilsTestUpdateAvailable(unittest.TestCase):
 
         update_available(current, book_update, 2)
         assert current == expected
+
+
+class UtilsTestCleanLocals(unittest.TestCase):
+
+    def test_clean_locals(self, params=None, filter=123):
+        params = clean_locals(locals())
+        assert params == {'filter': 123}
+
+    def test_clean_locals_params(self, params={'test': 456}, filter=123):
+        params = clean_locals(locals())
+        assert params == {'test': 456}

@@ -1,12 +1,16 @@
 
 
 class BetfairError(Exception):
-    """Base class for Betfair Errors"""
+    """
+    Base class for Betfair Errors.
+    """
     pass
 
 
 class PasswordError(BetfairError):
-    """Exception raised if password is not found"""
+    """
+    Exception raised if password is not found.
+    """
 
     def __init__(self, username):
         message = 'Password not found in .bashprofile for %s, add or pass to APIClient' % username
@@ -14,7 +18,9 @@ class PasswordError(BetfairError):
 
 
 class AppKeyError(BetfairError):
-    """Exception raised if appkey is not found"""
+    """
+    Exception raised if appkey is not found.
+    """
 
     def __init__(self, username):
         message = 'AppKey not found in .bashprofile for %s, add or pass to APIClient' % username
@@ -22,7 +28,9 @@ class AppKeyError(BetfairError):
 
 
 class CertsError(BetfairError):
-    """Exception raised if certs folder is not found"""
+    """
+    Exception raised if certs folder is not found.
+    """
 
     def __init__(self, path='/certs/'):
         message = 'Certificate folder not found in %s' % path
@@ -30,6 +38,9 @@ class CertsError(BetfairError):
 
 
 class StatusCodeError(BetfairError):
+    """
+    Exception raised if status code is incorrect.
+    """
 
     def __init__(self, status_code):
         message = 'Status code error: %s' % status_code
@@ -37,7 +48,9 @@ class StatusCodeError(BetfairError):
 
 
 class LoginError(BetfairError):
-    """Exception raised if sessionToken is not found"""
+    """
+    Exception raised if sessionToken is not found.
+    """
 
     def __init__(self, response):
         login_status = response.get('loginStatus', 'UNKNOWN')
@@ -46,7 +59,9 @@ class LoginError(BetfairError):
 
 
 class KeepAliveError(BetfairError):
-    """Exception raised if keep alive fails"""
+    """
+    Exception raised if keep alive fails.
+    """
 
     def __init__(self, response):
         keep_alive_status = response.get('status', 'UNKNOWN')
@@ -56,7 +71,9 @@ class KeepAliveError(BetfairError):
 
 
 class APIError(BetfairError):
-    """Exception raised if error is found"""
+    """
+    Exception raised if error is found.
+    """
 
     def __init__(self, response, method=None, params=None, exception=None):
         if response:
@@ -72,7 +89,9 @@ class APIError(BetfairError):
 
 
 class LogoutError(BetfairError):
-    """Exception raised if logout errors"""
+    """
+    Exception raised if logout errors.
+    """
 
     def __init__(self, response):
         logout_status = response.get('status', 'UNKNOWN')
@@ -98,14 +117,18 @@ class LogoutError(BetfairError):
 
 
 class SocketError(BetfairError):
-    """Exception raised if error with socket"""
+    """
+    Exception raised if error with socket.
+    """
 
     def __init__(self, message):
         super(SocketError, self).__init__(message)
 
 
 class RaceCardError(BetfairError):
-    """Exception raised if error with race card request"""
+    """
+    Exception raised if error with race card request.
+    """
 
     def __init__(self, message):
         super(RaceCardError, self).__init__(message)

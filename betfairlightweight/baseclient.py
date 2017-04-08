@@ -3,11 +3,18 @@ import collections
 import datetime
 import os
 
-from .exceptions import PasswordError, AppKeyError, CertsError
+from .exceptions import (
+    PasswordError,
+    AppKeyError,
+    CertsError,
+)
 from .compat import FileNotFoundError
 
 
 class BaseClient(object):
+    """
+    Base API client
+    """
 
     IDENTITY_URLS = collections.defaultdict(
             lambda: 'https://identitysso.betfair.com/api/',
@@ -30,18 +37,14 @@ class BaseClient(object):
 
     def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None):
         """
-        :param username:
-            Betfair username.
-        :param password:
-            Password for supplied username, if None will look in .bashprofile.
-        :param app_key:
-            App Key for account, if None will look in .bashprofile.
-        :param certs:
-            Directory for certificates, if None will look in /certs/
-        :param locale:
-            Exchange to be used, defaults to UK for login and global for api.
-        :param cert_files:
-            Certificate and key files. If None will look in `certs`
+        Creates base client for API operations.
+
+        :param str username: Betfair username
+        :param str password: Password for supplied username, if None will look in .bashprofile
+        :param str app_key: App Key for account, if None will look in .bashprofile
+        :param str certs: Directory for certificates, if None will look in /certs/
+        :param str locale: Exchange to be used, defaults to UK for login and global for api
+        :param str cert_files: Certificate and key files. If None will look in `certs`
         """
         self.username = username
         self.password = password
@@ -61,15 +64,18 @@ class BaseClient(object):
         self.get_app_key()
 
     def set_session_token(self, session_token):
-        """Sets session token and new login time.
-        :param session_token: Session token from request.
+        """
+        Sets session token and new login time.
+
+        :param str session_token: Session token from request.
         """
         self.session_token = session_token
         self._login_time = datetime.datetime.now()
 
     def get_password(self):
-        """If password is not provided will look in environment
-        variables for username+'password'
+        """
+        If password is not provided will look in environment variables
+        for username+'password'.
         """
         if self.password is None:
             if os.environ.get(self.username+'password'):
@@ -78,8 +84,9 @@ class BaseClient(object):
                 raise PasswordError(self.username)
 
     def get_app_key(self):
-        """If app_key is not provided will look in environment
-        variables for username
+        """
+        If app_key is not provided will look in environment
+        variables for username.
         """
         if self.app_key is None:
             if os.environ.get(self.username):
@@ -88,14 +95,16 @@ class BaseClient(object):
                 raise AppKeyError(self.username)
 
     def client_logout(self):
-        """Resets session token and login time.
+        """
+        Resets session token and login time.
         """
         self.session_token = None
         self._login_time = None
 
     @property
     def session_expired(self):
-        """Returns True if login_time not set or seconds since
+        """
+        Returns True if login_time not set or seconds since
         login time is greater than 200 mins.
         """
         if not self._login_time or (datetime.datetime.now()-self._login_time).total_seconds() > 12000:
@@ -103,11 +112,12 @@ class BaseClient(object):
 
     @property
     def cert(self):
-        """The betfair certificates.
-
-        By default, it looks for the certificates in /certs/.
+        """
+        The betfair certificates, by default it looks for the
+        certificates in /certs/.
 
         :return: Path of cert files
+        :rtype: str
         """
         if self.cert_files is not None:
             return self.cert_files

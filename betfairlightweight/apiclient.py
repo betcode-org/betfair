@@ -5,7 +5,19 @@ from . import endpoints
 class APIClient(BaseClient):
 
     def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None):
-        super(APIClient, self).__init__(username, password, app_key=app_key, certs=certs, locale=locale, cert_files=cert_files)
+        """
+        Creates API client for API operations.
+
+        :param str username: Betfair username
+        :param str password: Password for supplied username, if None will look in .bashprofile
+        :param str app_key: App Key for account, if None will look in .bashprofile
+        :param str certs: Directory for certificates, if None will look in /certs/
+        :param str locale: Exchange to be used, defaults to UK for login and global for api
+        :param str cert_files: Certificate and key files. If None will look in `certs`
+        """
+        super(APIClient, self).__init__(
+            username, password, app_key=app_key, certs=certs, locale=locale, cert_files=cert_files
+        )
 
         self.login = endpoints.Login(self)
         self.keep_alive = endpoints.KeepAlive(self)
