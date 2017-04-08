@@ -49,9 +49,16 @@ class BetfairStream(object):
             self._read_loop()
 
     def stop(self):
-        """Stops read loop which closes socket
+        """Stops read loop and closes socket if it has been created.
         """
         self._running = False
+
+        if self._socket is not None and not self._socket._closed:
+            try:
+                self._socket.shutdown(2)
+            except OSError:
+                pass
+            self._socket.close()
 
     def authenticate(self, unique_id=None):
         """Authentication request.
@@ -148,17 +155,9 @@ class BetfairStream(object):
                     for received_data in received_data_split:
                         if received_data:
                             self._data(received_data)
-            except socket.timeout as e:
-                raise SocketError('[Connect: %s]: Socket timeout, %s' % (self.unique_id, e))
-            except socket.error as e:
-                raise SocketError('[Connect: %s]: Socket error, %s' % (self.unique_id, e))
-
-        if not self._socket._closed:
-            try:
-                self._socket.shutdown(2)
-            except OSError:
-                pass
-            self._socket.close()
+            except (socket.timeout, socket.error) as e:
+                self.stop()
+                raise SocketError('[Connect: %s]: Socket %s' % (self.unique_id, e))
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,

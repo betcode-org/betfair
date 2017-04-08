@@ -141,8 +141,9 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream.datetime_last_received is not None
         assert self.betfair_stream.receive_count > 0
 
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all')
-    def test_read_loop_error(self, mock_receive_all):
+    def test_read_loop_error(self, mock_receive_all, mock_stop):
         mock_socket = mock.Mock()
         self.betfair_stream._socket = mock_socket
         self.betfair_stream._running = True
