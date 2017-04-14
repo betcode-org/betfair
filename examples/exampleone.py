@@ -50,7 +50,12 @@ for event_type in horse_racing_event_type_id:
 
         # market book request
         market_books = trading.betting.list_market_book(
-            market_ids=[market_catalogue.market_id]
+            market_ids=[market_catalogue.market_id],
+            price_projection=filters.price_projection(
+                price_data=filters.price_data(
+                    ex_all_offers=True
+                )
+            )
         )
 
         for market_book in market_books:
@@ -63,6 +68,12 @@ for event_type in horse_racing_event_type_id:
                 # prints selection id, status and total matched
                 print(
                     runner.selection_id, runner.status, runner.total_matched
+                )
+
+                available_to_back = runner.ex.available_to_back
+                available_to_lay = runner.ex.available_to_lay
+                print(
+                    available_to_back, available_to_lay
                 )
 
 
