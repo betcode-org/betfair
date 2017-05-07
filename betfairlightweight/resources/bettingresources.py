@@ -345,6 +345,9 @@ class RunnerBook(object):
     :type total_matched: float
     """
 
+    __slots__ = ['selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded',
+                 'removal_date', 'sp', 'ex', 'orders', 'matches']
+
     def __init__(self, selectionId, status, adjustmentFactor, handicap, lastPriceTraded=None, totalMatched=None,
                  removalDate=None, sp=None, ex=None, orders=None, matches=None):
         self.selection_id = selectionId
