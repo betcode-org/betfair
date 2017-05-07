@@ -54,7 +54,7 @@ class TestOrderBookCache(unittest.TestCase):
         current_orders = self.order_book_cache.create_order_book(123, {})
 
         mock_current_orders.assert_called_with(date_time_sent=self.order_book_cache._datetime_updated,
-                                               streaming_unique_id=123, **mock_serialise, streaming_update={})
+                                               streaming_unique_id=123, streaming_update={}, **mock_serialise)
         assert current_orders == mock_current_orders()
 
     def test_runner_dict(self):
