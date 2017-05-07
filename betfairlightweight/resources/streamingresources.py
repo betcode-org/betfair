@@ -65,12 +65,11 @@ class MarketDefinition(object):
     :type version: int
     """
 
-    def __init__(self, betDelay, bettingType, bspMarket, bspReconciled, complete, crossMatching,
-                 discountAllowed, eventId, eventTypeId, inPlay, marketBaseRate, marketTime,
-                 numberOfActiveRunners, numberOfWinners, openDate, persistenceEnabled, regulators, runnersVoidable,
-                 status, timezone, turnInPlayEnabled, version, runners, countryCode=None, eachWayDivisor=None,
-                 venue=None, settledTime=None, suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None,
-                 lineInterval=None):
+    def __init__(self, betDelay, bettingType, bspMarket, bspReconciled, complete, crossMatching, discountAllowed,
+                 eventId, eventTypeId, inPlay, marketBaseRate, marketTime, numberOfActiveRunners, numberOfWinners,
+                 openDate, persistenceEnabled, regulators, runnersVoidable, status, timezone, turnInPlayEnabled,
+                 version, runners, countryCode=None, eachWayDivisor=None, venue=None, settledTime=None,
+                 suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None):
         self.bet_delay = betDelay
         self.betting_type = bettingType
         self.bsp_market = bspMarket
@@ -258,7 +257,8 @@ class MarketBookCache(BaseResource):
         self.market_id = kwargs.get('id')
         self.image = kwargs.get('img')
         self.total_matched = kwargs.get('tv')
-        self.market_definition = MarketDefinition(**kwargs.get('marketDefinition')) if kwargs.get('marketDefinition') else None
+        self.market_definition = MarketDefinition(**kwargs.get('marketDefinition')) if \
+            kwargs.get('marketDefinition') else None
         self.runners = [RunnerBook(**i) for i in kwargs.get('rc', [])]
 
     def update_cache(self, market_change, publish_time):
@@ -308,10 +308,11 @@ class MarketBookCache(BaseResource):
                 else:
                     self.runners.append(RunnerBook(**new_data))
 
-    def create_market_book(self, unique_id):
+    def create_market_book(self, unique_id, streaming_update):
         return MarketBook(
             date_time_sent=self._datetime_updated,
             streaming_unique_id=unique_id,
+            streaming_update=streaming_update,
             market_definition=self.market_definition,
             **self.serialise
         )
@@ -384,7 +385,8 @@ class UnmatchedOrder(object):
             'bspLiability': self.bsp_liability,
             'handicap': 0.0,
             'marketId': market_id,
-            'matchedDate': self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
+            'matchedDate': self.matched_date.strftime(
+                '%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
             'orderType': StreamingOrderType[self.order_type].value,
             'persistenceType': StreamingPersistenceType[self.persistence_type].value,
             'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
@@ -463,8 +465,13 @@ class OrderBookCache(BaseResource):
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
-    def create_order_book(self, unique_id):
-        return CurrentOrders(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
+    def create_order_book(self, unique_id, streaming_update):
+        return CurrentOrders(
+            date_time_sent=self._datetime_updated,
+            streaming_unique_id=unique_id,
+            streaming_update=streaming_update,
+            **self.serialise
+        )
 
     @property
     def runner_dict(self):

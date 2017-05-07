@@ -15,7 +15,7 @@ class BaseResource(object):
     def __init__(self, **kwargs):
         self._datetime_sent = kwargs.pop('date_time_sent', None)
         now = datetime.datetime.utcnow()
-        self.datetime_created = now
+        self._datetime_created = now
         self._datetime_updated = now
         self._data = kwargs
 
@@ -44,7 +44,7 @@ class BaseResource(object):
         Elapsed time between datetime sent and datetime created
         """
         if self._datetime_sent:
-            return (self.datetime_created-self._datetime_sent).total_seconds()
+            return (self._datetime_created-self._datetime_sent).total_seconds()
 
     def __repr__(self):
         return '<%s>' % self.__class__.__name__

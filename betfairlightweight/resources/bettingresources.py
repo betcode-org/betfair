@@ -217,7 +217,8 @@ class MarketCatalogue(BaseResource):
         self.competition = Competition(**kwargs.get('competition')) if kwargs.get('competition') else None
         self.event = Event(**kwargs.get('event')) if kwargs.get('event') else None
         self.event_type = EventType(**kwargs.get('eventType')) if kwargs.get('eventType') else None
-        self.description = MarketCatalogueDescription(**kwargs.get('description')) if kwargs.get('description') else None
+        self.description = MarketCatalogueDescription(**kwargs.get('description')) if \
+            kwargs.get('description') else None
         self.runners = [RunnerCatalogue(**i) for i in kwargs.get('runners', [])]
 
 
@@ -387,6 +388,7 @@ class MarketBook(BaseResource):
 
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
+        self.streaming_update = kwargs.pop('streaming_update', None)
         self.publish_time = kwargs.pop('publish_time', None)
         self.market_definition = kwargs.pop('market_definition', None)
         super(MarketBook, self).__init__(**kwargs)
@@ -469,6 +471,7 @@ class CurrentOrders(BaseResource):
 
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
+        self.streaming_update = kwargs.pop('streaming_update', None)
         self.publish_time = kwargs.pop('publish_time', None)
         self.market_definition = kwargs.pop('market_definition', None)
         super(CurrentOrders, self).__init__(**kwargs)
@@ -621,8 +624,8 @@ class PlaceOrderInstructionReports(object):
     :type status: unicode
     """
 
-    def __init__(self, status, instruction=None, orderStatus=None, betId=None, averagePriceMatched=None, sizeMatched=None,
-                 placedDate=None, errorCode=None):
+    def __init__(self, status, instruction=None, orderStatus=None, betId=None, averagePriceMatched=None,
+                 sizeMatched=None, placedDate=None, errorCode=None):
         self.status = status
         self.order_status = orderStatus
         self.bet_id = betId

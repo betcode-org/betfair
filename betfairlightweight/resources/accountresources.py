@@ -32,7 +32,8 @@ class AccountDetails(BaseResource):
 class LegacyData(object):
 
     def __init__(self, avgPrice, betCategoryType, betSize, betType, eventId, eventTypeId, fullMarketName, marketName,
-                 grossBetAmount, transactionId, **kwargs):  # todo
+                 grossBetAmount, transactionId, marketType, placedDate, selectionId, startDate, transactionType,
+                 winLose, selectionName=None, commissionRate=None):
         self.avg_price = avgPrice
         self.bet_category_type = betCategoryType
         self.bet_size = betSize
@@ -43,6 +44,14 @@ class LegacyData(object):
         self.gross_bet_amount = grossBetAmount
         self.market_name = marketName
         self.transaction_id = transactionId
+        self.market_type = marketType
+        self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.selection_id = selectionId
+        self.start_date = BaseResource.strip_datetime(startDate)
+        self.transaction_type = transactionType
+        self.win_lose = winLose
+        self.selection_name = selectionName
+        self.commission_rate = commissionRate
 
 
 class AccountStatement(object):

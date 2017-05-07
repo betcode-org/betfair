@@ -300,7 +300,7 @@ class Betting(BaseEndpoint):
         response = self.request(method, params, session)
         return self.process_response(response.json(), resources.PlaceOrders, date_time_sent)
 
-    def cancel_orders(self, market_id, instructions, customer_ref=None, session=None):
+    def cancel_orders(self, market_id=None, instructions=None, customer_ref=None, session=None):
         """
         Cancel all bets OR cancel all bets on a market OR fully or partially
         cancel particular orders on a market.

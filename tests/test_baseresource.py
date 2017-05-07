@@ -11,7 +11,7 @@ class BaseResourceInit(unittest.TestCase):
     def test_init(self):
         base_resource = BaseResource()
         assert base_resource._datetime_sent is None
-        assert base_resource.datetime_created is not None
+        assert base_resource._datetime_created is not None
         assert base_resource._datetime_updated is not None
         assert base_resource.elapsed_time is None
         assert base_resource._data == {}

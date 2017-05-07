@@ -101,7 +101,7 @@ class MarketStream(BaseStream):
                     logger.error('[MarketStream: %s] Received update for market not in cache: %s' %
                                  (self.unique_id, market_book))
             output_market_book.append(
-                self._caches[market_id].create_market_book(self.unique_id)
+                self._caches[market_id].create_market_book(self.unique_id, market_book)
             )
 
         self.output_queue.put(output_market_book)
@@ -130,7 +130,7 @@ class OrderStream(BaseStream):
             self._updates_processed += 1
 
             output_order_book.append(
-                self._caches[market_id].create_order_book(self.unique_id)
+                self._caches[market_id].create_order_book(self.unique_id, order_book)
             )
 
         self.output_queue.put(output_order_book)
