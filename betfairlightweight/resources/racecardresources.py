@@ -273,6 +273,6 @@ class RaceCard(BaseResource):
         self.number_of_runners = kwargs.get('numberOfRunners')
         self.prize = kwargs.get('prize')
         self.timeform_123_text = kwargs.get('timeform123Text')
-        self.in_play_hint = [InPlayHint(**i) for i in kwargs.get('inPlayHints')]
+        self.in_play_hints = [InPlayHint(**i) for i in kwargs.get('inPlayHints')]
         self.race = Race(**kwargs.get('race'))
         self.runners = [Runner(**i) for i in kwargs.get('runners')]

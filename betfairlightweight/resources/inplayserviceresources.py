@@ -16,10 +16,10 @@ class HomeAwayBase(object):
                  numberOfCornersSecondHalf=None, numberOfRedCards=None, numberOfYellowCards=None, highlight=None,
                  aces=None, doubleFaults=None, gameSequence=None, bookingPoints=None, isServing=None, playerSeed=None,
                  serviceBreaks=None, inning1=None):
-        self.overs = bookingPoints
-        self.runs = fullTimeScore
+        self.booking_points = bookingPoints
+        self.full_time_score = fullTimeScore
         self.games = games
-        self.wickets = halfTimeScore
+        self.half_time_score = halfTimeScore
         self.name = name
         self.number_of_cards = numberOfCards
         self.number_of_corners = numberOfCorners
@@ -38,7 +38,7 @@ class HomeAwayBase(object):
         self.is_serving = isServing
         self.player_seed = playerSeed
         self.service_breaks = serviceBreaks
-        self.inning1 = Innings(**inning1) if inning1 else None
+        self.inning1 = Innings(**inning1) if inning1 else None  # todo more innings?
 
 
 class Score(object):
@@ -59,29 +59,31 @@ class Score(object):
 
 class UpdateDetail(object):
 
-    def __init__(self, elapsedRegularTime, matchTime, type, updateId, updateTime, updateType, team, teamName):
-        self.hour = elapsedRegularTime
-        self.min = matchTime
+    def __init__(self, elapsedRegularTime, matchTime, type, updateId, updateTime, updateType, team=None, teamName=None,
+                 elapsedAddedTime=None):
+        self.elapsed_regular_time = elapsedRegularTime
+        self.match_time = matchTime
         self.type = type
         self.update_id = updateId
         self.update_time = BaseResource.strip_datetime(updateTime)
         self.update_type = updateType
         self.team = team
         self.team_name = teamName
+        self.elapsed_added_time = elapsedAddedTime
 
 
 class EventTimeline(BaseResource):
 
     def __init__(self, **kwargs):
         super(EventTimeline, self).__init__(**kwargs)
-        self.market_count = kwargs.get('eventId')
+        self.event_id = kwargs.get('eventId')
         self.elapsed_regular_time = kwargs.get('elapsedRegularTime')
         self.event_type_id = kwargs.get('eventTypeId')
         self.in_play_match_status = kwargs.get('inPlayMatchStatus')
         self.status = kwargs.get('status')
         self.time_elapsed = kwargs.get('timeElapsed')
         self.score = Score(**kwargs.get('score'))
-        self.update_detail = UpdateDetail(**kwargs.get('updateDetails'))
+        self.update_detail = [UpdateDetail(**i) for i in kwargs.get('updateDetails')]
 
 
 class FullTimeElapsed(object):
@@ -96,19 +98,19 @@ class StateOfBall(object):
 
     def __init__(self, appealId, appealTypeName, batsmanName, batsmanRuns, bowlerName, bye, dismissalTypeName, legBye,
                  noBall, outcomeId, overBallNumber, overNumber, referralOutcome, wide):
-        self.hour = appealId
-        self.min = appealTypeName
-        self.sec = batsmanName
-        self.sec = batsmanRuns
-        self.sec = bowlerName
+        self.appeal_id = appealId
+        self.appeal_type_name = appealTypeName
+        self.batsman_name = batsmanName
+        self.batsman_runs = batsmanRuns
+        self.bowler_name = bowlerName
         self.bye = bye
-        self.sec = dismissalTypeName
-        self.sec = legBye
-        self.sec = noBall
-        self.sec = outcomeId
-        self.sec = overBallNumber
-        self.sec = overNumber
-        self.sec = referralOutcome
+        self.dismissal_type_name = dismissalTypeName
+        self.leg_bye = legBye
+        self.no_ball = noBall
+        self.outcome_id = outcomeId
+        self.over_ball_number = overBallNumber
+        self.over_number = overNumber
+        self.referral_outcome = referralOutcome
         self.wide = wide
 
 
@@ -116,7 +118,7 @@ class Scores(BaseResource):
 
     def __init__(self, **kwargs):
         super(Scores, self).__init__(**kwargs)
-        self.market_count = kwargs.get('eventId')
+        self.event_id = kwargs.get('eventId')
         self.elapsed_regular_time = kwargs.get('elapsedRegularTime')
         self.elapsed_added_time = kwargs.get('elapsedAddedTime')
         self.event_type_id = kwargs.get('eventTypeId')
