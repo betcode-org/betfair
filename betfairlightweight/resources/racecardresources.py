@@ -1,26 +1,20 @@
 from .baseresource import BaseResource
 
 
-class RaceType(BaseResource):
+class RaceType(object):
     """
     :type abbr: unicode
     :type full: unicode
     :type key: unicode
     """
-    abbr = None
-    full = None
-    key = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'race_type'
-        attributes = {
-            'abbr': 'abbr',
-            'full': 'full',
-            'key': 'key'
-        }
+    def __init__(self, abbr, full, key):
+        self.abbr = abbr
+        self.full = full
+        self.key = key
 
 
-class RaceClassification(BaseResource):
+class RaceClassification(object):
     """
     :type classification: unicode
     :type classification_abbr: unicode
@@ -28,62 +22,42 @@ class RaceClassification(BaseResource):
     :type display_name: unicode
     :type display_name_abbr: unicode
     """
-    classification = None
-    classification_abbr = None
-    code = None
-    display_name = None
-    display_name_abbr = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'race_classification'
-        attributes = {
-            'classification': 'classification',
-            'classificationAbbr': 'classification_abbr',
-            'code': 'code',
-            'displayName': 'display_name',
-            'displayNameAbbr': 'display_name_abbr'
-        }
+    def __init__(self, classification, classificationAbbr, code, displayName, displayNameAbbr):
+        self.classification = classification
+        self.classification_abbr = classificationAbbr
+        self.code = code
+        self.display_name = displayName
+        self.display_name_abbr = displayNameAbbr
 
 
-class Market(BaseResource):
+class Market(object):
     """
     :type market_id: unicode
     :type market_type: unicode
     :type number_of_winners: int
     """
-    market_id = None
-    market_type = None
-    number_of_winners = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'markets'
-        attributes = {
-            'marketId': 'market_id',
-            'marketType': 'market_type',
-            'numberOfWinners': 'number_of_winners'
-        }
+    def __init__(self, marketId, marketType, numberOfWinners):
+        self.market_id = marketId
+        self.market_type = marketType
+        self.number_of_winners = numberOfWinners
 
 
-class Going(BaseResource):
+class Going(object):
     """
     :type abbr: unicode
     :type full: unicode
     :type key: unicode
     """
-    abbr = None
-    full = None
-    key = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'going'
-        attributes = {
-            'abbr': 'abbr',
-            'full': 'full',
-            'key': 'key'
-        }
+    def __init__(self, abbr, full, key):
+        self.abbr = abbr
+        self.full = full
+        self.key = key
 
 
-class Course(BaseResource):
+class Course(object):
     """
     :type country: unicode
     :type country_code: unicode
@@ -94,27 +68,16 @@ class Course(BaseResource):
     :type timeform_course_code: unicode
     :type timezone: unicode
     """
-    country = None
-    country_code = None
-    course_id = None
-    course_type = None
-    name = None
-    surface_type = None
-    timeform_course_code = None
-    timezone = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'course'
-        attributes = {
-            'country': 'country',
-            'countryCode': 'country_code',
-            'courseId': 'course_id',
-            'courseType': 'course_type',
-            'name': 'name',
-            'surfaceType': 'surface_type',
-            'timeformCourseCode': 'timeform_course_code',
-            'timezone': 'timezone'
-        }
+    def __init__(self, country, countryCode, courseId, courseType, name, surfaceType, timeformCourseCode, timezone):
+        self.country = country
+        self.country_code = countryCode
+        self.course_id = courseId
+        self.course_type = courseType
+        self.name = name
+        self.surface_type = surfaceType
+        self.timeform_course_code = timeformCourseCode
+        self.timezone = timezone
 
 
 class Race(BaseResource):
@@ -136,156 +99,102 @@ class Race(BaseResource):
     :type race_type: RaceType
     :type start_date: datetime.datetime
     """
-    betfair_meeting_id = None
-    course = None
-    distance = None
-    eligibility = None
-    going = None
-    is_results_available = None
-    markets = None
-    meeting_going = None
-    meeting_id = None
-    number_of_runners = None
-    race_class = None
-    race_classification = None
-    race_id = None
-    race_title = None
-    race_type = None
-    start_date = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'race'
-        attributes = {
-            'betfairMeetingId': 'betfair_meeting_id',
-            'distance': 'distance',
-            'eligibility': 'eligibility',
-            'isResultAvailable': 'is_results_available',
-            'meetingGoing': 'meeting_going',
-            'meetingId': 'meeting_id',
-            'numberOfRunners': 'number_of_runners',
-            'raceClass': 'race_class',
-            'raceId': 'race_id',
-            'raceTitle': 'race_title',
-            'startDate': 'start_date',
-        }
-        sub_resources = {
-            'course': Course,
-            'going': Going,
-            'markets': Market,
-            'raceClassification': RaceClassification,
-            'raceType': RaceType,
-        }
-        datetime_attributes = (
-            'startDate',
-        )
+    def __init__(self, **kwargs):
+        super(Race, self).__init__(**kwargs)
+        self.betfair_meeting_id = kwargs.get('betfairMeetingId')
+        self.distance = kwargs.get('distance')
+        self.eligibility = kwargs.get('eligibility')
+        self.is_results_available = kwargs.get('isResultAvailable')
+        self.meeting_going = kwargs.get('meetingGoing')
+        self.meeting_id = kwargs.get('meetingId')
+        self.number_of_runners = kwargs.get('numberOfRunners')
+        self.race_class = kwargs.get('raceClass')
+        self.race_id = kwargs.get('raceId')
+        self.race_title = kwargs.get('raceTitle')
+        self.start_date = self.strip_datetime(kwargs.get('startDate'))
+        self.course = Course(**kwargs.get('course'))
+        self.going = Going(**kwargs.get('going'))
+        self.markets = [Market(**i) for i in kwargs.get('markets')]
+        self.race_classification = RaceClassification(**kwargs.get('raceClassification'))
+        self.race_type = RaceType(**kwargs.get('raceType'))
 
 
-class InPlayHint(BaseResource):
+class InPlayHint(object):
     """
     :type hint_name: unicode
     :type hint_value: unicode
     """
-    hint_name = None
-    hint_value = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'in_play_hints'
-        attributes = {
-            'hintName': 'hint_name',
-            'hintValue': 'hint_value',
-        }
+    def __init__(self, hintName, hintValue):
+        self.hint_name = hintName
+        self.hint_value = hintValue
 
 
-class DaysSinceLastRun(BaseResource):
+class DaysSinceLastRun(object):
     """
     :type days: int
     :type type: unicode
     """
-    days = None
-    type = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'days_since_last_run'
-        attributes = {
-            'days': 'days',
-            'type': 'type'
-        }
+    def __init__(self, days, type):
+        self.days = days
+        self.type = type
 
 
-class Jockey(BaseResource):
+class Jockey(object):
     """
     :type jockey_id: unicode
     :type name: unicode
     """
-    jockey_id = None
-    name = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'jockey'
-        attributes = {
-            'jockeyId': 'jockey_id',
-            'name': 'name'
-        }
+    def __init__(self, jockeyId, name, allowance=None):
+        self.jockey_id = jockeyId
+        self.name = name
+        self.allowance = allowance
 
 
-class Selection(BaseResource):
+class Selection(object):
     """
     :type market_id: unicode
     :type market_type: unicode
     :type selection_id: unicode
     """
-    market_id = None
-    market_type = None
-    selection_id = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'selections'
-        attributes = {
-            'marketId': 'market_id',
-            'marketType': 'market_type',
-            'selectionId': 'selection_id'
-        }
+    def __init__(self, marketId, marketType, selectionId, bsp=None):
+        self.market_id = marketId
+        self.market_type = marketType
+        self.selection_id = selectionId
+        self.bsp = bsp
 
 
-class Trainer(BaseResource):
+class Trainer(object):
     """
     :type location: unicode
     :type name: unicode
     :type trainer_id: unicode
     """
-    location = None
-    name = None
-    trainer_id = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'trainer'
-        attributes = {
-            'location': 'location',
-            'name': 'name',
-            'trainerId': 'trainer_id'
-        }
+    def __init__(self, location, name, trainerId):
+        self.location = location
+        self.name = name
+        self.trainer_id = trainerId
 
 
-class Wearing(BaseResource):
+class Wearing(object):
     """
     :type abbr: unicode
     :type full: unicode
     :type key: unicode
     """
-    abbr = None
-    full = None
-    key = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'wearing'
-        attributes = {
-            'abbr': 'abbr',
-            'full': 'full',
-            'key': 'key'
-        }
+    def __init__(self, abbr, full, key):
+        self.abbr = abbr
+        self.full = full
+        self.key = key
 
 
-class Runner(BaseResource):
+class Runner(object):
     """
     :type age: int
     :type comment: unicode
@@ -311,59 +220,34 @@ class Runner(BaseResource):
     :type wins_at_course_and_distance: int
     :type wins_at_distance: int
     """
-    age = None
-    comment = None
-    days_since_last_run = None
-    draw = None
-    gender = None
-    horse_id = None
-    is_non_runner = None
-    jockey = None
-    long_handicap = None
-    name = None
-    official_rating = None
-    owner_colours = None
-    recent_form = None
-    saddle_cloth = None
-    selections = None
-    star_rating = None
-    timeform_123_place = None
-    trainer = None
-    wearing = None
-    weight = None
-    wins_at_course = None
-    wins_at_course_and_distance = None
-    wins_at_distance = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'runners'
-        attributes = {
-            'age': 'age',
-            'comment': 'comment',
-            'gender': 'gender',
-            'horseId': 'horse_id',
-            'isNonRunner': 'is_non_runner',
-            'longHandicap': 'long_handicap',
-            'name': 'name',
-            'ownerColours': 'owner_colours',
-            'recentForm': 'recent_form',
-            'saddleCloth': 'saddle_cloth',
-            'starRating': 'star_rating',
-            'timeform123Place': 'timeform_123_place',
-            'weight': 'weight',
-            'winsAtCourse': 'wins_at_course',
-            'winsAtCourseAndDistance': 'wins_at_course_and_distance',
-            'winsAtDistance': 'wins_at_distance',
-            'draw': 'draw',
-            'officialRating': 'official_rating'
-        }
-        sub_resources = {
-            'daysSinceLastRun': DaysSinceLastRun,
-            'jockey': Jockey,
-            'selections': Selection,
-            'trainer': Trainer,
-            'wearing': Wearing
-        }
+    def __init__(self, age, comment, draw, gender, horseId, isNonRunner, longHandicap, name, ownerColours, saddleCloth,
+                 starRating, weight, jockey, selections, trainer, winsAtCourse=None, winsAtCourseAndDistance=None,
+                 winsAtDistance=None, daysSinceLastRun=None, timeform123Place=None, officialRating=None,
+                 recentForm=None, wearing=None):
+        self.age = age
+        self.comment = comment
+        self.draw = draw
+        self.gender = gender
+        self.horse_id = horseId
+        self.is_non_runner = isNonRunner
+        self.long_handicap = longHandicap
+        self.name = name
+        self.official_rating = officialRating
+        self.owner_colours = ownerColours
+        self.recent_form = recentForm
+        self.saddle_cloth = saddleCloth
+        self.star_rating = starRating
+        self.timeform_123_place = timeform123Place
+        self.weight = weight
+        self.wins_at_course = winsAtCourse
+        self.wins_at_course_and_distance = winsAtCourseAndDistance
+        self.wins_at_distance = winsAtDistance
+        self.days_since_last_run = [DaysSinceLastRun(**i) for i in daysSinceLastRun] if daysSinceLastRun else []
+        self.jockey = Jockey(**jockey)
+        self.selections = [Selection(**i) for i in selections]
+        self.trainer = Trainer(**trainer)
+        self.wearing = Wearing(**wearing) if wearing else None
 
 
 class RaceCard(BaseResource):
@@ -379,30 +263,16 @@ class RaceCard(BaseResource):
     :type runners: list[Runner]
     :type timeform_123_text: unicode
     """
-    betting_forecast_text = None
-    comment = None
-    in_play_hints = None
-    minimum_weight = None
-    number_of_non_runners = None
-    number_of_runners = None
-    prize = None
-    race = None
-    runners = None
-    timeform_123_text = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'race_card'
-        attributes = {
-            'bettingForecastText': 'betting_forecast_text',
-            'comment': 'comment',
-            'minimumWeight': 'minimum_weight',
-            'numberOfNonRunners': 'number_of_non_runners',
-            'numberOfRunners': 'number_of_runners',
-            'prize': 'prize',
-            'timeform123Text': 'timeform_123_text'
-        }
-        sub_resources = {
-            'inPlayHints': InPlayHint,
-            'race': Race,
-            'runners': Runner
-        }
+    def __init__(self, **kwargs):
+        super(RaceCard, self).__init__(**kwargs)
+        self.betting_forecast_text = kwargs.get('bettingForecastText')
+        self.comment = kwargs.get('comment')
+        self.minimum_weight = kwargs.get('minimumWeight')
+        self.number_of_non_runners = kwargs.get('numberOfNonRunners')
+        self.number_of_runners = kwargs.get('numberOfRunners')
+        self.prize = kwargs.get('prize')
+        self.timeform_123_text = kwargs.get('timeform123Text')
+        self.in_play_hint = [InPlayHint(**i) for i in kwargs.get('inPlayHints')]
+        self.race = Race(**kwargs.get('race'))
+        self.runners = [Runner(**i) for i in kwargs.get('runners')]

@@ -17,5 +17,3 @@ class RaceCardResourcesTest(unittest.TestCase):
         resource = resources.RaceCard(date_time_sent=self.DATE_TIME_SENT,
                                       **racecard)
         assert isinstance(resource, resources.RaceCard)
-
-#
