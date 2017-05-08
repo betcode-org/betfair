@@ -10,7 +10,6 @@ class BaseResourceInit(unittest.TestCase):
 
     def test_init(self):
         base_resource = BaseResource()
-        assert base_resource._datetime_sent is None
         assert base_resource._datetime_created is not None
         assert base_resource._datetime_updated is not None
         assert base_resource.elapsed_time is None
@@ -18,16 +17,15 @@ class BaseResourceInit(unittest.TestCase):
 
     def test_data(self):
         mock_response = create_mock_json('tests/resources/base_resource.json')
-        base_resource = BaseResource(date_time_sent=datetime.datetime(2003, 8, 4, 12, 30, 45),
+        base_resource = BaseResource(elapsed_time=1.2,
                                      **mock_response.json())
 
-        assert base_resource._datetime_sent == datetime.datetime(2003, 8, 4, 12, 30, 45)
-        assert base_resource.elapsed_time > 0
+        assert base_resource.elapsed_time == 1.2
         assert base_resource._data == mock_response.json()
 
     def test_data_json(self):
         mock_response = create_mock_json('tests/resources/base_resource.json')
-        base_resource = BaseResource(date_time_sent=datetime.datetime(2003, 8, 4, 12, 30, 45),
+        base_resource = BaseResource(elapsed_time=1.2,
                                      **mock_response.json())
         assert base_resource.json() == json.dumps(mock_response.json())
 

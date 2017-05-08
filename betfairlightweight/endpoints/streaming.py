@@ -35,5 +35,6 @@ class Streaming(object):
             session_token=self.client.session_token,
             timeout=timeout,
             buffer_size=buffer_size,
-            description=description
+            description=description,
+            # todo lightweight
         )

@@ -9,8 +9,7 @@ from .. import resources
 
 class InPlayService(BaseEndpoint):
 
-    def get_event_timeline(self, event_id, session=None):
-        date_time_sent = datetime.datetime.utcnow()
+    def get_event_timeline(self, event_id, session=None, lightweight=None):
         url = '%s%s' % (self.url, 'eventTimeline')
         params = {
             'eventId': event_id,
@@ -18,11 +17,10 @@ class InPlayService(BaseEndpoint):
             'regionCode': 'UK',
             'locale': 'en_GB'
         }
-        response = self.request(params=params, session=session, url=url)
-        return self.process_response(response.json(), resources.EventTimeline, date_time_sent)
+        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        return self.process_response(response.json(), resources.EventTimeline, elapsed_time, lightweight)
 
-    def get_scores(self, event_ids, session=None):
-        date_time_sent = datetime.datetime.utcnow()
+    def get_scores(self, event_ids, session=None, lightweight=None):
         url = '%s%s' % (self.url, 'scores')
         params = {
             'eventIds': ','.join(str(x) for x in event_ids),
@@ -30,20 +28,22 @@ class InPlayService(BaseEndpoint):
             'regionCode': 'UK',
             'locale': 'en_GB'
         }
-        response = self.request(params=params, session=session, url=url)
-        return self.process_response(response.json(), resources.Scores, date_time_sent)
+        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        return self.process_response(response.json(), resources.Scores, elapsed_time, lightweight)
 
     def request(self, method=None, params=None, session=None, url=None):
         session = session or self.client.session
+        date_time_sent = datetime.datetime.utcnow()
         try:
             response = session.get(url, params=params, headers=self.headers)
         except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
             raise APIError(None, method, params, e)
+        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
         check_status_code(response)
-        return response
+        return response, elapsed_time
 
     @property
     def headers(self):

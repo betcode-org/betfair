@@ -13,10 +13,11 @@ class BaseStream(object):
 
     _lookup = 'mc'
 
-    def __init__(self, unique_id, output_queue, max_latency):
+    def __init__(self, unique_id, output_queue, max_latency, lightweight):
         self.unique_id = unique_id
         self.output_queue = output_queue
         self._max_latency = max_latency
+        self._lightweight = lightweight
 
         self._initial_clk = None
         self._clk = None
@@ -101,7 +102,7 @@ class MarketStream(BaseStream):
                     logger.error('[MarketStream: %s] Received update for market not in cache: %s' %
                                  (self.unique_id, market_book))
             output_market_book.append(
-                self._caches[market_id].create_market_book(self.unique_id, market_book)
+                self._caches[market_id].create_market_book(self.unique_id, market_book, self._lightweight)
             )
 
         self.output_queue.put(output_market_book)
@@ -130,7 +131,7 @@ class OrderStream(BaseStream):
             self._updates_processed += 1
 
             output_order_book.append(
-                self._caches[market_id].create_order_book(self.unique_id, order_book)
+                self._caches[market_id].create_order_book(self.unique_id, order_book, self._lightweight)
             )
 
         self.output_queue.put(output_order_book)

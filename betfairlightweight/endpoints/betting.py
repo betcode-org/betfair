@@ -1,5 +1,3 @@
-import datetime
-
 from .baseendpoint import BaseEndpoint
 from .. import resources
 from ..filters import (
@@ -16,7 +14,7 @@ class Betting(BaseEndpoint):
 
     URI = 'SportsAPING/v1.0/'
 
-    def list_event_types(self, filter=market_filter(), locale=None, session=None):
+    def list_event_types(self, filter=market_filter(), locale=None, session=None, lightweight=None):
         """
         Returns a list of Event Types (i.e. Sports) associated with the markets
         selected by the MarketFilter.
@@ -24,16 +22,16 @@ class Betting(BaseEndpoint):
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.EventTypeResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listEventTypes')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.EventTypeResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.EventTypeResult, elapsed_time, lightweight)
 
-    def list_competitions(self, filter=market_filter(), locale=None, session=None):
+    def list_competitions(self, filter=market_filter(), locale=None, session=None, lightweight=None):
         """
         Returns a list of Competitions (i.e., World Cup 2013) associated with
         the markets selected by the MarketFilter.
@@ -41,16 +39,16 @@ class Betting(BaseEndpoint):
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.CompetitionResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listCompetitions')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.CompetitionResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.CompetitionResult, elapsed_time, lightweight)
 
-    def list_time_ranges(self, filter=market_filter(), granularity='DAYS', session=None):
+    def list_time_ranges(self, filter=market_filter(), granularity='DAYS', session=None, lightweight=None):
         """
         Returns a list of time ranges in the granularity specified in the
         request (i.e. 3PM to 4PM, Aug 14th to Aug 15th) associated with
@@ -60,16 +58,16 @@ class Betting(BaseEndpoint):
         :param str granularity: The granularity of time periods that correspond
         to markets selected by the market filter
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.TimeRangeResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listTimeRanges')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.TimeRangeResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.TimeRangeResult, elapsed_time, lightweight)
 
-    def list_events(self, filter=market_filter(), locale=None, session=None):
+    def list_events(self, filter=market_filter(), locale=None, session=None, lightweight=None):
         """
         Returns a list of Events (i.e, Reading vs. Man United) associated with
         the markets selected by the MarketFilter.
@@ -77,16 +75,16 @@ class Betting(BaseEndpoint):
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.EventResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listEvents')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.EventResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.EventResult, elapsed_time, lightweight)
 
-    def list_market_types(self, filter=market_filter(), locale=None, session=None):
+    def list_market_types(self, filter=market_filter(), locale=None, session=None, lightweight=None):
         """
         Returns a list of market types (i.e. MATCH_ODDS, NEXT_GOAL) associated with
         the markets selected by the MarketFilter.
@@ -94,16 +92,16 @@ class Betting(BaseEndpoint):
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.MarketTypeResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listMarketTypes')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.MarketTypeResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.MarketTypeResult, elapsed_time, lightweight)
 
-    def list_countries(self, filter=market_filter(), locale=None, session=None):
+    def list_countries(self, filter=market_filter(), locale=None, session=None, lightweight=None):
         """
         Returns a list of Countries associated with the markets selected by
         the MarketFilter.
@@ -111,16 +109,16 @@ class Betting(BaseEndpoint):
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.CountryResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listCountries')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.CountryResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.CountryResult, elapsed_time, lightweight)
 
-    def list_venues(self, filter=market_filter(), locale=None, session=None):
+    def list_venues(self, filter=market_filter(), locale=None, session=None, lightweight=None):
         """
         Returns a list of Venues (i.e. Cheltenham, Ascot) associated with
         the markets selected by the MarketFilter.
@@ -128,17 +126,17 @@ class Betting(BaseEndpoint):
         :param dict filter: The filter to select desired markets
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.VenueResult]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listVenues')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.VenueResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.VenueResult, elapsed_time, lightweight)
 
     def list_market_catalogue(self, filter=market_filter(), market_projection=None, sort=None, max_results=1,
-                              locale=None, session=None):
+                              locale=None, session=None, lightweight=None):
         """
         Returns a list of information about published (ACTIVE/SUSPENDED) markets
         that does not change (or changes very rarely).
@@ -150,19 +148,19 @@ class Betting(BaseEndpoint):
         than 0 and less than or equal to 10000
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.MarketCatalogue]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listMarketCatalogue')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.MarketCatalogue, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.MarketCatalogue, elapsed_time, lightweight)
 
     def list_market_book(self, market_ids, price_projection=None, order_projection=None,
                          match_projection=None, include_overall_position=None, partition_matched_by_strategy_ref=None,
                          customer_strategy_refs=None, currency_code=None, matched_since=None, bet_ids=None, locale=None,
-                         session=None):
+                         session=None, lightweight=None):
         """
         Returns a list of dynamic data about markets. Dynamic data includes prices,
         the status of the market, the status of selections, the traded volume, and
@@ -183,18 +181,18 @@ class Betting(BaseEndpoint):
         :param list bet_ids: If you ask for orders, restricts the results to orders with the specified bet IDs
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.MarketBook]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listMarketBook')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.MarketBook, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.MarketBook, elapsed_time, lightweight)
 
     def list_current_orders(self, bet_ids=None, market_ids=None, order_projection=None, customer_order_refs=None,
                             customer_strategy_refs=None, date_range=time_range(), order_by=None, sort_dir=None,
-                            from_record=None, record_count=None, session=None):
+                            from_record=None, record_count=None, session=None, lightweight=None):
         """
         Returns a list of your current orders.
 
@@ -212,19 +210,19 @@ class Betting(BaseEndpoint):
         :param int from_record: Specifies the first record that will be returned
         :param int record_count: Specifies how many records will be returned from the index position 'fromRecord'
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.CurrentOrders
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listCurrentOrders')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.CurrentOrders, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.CurrentOrders, elapsed_time, lightweight)
 
     def list_cleared_orders(self, bet_status='SETTLED', event_type_ids=None, event_ids=None, market_ids=None,
                             runner_ids=None, bet_ids=None, customer_order_refs=None, customer_strategy_refs=None,
                             side=None, settled_date_range=time_range(), group_by=None, include_item_description=None,
-                            locale=None, from_record=None, record_count=None, session=None):
+                            locale=None, from_record=None, record_count=None, session=None, lightweight=None):
         """
         Returns a list of settled bets based on the bet status,
         ordered by settled date.
@@ -246,17 +244,17 @@ class Betting(BaseEndpoint):
         :param int from_record: Specifies the first record that will be returned
         :param int record_count: Specifies how many records will be returned from the index position 'fromRecord'
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.ClearedOrders
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listClearedOrders')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.ClearedOrders, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.ClearedOrders, elapsed_time, lightweight)
 
     def list_market_profit_and_loss(self, market_ids, include_settled_bets=None, include_bsp_bets=None,
-                                    net_of_commission=None, session=None):
+                                    net_of_commission=None, session=None, lightweight=None):
         """
         Retrieve profit and loss for a given list of OPEN markets.
 
@@ -266,17 +264,17 @@ class Betting(BaseEndpoint):
         :param bool net_of_commission: Option to return profit and loss net of users current commission
         rate for this market including any special tariffs
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.MarketProfitLoss]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listMarketProfitAndLoss')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.MarketProfitLoss, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.MarketProfitLoss, elapsed_time, lightweight)
 
     def place_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                     customer_strategy_ref=None, async=None, session=None):
+                     customer_strategy_ref=None, async=None, session=None, lightweight=None):
         """
         Place new orders into market.
 
@@ -291,16 +289,16 @@ class Betting(BaseEndpoint):
         :param bool async: An optional flag (not setting equates to false) which specifies if
         the orders should be placed asynchronously
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.PlaceOrders
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'placeOrders')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.PlaceOrders, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.PlaceOrders, elapsed_time, lightweight)
 
-    def cancel_orders(self, market_id=None, instructions=None, customer_ref=None, session=None):
+    def cancel_orders(self, market_id=None, instructions=None, customer_ref=None, session=None, lightweight=None):
         """
         Cancel all bets OR cancel all bets on a market OR fully or partially
         cancel particular orders on a market.
@@ -310,16 +308,16 @@ class Betting(BaseEndpoint):
         :param str customer_ref: Optional parameter allowing the client to pass a unique
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.CancelOrders
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'cancelOrders')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.CancelOrders, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.CancelOrders, elapsed_time, lightweight)
 
-    def update_orders(self, market_id, instructions, customer_ref=None, session=None):
+    def update_orders(self, market_id, instructions, customer_ref=None, session=None, lightweight=None):
         """
         Update non-exposure changing field.
 
@@ -328,17 +326,17 @@ class Betting(BaseEndpoint):
         :param str customer_ref: Optional parameter allowing the client to pass a unique
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.UpdateOrders
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'updateOrders')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.UpdateOrders, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.UpdateOrders, elapsed_time, lightweight)
 
     def replace_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                       async=None, session=None):
+                       async=None, session=None, lightweight=None):
         """
         This operation is logically a bulk cancel followed by a bulk place.
         The cancel is completed first then the new orders are placed.
@@ -353,11 +351,11 @@ class Betting(BaseEndpoint):
         :param str async: An optional flag (not setting equates to false) which specifies
         if the orders should be replaced asynchronously
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.ReplaceOrders
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'replaceOrders')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.ReplaceOrders, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.ReplaceOrders, elapsed_time, lightweight)

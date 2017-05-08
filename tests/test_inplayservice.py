@@ -20,7 +20,7 @@ class InPlayServiceTest(unittest.TestCase):
         assert self.in_play_service.client == self.client
 
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.process_response')
-    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request')
+    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request', return_value=(mock.Mock(), 1.3))
     def test_get_event_timeline(self, mock_request, mock_process_response):
         event_id = [12345]
         params = {
@@ -37,7 +37,7 @@ class InPlayServiceTest(unittest.TestCase):
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.process_response')
-    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request')
+    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request', return_value=(mock.Mock(), 1.3))
     def test_get_scores(self, mock_request, mock_process_response):
         event_ids = [12345]
         params = {

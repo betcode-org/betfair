@@ -12,10 +12,11 @@ from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 class BaseClientInit(unittest.TestCase):
 
     def test_base_client_init(self):
-        client = APIClient('bf_username', 'password', 'app_key')
+        client = APIClient('bf_username', 'password', 'app_key', lightweight=True)
         assert client.username == 'bf_username'
         assert client.password == 'password'
         assert client.app_key == 'app_key'
+        assert client.lightweight is True
         assert client.certs is None
         assert client.locale is None
         assert client._login_time is None

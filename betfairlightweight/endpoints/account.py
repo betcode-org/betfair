@@ -1,5 +1,3 @@
-import datetime
-
 from .baseendpoint import BaseEndpoint
 from .. import resources
 from ..utils import clean_locals
@@ -14,38 +12,38 @@ class Account(BaseEndpoint):
     URI = 'AccountAPING/v1.0/'
     connect_timeout = 6.05
 
-    def get_account_funds(self, wallet=None, session=None):
+    def get_account_funds(self, wallet=None, session=None, lightweight=None):
         """
         Get available to bet amount.
 
         :param str wallet: Name of the wallet in question
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.AccountFunds
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'getAccountFunds')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.AccountFunds, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.AccountFunds, elapsed_time, lightweight)
 
-    def get_account_details(self, session=None):
+    def get_account_details(self, session=None, lightweight=None):
         """
         Returns the details relating your account, including your discount
         rate and Betfair point balance.
 
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.AccountDetails
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'getAccountDetails')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.AccountDetails, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.AccountDetails, elapsed_time, lightweight)
 
     def get_account_statement(self, locale=None, from_record=None, record_count=None, item_date_range=time_range(),
-                              include_item=None, wallet=None, session=None):
+                              include_item=None, wallet=None, session=None, lightweight=None):
         """
         Get account statement.
 
@@ -56,29 +54,29 @@ class Account(BaseEndpoint):
         :param str include_item: Which items to include, if not specified then defaults to ALL.
         :param str wallet: Which wallet to return statementItems for.
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: resources.AccountStatementResult
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'getAccountStatement')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.AccountStatementResult, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.AccountStatementResult, elapsed_time, lightweight)
 
-    def list_currency_rates(self, from_currency=None, session=None):
+    def list_currency_rates(self, from_currency=None, session=None, lightweight=None):
         """
         Returns a list of currency rates based on given currency
 
         :param str from_currency: The currency from which the rates are computed
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.CurrencyRate]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listCurrencyRates')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.CurrencyRate, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.CurrencyRate, elapsed_time, lightweight)
 
     def transfer_funds(self, session=None):
         """

@@ -12,7 +12,7 @@ class Scores(BaseEndpoint):
 
     URI = 'ScoresAPING/v1.0/'
 
-    def list_race_details(self, meeting_ids=None, race_ids=None, session=None):
+    def list_race_details(self, meeting_ids=None, race_ids=None, session=None, lightweight=None):
         """
         Search for races to get their details.
 
@@ -22,50 +22,51 @@ class Scores(BaseEndpoint):
         :param str race_ids: Optionally restricts the results to the specified race IDs. The
         unique Id for the race in the format meetingid.raceTime (hhmm). raceTime is in GMT
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.RaceDetail]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listRaceDetails')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.RaceDetails, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.RaceDetails, elapsed_time, lightweight)
 
     # Following requires app key to be authorised and has not been tested.
 
-    def list_scores(self, update_keys, session=None):
+    def list_scores(self, update_keys, session=None, lightweight=None):
         """
         Returns a list of current scores for the given events.
 
         :param dict update_keys: The filter to select desired markets. All markets that match
         the criteria in the filter are selected
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.Score]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listScores')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.Score, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.Score, elapsed_time, lightweight)
 
-    def list_incidents(self, update_keys, session=None):
+    def list_incidents(self, update_keys, session=None, lightweight=None):
         """
         Returns a list of incidents for the given events.
 
         :param dict update_keys: The filter to select desired markets. All markets that match
         the criteria in the filter are selected
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.Incidents]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listIncidents')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.Incidents, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.Incidents, elapsed_time, lightweight)
 
-    def list_available_events(self, event_ids=None, event_type_ids=None, event_status=None, session=None):
+    def list_available_events(self, event_ids=None, event_type_ids=None, event_status=None, session=None,
+                              lightweight=None):
         """
         Search for events that have live score data available.
 
@@ -73,14 +74,14 @@ class Scores(BaseEndpoint):
         :param list event_type_ids: Optionally restricts the results to the specified event type IDs
         :param list event_status: Optionally restricts the results to the specified event status
         :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource (22x faster)
 
         :rtype: list[resources.AvailableEvent]
         """
         params = clean_locals(locals())
-        date_time_sent = datetime.datetime.utcnow()
         method = '%s%s' % (self.URI, 'listAvailableEvents')
-        response = self.request(method, params, session)
-        return self.process_response(response.json(), resources.AvailableEvent, date_time_sent)
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response.json(), resources.AvailableEvent, elapsed_time, lightweight)
 
     @property
     def url(self):

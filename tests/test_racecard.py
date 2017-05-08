@@ -44,7 +44,7 @@ class RaceCardTest(unittest.TestCase):
         assert mock_session.get.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.process_response')
-    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request', return_value=(mock.Mock(), 1.3))
     def test_get_race_card(self, mock_request, mock_process_response):
         market_ids = ['1', '2']
         data_entries = 'test'

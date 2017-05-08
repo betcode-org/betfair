@@ -1,3 +1,4 @@
+import datetime
 from operator import itemgetter
 
 from ..utils import update_available
@@ -308,14 +309,17 @@ class MarketBookCache(BaseResource):
                 else:
                     self.runners.append(RunnerBook(**new_data))
 
-    def create_market_book(self, unique_id, streaming_update):
-        return MarketBook(
-            date_time_sent=self._datetime_updated,
-            streaming_unique_id=unique_id,
-            streaming_update=streaming_update,
-            market_definition=self.market_definition,
-            **self.serialise
-        )
+    def create_market_book(self, unique_id, streaming_update, lightweight):
+        if lightweight:
+            return self.serialise
+        else:
+            return MarketBook(
+                elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+                streaming_unique_id=unique_id,
+                streaming_update=streaming_update,
+                market_definition=self.market_definition,
+                **self.serialise
+            )
 
     @property
     def runner_dict(self):
@@ -465,13 +469,16 @@ class OrderBookCache(BaseResource):
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
-    def create_order_book(self, unique_id, streaming_update):
-        return CurrentOrders(
-            date_time_sent=self._datetime_updated,
-            streaming_unique_id=unique_id,
-            streaming_update=streaming_update,
-            **self.serialise
-        )
+    def create_order_book(self, unique_id, streaming_update, lightweight):
+        if lightweight:
+            return self.serialise
+        else:
+            return CurrentOrders(
+                elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+                streaming_unique_id=unique_id,
+                streaming_update=streaming_update,
+                **self.serialise
+            )
 
     @property
     def runner_dict(self):
