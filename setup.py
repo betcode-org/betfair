@@ -6,6 +6,8 @@ from setuptools import setup
 
 INSTALL_REQUIRES = [
     'requests',
+    'ciso8601',
+    'ujson',
 ]
 TEST_REQUIRES = [
     'mock'
