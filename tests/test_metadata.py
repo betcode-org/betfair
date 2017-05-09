@@ -92,5 +92,10 @@ class MetadataTest(unittest.TestCase):
                 'min_bet_size': 6,
                 'min_bet_payout': 30,
                 'min_bsp_liability': 30
-            }
+            },
+            'RON': {
+                'min_bet_size': 10,
+                'min_bet_payout': 50,
+                'min_bsp_liability': (10, 50)  # (back, lay)
+            },
         }

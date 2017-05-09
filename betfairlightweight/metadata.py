@@ -60,6 +60,7 @@ list_market_profit_and_loss = {
 
 """
 Currency Parameters
+    http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=4391789
 """
 
 currency_parameters = {
@@ -112,5 +113,10 @@ currency_parameters = {
         'min_bet_size': 6,
         'min_bet_payout': 30,
         'min_bsp_liability': 30
-    }
+    },
+    'RON': {
+        'min_bet_size': 10,
+        'min_bet_payout': 50,
+        'min_bsp_liability': (10, 50)  # (back, lay)
+    },
 }

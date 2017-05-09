@@ -1,6 +1,6 @@
 import datetime
 import ciso8601
-import json
+import ujson as json
 
 from ..compat import (
     basestring,

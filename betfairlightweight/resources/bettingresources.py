@@ -223,9 +223,11 @@ class MarketCatalogue(BaseResource):
 
 
 """
-__slots__ is a terrible hack with nasty, hard-to-fathom side effects that should only be used by programmers at
-grandmaster and wizard levels. Unfortunately it has gained an enormous undeserved popularity amongst the novices and
-apprentices, who should know better than to use this magic incantation casually.
+__slots__ is a terrible hack with nasty, hard-to-fathom side
+effects that should only be used by programmers at grandmaster and
+wizard levels. Unfortunately it has gained an enormous undeserved
+popularity amongst the novices and apprentices, who should know
+better than to use this magic incantation casually.
 """
 
 
@@ -235,7 +237,9 @@ class PriceSize(object):
     :type size: float
     """
 
-    __slots__ = ['price', 'size']
+    __slots__ = [
+        'price', 'size'
+    ]
 
     def __init__(self, price, size):
         self.price = price
@@ -266,7 +270,9 @@ class RunnerBookEX(object):
     :type traded_volume: list[PriceSize]
     """
 
-    __slots__ = ['available_to_back', 'available_to_lay', 'traded_volume']
+    __slots__ = [
+        'available_to_back', 'available_to_lay', 'traded_volume'
+    ]
 
     def __init__(self, availableToBack=None, availableToLay=None, tradedVolume=None):
         self.available_to_back = [PriceSize(**i) for i in availableToBack]
@@ -346,8 +352,10 @@ class RunnerBook(object):
     :type total_matched: float
     """
 
-    __slots__ = ['selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded',
-                 'removal_date', 'sp', 'ex', 'orders', 'matches']
+    __slots__ = [
+        'selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date',
+        'sp', 'ex', 'orders', 'matches'
+    ]
 
     def __init__(self, selectionId, status, adjustmentFactor, handicap, lastPriceTraded=None, totalMatched=None,
                  removalDate=None, sp=None, ex=None, orders=None, matches=None):

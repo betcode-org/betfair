@@ -13,6 +13,8 @@ install:
   - pip install -r requirements.txt
   - travis_retry python setup.py install
   - pip install coveralls
+  - pip install --upgrade pip six
+  - pip install --upgrade setuptools
 
 script:
     coverage run --source=betfairlightweight setup.py test
