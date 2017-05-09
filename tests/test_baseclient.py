@@ -117,7 +117,9 @@ class BaseClientTest(unittest.TestCase):
                                                   'content-type': 'application/x-www-form-urlencoded'}
         assert self.client.request_headers == {'X-Application': self.client.app_key,
                                                'X-Authentication': self.client.session_token,
-                                               'content-type': 'application/json'}
+                                               'content-type': 'application/json',
+                                               'Accept-Encoding': 'gzip, deflate',
+                                               'Connection': 'keep-alive'}
 
     def test_client_logged_in_session(self):
         self.client.set_session_token('session_token')

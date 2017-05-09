@@ -167,5 +167,7 @@ class BaseClient(object):
         return {
             'X-Application': self.app_key,
             'X-Authentication': self.session_token,
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive'
         }
