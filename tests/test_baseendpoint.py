@@ -51,7 +51,7 @@ class BaseEndPointTest(unittest.TestCase):
 
         mock_post.assert_called_once_with(url, data=mock_create_req(),
                                           headers=mock_request_headers, timeout=(3.05, 16))
-        assert response[0] == mock_response
+        assert response[0] == mock_response.json()
         assert isinstance(response[1], float)
 
     @mock.patch('betfairlightweight.endpoints.baseendpoint.BaseEndpoint.create_req')

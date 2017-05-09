@@ -29,7 +29,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_event_types(self, mock_response):
         mock = create_mock_json('tests/resources/list_event_types.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_event_types()
         assert mock.json.call_count == 1
@@ -40,7 +40,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_competitions(self, mock_response):
         mock = create_mock_json('tests/resources/list_competitions.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_competitions()
         assert mock.json.call_count == 1
@@ -51,7 +51,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_time_ranges(self, mock_response):
         mock = create_mock_json('tests/resources/list_time_ranges.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_time_ranges()
         assert mock.json.call_count == 1
@@ -62,7 +62,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_events(self, mock_response):
         mock = create_mock_json('tests/resources/list_events.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_events()
         assert mock.json.call_count == 1
@@ -73,7 +73,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_market_types(self, mock_response):
         mock = create_mock_json('tests/resources/list_market_types.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_market_types()
         assert mock.json.call_count == 1
@@ -84,7 +84,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_countries(self, mock_response):
         mock = create_mock_json('tests/resources/list_countries.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_countries()
         assert mock.json.call_count == 1
@@ -95,7 +95,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_venues(self, mock_response):
         mock = create_mock_json('tests/resources/list_venues.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_venues()
         assert mock.json.call_count == 1
@@ -106,7 +106,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_market_catalogue(self, mock_response):
         mock = create_mock_json('tests/resources/list_market_catalogue.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_market_catalogue()
         assert mock.json.call_count == 1
@@ -117,7 +117,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_market_book(self, mock_response):
         mock = create_mock_json('tests/resources/list_market_book.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         marketIds = mock.Mock()
 
         response = self.betting.list_market_book(marketIds)
@@ -129,7 +129,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_current_orders(self, mock_response):
         mock = create_mock_json('tests/resources/list_current_orders.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_current_orders()
         assert mock.json.call_count == 1
@@ -139,7 +139,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_cleared_orders(self, mock_response):
         mock = create_mock_json('tests/resources/list_cleared_orders.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.betting.list_cleared_orders()
         assert mock.json.call_count == 1
@@ -149,7 +149,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_place_orders(self, mock_response):
         mock = create_mock_json('tests/resources/place_orders.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         marketId = mock.Mock()
         instructions = mock.Mock()
 
@@ -162,7 +162,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_cancel_orders(self, mock_response):
         mock = create_mock_json('tests/resources/cancel_orders.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         marketId = mock.Mock()
         instructions = mock.Mock()
 
@@ -175,7 +175,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_update_orders(self, mock_response):
         mock = create_mock_json('tests/resources/update_orders.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         marketId = mock.Mock()
         instructions = mock.Mock()
 
@@ -188,7 +188,7 @@ class BettingTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_replace_orders(self, mock_response):
         mock = create_mock_json('tests/resources/replace_orders.json')
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         marketId = mock.Mock()
         instructions = mock.Mock()
 

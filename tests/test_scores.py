@@ -28,7 +28,7 @@ class ScoresTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
     def test_list_race_details(self, mock_response):
         mock = create_mock_json('tests/resources/list_race_details.json')
-        mock_response.return_value = (mock, 1.5)
+        mock_response.return_value = (mock.json(), 1.5)
 
         response = self.scores.list_race_details()
         assert mock.json.call_count == 1
@@ -39,7 +39,7 @@ class ScoresTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
     def test_list_scores(self, mock_response):
         mock = create_mock_json('tests/resources/list_race_details.json')  # todo
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         mock_update_keys = mock.Mock()
 
         response = self.scores.list_scores(mock_update_keys)
@@ -51,7 +51,7 @@ class ScoresTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
     def test_list_incidents(self, mock_response):
         mock = create_mock_json('tests/resources/list_race_details.json')  # todo
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
         mock_update_keys = mock.Mock()
 
         response = self.scores.list_incidents(mock_update_keys)
@@ -63,7 +63,7 @@ class ScoresTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.scores.Scores.request')
     def test_list_available_events(self, mock_response):
         mock = create_mock_json('tests/resources/list_race_details.json')  # todo
-        mock_response.return_value = (mock, 1.3)
+        mock_response.return_value = (mock.json(), 1.3)
 
         response = self.scores.list_available_events()
         assert mock.json.call_count == 1

@@ -19,14 +19,13 @@ class Login(BaseEndpoint):
         Makes login request.
 
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: LoginResource
         """
         (response, elapsed_time) = self.request(self.url, session=session)
-        response_json = response.json()
-        self.client.set_session_token(response_json.get('sessionToken'))
-        return self.process_response(response_json, LoginResource, elapsed_time, lightweight)
+        self.client.set_session_token(response.get('sessionToken'))
+        return self.process_response(response, LoginResource, elapsed_time, lightweight)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
@@ -39,10 +38,12 @@ class Login(BaseEndpoint):
             raise APIError(None, exception=e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
+        response_data = response.json()
+
         check_status_code(response)
         if self._error_handler:
-            self._error_handler(response.json())
-        return response, elapsed_time
+            self._error_handler(response_data)
+        return response_data, elapsed_time
 
     def _error_handler(self, response, method=None, params=None):
         if response.get('loginStatus') != 'SUCCESS':

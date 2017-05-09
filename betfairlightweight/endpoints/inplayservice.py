@@ -18,7 +18,7 @@ class InPlayService(BaseEndpoint):
             'locale': 'en_GB'
         }
         (response, elapsed_time) = self.request(params=params, session=session, url=url)
-        return self.process_response(response.json(), resources.EventTimeline, elapsed_time, lightweight)
+        return self.process_response(response, resources.EventTimeline, elapsed_time, lightweight)
 
     def get_scores(self, event_ids, session=None, lightweight=None):
         url = '%s%s' % (self.url, 'scores')
@@ -29,7 +29,7 @@ class InPlayService(BaseEndpoint):
             'locale': 'en_GB'
         }
         (response, elapsed_time) = self.request(params=params, session=session, url=url)
-        return self.process_response(response.json(), resources.Scores, elapsed_time, lightweight)
+        return self.process_response(response, resources.Scores, elapsed_time, lightweight)
 
     def request(self, method=None, params=None, session=None, url=None):
         session = session or self.client.session
@@ -42,8 +42,10 @@ class InPlayService(BaseEndpoint):
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
+        response_data = response.json()
+
         check_status_code(response)
-        return response, elapsed_time
+        return response_data, elapsed_time
 
     @property
     def headers(self):

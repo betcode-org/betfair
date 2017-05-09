@@ -22,14 +22,14 @@ class Scores(BaseEndpoint):
         :param str race_ids: Optionally restricts the results to the specified race IDs. The
         unique Id for the race in the format meetingid.raceTime (hhmm). raceTime is in GMT
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: list[resources.RaceDetail]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listRaceDetails')
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response.json(), resources.RaceDetails, elapsed_time, lightweight)
+        return self.process_response(response, resources.RaceDetails, elapsed_time, lightweight)
 
     # Following requires app key to be authorised and has not been tested.
 
@@ -40,14 +40,14 @@ class Scores(BaseEndpoint):
         :param dict update_keys: The filter to select desired markets. All markets that match
         the criteria in the filter are selected
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: list[resources.Score]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listScores')
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response.json(), resources.Score, elapsed_time, lightweight)
+        return self.process_response(response, resources.Score, elapsed_time, lightweight)
 
     def list_incidents(self, update_keys, session=None, lightweight=None):
         """
@@ -56,14 +56,14 @@ class Scores(BaseEndpoint):
         :param dict update_keys: The filter to select desired markets. All markets that match
         the criteria in the filter are selected
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: list[resources.Incidents]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listIncidents')
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response.json(), resources.Incidents, elapsed_time, lightweight)
+        return self.process_response(response, resources.Incidents, elapsed_time, lightweight)
 
     def list_available_events(self, event_ids=None, event_type_ids=None, event_status=None, session=None,
                               lightweight=None):
@@ -74,14 +74,14 @@ class Scores(BaseEndpoint):
         :param list event_type_ids: Optionally restricts the results to the specified event type IDs
         :param list event_status: Optionally restricts the results to the specified event status
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: list[resources.AvailableEvent]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listAvailableEvents')
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response.json(), resources.AvailableEvent, elapsed_time, lightweight)
+        return self.process_response(response, resources.AvailableEvent, elapsed_time, lightweight)
 
     @property
     def url(self):

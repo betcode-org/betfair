@@ -45,10 +45,12 @@ class BaseEndpoint(object):
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow()-date_time_sent).total_seconds()
 
+        response_data = response.json()
+
         check_status_code(response)
         if self._error_handler:
-            self._error_handler(response.json(), method, params)
-        return response, elapsed_time
+            self._error_handler(response_data, method, params)
+        return response_data, elapsed_time
 
     @staticmethod
     def create_req(method, params):
@@ -80,29 +82,24 @@ class BaseEndpoint(object):
 
     def process_response(self, response_json, resource, elapsed_time, lightweight):
         """
-        :param response_json: Response in json format
-        :param resource: Resource data structure
-        :param elapsed_time: Elapsed time of request
+        :param dict/list response_json: Response in dict format
+        :param BaseResource resource: Resource data structure
+        :param float elapsed_time: Elapsed time of request
         :param bool lightweight: If True will return dict not a resource (22x faster)
         """
-        if lightweight:
-            if isinstance(response_json, list):
-                return response_json
-            else:
-                return response_json.get('result', response_json)
-        elif self.client.lightweight and lightweight is not False:
-            if isinstance(response_json, list):
-                return response_json
-            else:
-                return response_json.get('result', response_json)  # todo clean up
-        elif isinstance(response_json, list):
-            return [resource(elapsed_time=elapsed_time, **x) for x in response_json]
+        if isinstance(response_json, list):
+            result = response_json
         else:
-            response_result = response_json.get('result', response_json)
-            if isinstance(response_result, list):
-                return [resource(elapsed_time=elapsed_time, **x) for x in response_result]
-            else:
-                return resource(elapsed_time=elapsed_time, **response_result)
+            result = response_json.get('result', response_json)
+
+        if lightweight:
+            return result
+        elif self.client.lightweight and lightweight is not False:
+            return result
+        elif isinstance(result, list):
+            return [resource(elapsed_time=elapsed_time, **x) for x in result]
+        else:
+            return resource(elapsed_time=elapsed_time, **result)
 
     @property
     def url(self):

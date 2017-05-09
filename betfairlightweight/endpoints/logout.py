@@ -19,14 +19,13 @@ class Logout(BaseEndpoint):
         Makes logout request.
 
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: LogoutResource
         """
         (response, elapsed_time) = self.request(session=session)
-        response_json = response.json()
         self.client.client_logout()
-        return self.process_response(response_json, LogoutResource, elapsed_time, lightweight)
+        return self.process_response(response, LogoutResource, elapsed_time, lightweight)
 
     def request(self, payload=None, params=None, session=None):
         session = session or self.client.session
@@ -39,10 +38,12 @@ class Logout(BaseEndpoint):
             raise APIError(None, exception=e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
+        response_data = response.json()
+
         check_status_code(response)
         if self._error_handler:
-            self._error_handler(response.json())
-        return response, elapsed_time
+            self._error_handler(response_data)
+        return response_data, elapsed_time
 
     def _error_handler(self, response, method=None, params=None):
         if response.get('status') != 'SUCCESS':

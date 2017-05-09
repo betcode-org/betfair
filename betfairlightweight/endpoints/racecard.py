@@ -36,7 +36,7 @@ class RaceCard(BaseEndpoint):
         :param list market_ids: The filter to select desired markets
         :param str data_entries: Data to be returned
         :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource (22x faster)
+        :param bool lightweight: If True will return dict not a resource
 
         :rtype: list[resources.RaceCard]
         """
@@ -45,7 +45,7 @@ class RaceCard(BaseEndpoint):
                                 "APIClient.race_card.login()")
         params = self.create_race_card_req(market_ids, data_entries)
         (response, elapsed_time) = self.request(params=params, session=session)
-        return self.process_response(response.json(), resources.RaceCard, elapsed_time, lightweight)
+        return self.process_response(response, resources.RaceCard, elapsed_time, lightweight)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
@@ -58,8 +58,10 @@ class RaceCard(BaseEndpoint):
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
+        response_data = response.json()
+
         check_status_code(response)
-        return response, elapsed_time
+        return response_data, elapsed_time
 
     @staticmethod
     def create_race_card_req(market_ids, data_entries):
