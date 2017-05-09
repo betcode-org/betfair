@@ -1,20 +1,15 @@
 from .baseresource import BaseResource
 
 
-class EventType(BaseResource):
+class EventType(object):
     """
     :type id: unicode
     :type name: unicode
     """
-    id = None
-    name = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'event_type'
-        attributes = {
-            'id': 'id',
-            'name': 'name'
-        }
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
 
 
 class EventTypeResult(BaseResource):
@@ -22,33 +17,22 @@ class EventTypeResult(BaseResource):
     :type event_type: EventType
     :type market_count: int
     """
-    event_type = None
-    market_count = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'event_type_result'
-        attributes = {
-            'marketCount': 'market_count'
-        }
-        sub_resources = {
-            'eventType': EventType
-        }
+    def __init__(self, **kwargs):
+        super(EventTypeResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.event_type = EventType(**kwargs.get('eventType'))
 
 
-class Competition(BaseResource):
+class Competition(object):
     """
     :type id: unicode
     :type name: unicode
     """
-    id = None
-    name = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'competition'
-        attributes = {
-            'id': 'id',
-            'name': 'name'
-        }
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
 
 
 class CompetitionResult(BaseResource):
@@ -57,39 +41,23 @@ class CompetitionResult(BaseResource):
     :type competition_region: unicode
     :type market_count: int
     """
-    competition = None
-    competition_region = None
-    market_count = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'competition_result'
-        attributes = {
-            'marketCount': 'market_count',
-            'competitionRegion': 'competition_region'
-        }
-        sub_resources = {
-            'competition': Competition
-        }
+    def __init__(self, **kwargs):
+        super(CompetitionResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.competition_region = kwargs.get('competitionRegion')
+        self.competition = Competition(**kwargs.get('competition'))
 
 
-class TimeRange(BaseResource):
+class TimeRange(object):
     """
     :type _from: datetime.datetime
     :type to: datetime.datetime
     """
-    _from = None
-    to = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'time_range'
-        attributes = {
-            'from': '_from',
-            'to': 'to'
-        }
-        datetime_attributes = (
-            'from',
-            'to'
-        )
+    def __init__(self, **kwargs):
+        self._from = BaseResource.strip_datetime(kwargs.get('from'))
+        self.to = BaseResource.strip_datetime(kwargs.get('to'))
 
 
 class TimeRangeResult(BaseResource):
@@ -97,20 +65,14 @@ class TimeRangeResult(BaseResource):
     :type market_count: int
     :type time_range: TimeRange
     """
-    market_count = None
-    time_range = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'time_range_result'
-        attributes = {
-            'marketCount': 'market_count'
-        }
-        sub_resources = {
-            'timeRange': TimeRange
-        }
+    def __init__(self, **kwargs):
+        super(TimeRangeResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.time_range = TimeRange(**kwargs.get('timeRange'))
 
 
-class Event(BaseResource):
+class Event(object):
     """
     :type country_code: unicode
     :type id: unicode
@@ -119,26 +81,14 @@ class Event(BaseResource):
     :type time_zone: unicode
     :type venue: unicode
     """
-    country_code = None
-    id = None
-    name = None
-    open_date = None
-    time_zone = None
-    venue = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'event'
-        attributes = {
-            'id': 'id',
-            'openDate': 'open_date',
-            'timezone': 'time_zone',
-            'countryCode': 'country_code',
-            'name': 'name',
-            'venue': 'venue'
-        }
-        datetime_attributes = (
-            'openDate'
-        )
+    def __init__(self, id, openDate, timezone, name, countryCode=None, venue=None):
+        self.id = id
+        self.open_date = BaseResource.strip_datetime(openDate)
+        self.time_zone = timezone
+        self.country_code = countryCode
+        self.name = name
+        self.venue = venue
 
 
 class EventResult(BaseResource):
@@ -146,17 +96,11 @@ class EventResult(BaseResource):
     :type event: Event
     :type market_count: int
     """
-    event = None
-    market_count = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'event_result'
-        attributes = {
-            'marketCount': 'market_count'
-        }
-        sub_resources = {
-            'event': Event
-        }
+    def __init__(self, **kwargs):
+        super(EventResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.event = Event(**kwargs.get('event'))
 
 
 class MarketTypeResult(BaseResource):
@@ -164,15 +108,11 @@ class MarketTypeResult(BaseResource):
     :type market_count: int
     :type market_type: unicode
     """
-    market_count = None
-    market_type = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'market_type_result'
-        attributes = {
-            'marketCount': 'market_count',
-            'marketType': 'market_type'
-        }
+    def __init__(self, **kwargs):
+        super(MarketTypeResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.market_type = kwargs.get('marketType')
 
 
 class CountryResult(BaseResource):
@@ -180,15 +120,11 @@ class CountryResult(BaseResource):
     :type country_code: unicode
     :type market_count: int
     """
-    country_code = None
-    market_count = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'country_result'
-        attributes = {
-            'marketCount': 'market_count',
-            'countryCode': 'country_code'
-        }
+    def __init__(self, **kwargs):
+        super(CountryResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.country_code = kwargs.get('countryCode')
 
 
 class VenueResult(BaseResource):
@@ -196,18 +132,14 @@ class VenueResult(BaseResource):
     :type market_count: int
     :type venue: unicode
     """
-    market_count = None
-    venue = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'venue_result'
-        attributes = {
-            'marketCount': 'market_count',
-            'venue': 'venue'
-        }
+    def __init__(self, **kwargs):
+        super(VenueResult, self).__init__(**kwargs)
+        self.market_count = kwargs.get('marketCount')
+        self.venue = kwargs.get('venue')
 
 
-class MarketCatalogueDescription(BaseResource):
+class MarketCatalogueDescription(object):
     """
     :type betting_type: unicode
     :type bsp_market: bool
@@ -225,48 +157,28 @@ class MarketCatalogueDescription(BaseResource):
     :type turn_in_play_enabled: bool
     :type wallet: unicode
     """
-    betting_type = None
-    bsp_market = None
-    clarifications = None
-    discount_allowed = None
-    each_way_divisor = None
-    market_base_rate = None
-    market_time = None
-    market_type = None
-    persistence_enabled = None
-    regulator = None
-    rules = None
-    rules_has_date = None
-    suspend_time = None
-    turn_in_play_enabled = None
-    wallet = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'description'
-        attributes = {
-            'bettingType': 'betting_type',
-            'bspMarket': 'bsp_market',
-            'discountAllowed': 'discount_allowed',
-            'marketBaseRate': 'market_base_rate',
-            'marketTime': 'market_time',
-            'marketType': 'market_type',
-            'persistenceEnabled': 'persistence_enabled',
-            'regulator': 'regulator',
-            'rules': 'rules',
-            'rulesHasDate': 'rules_has_date',
-            'suspendTime': 'suspend_time',
-            'turnInPlayEnabled': 'turn_in_play_enabled',
-            'wallet': 'wallet',
-            'eachWayDivisor': 'each_way_divisor',
-            'clarifications': 'clarifications'
-        }
-        datetime_attributes = (
-            'marketTime',
-            'suspendTime'
-        )
+    def __init__(self, bettingType, bspMarket, discountAllowed, marketBaseRate, marketTime, marketType,
+                 persistenceEnabled, regulator, rules, rulesHasDate, suspendTime, turnInPlayEnabled, wallet,
+                 eachWayDivisor=None, clarifications=None):
+        self.betting_type = bettingType
+        self.bsp_market = bspMarket
+        self.discount_allowed = discountAllowed
+        self.market_base_rate = marketBaseRate
+        self.market_time = BaseResource.strip_datetime(marketTime)
+        self.market_type = marketType
+        self.persistence_enabled = persistenceEnabled
+        self.regulator = regulator
+        self.rules = rules
+        self.rules_has_date = rulesHasDate
+        self.suspend_time = BaseResource.strip_datetime(suspendTime)
+        self.turn_in_play_enabled = turnInPlayEnabled
+        self.wallet = wallet
+        self.each_way_divisor = eachWayDivisor
+        self.clarifications = clarifications
 
 
-class RunnerCatalogue(BaseResource):
+class RunnerCatalogue(object):
     """
     :type handicap: float
     :type metadata: dict
@@ -274,21 +186,13 @@ class RunnerCatalogue(BaseResource):
     :type selection_id: int
     :type sort_priority: int
     """
-    handicap = None
-    metadata = None
-    runner_name = None
-    selection_id = None
-    sort_priority = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'runners'
-        attributes = {
-            'selectionId': 'selection_id',
-            'runnerName': 'runner_name',
-            'sortPriority': 'sort_priority',
-            'handicap': 'handicap',
-            'metadata': 'metadata'
-        }
+    def __init__(self, selectionId, runnerName, sortPriority, handicap, metadata):
+        self.selection_id = selectionId
+        self.runner_name = runnerName
+        self.sort_priority = sortPriority
+        self.handicap = handicap
+        self.metadata = metadata
 
 
 class MarketCatalogue(BaseResource):
@@ -303,53 +207,46 @@ class MarketCatalogue(BaseResource):
     :type runners: list[RunnerCatalogue]
     :type total_matched: float
     """
-    competition = None
-    description = None
-    event = None
-    event_type = None
-    market_id = None
-    market_name = None
-    market_start_time = None
-    runners = None
-    total_matched = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'market_catalogue'
-        attributes = {
-            'marketId': 'market_id',
-            'marketName': 'market_name',
-            'totalMatched': 'total_matched',
-            'marketStartTime': 'market_start_time'
-        }
-        sub_resources = {
-            'competition': Competition,
-            'event': Event,
-            'eventType': EventType,
-            'description': MarketCatalogueDescription,
-            'runners': RunnerCatalogue
-        }
-        datetime_attributes = (
-            'marketStartTime'
-        )
+    def __init__(self, **kwargs):
+        super(MarketCatalogue, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.market_name = kwargs.get('marketName')
+        self.total_matched = kwargs.get('totalMatched')
+        self.market_start_time = self.strip_datetime(kwargs.get('marketStartTime'))
+        self.competition = Competition(**kwargs.get('competition')) if kwargs.get('competition') else None
+        self.event = Event(**kwargs.get('event')) if kwargs.get('event') else None
+        self.event_type = EventType(**kwargs.get('eventType')) if kwargs.get('eventType') else None
+        self.description = MarketCatalogueDescription(**kwargs.get('description')) if \
+            kwargs.get('description') else None
+        self.runners = [RunnerCatalogue(**i) for i in kwargs.get('runners', [])]
 
 
-class PriceSize(BaseResource):
+"""
+__slots__ is a terrible hack with nasty, hard-to-fathom side
+effects that should only be used by programmers at grandmaster and
+wizard levels. Unfortunately it has gained an enormous undeserved
+popularity amongst the novices and apprentices, who should know
+better than to use this magic incantation casually.
+"""
+
+
+class PriceSize(object):
     """
     :type price: float
     :type size: float
     """
-    price = None
-    size = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'price_size'
-        attributes = {
-            'price': 'price',
-            'size': 'size'
-        }
+    __slots__ = [
+        'price', 'size'
+    ]
+
+    def __init__(self, price, size):
+        self.price = price
+        self.size = size
 
 
-class RunnerBookSP(BaseResource):
+class RunnerBookSP(object):
     """
     :type actual_sp: float
     :type back_stake_taken: list[PriceSize]
@@ -357,52 +254,33 @@ class RunnerBookSP(BaseResource):
     :type lay_liability_taken: list[PriceSize]
     :type near_price: float
     """
-    actual_sp = None
-    back_stake_taken = None
-    far_price = None
-    lay_liability_taken = None
-    near_price = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'sp'
-        attributes = {
-            'nearPrice': 'near_price',
-            'farPrice': 'far_price',
-            'backStakeTaken': 'back_stake_taken',
-            'layLiabilityTaken': 'lay_liability_taken',
-            'actualSP': 'actual_sp'
-        }
-        sub_resources = {
-            'backStakeTaken': PriceSize,
-            'layLiabilityTaken': PriceSize
-        }
+    def __init__(self, nearPrice=None, farPrice=None, backStakeTaken=None, layLiabilityTaken=None, actualSP=None):
+        self.near_price = nearPrice
+        self.far_price = farPrice
+        self.actual_sp = actualSP
+        self.back_stake_taken = [PriceSize(**i) for i in backStakeTaken]
+        self.lay_liability_taken = [PriceSize(**i) for i in layLiabilityTaken]
 
 
-class RunnerBookEX(BaseResource):
+class RunnerBookEX(object):
     """
     :type available_to_back: list[PriceSize]
     :type available_to_lay: list[PriceSize]
     :type traded_volume: list[PriceSize]
     """
-    available_to_back = None
-    available_to_lay = None
-    traded_volume = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'ex'
-        attributes = {
-            'availableToBack': 'available_to_back',
-            'availableToLay': 'available_to_lay',
-            'tradedVolume': 'traded_volume'
-        }
-        sub_resources = {
-            'availableToBack': PriceSize,
-            'availableToLay': PriceSize,
-            'tradedVolume': PriceSize
-        }
+    __slots__ = [
+        'available_to_back', 'available_to_lay', 'traded_volume'
+    ]
+
+    def __init__(self, availableToBack=None, availableToLay=None, tradedVolume=None):
+        self.available_to_back = [PriceSize(**i) for i in availableToBack]
+        self.available_to_lay = [PriceSize(**i) for i in availableToLay]
+        self.traded_volume = [PriceSize(**i) for i in tradedVolume]
 
 
-class RunnerBookOrder(BaseResource):
+class RunnerBookOrder(object):
     """
     :type avg_price_matched: float
     :type bet_id: unicode
@@ -420,47 +298,27 @@ class RunnerBookOrder(BaseResource):
     :type size_voided: float
     :type status: unicode
     """
-    avg_price_matched = None
-    bet_id = None
-    bsp_liability = None
-    order_type = None
-    persistence_type = None
-    placed_date = None
-    price = None
-    side = None
-    size = None
-    size_cancelled = None
-    size_lapsed = None
-    size_matched = None
-    size_remaining = None
-    size_voided = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'orders'
-        attributes = {
-            'betId': 'bet_id',
-            'avgPriceMatched': 'avg_price_matched',
-            'bspLiability': 'bsp_liability',
-            'orderType': 'order_type',
-            'persistenceType': 'persistence_type',
-            'placedDate': 'placed_date',
-            'price': 'price',
-            'side': 'side',
-            'size': 'size',
-            'sizeCancelled': 'size_cancelled',
-            'sizeLapsed': 'size_lapsed',
-            'sizeMatched': 'size_matched',
-            'sizeRemaining': 'size_remaining',
-            'sizeVoided': 'size_voided',
-            'status': 'status'
-        }
-        datetime_attributes = (
-            'placedDate'
-        )
+    def __init__(self, betId, avgPriceMatched, bspLiability, orderType, persistenceType, placedDate, price, side,
+                 sizeCancelled, sizeLapsed, sizeMatched, sizeRemaining, sizeVoided, status, size):
+        self.bet_id = betId
+        self.avg_price_matched = avgPriceMatched
+        self.bsp_liability = bspLiability
+        self.order_type = orderType
+        self.persistence_type = persistenceType
+        self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.price = price
+        self.side = side
+        self.size_cancelled = sizeCancelled
+        self.size_lapsed = sizeLapsed
+        self.size_matched = sizeMatched
+        self.size_remaining = sizeRemaining
+        self.size_voided = sizeVoided
+        self.status = status
+        self.size = size
 
 
-class RunnerBookMatch(BaseResource):
+class RunnerBookMatch(object):
     """
     :type bet_id: unicode
     :type match_date: datetime.datetime
@@ -469,29 +327,17 @@ class RunnerBookMatch(BaseResource):
     :type side: unicode
     :type size: float
     """
-    bet_id = None
-    match_date = None
-    match_id = None
-    price = None
-    side = None
-    size = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'matches'
-        attributes = {
-            'betId': 'bet_id',
-            'matchId': 'match_id',
-            'price': 'price',
-            'side': 'side',
-            'size': 'size',
-            'matchDate': 'match_date'
-        }
-        datetime_attributes = (
-            'matchDate'
-        )
+    def __init__(self, betId, matchId, price, side, size, matchDate):
+        self.bet_id = betId
+        self.match_id = matchId
+        self.price = price
+        self.side = side
+        self.size = size
+        self.match_date = BaseResource.strip_datetime(matchDate)
 
 
-class RunnerBook(BaseResource):
+class RunnerBook(object):
     """
     :type adjustment_factor: float
     :type ex: RunnerBookEX
@@ -505,38 +351,25 @@ class RunnerBook(BaseResource):
     :type status: unicode
     :type total_matched: float
     """
-    adjustment_factor = None
-    ex = None
-    handicap = None
-    last_price_traded = None
-    matches = None
-    orders = None
-    removal_date = None
-    selection_id = None
-    sp = None
-    status = None
-    total_matched = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'runners'
-        attributes = {
-            'selectionId': 'selection_id',
-            'status': 'status',
-            'totalMatched': 'total_matched',
-            'adjustmentFactor': 'adjustment_factor',
-            'handicap': 'handicap',
-            'lastPriceTraded': 'last_price_traded',
-            'removalDate': 'removal_date',
-        }
-        sub_resources = {
-            'sp': RunnerBookSP,
-            'ex': RunnerBookEX,
-            'orders': RunnerBookOrder,
-            'matches': RunnerBookMatch
-        }
-        datetime_attributes = (
-            'removalDate',
-        )
+    __slots__ = [
+        'selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date',
+        'sp', 'ex', 'orders', 'matches'
+    ]
+
+    def __init__(self, selectionId, status, adjustmentFactor, handicap, lastPriceTraded=None, totalMatched=None,
+                 removalDate=None, sp=None, ex=None, orders=None, matches=None):
+        self.selection_id = selectionId
+        self.status = status
+        self.total_matched = totalMatched
+        self.adjustment_factor = adjustmentFactor
+        self.handicap = handicap
+        self.last_price_traded = lastPriceTraded
+        self.removal_date = BaseResource.strip_datetime(removalDate)
+        self.sp = RunnerBookSP(**sp) if sp else None
+        self.ex = RunnerBookEX(**ex) if ex else None
+        self.orders = [RunnerBookOrder(**i) for i in orders] if orders else []
+        self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
 
 
 class MarketBook(BaseResource):
@@ -560,56 +393,34 @@ class MarketBook(BaseResource):
     :type total_matched: float
     :type version: int
     """
-    bet_delay = None
-    bsp_reconciled = None
-    complete = None
-    cross_matching = None
-    inplay = None
-    is_market_data_delayed = None
-    last_match_time = None
-    market_id = None
-    number_of_active_runners = None
-    number_of_runners = None
-    number_of_winners = None
-    publish_time = None
-    runners = None
-    runners_voidable = None
-    status = None
-    total_available = None
-    total_matched = None
-    version = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'market_book'
-        attributes = {
-            'marketId': 'market_id',
-            'betDelay': 'bet_delay',
-            'bspReconciled': 'bsp_reconciled',
-            'complete': 'complete',
-            'crossMatching': 'cross_matching',
-            'inplay': 'inplay',
-            'isMarketDataDelayed': 'is_market_data_delayed',
-            'lastMatchTime': 'last_match_time',
-            'numberOfActiveRunners': 'number_of_active_runners',
-            'numberOfRunners': 'number_of_runners',
-            'numberOfWinners': 'number_of_winners',
-            'runnersVoidable': 'runners_voidable',
-            'status': 'status',
-            'totalAvailable': 'total_available',
-            'totalMatched': 'total_matched',
-            'version': 'version',
-            'publishTime': 'publish_time',
-        }
-        sub_resources = {
-            'runners': RunnerBook
-        }
-        datetime_attributes = (
-            'lastMatchTime',
-            'publishTime',
-        )
+    def __init__(self, **kwargs):
+        self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
+        self.streaming_update = kwargs.pop('streaming_update', None)
+        self.publish_time = kwargs.pop('publish_time', None)
+        self.market_definition = kwargs.pop('market_definition', None)
+        super(MarketBook, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.bet_delay = kwargs.get('betDelay')
+        self.bsp_reconciled = kwargs.get('bspReconciled')
+        self.complete = kwargs.get('complete')
+        self.cross_matching = kwargs.get('crossMatching')
+        self.inplay = kwargs.get('inplay')
+        self.is_market_data_delayed = kwargs.get('isMarketDataDelayed')
+        self.last_match_time = self.strip_datetime(kwargs.get('lastMatchTime'))
+        self.number_of_active_runners = kwargs.get('numberOfActiveRunners')
+        self.number_of_runners = kwargs.get('numberOfRunners')
+        self.number_of_winners = kwargs.get('numberOfWinners')
+        self.runners_voidable = kwargs.get('runnersVoidable')
+        self.status = kwargs.get('status')
+        self.total_available = kwargs.get('totalAvailable')
+        self.total_matched = kwargs.get('totalMatched')
+        self.version = kwargs.get('version')
+        self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
+        self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
 
 
-class CurrentOrder(BaseResource):
+class CurrentOrder(object):
     """
     :type average_price_matched: float
     :type bet_id: unicode
@@ -633,59 +444,31 @@ class CurrentOrder(BaseResource):
     :type size_voided: float
     :type status: unicode
     """
-    average_price_matched = None
-    bet_id = None
-    bsp_liability = None
-    customer_order_ref = None
-    customer_strategy_ref = None
-    handicap = None
-    market_id = None
-    matched_date = None
-    order_type = None
-    persistence_type = None
-    placed_date = None
-    price_size = None
-    regulator_code = None
-    selection_id = None
-    side = None
-    size_cancelled = None
-    size_lapsed = None
-    size_matched = None
-    size_remaining = None
-    size_voided = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'orders'
-        attributes = {
-            'betId': 'bet_id',
-            'averagePriceMatched': 'average_price_matched',
-            'bspLiability': 'bsp_liability',
-            'handicap': 'handicap',
-            'marketId': 'market_id',
-            'matchedDate': 'matched_date',
-            'orderType': 'order_type',
-            'persistenceType': 'persistence_type',
-            'placedDate': 'placed_date',
-            'regulatorCode': 'regulator_code',
-            'selectionId': 'selection_id',
-            'side': 'side',
-            'sizeCancelled': 'size_cancelled',
-            'sizeLapsed': 'size_lapsed',
-            'sizeMatched': 'size_matched',
-            'sizeRemaining': 'size_remaining',
-            'sizeVoided': 'size_voided',
-            'status': 'status',
-            'customerStrategyRef': 'customer_strategy_ref',
-            'customerOrderRef': 'customer_order_ref'
-        }
-        sub_resources = {
-            'priceSize': PriceSize
-        }
-        datetime_attributes = (
-            'placedDate',
-            'matchedDate'
-        )
+    def __init__(self, betId, averagePriceMatched, bspLiability, handicap, marketId, orderType, persistenceType,
+                 placedDate, regulatorCode, selectionId, side, sizeCancelled, sizeLapsed, sizeMatched, sizeRemaining,
+                 sizeVoided, status, priceSize, matchedDate=None, customerStrategyRef=None, customerOrderRef=None):
+        self.bet_id = betId
+        self.average_price_matched = averagePriceMatched
+        self.bsp_liability = bspLiability
+        self.handicap = handicap
+        self.market_id = marketId
+        self.matched_date = BaseResource.strip_datetime(matchedDate)
+        self.order_type = orderType
+        self.persistence_type = persistenceType
+        self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.regulator_code = regulatorCode
+        self.selection_id = selectionId
+        self.side = side
+        self.size_cancelled = sizeCancelled
+        self.size_lapsed = sizeLapsed
+        self.size_matched = sizeMatched
+        self.size_remaining = sizeRemaining
+        self.size_voided = sizeVoided
+        self.status = status
+        self.customer_strategy_ref = customerStrategyRef
+        self.customer_order_ref = customerOrderRef
+        self.price_size = PriceSize(**priceSize)
 
 
 class CurrentOrders(BaseResource):
@@ -693,20 +476,18 @@ class CurrentOrders(BaseResource):
     :type more_available: bool
     :type orders: list[CurrentOrder]
     """
-    more_available = None
-    orders = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'current_orders'
-        attributes = {
-            'moreAvailable': 'more_available'
-        }
-        sub_resources = {
-            'currentOrders': CurrentOrder
-        }
+    def __init__(self, **kwargs):
+        self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
+        self.streaming_update = kwargs.pop('streaming_update', None)
+        self.publish_time = kwargs.pop('publish_time', None)
+        self.market_definition = kwargs.pop('market_definition', None)
+        super(CurrentOrders, self).__init__(**kwargs)
+        self.more_available = kwargs.get('moreAvailable')
+        self.orders = [CurrentOrder(**i) for i in kwargs.get('currentOrders')]
 
 
-class ClearedOrder(BaseResource):
+class ClearedOrder(object):
     """
     :type bet_count: int
     :type bet_id: unicode
@@ -730,58 +511,31 @@ class ClearedOrder(BaseResource):
     :type side: unicode
     :type size_settled: float
     """
-    bet_count = None
-    bet_id = None
-    bet_outcome = None
-    customer_order_ref = None
-    customer_strategy_ref = None
-    event_id = None
-    event_type_id = None
-    handicap = None
-    last_matched_date = None
-    market_id = None
-    order_type = None
-    persistence_type = None
-    placed_date = None
-    price_matched = None
-    price_reduced = None
-    price_requested = None
-    profit = None
-    selection_id = None
-    settled_date = None
-    side = None
-    size_settled = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'orders'
-        attributes = {
-            'betId': 'bet_id',
-            'betCount': 'bet_count',
-            'betOutcome': 'bet_outcome',
-            'eventId': 'event_id',
-            'eventTypeId': 'event_type_id',
-            'handicap': 'handicap',
-            'lastMatchedDate': 'last_matched_date',
-            'marketId': 'market_id',
-            'orderType': 'order_type',
-            'persistenceType': 'persistence_type',
-            'placedDate': 'placed_date',
-            'priceMatched': 'price_matched',
-            'priceReduced': 'price_reduced',
-            'priceRequested': 'price_requested',
-            'profit': 'profit',
-            'selectionId': 'selection_id',
-            'settledDate': 'settled_date',
-            'side': 'side',
-            'sizeSettled': 'size_settled',
-            'customerStrategyRef': 'customer_strategy_ref',
-            'customerOrderRef': 'customer_order_ref'
-        }
-        datetime_attributes = (
-            'placedDate',
-            'lastMatchedDate',
-            'settledDate'
-        )
+    def __init__(self, betId, betCount, betOutcome, eventId, eventTypeId, handicap, lastMatchedDate, marketId,
+                 orderType, persistenceType, placedDate, priceMatched, priceReduced, priceRequested, profit,
+                 selectionId, settledDate, side, sizeSettled, customerStrategyRef=None, customerOrderRef=None):
+        self.bet_id = betId
+        self.bet_count = betCount
+        self.bet_outcome = betOutcome
+        self.event_id = eventId
+        self.event_type_id = eventTypeId
+        self.handicap = handicap
+        self.last_matched_date = BaseResource.strip_datetime(lastMatchedDate)
+        self.market_id = marketId
+        self.order_type = orderType
+        self.persistence_type = persistenceType
+        self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.price_matched = priceMatched
+        self.price_reduced = priceReduced
+        self.price_requested = priceRequested
+        self.profit = profit
+        self.selection_id = selectionId
+        self.settled_date = BaseResource.strip_datetime(settledDate)
+        self.side = side
+        self.size_settled = sizeSettled
+        self.customer_strategy_ref = customerStrategyRef
+        self.customer_order_ref = customerOrderRef
 
 
 class ClearedOrders(BaseResource):
@@ -789,39 +543,26 @@ class ClearedOrders(BaseResource):
     :type more_available: bool
     :type orders: list[ClearedOrder]
     """
-    more_available = None
-    orders = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'cleared_orders'
-        attributes = {
-            'moreAvailable': 'more_available'
-        }
-        sub_resources = {
-            'clearedOrders': ClearedOrder
-        }
+    def __init__(self, **kwargs):
+        super(ClearedOrders, self).__init__(**kwargs)
+        self.more_available = kwargs.get('moreAvailable')
+        self.orders = [ClearedOrder(**i) for i in kwargs.get('clearedOrders')]
 
 
-class ProfitAndLosses(BaseResource):
+class ProfitAndLosses(object):
     """
     :type if_lose: float
     :type if_place: float
     :type if_win: float
     :type selection_id: int
     """
-    if_lose = None
-    if_place = None
-    if_win = None
-    selection_id = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'profit_and_losses'
-        attributes = {
-            'selectionId': 'selection_id',
-            'ifWin': 'if_win',
-            'ifLose': 'if_lose',
-            'ifPlace': 'if_place'
-        }
+    def __init__(self, selectionId, ifWin=None, ifLose=None, ifPlace=None):
+        self.selection_id = selectionId
+        self.if_win = ifWin
+        self.if_lose = ifLose
+        self.if_place = ifPlace
 
 
 class MarketProfitLoss(BaseResource):
@@ -830,22 +571,15 @@ class MarketProfitLoss(BaseResource):
     :type market_id: unicode
     :type profit_and_losses: list[ProfitAndLosses]
     """
-    commission_applied = None
-    market_id = None
-    profit_and_losses = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'market_profit_loss'
-        attributes = {
-            'marketId': 'market_id',
-            'commissionApplied': 'commission_applied'
-        }
-        sub_resources = {
-            'profitAndLosses': ProfitAndLosses
-        }
+    def __init__(self, **kwargs):
+        super(MarketProfitLoss, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.commission_applied = kwargs.get('commissionApplied')
+        self.profit_and_losses = [ProfitAndLosses(**i) for i in kwargs.get('profitAndLosses')]
 
 
-class LimitOrder(BaseResource):
+class LimitOrder(object):
     """
     :type bet_target_size: float
     :type bet_target_type: unicode
@@ -855,28 +589,19 @@ class LimitOrder(BaseResource):
     :type size: float
     :type time_in_force: unicode
     """
-    bet_target_size = None
-    bet_target_type = None
-    min_fill_size = None
-    persistence_type = None
-    price = None
-    size = None
-    time_in_force = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'order'
-        attributes = {
-            'persistenceType': 'persistence_type',
-            'price': 'price',
-            'size': 'size',
-            'timeInForce': 'time_in_force',
-            'minFillSize': 'min_fill_size',
-            'betTargetType': 'bet_target_type',
-            'betTargetSize': 'bet_target_size'
-        }
+    def __init__(self, persistenceType, price, size, timeInForce=None, minFillSize=None, betTargetType=None,
+                 betTargetSize=None):
+        self.persistence_type = persistenceType
+        self.price = price
+        self.size = size
+        self.time_in_force = timeInForce
+        self.min_fill_size = minFillSize
+        self.bet_target_type = betTargetType
+        self.bet_target_size = betTargetSize
 
 
-class PlaceOrderInstruction(BaseResource):
+class PlaceOrderInstruction(object):
     """
     :type customer_order_ref: unicode
     :type handicap: float
@@ -885,28 +610,17 @@ class PlaceOrderInstruction(BaseResource):
     :type selection_id: int
     :type side: unicode
     """
-    customer_order_ref = None
-    handicap = None
-    order = None
-    order_type = None
-    selection_id = None
-    side = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'instruction'
-        attributes = {
-            'selectionId': 'selection_id',
-            'side': 'side',
-            'orderType': 'order_type',
-            'handicap': 'handicap',
-            'customerOrderRef': 'customer_order_ref'
-        }
-        sub_resources = {
-            'limitOrder': LimitOrder
-        }
+    def __init__(self, selectionId, side, orderType, limitOrder, handicap=None, customerOrderRef=None):
+        self.selection_id = selectionId
+        self.side = side
+        self.order_type = orderType
+        self.handicap = handicap
+        self.customer_order_ref = customerOrderRef
+        self.order = LimitOrder(**limitOrder)
 
 
-class PlaceOrderInstructionReports(BaseResource):
+class PlaceOrderInstructionReports(object):
     """
     :type average_price_matched: float
     :type bet_id: unicode
@@ -917,32 +631,17 @@ class PlaceOrderInstructionReports(BaseResource):
     :type size_matched: float
     :type status: unicode
     """
-    average_price_matched = None
-    bet_id = None
-    error_code = None
-    instruction = None
-    order_status = None
-    placed_date = None
-    size_matched = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'place_instruction_reports'
-        attributes = {
-            'status': 'status',
-            'orderStatus': 'order_status',
-            'betId': 'bet_id',
-            'averagePriceMatched': 'average_price_matched',
-            'sizeMatched': 'size_matched',
-            'placedDate': 'placed_date',
-            'errorCode': 'error_code',
-        }
-        sub_resources = {
-            'instruction': PlaceOrderInstruction
-        }
-        datetime_attributes = (
-            'placedDate'
-        )
+    def __init__(self, status, instruction=None, orderStatus=None, betId=None, averagePriceMatched=None,
+                 sizeMatched=None, placedDate=None, errorCode=None):
+        self.status = status
+        self.order_status = orderStatus
+        self.bet_id = betId
+        self.average_price_matched = averagePriceMatched
+        self.size_matched = sizeMatched
+        self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.instruction = PlaceOrderInstruction(**instruction) if instruction else None
+        self.error_code = errorCode
 
 
 class PlaceOrders(BaseResource):
@@ -953,42 +652,30 @@ class PlaceOrders(BaseResource):
     :type place_instruction_reports: list[PlaceOrderInstructionReports]
     :type status: unicode
     """
-    customer_ref = None
-    error_code = None
-    market_id = None
-    place_instruction_reports = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'place_orders'
-        attributes = {
-            'marketId': 'market_id',
-            'status': 'status',
-            'customerRef': 'customer_ref',
-            'errorCode': 'error_code'
-        }
-        sub_resources = {
-            'instructionReports': PlaceOrderInstructionReports
-        }
+    def __init__(self, **kwargs):
+        super(PlaceOrders, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.status = kwargs.get('status')
+        self.customer_ref = kwargs.get('customerRef')
+        self.error_code = kwargs.get('errorCode')
+        self.place_instruction_reports = [
+            PlaceOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+        ]
 
 
-class CancelOrderInstruction(BaseResource):
+class CancelOrderInstruction(object):
     """
     :type bet_id: unicode
     :type size_reduction: float
     """
-    bet_id = None
-    size_reduction = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'instruction'
-        attributes = {
-            'betId': 'bet_id',
-            'sizeReduction': 'size_reduction'
-        }
+    def __init__(self, betId, sizeReduction=None):
+        self.bet_id = betId
+        self.size_reduction = sizeReduction
 
 
-class CancelOrderInstructionReports(BaseResource):
+class CancelOrderInstructionReports(object):
     """
     :type cancelled_date: datetime.datetime
     :type error_code: str
@@ -996,26 +683,13 @@ class CancelOrderInstructionReports(BaseResource):
     :type size_cancelled: float
     :type status: unicode
     """
-    cancelled_date = None
-    error_code = None
-    instruction = None
-    size_cancelled = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'cancel_instruction_reports'
-        attributes = {
-            'status': 'status',
-            'sizeCancelled': 'size_cancelled',
-            'cancelledDate': 'cancelled_date',
-            'errorCode': 'error_code',
-        }
-        sub_resources = {
-            'instruction': CancelOrderInstruction
-        }
-        datetime_attributes = (
-            'cancelledDate'
-        )
+    def __init__(self, status, instruction, sizeCancelled=None, cancelledDate=None, errorCode=None):
+        self.status = status
+        self.size_cancelled = sizeCancelled
+        self.cancelled_date = BaseResource.strip_datetime(cancelledDate)
+        self.instruction = CancelOrderInstruction(**instruction)
+        self.error_code = errorCode
 
 
 class CancelOrders(BaseResource):
@@ -1026,60 +700,40 @@ class CancelOrders(BaseResource):
     :type market_id: unicode
     :type status: unicode
     """
-    cancel_instruction_reports = None
-    customer_ref = None
-    error_code = None
-    market_id = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'cancel_orders'
-        attributes = {
-            'marketId': 'market_id',
-            'status': 'status',
-            'customerRef': 'customer_ref',
-            'errorCode': 'error_code'
-        }
-        sub_resources = {
-            'instructionReports': CancelOrderInstructionReports
-        }
+    def __init__(self, **kwargs):
+        super(CancelOrders, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.status = kwargs.get('status')
+        self.customer_ref = kwargs.get('customerRef')
+        self.error_code = kwargs.get('errorCode')
+        self.cancel_instruction_reports = [
+            CancelOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+        ]
 
 
-class UpdateOrderInstruction(BaseResource):
+class UpdateOrderInstruction(object):
     """
     :type bet_id: unicode
     :type new_persistence_type: unicode
     """
-    bet_id = None
-    new_persistence_type = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'instruction'
-        attributes = {
-            'betId': 'bet_id',
-            'newPersistenceType': 'new_persistence_type'
-        }
+    def __init__(self, betId, newPersistenceType):
+        self.bet_id = betId
+        self.new_persistence_type = newPersistenceType
 
 
-class UpdateOrderInstructionReports(BaseResource):
+class UpdateOrderInstructionReports(object):
     """
     :type error_code: str
     :type instruction: UpdateOrderInstruction
     :type status: unicode
     """
-    error_code = None
-    instruction = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'update_instruction_reports'
-        attributes = {
-            'status': 'status',
-            'errorCode': 'error_code',
-        }
-        sub_resources = {
-            'instruction': UpdateOrderInstruction
-        }
+    def __init__(self, status, instruction, errorCode=None):
+        self.status = status
+        self.instruction = UpdateOrderInstruction(**instruction)
+        self.error_code = errorCode
 
 
 class UpdateOrders(BaseResource):
@@ -1090,47 +744,31 @@ class UpdateOrders(BaseResource):
     :type status: unicode
     :type update_instruction_reports: list[UpdateOrderInstructionReports]
     """
-    customer_ref = None
-    error_code = None
-    market_id = None
-    status = None
-    update_instruction_reports = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'update_orders'
-        attributes = {
-            'marketId': 'market_id',
-            'status': 'status',
-            'customerRef': 'customer_ref',
-            'errorCode': 'error_code'
-        }
-        sub_resources = {
-            'instructionReports': UpdateOrderInstructionReports
-        }
+    def __init__(self, **kwargs):
+        super(UpdateOrders, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.status = kwargs.get('status')
+        self.customer_ref = kwargs.get('customerRef')
+        self.error_code = kwargs.get('errorCode')
+        self.update_instruction_reports = [
+            UpdateOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+        ]
 
 
-class ReplaceOrderInstructionReports(BaseResource):
+class ReplaceOrderInstructionReports(object):
     """
     :type cancel_instruction_reports: CancelOrderInstructionReports
     :type error_code: str
     :type place_instruction_reports: PlaceOrderInstructionReports
     :type status: unicode
     """
-    cancel_instruction_reports = None
-    error_code = None
-    place_instruction_reports = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'replace_instruction_reports'
-        attributes = {
-            'status': 'status',
-            'errorCode': 'error_code',
-        }
-        sub_resources = {
-            'cancelInstructionReport': CancelOrderInstructionReports,
-            'placeInstructionReport': PlaceOrderInstructionReports
-        }
+    def __init__(self, status, cancelInstructionReport, placeInstructionReport, errorCode=None):
+        self.status = status
+        self.cancel_instruction_reports = CancelOrderInstructionReports(**cancelInstructionReport)
+        self.place_instruction_reports = PlaceOrderInstructionReports(**placeInstructionReport)
+        self.error_code = errorCode
 
 
 class ReplaceOrders(BaseResource):
@@ -1141,20 +779,13 @@ class ReplaceOrders(BaseResource):
     :type replace_instruction_reports: list[ReplaceOrderInstructionReports]
     :type status: unicode
     """
-    customer_ref = None
-    error_code = None
-    market_id = None
-    replace_instruction_reports = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'replace_orders'
-        attributes = {
-            'marketId': 'market_id',
-            'status': 'status',
-            'customerRef': 'customer_ref',
-            'errorCode': 'error_code'
-        }
-        sub_resources = {
-            'instructionReports': ReplaceOrderInstructionReports
-        }
+    def __init__(self, **kwargs):
+        super(ReplaceOrders, self).__init__(**kwargs)
+        self.market_id = kwargs.get('marketId')
+        self.status = kwargs.get('status')
+        self.customer_ref = kwargs.get('customerRef')
+        self.error_code = kwargs.get('errorCode')
+        self.replace_instruction_reports = [
+            ReplaceOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+        ]

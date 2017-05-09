@@ -7,10 +7,10 @@
     "comment": "comment",
     "bettingForecastText": "betting_forecast_text",
     "timeform123Text": "timeform_123_text",
-    "inPlayHints": {
+    "inPlayHints": [{
       "hintName": "hint_name",
       "hintValue": "hint_value"
-    },
+    }],
     "race": {
       "startDate": "2017-02-03T18:50:00.000Z",
       "numberOfRunners": 7,
@@ -112,10 +112,10 @@
         "winsAtCourse": 1,
         "winsAtCourseAndDistance": 1,
         "recentForm": "recent_form",
-        "daysSinceLastRun": {
+        "daysSinceLastRun": [{
           "type": "type",
           "days": 2
-        }
+        }]
       },
       {
         "comment": "6y mare: 2 wins/13 runs, $50k in US/Can in 2016; 0 wins/2 runs, $1k 2017: 6.5/1, 19 lengths 5th of 8 to Maddizaskar in $25k clmr (8f dirt) at Aqueduct, 18 days ago: effective from 6f to 8.3f: raced only on dirt: races mid-field.",

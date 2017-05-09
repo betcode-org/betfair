@@ -1,1 +1,16 @@
-{"jsonrpc":"2.0","result":{"status":"SUCCESS","marketId":"1.125897784","instructionReports":[{"status":"SUCCESS","instruction":{"betId":"71965147269"},"sizeCancelled":2.0,"cancelledDate":"2016-07-30T17:25:45.000Z"}]},"id":1}
+{
+	"jsonrpc": "2.0",
+	"result": {
+		"status": "SUCCESS",
+		"marketId": "1.125897784",
+		"instructionReports": [{
+			"status": "SUCCESS",
+			"instruction": {
+				"betId": "71965147269"
+			},
+			"sizeCancelled": 2.0,
+			"cancelledDate": "2016-07-30T17:25:45.000Z"
+		}]
+	},
+	"id": 1
+}

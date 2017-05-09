@@ -29,7 +29,7 @@ class AccountTest(unittest.TestCase):
         assert self.account.connect_timeout == 6.05
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
-    @mock.patch('betfairlightweight.endpoints.account.Account.request')
+    @mock.patch('betfairlightweight.endpoints.account.Account.request', return_value=(mock.Mock(), mock.Mock()))
     def test_get_account_funds(self, mock_request, mock_process_response):
         self.account.get_account_funds()
 
@@ -37,7 +37,7 @@ class AccountTest(unittest.TestCase):
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
-    @mock.patch('betfairlightweight.endpoints.account.Account.request')
+    @mock.patch('betfairlightweight.endpoints.account.Account.request', return_value=(mock.Mock(), mock.Mock()))
     def test_get_account_details(self, mock_request, mock_process_response):
         self.account.get_account_details()
 
@@ -45,7 +45,7 @@ class AccountTest(unittest.TestCase):
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
-    @mock.patch('betfairlightweight.endpoints.account.Account.request')
+    @mock.patch('betfairlightweight.endpoints.account.Account.request', return_value=(mock.Mock(), mock.Mock()))
     def test_get_account_statement(self, mock_request, mock_process_response):
         self.account.get_account_statement()
 
@@ -53,7 +53,7 @@ class AccountTest(unittest.TestCase):
         assert mock_process_response.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.account.Account.process_response')
-    @mock.patch('betfairlightweight.endpoints.account.Account.request')
+    @mock.patch('betfairlightweight.endpoints.account.Account.request', return_value=(mock.Mock(), mock.Mock()))
     def test_list_currency_rates(self, mock_request, mock_process_response):
         self.account.list_currency_rates()
 

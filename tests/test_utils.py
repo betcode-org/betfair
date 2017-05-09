@@ -4,16 +4,11 @@ from mock import Mock
 
 from betfairlightweight.utils import (
     check_status_code,
-    strp_betfair_integer_time,
-    strp_betfair_time,
-    price_check,
-    size_check,
     update_available,
     clean_locals,
     to_camel_case,
 )
 from betfairlightweight.exceptions import StatusCodeError
-from betfairlightweight.resources.bettingresources import PriceSize
 
 
 class UtilsTest(unittest.TestCase):
@@ -36,68 +31,6 @@ class UtilsTest(unittest.TestCase):
 
     def test_process_request(self):
         pass
-
-    def test_strp_betfair_time(self):
-        for string in ['2100-06-01T10:10:00.000Z', '2100-06-01T10:10:00.00Z', '2100-06-01T10:10:00.0Z']:
-            stripped = strp_betfair_time(string)
-            assert type(stripped) == datetime.datetime
-
-        stripped = strp_betfair_time(None)
-        assert not stripped
-
-        stripped = strp_betfair_time('45')
-        assert not stripped
-
-    def test_strp_betfair_integer_time(self):
-        integer = 1465631675000
-        stripped = strp_betfair_integer_time(integer)
-        assert type(stripped) == datetime.datetime
-
-        stripped = strp_betfair_integer_time(None)
-        assert not stripped
-
-        stripped = strp_betfair_integer_time('45')
-        assert not stripped
-
-    def test_price_check(self):
-        data = [PriceSize(**{'price': 12, 'size': 13}),
-                PriceSize(**{'price': 2, 'size': 3})]
-
-        back_a = price_check(data, 0)
-        assert back_a == 12
-
-        back_b = price_check(data, 1)
-        assert back_b == 2
-
-        back_c = price_check(data, 2)
-        assert not back_c
-
-        back_d = price_check(data, 5)
-        assert not back_d
-
-        data = []
-        back_e = price_check(data, 0)
-        assert not back_e
-
-    def test_size_check(self):
-        data = [PriceSize(**{'price': 12, 'size': 13}),
-                PriceSize(**{'price': 2, 'size': 3})]
-
-        back_a = size_check(data, 0)
-        assert back_a == 13
-
-        back_b = size_check(data, 1)
-        assert back_b == 3
-
-        back_c = size_check(data, 2)
-        assert not back_c
-
-        back_d = size_check(data, 5)
-        assert not back_d
-
-        data = []
-        back_e = size_check(data, 0)
-        assert not back_e
 
     def test_convert_to_camel_case(self):
         assert to_camel_case('hello_world') == 'helloWorld'

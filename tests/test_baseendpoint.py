@@ -1,5 +1,5 @@
 import unittest
-import json
+import ujson as json
 from tests import mock
 from requests.exceptions import ConnectionError
 
@@ -51,7 +51,8 @@ class BaseEndPointTest(unittest.TestCase):
 
         mock_post.assert_called_once_with(url, data=mock_create_req(),
                                           headers=mock_request_headers, timeout=(3.05, 16))
-        assert response == mock_response
+        assert response[0] == mock_response.json()
+        assert isinstance(response[1], float)
 
     @mock.patch('betfairlightweight.endpoints.baseendpoint.BaseEndpoint.create_req')
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
@@ -78,18 +79,32 @@ class BaseEndPointTest(unittest.TestCase):
         mock_resource = mock.Mock()
 
         response_list = [{}, {}]
-        response = self.base_endpoint.process_response(response_list, mock_resource, None)
+        response = self.base_endpoint.process_response(response_list, mock_resource, None, False)
         assert type(response) == list
         assert response[0] == mock_resource()
 
         response_result_list = {'result': [{}, {}]}
-        response = self.base_endpoint.process_response(response_result_list, mock_resource, None)
+        response = self.base_endpoint.process_response(response_result_list, mock_resource, None, False)
         assert type(response) == list
         assert response[0] == mock_resource()
 
         response_result = {'result': {}}
-        response = self.base_endpoint.process_response(response_result, mock_resource, None)
+        response = self.base_endpoint.process_response(response_result, mock_resource, None, False)
         assert response == mock_resource()
+
+        # lightweight tests
+        response_list = [{}, {}]
+        response = self.base_endpoint.process_response(response_list, mock_resource, None, True)
+        assert response == response_list
+
+        client = APIClient('username', 'password', 'app_key', lightweight=True)
+        base_endpoint = BaseEndpoint(client)
+        response_list = [{}, {}]
+        response = base_endpoint.process_response(response_list, mock_resource, None, False)
+        assert type(response) == list
+        assert response[0] == mock_resource()
+
+
 
     def test_base_endpoint_url(self):
         assert self.base_endpoint.url == '%s%s' % (self.base_endpoint.client.api_uri, 'betting/json-rpc/v1')

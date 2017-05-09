@@ -2,92 +2,88 @@ from .baseresource import BaseResource
 
 
 class AccountFunds(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'account_funds'
-        attributes = {
-            'availableToBetBalance': 'available_to_bet_balance',
-            'discountRate': 'discount_rate',
-            'exposure': 'exposure',
-            'exposureLimit': 'exposure_limit',
-            'pointsBalance': 'points_balance',
-            'retainedCommission': 'retained_commission',
-            'wallet': 'wallet'
-        }
+
+    def __init__(self, **kwargs):
+        super(AccountFunds, self).__init__(**kwargs)
+        self.available_to_bet_balance = kwargs.get('availableToBetBalance')
+        self.discount_rate = kwargs.get('discountRate')
+        self.exposure = kwargs.get('exposure')
+        self.exposure_limit = kwargs.get('exposureLimit')
+        self.points_balance = kwargs.get('pointsBalance')
+        self.retained_commission = kwargs.get('retainedCommission')
+        self.wallet = kwargs.get('wallet')
 
 
 class AccountDetails(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'account_details'
-        attributes = {
-            'countryCode': 'country_code',
-            'currencyCode': 'currency_code',
-            'discountRate': 'discount_rate',
-            'firstName': 'first_name',
-            'lastName': 'last_name',
-            'localeCode': 'locale_code',
-            'pointsBalance': 'points_balance',
-            'region': 'region',
-            'timezone': 'timezone'
-        }
+
+    def __init__(self, **kwargs):
+        super(AccountDetails, self).__init__(**kwargs)
+        self.country_code = kwargs.get('countryCode')
+        self.currency_code = kwargs.get('currencyCode')
+        self.discount_rate = kwargs.get('discountRate')
+        self.first_name = kwargs.get('firstName')
+        self.last_name = kwargs.get('lastName')
+        self.locale_code = kwargs.get('localeCode')
+        self.points_balance = kwargs.get('pointsBalance')
+        self.region = kwargs.get('region')
+        self.timezone = kwargs.get('timezone')
 
 
-class LegacyData(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'legacy_data'
-        attributes = {
-            'avgPrice': 'avg_price',
-            'betCategoryType': 'bet_category_type',
-            'betSize': 'bet_size',
-            'betType': 'bet_type',
-            'eventId': 'event_id',
-            'eventTypeId': 'event_type_id',
-            'fullMarketName': 'full_market_name',
-            'grossBetAmount': 'gross_bet_amount'
-        }
+class LegacyData(object):
+
+    def __init__(self, avgPrice, betCategoryType, betSize, betType, eventId, eventTypeId, fullMarketName, marketName,
+                 grossBetAmount, transactionId, marketType, placedDate, selectionId, startDate, transactionType,
+                 winLose, selectionName=None, commissionRate=None):
+        self.avg_price = avgPrice
+        self.bet_category_type = betCategoryType
+        self.bet_size = betSize
+        self.bet_type = betType
+        self.event_id = eventId
+        self.event_type_id = eventTypeId
+        self.full_market_name = fullMarketName
+        self.gross_bet_amount = grossBetAmount
+        self.market_name = marketName
+        self.transaction_id = transactionId
+        self.market_type = marketType
+        self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.selection_id = selectionId
+        self.start_date = BaseResource.strip_datetime(startDate)
+        self.transaction_type = transactionType
+        self.win_lose = winLose
+        self.selection_name = selectionName
+        self.commission_rate = commissionRate
 
 
-class AccountStatement(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'account_statement'
-        attributes = {
-            'amount': 'amount',
-            'balance': 'balance',
-            'itemClass': 'item_class',
-            'itemClassData': 'item_class_data',
-            'itemDate': 'item_date',
-            'refId': 'ref_id'
-        }
-        sub_resources = {
-            'legacyData': LegacyData
-        }
-        datetime_attributes = (
-            'itemDate',
-        )
+class AccountStatement(object):
+
+    def __init__(self, amount, balance, itemClass, itemClassData, itemDate, refId, legacyData):
+        self.amount = amount
+        self.balance = balance
+        self.item_class = itemClass
+        self.item_class_data = itemClassData
+        self.item_date = BaseResource.strip_datetime(itemDate)
+        self.ref_id = refId
+        self.legacy_data = LegacyData(**legacyData)
 
 
 class AccountStatementResult(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'account_statement_result'
-        attributes = {
-            'moreAvailable': 'more_available'
-        }
-        sub_resources = {
-            'accountStatement': AccountStatement
-        }
+
+    def __init__(self, **kwargs):
+        super(AccountStatementResult, self).__init__(**kwargs)
+        self.more_available = kwargs.get('moreAvailable')
+        self.account_statement = [AccountStatement(**i) for i in kwargs.get('accountStatement')]
 
 
 class CurrencyRate(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'currency_rate'
-        attributes = {
-            'currencyCode': 'currency_code',
-            'rate': 'rate'
-        }
+
+    def __init__(self, **kwargs):
+        super(CurrencyRate, self).__init__(**kwargs)
+        self.currency_code = kwargs.get('currencyCode')
+        self.rate = kwargs.get('rate')
 
 
 class TransferFunds(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'transfer_funds'
-        attributes = {
-            'transactionId': 'transaction_id'
-        }
+
+    def __init__(self, **kwargs):
+        super(TransferFunds, self).__init__(**kwargs)
+        self.transaction_id = kwargs.get('transactionId')

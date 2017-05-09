@@ -14,7 +14,6 @@ class TestMarketDefinition(unittest.TestCase):
         self.market_definition = MarketDefinition(**self.mock_response.json())
 
     def test_init(self):
-        assert self.market_definition._data == self.mock_response.json()
         assert len(self.market_definition.runners) == 7
         assert self.market_definition.bsp_market is True
         assert self.market_definition.market_base_rate == 5
@@ -52,10 +51,8 @@ class TestOrderBookCache(unittest.TestCase):
     @mock.patch('betfairlightweight.resources.streamingresources.OrderBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.CurrentOrders')
     def test_create_order_book(self, mock_current_orders, mock_serialise):
-        current_orders = self.order_book_cache.create_order_book(123)
+        current_orders = self.order_book_cache.create_order_book(123, {}, False)
 
-        mock_current_orders.assert_called_with(date_time_sent=self.order_book_cache._datetime_updated,
-                                               streaming_unique_id=123, **mock_serialise)
         assert current_orders == mock_current_orders()
 
     def test_runner_dict(self):
@@ -78,7 +75,7 @@ class TestOrderBookCache(unittest.TestCase):
 class TestOrderBookRunner(unittest.TestCase):
 
     def setUp(self):
-        self.order_book_runner = OrderBookRunner(**{})
+        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': []})
 
     @mock.patch('betfairlightweight.resources.streamingresources.update_available')
     def test_update_matched_backs_fresh(self, mock_update_available):
@@ -174,7 +171,7 @@ class TestMarketBookCache(unittest.TestCase):
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
     def test_create_market_book(self, mock_market_book, mock_serialise):
-        market_book = self.market_book_cache.create_market_book(1234)
+        market_book = self.market_book_cache.create_market_book(1234, {}, False)
 
         # assert market_book == mock_market_book(date_time_sent=self.market_book_cache._datetime_updated,
         #                                        streaming_unique_id=1234)()
@@ -192,23 +189,23 @@ class TestMarketBookCache(unittest.TestCase):
         self.market_book_cache.runners = [a, b]
         assert self.market_book_cache.runner_dict == {123: a, 456: b}
 
-    def test_market_definition_dict(self):
-
-        class Runner:
-            def __init__(self, selection_id, name):
-                self.id = selection_id
-                self.name = name
-
-        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
-        self.market_book_cache.market_definition = MarketDefinition(**{})
-        self.market_book_cache.market_definition.runners = [a, b]
-        assert self.market_book_cache.market_definition_dict == {123: a, 456: b}
+    # def test_market_definition_dict(self):
+    #
+    #     class Runner:
+    #         def __init__(self, selection_id, name):
+    #             self.id = selection_id
+    #             self.name = name
+    #
+    #     (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+    #     self.market_book_cache.market_definition = MarketDefinition(**{})
+    #     self.market_book_cache.market_definition.runners = [a, b]
+    #     assert self.market_book_cache.market_definition_dict == {123: a, 456: b}
 
 
 class TestRunnerBook(unittest.TestCase):
 
     def setUp(self):
-        self.runner_book = RunnerBook(**{})
+        self.runner_book = RunnerBook(**{'id': 123})
 
     # EX_TRADED
 

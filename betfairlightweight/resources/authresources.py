@@ -2,31 +2,28 @@ from .baseresource import BaseResource
 
 
 class LoginResource(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'login'
-        attributes = {
-            'sessionToken': 'session_token',
-            'loginStatus': 'login_status',
-        }
+
+    def __init__(self, **kwargs):
+        super(LoginResource, self).__init__(**kwargs)
+        self.session_token = kwargs.get('sessionToken')
+        self.login_status = kwargs.get('loginStatus')
 
 
 class KeepAliveResource(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'keep_alive'
-        attributes = {
-            'product': 'product',
-            'status': 'status',
-            'token': 'token',
-            'error': 'error',
-        }
+
+    def __init__(self, **kwargs):
+        super(KeepAliveResource, self).__init__(**kwargs)
+        self.product = kwargs.get('sessionToken')
+        self.status = kwargs.get('status')
+        self.token = kwargs.get('token')
+        self.error = kwargs.get('error')
 
 
 class LogoutResource(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'logout'
-        attributes = {
-            'product': 'product',
-            'status': 'status',
-            'token': 'token',
-            'error': 'error',
-        }
+
+    def __init__(self, **kwargs):
+        super(LogoutResource, self).__init__(**kwargs)
+        self.product = kwargs.get('product')
+        self.status = kwargs.get('status')
+        self.token = kwargs.get('token')
+        self.error = kwargs.get('error')

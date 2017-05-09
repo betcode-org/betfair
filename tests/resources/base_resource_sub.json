@@ -1,1 +1,9 @@
-{"MainId":12345, "Id": {"id": 6789}, "Datetime": "2100-06-01T10:10:00.0Z", "DatetimeInt": 1465631675000, "DatetimeWrong": "wrong"}
+{
+	"MainId": 12345,
+	"Id": {
+		"id": 6789
+	},
+	"Datetime": "2100-06-01T10:10:00.0Z",
+	"DatetimeInt": 1465631675000,
+	"DatetimeWrong": "wrong"
+}

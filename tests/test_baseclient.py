@@ -12,10 +12,11 @@ from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 class BaseClientInit(unittest.TestCase):
 
     def test_base_client_init(self):
-        client = APIClient('bf_username', 'password', 'app_key')
+        client = APIClient('bf_username', 'password', 'app_key', lightweight=True)
         assert client.username == 'bf_username'
         assert client.password == 'password'
         assert client.app_key == 'app_key'
+        assert client.lightweight is True
         assert client.certs is None
         assert client.locale is None
         assert client._login_time is None
@@ -116,7 +117,9 @@ class BaseClientTest(unittest.TestCase):
                                                   'content-type': 'application/x-www-form-urlencoded'}
         assert self.client.request_headers == {'X-Application': self.client.app_key,
                                                'X-Authentication': self.client.session_token,
-                                               'content-type': 'application/json'}
+                                               'content-type': 'application/json',
+                                               'Accept-Encoding': 'gzip, deflate',
+                                               'Connection': 'keep-alive'}
 
     def test_client_logged_in_session(self):
         self.client.set_session_token('session_token')

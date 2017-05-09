@@ -11,7 +11,7 @@ class BaseStreamTest(unittest.TestCase):
         self.output_queue = mock.Mock()
         self.unique_id = 1
         self.max_latency = 1.5
-        self.stream = BaseStream(self.unique_id, self.output_queue, self.max_latency)
+        self.stream = BaseStream(self.unique_id, self.output_queue, self.max_latency, False)
 
     def test_init(self):
         assert self.stream.unique_id == self.unique_id
@@ -97,7 +97,7 @@ class MarketStreamTest(unittest.TestCase):
         self.output_queue = mock.Mock()
         self.unique_id = 1
         self.max_latency = 1.5
-        self.stream = MarketStream(self.unique_id, self.output_queue, self.max_latency)
+        self.stream = MarketStream(self.unique_id, self.output_queue, self.max_latency, False)
 
     @mock.patch('betfairlightweight.streaming.stream.MarketStream._process')
     @mock.patch('betfairlightweight.streaming.stream.MarketStream._update_clk')
@@ -128,7 +128,7 @@ class OrderStreamTest(unittest.TestCase):
         self.output_queue = mock.Mock()
         self.unique_id = 1
         self.max_latency = 1.5
-        self.stream = OrderStream(self.unique_id, self.output_queue, self.max_latency)
+        self.stream = OrderStream(self.unique_id, self.output_queue, self.max_latency, False)
 
     def test_process(self):
         pass

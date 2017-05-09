@@ -53,9 +53,10 @@ class StreamListener(BaseListener):
     market_book caches
     """
 
-    def __init__(self, output_queue, max_latency=0.5):
+    def __init__(self, output_queue, max_latency=0.5, lightweight=False):
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
+        self.lightweight = lightweight
 
     def on_data(self, raw_data):
         """Called when raw data is received from connection.
@@ -123,11 +124,11 @@ class StreamListener(BaseListener):
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':
             return MarketStream(
-                unique_id, self.output_queue, self.max_latency
+                unique_id, self.output_queue, self.max_latency, self.lightweight
             )
         elif stream_type == 'orderSubscription':
             return OrderStream(
-                unique_id, self.output_queue, self.max_latency
+                unique_id, self.output_queue, self.max_latency, self.lightweight
             )
 
     @staticmethod

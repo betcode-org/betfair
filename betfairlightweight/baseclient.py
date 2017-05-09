@@ -35,7 +35,8 @@ class BaseClient(object):
             italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
     )
 
-    def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None):
+    def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None,
+                 lightweight=False):
         """
         Creates base client for API operations.
 
@@ -44,7 +45,8 @@ class BaseClient(object):
         :param str app_key: App Key for account, if None will look in .bashprofile
         :param str certs: Directory for certificates, if None will look in /certs/
         :param str locale: Exchange to be used, defaults to UK for login and global for api
-        :param str cert_files: Certificate and key files. If None will look in `certs`
+        :param list cert_files: Certificate and key files. If None will look in `certs`
+        :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
         """
         self.username = username
         self.password = password
@@ -52,6 +54,7 @@ class BaseClient(object):
         self.certs = certs
         self.locale = locale
         self.cert_files = cert_files
+        self.lightweight = lightweight
 
         self.session = requests
         self._login_time = None
@@ -164,5 +167,7 @@ class BaseClient(object):
         return {
             'X-Application': self.app_key,
             'X-Authentication': self.session_token,
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive'
         }

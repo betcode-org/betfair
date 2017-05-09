@@ -1,3 +1,4 @@
+import datetime
 from operator import itemgetter
 
 from ..utils import update_available
@@ -14,7 +15,7 @@ from ..enums import (
 )
 
 
-class MarketDefinitionRunner(BaseResource):
+class MarketDefinitionRunner(object):
     """
     :type adjustment_factor: float
     :type id: int
@@ -22,27 +23,18 @@ class MarketDefinitionRunner(BaseResource):
     :type sort_priority: int
     :type status: unicode
     """
-    adjustment_factor = None
-    id = None
-    removal_date = None
-    sort_priority = None
-    status = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'runners'
-        attributes = {
-            'id': 'id',
-            'sortPriority': 'sort_priority',
-            'status': 'status',
-            'adjustmentFactor': 'adjustment_factor',
-            'removalDate': 'removal_date',
-        }
-        datetime_attributes = (
-            'removalDate',
-        )
+    def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None):
+        self.id = id
+        self.sort_priority = sortPriority
+        self.status = status
+        self.handicap = hc
+        self.bsp = bsp
+        self.adjustment_factor = adjustmentFactor
+        self.removal_date = BaseResource.strip_datetime(removalDate)
 
 
-class MarketDefinition(BaseResource):
+class MarketDefinition(object):
     """
     :type bet_delay: int
     :type betting_type: unicode
@@ -73,96 +65,65 @@ class MarketDefinition(BaseResource):
     :type venue: unicode
     :type version: int
     """
-    bet_delay = None
-    betting_type = None
-    bsp_market = None
-    bsp_reconciled = None
-    complete = None
-    country_code = None
-    cross_matching = None
-    discount_allowed = None
-    event_id = None
-    event_type_id = None
-    in_play = None
-    market_base_rate = None
-    market_time = None
-    market_type = None
-    number_of_active_runners = None
-    number_of_winners = None
-    open_date = None
-    persistence_enabled = None
-    regulators = None
-    runners = None
-    runners_voidable = None
-    settled_time = None
-    status = None
-    suspend_time = None
-    timezone = None
-    turn_in_play_enabled = None
-    venue = None
-    version = None
 
-    class Meta(BaseResource.Meta):
-        identifier = 'market_definition'
-        attributes = {
-            'betDelay': 'bet_delay',
-            'bettingType': 'betting_type',
-            'bspMarket': 'bsp_market',
-            'bspReconciled': 'bsp_reconciled',
-            'complete': 'complete',
-            'countryCode': 'country_code',
-            'crossMatching': 'cross_matching',
-            'discountAllowed': 'discount_allowed',
-            'eventId': 'event_id',
-            'eventTypeId': 'event_type_id',
-            'inPlay': 'in_play',
-            'marketBaseRate': 'market_base_rate',
-            'marketTime': 'market_time',
-            'marketType': 'market_type',
-            'numberOfActiveRunners': 'number_of_active_runners',
-            'numberOfWinners': 'number_of_winners',
-            'persistenceEnabled': 'persistence_enabled',
-            'regulators': 'regulators',
-            'runnersVoidable': 'runners_voidable',
-            'settledTime': 'settled_time',
-            'openDate': 'open_date',
-            'status': 'status',
-            'suspendTime': 'suspend_time',
-            'venue': 'venue',
-            'timezone': 'timezone',
-            'turnInPlayEnabled': 'turn_in_play_enabled',
-            'version': 'version',
-        }
-        sub_resources = {
-            'runners': MarketDefinitionRunner
-        }
-        datetime_attributes = (
-            'marketTime',
-            'openDate',
-            'suspendTime',
-            'settledTime',
-        )
+    def __init__(self, betDelay, bettingType, bspMarket, bspReconciled, complete, crossMatching, discountAllowed,
+                 eventId, eventTypeId, inPlay, marketBaseRate, marketTime, numberOfActiveRunners, numberOfWinners,
+                 openDate, persistenceEnabled, regulators, runnersVoidable, status, timezone, turnInPlayEnabled,
+                 version, runners, countryCode=None, eachWayDivisor=None, venue=None, settledTime=None,
+                 suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None):
+        self.bet_delay = betDelay
+        self.betting_type = bettingType
+        self.bsp_market = bspMarket
+        self.bsp_reconciled = bspReconciled
+        self.complete = complete
+        self.country_code = countryCode
+        self.cross_matching = crossMatching
+        self.discount_allowed = discountAllowed
+        self.event_id = eventId
+        self.event_type_id = eventTypeId
+        self.in_play = inPlay
+        self.market_base_rate = marketBaseRate
+        self.market_time = BaseResource.strip_datetime(marketTime)
+        self.market_type = marketType
+        self.number_of_active_runners = numberOfActiveRunners
+        self.number_of_winners = numberOfWinners
+        self.open_date = BaseResource.strip_datetime(openDate)
+        self.persistence_enabled = persistenceEnabled
+        self.regulators = regulators
+        self.runners_voidable = runnersVoidable
+        self.settled_time = BaseResource.strip_datetime(settledTime)
+        self.status = status
+        self.each_way_divisor = eachWayDivisor
+        self.suspend_time = BaseResource.strip_datetime(suspendTime)
+        self.timezone = timezone
+        self.turn_in_play_enabled = turnInPlayEnabled
+        self.venue = venue
+        self.version = version
+        self.line_max_unit = lineMaxUnit
+        self.line_min_unit = lineMinUnit
+        self.line_interval = lineInterval
+        self.runners = [MarketDefinitionRunner(**i) for i in runners]
 
 
-class RunnerBook(BaseResource):
-    class Meta(BaseResource.Meta):
-        identifier = 'runners'
-        attributes = {
-            'id': 'selection_id',
-            'ltp': 'last_price_traded',
-            'tv': 'total_matched',
-            'trd': 'traded',
-            'atb': 'available_to_back',
-            'batb': 'best_available_to_back',
-            'bdatb': 'best_display_available_to_back',
-            'atl': 'available_to_lay',
-            'batl': 'best_available_to_lay',
-            'bdatl': 'best_display_available_to_lay',
-            'spn': 'starting_price_near',
-            'spf': 'starting_price_far',
-            'spb': 'starting_price_back',
-            'spl': 'starting_price_lay',
-        }
+class RunnerBook(object):
+
+    def __init__(self, id, ltp=None, tv=None, trd=None, atb=None, batb=None, bdatb=None, atl=None, batl=None,
+                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=None):
+        self.selection_id = id
+        self.last_price_traded = ltp
+        self.total_matched = tv
+        self.traded = trd
+        self.available_to_back = atb
+        self.best_available_to_back = batb
+        self.best_display_available_to_back = bdatb
+        self.available_to_lay = atl
+        self.best_available_to_lay = batl
+        self.best_display_available_to_lay = bdatl
+        self.starting_price_near = spn
+        self.starting_price_far = spf
+        self.starting_price_back = spb
+        self.starting_price_lay = spl
+        self.handicap = hc
 
     def update_traded(self, traded_update):
         """:param traded_update: price, size
@@ -283,7 +244,7 @@ class RunnerBook(BaseResource):
             },
             'adjustmentFactor': None,
             'lastPriceTraded': self.last_price_traded,
-            'handicap': None,
+            'handicap': self.handicap,
             'totalMatched': self.total_matched,
             'selectionId': self.selection_id
         }
@@ -291,17 +252,15 @@ class RunnerBook(BaseResource):
 
 class MarketBookCache(BaseResource):
 
-    class Meta(BaseResource.Meta):
-        identifier = 'market_book_cache'
-        attributes = {
-            'id': 'market_id',
-            'img': 'image',
-            'tv': 'total_matched'
-        }
-        sub_resources = {
-            'marketDefinition': MarketDefinition,
-            'rc': RunnerBook
-        }
+    def __init__(self, **kwargs):
+        super(MarketBookCache, self).__init__(**kwargs)
+        self.publish_time = kwargs.get('publish_time')
+        self.market_id = kwargs.get('id')
+        self.image = kwargs.get('img')
+        self.total_matched = kwargs.get('tv')
+        self.market_definition = MarketDefinition(**kwargs.get('marketDefinition')) if \
+            kwargs.get('marketDefinition') else None
+        self.runners = [RunnerBook(**i) for i in kwargs.get('rc', [])]
 
     def update_cache(self, market_change, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
@@ -350,13 +309,17 @@ class MarketBookCache(BaseResource):
                 else:
                     self.runners.append(RunnerBook(**new_data))
 
-    def create_market_book(self, unique_id):
-        return MarketBook(
-            date_time_sent=self._datetime_updated,
-            streaming_unique_id=unique_id,
-            market_definition=self.market_definition,
-            **self.serialise
-        )
+    def create_market_book(self, unique_id, streaming_update, lightweight):
+        if lightweight:
+            return self.serialise
+        else:
+            return MarketBook(
+                elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+                streaming_unique_id=unique_id,
+                streaming_update=streaming_update,
+                market_definition=self.market_definition,
+                **self.serialise
+            )
 
     @property
     def runner_dict(self):
@@ -394,36 +357,30 @@ class MarketBookCache(BaseResource):
         }
 
 
-class UnmatchedOrder(BaseResource):
+class UnmatchedOrder(object):
 
-    class Meta(BaseResource.Meta):
-        identifier = 'unmatched_orders'
-        attributes = {
-            'id': 'bet_id',
-            'p': 'price',
-            's': 'size',
-            'bsp': 'bsp_liability',
-            'side': 'side',
-            'status': 'status',
-            'pt': 'persistence_type',
-            'ot': 'order_type',
-            'pd': 'placed_date',
-            'md': 'matched_date',
-            'avp': 'average_price_matched',
-            'sm': 'size_matched',
-            'sr': 'size_remaining',
-            'sl': 'size_lapsed',
-            'sc': 'size_cancelled',
-            'sv': 'size_voided',
-            'rac': 'regulator_auth_code',
-            'rc': 'regulator_code',
-            'rfo': 'reference_order',
-            'rfs': 'reference_strategy',
-        }
-        datetime_attributes = (
-            'pd',
-            'md'
-        )
+    def __init__(self, id, p, s, side, status, pt, ot, pd, sm, sr, sl, sc, sv, rac, rc, rfo, rfs,
+                 md=None, avp=None, bsp=None):
+        self.bet_id = id
+        self.price = p
+        self.size = s
+        self.bsp_liability = bsp
+        self.side = side
+        self.status = status
+        self.persistence_type = pt
+        self.order_type = ot
+        self.placed_date = BaseResource.strip_datetime(pd)
+        self.matched_date = BaseResource.strip_datetime(md)
+        self.average_price_matched = avp
+        self.size_matched = sm
+        self.size_remaining = sr
+        self.size_lapsed = sl
+        self.size_cancelled = sc
+        self.size_voided = sv
+        self.regulator_auth_code = rac
+        self.regulator_code = rc
+        self.reference_order = rfo
+        self.reference_strategy = rfs
 
     def serialise(self, market_id, selection_id):
         return {
@@ -432,7 +389,8 @@ class UnmatchedOrder(BaseResource):
             'bspLiability': self.bsp_liability,
             'handicap': 0.0,
             'marketId': market_id,
-            'matchedDate': self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
+            'matchedDate': self.matched_date.strftime(
+                '%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
             'orderType': StreamingOrderType[self.order_type].value,
             'persistenceType': StreamingPersistenceType[self.persistence_type].value,
             'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
@@ -454,18 +412,14 @@ class UnmatchedOrder(BaseResource):
         }
 
 
-class OrderBookRunner(BaseResource):
+class OrderBookRunner(object):
 
-    class Meta(BaseResource.Meta):
-        identifier = 'runners'
-        attributes = {
-            'id': 'selection_id',
-            'ml': 'matched_lays',
-            'mb': 'matched_backs',
-        }
-        sub_resources = {
-            'uo': UnmatchedOrder
-        }
+    def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None):
+        self.selection_id = id
+        self.full_image = fullImage
+        self.matched_lays = ml
+        self.matched_backs = mb
+        self.unmatched_orders = [UnmatchedOrder(**i) for i in uo] if uo else []
 
     def update_matched_backs(self, matched_backs):
         if not self.matched_backs:
@@ -496,15 +450,11 @@ class OrderBookRunner(BaseResource):
 
 class OrderBookCache(BaseResource):
 
-    class Meta(BaseResource.Meta):
-        identifier = 'order_book_cache'
-        attributes = {
-            'id': 'market_id',
-            'closed': 'closed'
-        }
-        sub_resources = {
-            'orc': OrderBookRunner
-        }
+    def __init__(self, **kwargs):
+        super(OrderBookCache, self).__init__(**kwargs)
+        self.market_id = kwargs.get('id')
+        self.closed = kwargs.get('closed')
+        self.runners = [OrderBookRunner(**i) for i in kwargs.get('orc', [])]
 
     def update_cache(self, order_book, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
@@ -519,8 +469,16 @@ class OrderBookCache(BaseResource):
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
-    def create_order_book(self, unique_id):
-        return CurrentOrders(date_time_sent=self._datetime_updated, streaming_unique_id=unique_id, **self.serialise)
+    def create_order_book(self, unique_id, streaming_update, lightweight):
+        if lightweight:
+            return self.serialise
+        else:
+            return CurrentOrders(
+                elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+                streaming_unique_id=unique_id,
+                streaming_update=streaming_update,
+                **self.serialise
+            )
 
     @property
     def runner_dict(self):
