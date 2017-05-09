@@ -1,6 +1,7 @@
-import datetime
-
 from .exceptions import StatusCodeError
+
+TICK_SIZES = {1.0: 0.01, 2.0: 0.02, 3.0: 0.05, 4.0: 0.1, 6.0: 0.2, 10.0: 0.5,
+              20.0: 1.0, 30.0: 2.0, 50.0: 5.0, 100.0: 10.0, 1000.0: 1000}
 
 
 def check_status_code(response, codes=None):
@@ -14,64 +15,6 @@ def check_status_code(response, codes=None):
     codes = codes or [200]
     if response.status_code not in codes:
         raise StatusCodeError(response.status_code)
-
-
-def strp_betfair_time(datetime_string):
-    """
-    Converts Betfair string to datetime.
-
-    :param str datetime_string: Datetime string.
-    """
-    try:
-        return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-    except TypeError:
-        return None
-    except ValueError:
-        return None
-
-
-def strp_betfair_integer_time(datetime_integer):
-    """
-    Converts Betfair integer to utc datetime.
-
-    :param int datetime_integer: Datetime integer.
-    """
-    try:
-        return datetime.datetime.utcfromtimestamp(datetime_integer / 1e3)
-    except TypeError:
-        return None
-
-
-def price_check(data, number):
-    """
-    Access price data from dictionary.
-
-    :param {} data: Dict object.
-    :param int number: Number.
-    """
-    try:
-        output = data[number].price
-    except KeyError:
-        output = None
-    except IndexError:
-        output = None
-    return output
-
-
-def size_check(data, number):
-    """
-    Access size data from dictionary.
-
-    :param {} data: Dict object.
-    :param int number: Number.
-    """
-    try:
-        output = data[number].size
-    except KeyError:
-        output = None
-    except IndexError:
-        output = None
-    return output
 
 
 def update_available(available, book_update, deletion_select):
@@ -105,7 +48,8 @@ def clean_locals(data):
         return data.get('params')
     else:
         return {
-            to_camel_case(k): v for k, v in data.items() if v is not None and k not in ['self', 'session', 'params']
+            to_camel_case(k): v for k, v in data.items() if v is not None and k not in
+            ['self', 'session', 'params', 'lightweight']
         }
 
 
