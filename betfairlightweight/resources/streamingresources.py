@@ -360,7 +360,7 @@ class MarketBookCache(BaseResource):
 class UnmatchedOrder(object):
 
     def __init__(self, id, p, s, side, status, pt, ot, pd, sm, sr, sl, sc, sv, rac, rc, rfo, rfs,
-                 md=None, avp=None, bsp=None):
+                 md=None, avp=None, bsp=None, ld=None):
         self.bet_id = id
         self.price = p
         self.size = s
@@ -381,6 +381,7 @@ class UnmatchedOrder(object):
         self.regulator_code = rc
         self.reference_order = rfo
         self.reference_strategy = rfs
+        self.lapsed_date = ld
 
     def serialise(self, market_id, selection_id):
         return {
