@@ -187,7 +187,7 @@ class RunnerCatalogue(object):
     :type sort_priority: int
     """
 
-    def __init__(self, selectionId, runnerName, sortPriority, handicap, metadata):
+    def __init__(self, selectionId, runnerName, sortPriority, handicap, metadata=None):
         self.selection_id = selectionId
         self.runner_name = runnerName
         self.sort_priority = sortPriority
