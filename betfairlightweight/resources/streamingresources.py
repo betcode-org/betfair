@@ -234,6 +234,20 @@ class RunnerBook(object):
                     for volume in sorted(self.best_available_to_lay, key=itemgetter(0))]
         return []
 
+    @property
+    def serialise_starting_price_back(self):
+        if self.starting_price_back:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.starting_price_back, key=itemgetter(0))]
+        return []
+
+    @property
+    def serialise_starting_price_lay(self):
+        if self.starting_price_lay:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.starting_price_lay, key=itemgetter(0))]
+        return []
+
     def serialise(self, status):
         return {
             'status': status,
@@ -241,6 +255,12 @@ class RunnerBook(object):
                 'tradedVolume': self.serialise_traded_volume,
                 'availableToBack': self.serialise_available_to_back,
                 'availableToLay': self.serialise_available_to_lay
+            },
+            'sp': {
+                'nearPrice': self.starting_price_near,
+                'farPrice': self.starting_price_far,
+                'backStakeTaken': self.serialise_starting_price_back,
+                'layLiabilityTaken': self.serialise_starting_price_lay
             },
             'adjustmentFactor': None,
             'lastPriceTraded': self.last_price_traded,
@@ -285,9 +305,9 @@ class MarketBookCache(BaseResource):
                     if new_data.get('tv'):
                         runner.total_matched = new_data.get('tv')
                     if new_data.get('spn'):
-                        runner.spn = new_data.get('spn')
+                        runner.starting_price_near = new_data.get('spn')
                     if new_data.get('spf'):
-                        runner.spf = new_data.get('spf')
+                        runner.starting_price_far = new_data.get('spf')
                     if new_data.get('trd'):
                         runner.update_traded(new_data.get('trd'))
                     if new_data.get('atb'):
@@ -305,7 +325,7 @@ class MarketBookCache(BaseResource):
                     if new_data.get('spb'):
                         runner.update_starting_price_back(new_data.get('spb'))
                     if new_data.get('spl'):
-                        runner.update_starting_price_back(new_data.get('spl'))
+                        runner.update_starting_price_lay(new_data.get('spl'))
                 else:
                     self.runners.append(RunnerBook(**new_data))
 
