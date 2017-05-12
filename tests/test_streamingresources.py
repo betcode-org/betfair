@@ -394,3 +394,14 @@ class TestRunnerBook(unittest.TestCase):
         sp = serialise_d['sp']
         assert sp['backStakeTaken'][0]['price'] == sp_back_update[0][0]
         assert sp['layLiabilityTaken'][0]['price'] == sp_lay_update[0][0]
+
+    def test_empty_serialise(self):
+        serialise_d = self.runner_book.serialise(None)
+
+        ex = serialise_d['ex']
+        # all empty lists
+        assert all(not ex[a] for a in ex.keys())
+
+        sp = serialise_d['sp']
+        # all 'None' or empty lists
+        assert all(not sp[a] for a in sp.keys())
