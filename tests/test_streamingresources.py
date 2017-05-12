@@ -382,9 +382,9 @@ class TestRunnerBook(unittest.TestCase):
         self.runner_book.update_starting_price_lay(sp_lay_update)
 
         serialise_d = self.runner_book.serialise(None)
-        assert serialise_d.keys() == \
-            ['status', 'totalMatched', 'adjustmentFactor', 'ex', 'handicap',
-             'lastPriceTraded', 'sp', 'selectionId']
+        assert set(serialise_d.keys()) == \
+            {'status', 'totalMatched', 'adjustmentFactor',
+             'lastPriceTraded', 'sp', 'ex', 'handicap', 'selectionId'}
 
         ex = serialise_d['ex']
         assert ex['tradedVolume'][0]['price'] == traded_update[0][0]
