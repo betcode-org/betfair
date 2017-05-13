@@ -1,0 +1,500 @@
+{
+    "jsonrpc": "2.0", 
+    "result": {
+        "numberOfRunners": 10, 
+        "prize": "$41757.00", 
+        "minimumWeight": 0, 
+        "bettingForecastText": "3/1 Borger Boy, 4/1 Tellem Honeys Here, 5/1 Chula Kid, 7/1 Por Amor, 17/2 Barreras Bravo, 12/1 Jc Stormy Monday, 18/1 Zoomorphous Tree, 33/1 License To Cartel, 40/1 Boogie Tothe Top, 66/1 One Lonesome Dude", 
+        "race": {
+            "startDate": "2017-05-14T01:00:00.000Z", 
+            "numberOfRunners": 0, 
+            "meetingId": "2.202.1170513", 
+            "raceId": "2.202.1170513.5", 
+            "distance": 350, 
+            "eligibility": "3yo+", 
+            "raceClassification": {
+                "code": "CdS", 
+                "displayName": "Conditions Stakes", 
+                "classificationAbbr": "Cond", 
+                "classification": "Conditions Stakes", 
+                "displayNameAbbr": "Cond"
+            }, 
+            "raceTitle": "Bank of America Texas Maiden Challenge S.", 
+            "raceType": {
+                "full": "Flat", 
+                "abbr": "Flat", 
+                "key": "F"
+            }, 
+            "course": {
+                "name": "Sam Houston Race Park", 
+                "countryCode": "US", 
+                "courseId": "2.202", 
+                "country": "USA", 
+                "surfaceType": "Dirt", 
+                "timeformCourseCode": "HOU", 
+                "timezone": "America/Chicago"
+            }, 
+            "isResultAvailable": false, 
+            "markets": [
+                {
+                    "marketType": "OTHER_PLACE", 
+                    "numberOfWinners": 2, 
+                    "marketId": "1.131660246"
+                }, 
+                {
+                    "marketType": "WIN", 
+                    "numberOfWinners": 1, 
+                    "marketId": "1.131660245"
+                }, 
+                {
+                    "marketType": "OTHER_PLACE", 
+                    "numberOfWinners": 3, 
+                    "marketId": "1.131660247"
+                }
+            ], 
+            "betfairMeetingId": "28233868"
+        }, 
+        "numberOfNonRunners": 0, 
+        "timeform123Text": "1 Borger Boy, 2 Barreras Bravo, 3 Jc Stormy Monday", 
+        "runners": [
+            {
+                "comment": "3y filly: 0 wins/7 runs, $4k in US/Can in 2016; 0 wins/2 runs, $0k 2017: 15.1/1, 0.25 lengths 2nd of 7 to Por Amor in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best form at 1.6f: raced only on dirt: races close to pace: inconsistent.", 
+                "trainer": {
+                    "trainerId": "2.00267608", 
+                    "name": "Juan Saucedo", 
+                    "location": "USA"
+                }, 
+                "draw": 1, 
+                "jockey": {
+                    "name": "Eleazar Rivera Hernandez", 
+                    "jockeyId": "2.00131889"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "License To Cartel", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11395309", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 2, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Red, Black 'S' in White Star Circle, Red Chevrons and White Star on Bl ack Sleeves, Red Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2716665", 
+                "recentForm": "642692", 
+                "saddleCloth": "1", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y gelding: 0 wins/2 runs, $0k in US/Can in 2016; 1 win/1 run, $2k 2017: 3.9/1, 0.5 lengths 1st of 7 from Carrera Tempted in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best effort at 1.6f: raced only on dirt: races close to pace.", 
+                "trainer": {
+                    "trainerId": "2.00947709", 
+                    "name": "Josue Ponce", 
+                    "location": "USA"
+                }, 
+                "draw": 2, 
+                "jockey": {
+                    "name": "Santos Carrizales", 
+                    "jockeyId": "2.00086160"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Boogie Tothe Top", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11308725", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 1, 
+                "starRating": 2, 
+                "winsAtCourse": 1, 
+                "ownerColours": "Black, Lime Diamond Framed  \"CP\" & Stars, Lime Side Panels, Lime Star Stripe on Slvs, Black Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2695057", 
+                "recentForm": "781", 
+                "saddleCloth": "2", 
+                "winsAtDistance": 1
+            }, 
+            {
+                "comment": "3y gelding: 0 wins/2 runs, $2k in US/Can in 2016; 0 wins/2 runs, $2k 2017: 2.8/1, 0.1 lengths 2nd of 9 to Barreras Bravo in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best effort at 1.6f: raced only on dirt: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00262766", 
+                    "name": "Angel Sanchez", 
+                    "location": "USA"
+                }, 
+                "draw": 3, 
+                "jockey": {
+                    "name": "Francisco Calderon", 
+                    "jockeyId": "2.00145534"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Jc Stormy Monday", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11785593", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 3, 
+                "ownerColours": "Blue, White 'A/S', Blue Cap", 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 3, 
+                "winsAtCourse": 0, 
+                "timeform123Place": 3, 
+                "longHandicap": 0, 
+                "horseId": "2.Q2713478", 
+                "recentForm": "2222", 
+                "saddleCloth": "3", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y gelding: 0 wins/1 run, $1k in US/Can in 2016; 0 wins/3 runs, $2k 2017: 2.3/1, 0.5 lengths 3rd of 7 to Por Amor in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: effective from 1f to 2f: raced only on dirt: races close to pace: consistent.", 
+                "trainer": {
+                    "trainerId": "2.00213549", 
+                    "name": "Bobby Martinez", 
+                    "location": "USA"
+                }, 
+                "draw": 4, 
+                "jockey": {
+                    "name": "Juan Luis Vazquez", 
+                    "jockeyId": "2.00005238"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Zoomorphous Tree", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "12186102", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 2, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Blue, White \"B/M\", White Sleeves, Blue Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2678700", 
+                "recentForm": "2323", 
+                "saddleCloth": "4", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "4y filly: unraced in US/Can in 2016: 1 win/2 runs, $2k 2017: 2.4/1, 0.25 lengths 2nd of 7 to Borger Boy in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00216129", 
+                    "name": "Jorge Luis Muniz", 
+                    "location": "USA"
+                }, 
+                "draw": 5, 
+                "jockey": {
+                    "name": "Luis F. Ruiz", 
+                    "jockeyId": "2.00156301"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Chula Kid", 
+                "weight": 126, 
+                "selections": [
+                    {
+                        "selectionId": "10073937", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 4, 
+                "winsAtCourseAndDistance": 1, 
+                "starRating": 3, 
+                "winsAtCourse": 1, 
+                "ownerColours": "White, Pink 'PG', Pink Trimmed Silver Horseshoe, White Crosses & Strip es on Pink Slvs, White Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2588633", 
+                "recentForm": "22512", 
+                "saddleCloth": "5", 
+                "winsAtDistance": 1
+            }, 
+            {
+                "comment": "3y colt: 0 wins/6 runs, $2k in US/Can in 2016; 2 wins/3 runs, $6k 2017: 4.9/1, 0.1 lengths 1st of 9 from Jc Stormy Monday in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best effort at 1.4f: raced only on dirt: front-runner: may not be far away.", 
+                "trainer": {
+                    "trainerId": "2.00133453", 
+                    "name": "Manuel Vega, Jr.", 
+                    "location": "USA"
+                }, 
+                "draw": 6, 
+                "jockey": {
+                    "name": "Cipriano Uscanga Vidana", 
+                    "jockeyId": "2.00102356"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Barreras Bravo", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11071201", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "ownerColours": "White, Pink \"PG\" in Pink Trimmed Silver Horseshoe, White Crosses & Str ipes on Pink Slvs, White Cap", 
+                "gender": "Colt", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 1, 
+                "starRating": 4, 
+                "winsAtCourse": 2, 
+                "timeform123Place": 2, 
+                "longHandicap": 0, 
+                "horseId": "2.Q2722546", 
+                "recentForm": "243511", 
+                "saddleCloth": "6", 
+                "winsAtDistance": 1
+            }, 
+            {
+                "comment": "3y filly: 0 wins/2 runs, $1k in US/Can in 2016; 0 wins/2 runs, $1k 2017: 3.9/1, 0.25 lengths 2nd of 7 to Borger Boy in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best form at 1.6f: raced only on dirt: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00133721", 
+                    "name": "Judd S. Kearl", 
+                    "location": "USA"
+                }, 
+                "draw": 7, 
+                "jockey": {
+                    "name": "Rodrigo Sigala Vallejo", 
+                    "jockeyId": "2.00082627"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Tellem Honeys Here", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11138247", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 2, 
+                "winsAtCourse": 0, 
+                "ownerColours": "White, Navy & Gold Framed Burgandy \"JK\" & Diamonds, Gold \"KEARL\" on Bu rgandy Slvs, White Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2734508", 
+                "recentForm": "3622", 
+                "saddleCloth": "7", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y gelding: 1 win/7 runs, $9k in US/Can in 2016; 1 win/1 run, $2k 2017: 1.6/1, 0.25 lengths 1st of 7 from Tellem Honeys Here in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best form at 1.6f: raced only on dirt: races close to pace: consistent: should not be far away.", 
+                "trainer": {
+                    "trainerId": "2.00947709", 
+                    "name": "Josue Ponce", 
+                    "location": "USA"
+                }, 
+                "draw": 8, 
+                "jockey": {
+                    "name": "Luciano Duenez", 
+                    "jockeyId": "2.00156608"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Borger Boy", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11043861", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 3, 
+                "ownerColours": "Black, Lime Diamond Framed \"C/P\" & Stars, Lime Side Panels, Black Cap", 
+                "winsAtCourseAndDistance": 1, 
+                "starRating": 5, 
+                "winsAtCourse": 1, 
+                "timeform123Place": 1, 
+                "longHandicap": 0, 
+                "horseId": "2.Q2735119", 
+                "recentForm": "422991", 
+                "saddleCloth": "8", 
+                "winsAtDistance": 1
+            }, 
+            {
+                "comment": "3y gelding: 0 wins/4 runs, $0k in US/Can in 2016; 0 wins/2 runs, $0k 2017: 26.7/1, 0.6 lengths 3rd of 9 to Barreras Bravo in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best effort at 1.6f: raced only on dirt: tracks pace.", 
+                "trainer": {
+                    "trainerId": "2.00267608", 
+                    "name": "Juan Saucedo", 
+                    "location": "USA"
+                }, 
+                "draw": 9, 
+                "jockey": {
+                    "name": "Claudio Ponce Aguilar", 
+                    "jockeyId": "2.00155961"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "One Lonesome Dude", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "10992908", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 1, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Red, Black 'S' in White Star Circle, Red Chevrons and White Star on Bl ack Sleeves, Red Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2705384", 
+                "recentForm": "777983", 
+                "saddleCloth": "9", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "5y gelding: 0 wins/2 runs, $1k in US/Can in 2016; 1 win/1 run, $2k 2017: 8/1, 0.25 lengths 1st of 7 from License to Cartel in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best effort at 1.6f: raced only on dirt: races close to pace.", 
+                "trainer": {
+                    "trainerId": "2.00262766", 
+                    "name": "Angel Sanchez", 
+                    "location": "USA"
+                }, 
+                "draw": 10, 
+                "jockey": {
+                    "name": "Jose Ivan Martinez", 
+                    "jockeyId": "2.00138822"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Por Amor", 
+                "weight": 126, 
+                "selections": [
+                    {
+                        "selectionId": "11392326", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660245"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 5, 
+                "winsAtCourseAndDistance": 1, 
+                "starRating": 3, 
+                "winsAtCourse": 1, 
+                "ownerColours": "White, Blue \"AS\", White Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2545321", 
+                "recentForm": "943271", 
+                "saddleCloth": "10", 
+                "winsAtDistance": 1
+            }
+        ]
+    }
+}

@@ -1,0 +1,373 @@
+{
+    "jsonrpc": "2.0", 
+    "result": {
+        "numberOfRunners": 7, 
+        "prize": "$7600.00", 
+        "minimumWeight": 0, 
+        "bettingForecastText": "9/4 First Giorgino, 3/1 Runs Happy, 3/1 Lulu Lightlegs, 9/1 Pink Dynamite, 14/1 Sr Pyc Mistress, 33/1 San Pat Corona, 40/1 Charming Charlie", 
+        "race": {
+            "startDate": "2017-05-14T00:32:00.000Z", 
+            "numberOfRunners": 0, 
+            "meetingId": "2.202.1170513", 
+            "raceId": "2.202.1170513.4", 
+            "distance": 400, 
+            "eligibility": "3yoO", 
+            "raceClassification": {
+                "code": "MF", 
+                "displayName": "Maiden", 
+                "classificationAbbr": "Mdn", 
+                "classification": "Maiden", 
+                "displayNameAbbr": "Mdn"
+            }, 
+            "raceTitle": "Race Four", 
+            "raceType": {
+                "full": "Flat", 
+                "abbr": "Flat", 
+                "key": "F"
+            }, 
+            "course": {
+                "name": "Sam Houston Race Park", 
+                "countryCode": "US", 
+                "courseId": "2.202", 
+                "country": "USA", 
+                "surfaceType": "Dirt", 
+                "timeformCourseCode": "HOU", 
+                "timezone": "America/Chicago"
+            }, 
+            "isResultAvailable": false, 
+            "markets": [
+                {
+                    "marketType": "WIN", 
+                    "numberOfWinners": 1, 
+                    "marketId": "1.131660242"
+                }, 
+                {
+                    "marketType": "OTHER_PLACE", 
+                    "numberOfWinners": 3, 
+                    "marketId": "1.131660244"
+                }, 
+                {
+                    "marketType": "OTHER_PLACE", 
+                    "numberOfWinners": 2, 
+                    "marketId": "1.131660243"
+                }
+            ], 
+            "betfairMeetingId": "28233868"
+        }, 
+        "numberOfNonRunners": 0, 
+        "timeform123Text": "1 First Giorgino, 2 Lulu Lightlegs, 3 Pink Dynamite", 
+        "runners": [
+            {
+                "comment": "3y filly: 0 wins/3 runs, $1k in US/Can in 2016; 0 wins/0 runs, $0k 2017: 20.6/1, 1.75 lengths 4th of 9 to Girl Done Gone in $6k mdn (1f dirt) at Lone Star Park, 189 days ago: best form at 1.6f: raced only on dirt: tracks pace: has left Leon Bard.", 
+                "trainer": {
+                    "trainerId": "2.00018737", 
+                    "name": "Brian Stroud", 
+                    "location": "USA"
+                }, 
+                "draw": 1, 
+                "jockey": {
+                    "name": "Juan Francisco Garcia, Jr.", 
+                    "jockeyId": "2.00145208"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 190
+                    }
+                ], 
+                "name": "Runs Happy", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11825060", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 3, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Red, Sam Houston Logo, Red cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2715876", 
+                "recentForm": "954", 
+                "saddleCloth": "1", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y filly: 0 wins/3 runs, $1k in US/Can in 2016; 0 wins/1 run, $2k 2017: 16.9/1, 0.05 lengths 2nd of 7 to Seis Be First in $8k mdn (1f dirt) at Sam Houston Race Park, 26 days ago: best effort at 1.4f: raced only on dirt: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00214014", 
+                    "name": "Rodolfo Sanchez", 
+                    "location": "USA"
+                }, 
+                "draw": 2, 
+                "jockey": {
+                    "name": "Luciano Duenez", 
+                    "jockeyId": "2.00156608"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 27
+                    }
+                ], 
+                "name": "Lulu Lightlegs", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "10992857", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 3, 
+                "ownerColours": "Black, Gray Framed 'TEAM BARRERA',  Gray Hoops on Sleeves, Black Cap", 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 4, 
+                "winsAtCourse": 0, 
+                "timeform123Place": 2, 
+                "longHandicap": 0, 
+                "horseId": "2.Q2737826", 
+                "recentForm": "4362", 
+                "saddleCloth": "2", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y colt: 0 wins/2 runs, $1k in US/Can in 2016; 0 wins/3 runs, $1k 2017: 19.7/1, 2.1 lengths 5th of 7 to Mystic Daddy in $4k  (1f dirt) at Sam Houston Race Park, 14 days ago: best effort at 1.8f: raced only on dirt: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00262044", 
+                    "name": "Jose R. Espinosa", 
+                    "location": "USA"
+                }, 
+                "draw": 3, 
+                "jockey": {
+                    "name": "Cipriano Uscanga Vidana", 
+                    "jockeyId": "2.00102356"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 15
+                    }
+                ], 
+                "name": "San Pat Corona", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11308724", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "blinkers", 
+                    "abbr": "b", 
+                    "key": "B"
+                }, 
+                "gender": "Colt", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 2, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Blue, Sam Houston Logo, Blue Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2675809", 
+                "recentForm": "83545", 
+                "saddleCloth": "3", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y filly: 0 wins/2 runs, $0k in US/Can in 2016; 0 wins/1 run, $1k 2017: 3.2/1, 1 length 3rd of 7 to Reign Forest in $8k mdn (1f dirt) at Sam Houston Race Park, 22 days ago: best effort at 1.6f: raced only on dirt: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00008086", 
+                    "name": "Jesse Yoakum", 
+                    "location": "USA"
+                }, 
+                "draw": 4, 
+                "jockey": {
+                    "name": "Jerry Lee Yoakum", 
+                    "jockeyId": "2.00002071"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 23
+                    }
+                ], 
+                "name": "Pink Dynamite", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11174554", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 3, 
+                "ownerColours": "Maroon, White 'JLY', White Ichthus Emblems and Chevrons on Sleeves, Ma roon Cap", 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 3, 
+                "winsAtCourse": 0, 
+                "timeform123Place": 3, 
+                "longHandicap": 0, 
+                "horseId": "2.Q2724199", 
+                "recentForm": "543", 
+                "saddleCloth": "4", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y gelding: 0 wins/5 runs, $2k in US/Can in 2016; 0 wins/2 runs, $7k 2017: 15/1, 1.4 lengths 5th of 10 to Streamlyner in $110k  (1f dirt) at Sam Houston Race Park, 28 days ago: best effort at 1.6f: raced only on dirt: front-runner: plenty to spare.", 
+                "trainer": {
+                    "trainerId": "2.00013051", 
+                    "name": "Roberto G. Madrigal", 
+                    "location": "USA"
+                }, 
+                "draw": 5, 
+                "jockey": {
+                    "name": "Julio Alberto Rodriguez", 
+                    "jockeyId": "2.00122957"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 29
+                    }
+                ], 
+                "name": "First Giorgino", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "10992871", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Gelding", 
+                "age": 3, 
+                "ownerColours": "Blue, White 'E/M', Blue 'E/M' on White Sleeves, Blue Cap", 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 5, 
+                "winsAtCourse": 0, 
+                "timeform123Place": 1, 
+                "longHandicap": 0, 
+                "horseId": "2.Q2716072", 
+                "recentForm": "629425", 
+                "saddleCloth": "5", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y filly: 0 wins/6 runs, $2k in US/Can in 2016; 0 wins/2 runs, $0k 2017: 21.8/1, 0.95 lengths 5th of 9 to Barreras Bravo in $2k  (1f dirt) at Sam Houston Race Park, 21 days ago: best form at 1.5f: raced only on dirt: front-runner.", 
+                "trainer": {
+                    "trainerId": "2.00278783", 
+                    "name": "Abel Morin", 
+                    "location": "USA"
+                }, 
+                "draw": 6, 
+                "jockey": {
+                    "name": "Sergio Henestrosa Fuentes", 
+                    "jockeyId": "2.00131781"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 22
+                    }
+                ], 
+                "name": "Sr Pyc Mistress", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "11071209", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 3, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Black, Sam Houston Logo, Black Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2684568", 
+                "recentForm": "025455", 
+                "saddleCloth": "6", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "3y colt: 0 wins/2 runs, $0k in US/Can in 2016; 0 wins/0 runs, $0k 2017: 10.7/1, 5.8 lengths 9th of 10 to Trophie Kase in $7k mdn (1f dirt) at Ruidoso Downs, 299 days ago: races close to pace: has left Mike Robbins.", 
+                "trainer": {
+                    "trainerId": "2.00133721", 
+                    "name": "Judd S. Kearl", 
+                    "location": "USA"
+                }, 
+                "draw": 7, 
+                "jockey": {
+                    "name": "Rodrigo Sigala Vallejo", 
+                    "jockeyId": "2.00082627"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 300
+                    }
+                ], 
+                "name": "Charming Charlie", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "5201606", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660242"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Colt", 
+                "age": 3, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 1, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Blue, White Star, White Stars on Sleeves, Blue Cap", 
+                "longHandicap": 0, 
+                "horseId": "2.Q2725211", 
+                "recentForm": "79", 
+                "saddleCloth": "7", 
+                "winsAtDistance": 0
+            }
+        ]
+    }
+}
