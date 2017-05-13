@@ -25,13 +25,19 @@ class MarketDefinitionRunner(object):
     """
 
     def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None):
-        self.id = id
+        self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
         self.handicap = hc
         self.bsp = bsp
         self.adjustment_factor = adjustmentFactor
         self.removal_date = BaseResource.strip_datetime(removalDate)
+
+    def __str__(self):
+        return 'MarketDefinitionRunner: %s' % self.selection_id
+
+    def __repr__(self):
+        return '<MarketDefinitionRunner>'
 
 
 class MarketDefinition(object):
@@ -234,15 +240,37 @@ class RunnerBook(object):
                     for volume in sorted(self.best_available_to_lay, key=itemgetter(0))]
         return []
 
-    def serialise(self, status):
+    @property
+    def serialise_starting_price_back(self):
+        if self.starting_price_back:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.starting_price_back, key=itemgetter(0))]
+        return []
+
+    @property
+    def serialise_starting_price_lay(self):
+        if self.starting_price_lay:
+            return [{'price': volume[0], 'size': volume[1]}
+                    for volume in sorted(self.starting_price_lay, key=itemgetter(0))]
+        return []
+
+    def serialise(self, runner_definition):
         return {
-            'status': status,
+            'status': runner_definition.status,
             'ex': {
                 'tradedVolume': self.serialise_traded_volume,
                 'availableToBack': self.serialise_available_to_back,
                 'availableToLay': self.serialise_available_to_lay
             },
-            'adjustmentFactor': None,
+            'sp': {
+                'nearPrice': self.starting_price_near,
+                'farPrice': self.starting_price_far,
+                'backStakeTaken': self.serialise_starting_price_back,
+                'layLiabilityTaken': self.serialise_starting_price_lay,
+                'actualSP': runner_definition.bsp
+            },
+            'adjustmentFactor': runner_definition.adjustment_factor,
+            'removalDate': runner_definition.removal_date,
             'lastPriceTraded': self.last_price_traded,
             'handicap': self.handicap,
             'totalMatched': self.total_matched,
@@ -282,12 +310,12 @@ class MarketBookCache(BaseResource):
                 if runner:
                     if new_data.get('ltp'):
                         runner.last_price_traded = new_data.get('ltp')
-                    if new_data.get('tv'):
+                    if new_data.get('tv') is not None:  # if runner removed tv: 0 is returned
                         runner.total_matched = new_data.get('tv')
                     if new_data.get('spn'):
-                        runner.spn = new_data.get('spn')
+                        runner.starting_price_near = new_data.get('spn')
                     if new_data.get('spf'):
-                        runner.spf = new_data.get('spf')
+                        runner.starting_price_far = new_data.get('spf')
                     if new_data.get('trd'):
                         runner.update_traded(new_data.get('trd'))
                     if new_data.get('atb'):
@@ -305,7 +333,7 @@ class MarketBookCache(BaseResource):
                     if new_data.get('spb'):
                         runner.update_starting_price_back(new_data.get('spb'))
                     if new_data.get('spl'):
-                        runner.update_starting_price_back(new_data.get('spl'))
+                        runner.update_starting_price_lay(new_data.get('spl'))
                 else:
                     self.runners.append(RunnerBook(**new_data))
 
@@ -327,7 +355,7 @@ class MarketBookCache(BaseResource):
 
     @property
     def market_definition_dict(self):
-        return {runner.id: runner for runner in self.market_definition.runners}
+        return {runner.selection_id: runner for runner in self.market_definition.runners}
 
     @property
     def serialise(self):
@@ -337,22 +365,23 @@ class MarketBookCache(BaseResource):
         return {
             'marketId': self.market_id,
             'totalAvailable': None,
+            'isMarketDataDelayed': None,
+            'lastMatchTime': None,
             'betDelay': self.market_definition.bet_delay,
             'version': self.market_definition.version,
             'complete': self.market_definition.complete,
-            'numberOfRunners': None,
             'runnersVoidable': self.market_definition.runners_voidable,
             'totalMatched': self.total_matched,
             'status': self.market_definition.status,
             'bspReconciled': self.market_definition.bsp_reconciled,
-            'isMarketDataDelayed': None,
-            'lastMatchTime': None,
             'crossMatching': self.market_definition.cross_matching,
             'inplay': self.market_definition.in_play,
             'numberOfWinners': self.market_definition.number_of_winners,
+            'numberOfRunners': len(self.market_definition.runners),
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-            'runners': [runner.serialise(self.market_definition_dict.get(runner.selection_id).status)
-                        for runner in self.runners],
+            'runners': [
+                runner.serialise(self.market_definition_dict.get(runner.selection_id)) for runner in self.runners
+            ],
             'publishTime': self.publish_time,
         }
 
@@ -446,7 +475,9 @@ class OrderBookRunner(object):
                 self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
 
     def serialise_orders(self, market_id):
-        return [order.serialise(market_id, self.selection_id) for order in self.unmatched_orders]
+        return [
+            order.serialise(market_id, self.selection_id) for order in self.unmatched_orders
+        ]
 
 
 class OrderBookCache(BaseResource):

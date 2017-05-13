@@ -194,6 +194,12 @@ class RunnerCatalogue(object):
         self.handicap = handicap
         self.metadata = metadata
 
+    def __str__(self):
+        return 'RunnerCatalogue: %s' % self.selection_id
+
+    def __repr__(self):
+        return '<RunnerCatalogue>'
+
 
 class MarketCatalogue(BaseResource):
     """
@@ -370,6 +376,12 @@ class RunnerBook(object):
         self.ex = RunnerBookEX(**ex) if ex else None
         self.orders = [RunnerBookOrder(**i) for i in orders] if orders else []
         self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
+
+    def __str__(self):
+        return 'RunnerBook: %s' % self.selection_id
+
+    def __repr__(self):
+        return '<RunnerBook>'
 
 
 class MarketBook(BaseResource):
