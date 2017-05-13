@@ -2,7 +2,10 @@ import datetime
 import logging
 import time
 
-from ..resources.streamingresources import MarketBookCache, OrderBookCache
+from ..resources.streamingresources import (
+    MarketBookCache,
+    OrderBookCache,
+)
 
 logger = logging.getLogger(__name__)
 
