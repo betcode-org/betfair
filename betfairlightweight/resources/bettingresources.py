@@ -363,7 +363,7 @@ class RunnerBook(object):
         'sp', 'ex', 'orders', 'matches'
     ]
 
-    def __init__(self, selectionId, status, adjustmentFactor, handicap, lastPriceTraded=None, totalMatched=None,
+    def __init__(self, selectionId, status, handicap, adjustmentFactor=None, lastPriceTraded=None, totalMatched=None,
                  removalDate=None, sp=None, ex=None, orders=None, matches=None):
         self.selection_id = selectionId
         self.status = status
