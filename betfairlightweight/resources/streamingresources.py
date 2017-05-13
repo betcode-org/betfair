@@ -310,7 +310,7 @@ class MarketBookCache(BaseResource):
                 if runner:
                     if new_data.get('ltp'):
                         runner.last_price_traded = new_data.get('ltp')
-                    if new_data.get('tv'):
+                    if new_data.get('tv') is not None:  # if runner removed tv: 0 is returned
                         runner.total_matched = new_data.get('tv')
                     if new_data.get('spn'):
                         runner.starting_price_near = new_data.get('spn')
@@ -365,22 +365,23 @@ class MarketBookCache(BaseResource):
         return {
             'marketId': self.market_id,
             'totalAvailable': None,
+            'isMarketDataDelayed': None,
+            'lastMatchTime': None,
             'betDelay': self.market_definition.bet_delay,
             'version': self.market_definition.version,
             'complete': self.market_definition.complete,
-            'numberOfRunners': None,
             'runnersVoidable': self.market_definition.runners_voidable,
             'totalMatched': self.total_matched,
             'status': self.market_definition.status,
             'bspReconciled': self.market_definition.bsp_reconciled,
-            'isMarketDataDelayed': None,
-            'lastMatchTime': None,
             'crossMatching': self.market_definition.cross_matching,
             'inplay': self.market_definition.in_play,
             'numberOfWinners': self.market_definition.number_of_winners,
+            'numberOfRunners': len(self.market_definition.runners),
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-            'runners': [runner.serialise(self.market_definition_dict.get(runner.selection_id))
-                        for runner in self.runners],
+            'runners': [
+                runner.serialise(self.market_definition_dict.get(runner.selection_id)) for runner in self.runners
+            ],
             'publishTime': self.publish_time,
         }
 
@@ -474,7 +475,9 @@ class OrderBookRunner(object):
                 self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
 
     def serialise_orders(self, market_id):
-        return [order.serialise(market_id, self.selection_id) for order in self.unmatched_orders]
+        return [
+            order.serialise(market_id, self.selection_id) for order in self.unmatched_orders
+        ]
 
 
 class OrderBookCache(BaseResource):
