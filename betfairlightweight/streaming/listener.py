@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import ujson as json
+import json
 import logging
 
 from .stream import (
