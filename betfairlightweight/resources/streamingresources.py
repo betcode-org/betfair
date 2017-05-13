@@ -25,13 +25,19 @@ class MarketDefinitionRunner(object):
     """
 
     def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None):
-        self.id = id
+        self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
         self.handicap = hc
         self.bsp = bsp
         self.adjustment_factor = adjustmentFactor
         self.removal_date = BaseResource.strip_datetime(removalDate)
+
+    def __str__(self):
+        return 'MarketDefinitionRunner: %s' % self.selection_id
+
+    def __repr__(self):
+        return '<MarketDefinitionRunner>'
 
 
 class MarketDefinition(object):
@@ -248,9 +254,9 @@ class RunnerBook(object):
                     for volume in sorted(self.starting_price_lay, key=itemgetter(0))]
         return []
 
-    def serialise(self, status):
+    def serialise(self, runner_definition):
         return {
-            'status': status,
+            'status': runner_definition.status,
             'ex': {
                 'tradedVolume': self.serialise_traded_volume,
                 'availableToBack': self.serialise_available_to_back,
@@ -260,9 +266,11 @@ class RunnerBook(object):
                 'nearPrice': self.starting_price_near,
                 'farPrice': self.starting_price_far,
                 'backStakeTaken': self.serialise_starting_price_back,
-                'layLiabilityTaken': self.serialise_starting_price_lay
+                'layLiabilityTaken': self.serialise_starting_price_lay,
+                'actualSP': runner_definition.bsp
             },
-            'adjustmentFactor': None,
+            'adjustmentFactor': runner_definition.adjustment_factor,
+            'removalDate': runner_definition.removal_date,
             'lastPriceTraded': self.last_price_traded,
             'handicap': self.handicap,
             'totalMatched': self.total_matched,
@@ -347,7 +355,7 @@ class MarketBookCache(BaseResource):
 
     @property
     def market_definition_dict(self):
-        return {runner.id: runner for runner in self.market_definition.runners}
+        return {runner.selection_id: runner for runner in self.market_definition.runners}
 
     @property
     def serialise(self):
@@ -371,7 +379,7 @@ class MarketBookCache(BaseResource):
             'inplay': self.market_definition.in_play,
             'numberOfWinners': self.market_definition.number_of_winners,
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
-            'runners': [runner.serialise(self.market_definition_dict.get(runner.selection_id).status)
+            'runners': [runner.serialise(self.market_definition_dict.get(runner.selection_id))
                         for runner in self.runners],
             'publishTime': self.publish_time,
         }

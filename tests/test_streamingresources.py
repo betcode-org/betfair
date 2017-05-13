@@ -381,10 +381,11 @@ class TestRunnerBook(unittest.TestCase):
         sp_lay_update = [[18.8, 1.5]]
         self.runner_book.update_starting_price_lay(sp_lay_update)
 
-        serialise_d = self.runner_book.serialise(None)
+        runner_definition = mock.Mock()
+        serialise_d = self.runner_book.serialise(runner_definition)
         assert set(serialise_d.keys()) == \
             {'status', 'totalMatched', 'adjustmentFactor',
-             'lastPriceTraded', 'sp', 'ex', 'handicap', 'selectionId'}
+             'lastPriceTraded', 'sp', 'ex', 'handicap', 'selectionId', 'removalDate'}
 
         ex = serialise_d['ex']
         assert ex['tradedVolume'][0]['price'] == traded_update[0][0]
@@ -396,7 +397,9 @@ class TestRunnerBook(unittest.TestCase):
         assert sp['layLiabilityTaken'][0]['price'] == sp_lay_update[0][0]
 
     def test_empty_serialise(self):
-        serialise_d = self.runner_book.serialise(None)
+        runner_definition = mock.Mock()
+        runner_definition.bsp = None
+        serialise_d = self.runner_book.serialise(runner_definition)
 
         ex = serialise_d['ex']
         # all empty lists
