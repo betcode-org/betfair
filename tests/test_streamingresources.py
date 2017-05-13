@@ -367,3 +367,41 @@ class TestRunnerBook(unittest.TestCase):
 
         self.runner_book.update_starting_price_lay(book_update)
         mock_update_available.assert_called_with(current, book_update, 1)
+
+    def test_serialise(self):
+        traded_update = [[18.4, 1.1]]
+        self.runner_book.update_traded(traded_update)
+        back_update = [[18.5, 1.2]]
+        self.runner_book.update_available_to_back(back_update)
+        lay_update = [[18.6, 1.3]]
+        self.runner_book.update_available_to_lay(lay_update)
+
+        sp_back_update = [[18.7, 1.4]]
+        self.runner_book.update_starting_price_back(sp_back_update)
+        sp_lay_update = [[18.8, 1.5]]
+        self.runner_book.update_starting_price_lay(sp_lay_update)
+
+        serialise_d = self.runner_book.serialise(None)
+        assert set(serialise_d.keys()) == \
+            {'status', 'totalMatched', 'adjustmentFactor',
+             'lastPriceTraded', 'sp', 'ex', 'handicap', 'selectionId'}
+
+        ex = serialise_d['ex']
+        assert ex['tradedVolume'][0]['price'] == traded_update[0][0]
+        assert ex['availableToBack'][0]['price'] == back_update[0][0]
+        assert ex['availableToLay'][0]['price'] == lay_update[0][0]
+
+        sp = serialise_d['sp']
+        assert sp['backStakeTaken'][0]['price'] == sp_back_update[0][0]
+        assert sp['layLiabilityTaken'][0]['price'] == sp_lay_update[0][0]
+
+    def test_empty_serialise(self):
+        serialise_d = self.runner_book.serialise(None)
+
+        ex = serialise_d['ex']
+        # all empty lists
+        assert all(not ex[a] for a in ex.keys())
+
+        sp = serialise_d['sp']
+        # all 'None' or empty lists
+        assert all(not sp[a] for a in sp.keys())
