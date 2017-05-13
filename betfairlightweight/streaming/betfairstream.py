@@ -1,4 +1,4 @@
-import ujson as json
+import json
 import threading
 import socket
 import ssl
