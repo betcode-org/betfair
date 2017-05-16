@@ -15,24 +15,17 @@ class BaseListener(object):
 
     def __init__(self, max_latency=0.5):
         self.max_latency = max_latency
-        self.market_stream = None
-        self.order_stream = None
+
+        self.stream = None
+        self.stream_type = None  # marketSubscription/orderSubscription
+        self.stream_unique_id = None
 
     def register_stream(self, unique_id, operation):
-        if operation == 'authentication':
-            logger.info('[Listener: %s]: %s' % (unique_id, operation))
-
-        elif operation == 'marketSubscription':
-            if self.market_stream is not None:
-                logger.warning('[Listener: %s]: marketSubscription stream already registered, replacing data' %
-                               unique_id)
-            self.market_stream = self._add_stream(unique_id, operation)
-
-        elif operation == 'orderSubscription':
-            if self.order_stream is not None:
-                logger.warning('[Listener: %s]: orderSubscription stream already registered, replacing data' %
-                               unique_id)
-            self.order_stream = self._add_stream(unique_id, operation)
+        if self.stream is not None:
+            logger.warning('[Listener: %s]: stream already registered, replacing data' % unique_id)
+        self.stream = self._add_stream(unique_id, operation)
+        self.stream_type = operation
+        self.stream_unique_id = unique_id
 
     def on_data(self, raw_data):
         print(raw_data)
@@ -71,6 +64,7 @@ class StreamListener(BaseListener):
         except ValueError:
             logger.error('value error: %s' % raw_data)
             return
+
         unique_id = data.get('id')
 
         if self._error_handler(data, unique_id):
@@ -82,6 +76,10 @@ class StreamListener(BaseListener):
         elif operation == 'status':
             self._on_status(data, unique_id)
         elif operation in ['mcm', 'ocm']:
+            if unique_id != self.stream_unique_id:
+                logging.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
+                                (unique_id, self.stream_unique_id))
+                return
             self._on_change_message(data, unique_id)
 
     def _on_connection(self, data, unique_id):
@@ -103,23 +101,17 @@ class StreamListener(BaseListener):
 
     def _on_change_message(self, data, unique_id):
         change_type = data.get('ct', 'UPDATE')
-        operation = data.get('op')
-
-        if operation == 'mcm':
-            stream = self.market_stream
-        else:
-            stream = self.order_stream
 
         logger.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
 
         if change_type == 'SUB_IMAGE':
-            stream.on_subscribe(data)
+            self.stream.on_subscribe(data)
         elif change_type == 'RESUB_DELTA':
-            stream.on_resubscribe(data)
+            self.stream.on_resubscribe(data)
         elif change_type == 'HEARTBEAT':
-            stream.on_heartbeat(data)
+            self.stream.on_heartbeat(data)
         elif change_type == 'UPDATE':
-            stream.on_update(data)
+            self.stream.on_update(data)
 
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':

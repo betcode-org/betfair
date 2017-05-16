@@ -19,7 +19,7 @@ class BetfairStream(object):
     __encoding = 'utf-8'
 
     def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size, description):
-        self.unique_id = unique_id
+        self._unique_id = unique_id
         self.listener = listener
         self.app_key = app_key
         self.session_token = session_token
@@ -59,39 +59,37 @@ class BetfairStream(object):
             except OSError:
                 pass
 
-    def authenticate(self, unique_id=None):
+    def authenticate(self):
         """Authentication request.
-
-        :param unique_id: self.unique_id used if not supplied.
         """
+        unique_id = self.new_unique_id()
         message = {
             'op': 'authentication',
-            'id': unique_id or self.unique_id,
+            'id': unique_id,
             'appKey': self.app_key,
-            'session': self.session_token
+            'session': self.session_token,
         }
-        self.listener.register_stream(unique_id or self.unique_id, 'authentication')
         self._send(message)
+        return unique_id
 
-    def heartbeat(self, unique_id=None):
+    def heartbeat(self):
         """Heartbeat request to keep session alive.
-
-        :param unique_id: self.unique_id used if not supplied.
         """
+        unique_id = self.new_unique_id()
         message = {
             'op': 'heartbeat',
-            'id': unique_id or self.unique_id
+            'id': unique_id,
         }
         self._send(message)
+        return unique_id
 
-    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter, initial_clk=None, clk=None,
+    def subscribe_to_markets(self, market_filter, market_data_filter, initial_clk=None, clk=None,
                              conflate_ms=None, heartbeat_ms=None, segmentation_enabled=True):
         """
         Market subscription request.
 
         :param dict market_filter: Market filter
         :param dict market_data_filter: Market data filter
-        :param int unique_id: Unique id of stream
         :param str initial_clk: Sequence token for reconnect
         :param str clk: Sequence token for reconnect
         :param int conflate_ms: conflation rate (bounds are 0 to 120000)
@@ -99,6 +97,7 @@ class BetfairStream(object):
         :param bool segmentation_enabled: allow the server to send large sets of data
         in segments, instead of a single block
         """
+        unique_id = self.new_unique_id()
         message = {
             'op': 'marketSubscription',
             'id': unique_id,
@@ -112,13 +111,13 @@ class BetfairStream(object):
         }
         self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
+        return unique_id
 
-    def subscribe_to_orders(self, unique_id, order_filter=None, initial_clk=None, clk=None, conflate_ms=None,
+    def subscribe_to_orders(self, order_filter=None, initial_clk=None, clk=None, conflate_ms=None,
                             heartbeat_ms=None, segmentation_enabled=True):
         """
         Order subscription request.
 
-        :param int unique_id: Unique id of stream
         :param dict order_filter: Order filter to be applied
         :param str initial_clk: Sequence token for reconnect
         :param str clk: Sequence token for reconnect
@@ -127,6 +126,7 @@ class BetfairStream(object):
         :param bool segmentation_enabled: allow the server to send large sets of data
         in segments, instead of a single block
         """
+        unique_id = self.new_unique_id()
         message = {
             'op': 'orderSubscription',
             'id': unique_id,
@@ -139,6 +139,11 @@ class BetfairStream(object):
         }
         self.listener.register_stream(unique_id, 'orderSubscription')
         self._send(message)
+        return unique_id
+
+    def new_unique_id(self):
+        self._unique_id += 1
+        return self._unique_id
 
     def _connect(self):
         """Creates socket and registers with listener.
@@ -172,7 +177,7 @@ class BetfairStream(object):
                             self._data(received_data)
             except (socket.timeout, socket.error) as e:
                 self.stop()
-                raise SocketError('[Connect: %s]: Socket %s' % (self.unique_id, e))
+                raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,

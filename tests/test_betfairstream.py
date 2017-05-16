@@ -23,7 +23,7 @@ class BetfairStreamTest(unittest.TestCase):
                                             self.timeout, self.buffer_size, self.description)
 
     def test_init(self):
-        assert self.betfair_stream.unique_id == self.unique_id
+        assert self.betfair_stream._unique_id == self.unique_id
         assert self.betfair_stream.listener == self.mock_listener
         assert self.betfair_stream.app_key == self.app_key
         assert self.betfair_stream.session_token == self.session_token
@@ -68,55 +68,53 @@ class BetfairStreamTest(unittest.TestCase):
     def test_authenticate(self, mock_send):
         self.betfair_stream.authenticate()
         mock_send.assert_called_with(
-                {'id': self.unique_id, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
+                {'id': self.betfair_stream._unique_id, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
         )
 
-        self.betfair_stream.authenticate(999)
+        self.betfair_stream.authenticate()
         mock_send.assert_called_with(
-                {'id': 999, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
+                {'id': self.betfair_stream._unique_id, 'appKey': self.app_key, 'session': self.session_token, 'op': 'authentication'}
         )
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_heartbeat(self, mock_send):
         self.betfair_stream.heartbeat()
         mock_send.assert_called_with(
-                {'id': self.unique_id, 'op': 'heartbeat'}
+                {'id': self.betfair_stream._unique_id, 'op': 'heartbeat'}
         )
 
-        self.betfair_stream.heartbeat(999)
+        self.betfair_stream.heartbeat()
         mock_send.assert_called_with(
-                {'id': 999, 'op': 'heartbeat'}
+                {'id': self.betfair_stream._unique_id, 'op': 'heartbeat'}
         )
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_subscribe_to_markets(self, mock_send):
         market_filter = {'test': 123}
         market_data_filter = {'another_test': 123}
-        unique_id = 9876
         initial_clk = 'abcdef'
         clk = 'abc'
-        self.betfair_stream.subscribe_to_markets(unique_id, market_filter, market_data_filter, initial_clk, clk,
+        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter, initial_clk, clk,
                                                  heartbeat_ms=1, conflate_ms=2, segmentation_enabled=False)
 
         mock_send.assert_called_with(
-                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': unique_id,
+                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': self.betfair_stream._unique_id,
                  'marketDataFilter': market_data_filter, 'initialClk': initial_clk, 'clk': clk,
                  'heartbeatMs': 1, 'conflateMs': 2, 'segmentationEnabled': False}
         )
-        self.mock_listener.register_stream.assert_called_with(unique_id, 'marketSubscription')
+        self.mock_listener.register_stream.assert_called_with(self.betfair_stream._unique_id, 'marketSubscription')
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_subscribe_to_orders(self, mock_send):
-        unique_id = 3456
         initial_clk = 'abcdef'
         clk = 'abc'
-        self.betfair_stream.subscribe_to_orders(unique_id, initial_clk, clk, heartbeat_ms=1, conflate_ms=2,
+        self.betfair_stream.subscribe_to_orders(initial_clk, clk, heartbeat_ms=1, conflate_ms=2,
                                                 segmentation_enabled=False)
         mock_send.assert_called_with({
-            'orderFilter': 'abcdef', 'id': 3456, 'op': 'orderSubscription', 'initialClk': 'abc', 'clk': None,
+            'orderFilter': 'abcdef', 'id': self.betfair_stream._unique_id, 'op': 'orderSubscription', 'initialClk': 'abc', 'clk': None,
             'heartbeatMs': 1, 'conflateMs': 2, 'segmentationEnabled': False
         })
-        self.mock_listener.register_stream.assert_called_with(unique_id, 'orderSubscription')
+        self.mock_listener.register_stream.assert_called_with(self.betfair_stream._unique_id, 'orderSubscription')
 
     @mock.patch('ssl.wrap_socket')
     @mock.patch('socket.socket')
