@@ -125,10 +125,10 @@ class BetfairStream(object):
         self._send(message)
 
     def _connect(self):
-        """Creates socket and registers with listener.
+        """Creates socket and sets running to True.
         """
-        self._running = True
         self._socket = self._create_socket()
+        self._running = True
 
     def _create_socket(self):
         """Creates ssl socket, connects to stream api and
