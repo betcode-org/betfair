@@ -1,0 +1,368 @@
+{
+    "jsonrpc": "2.0", 
+    "result": {
+        "numberOfRunners": 7, 
+        "prize": "$7500.00", 
+        "minimumWeight": 0, 
+        "bettingForecastText": "5/2 Day O, 7/2 Custom For Corales, 4/1 Express Yourself, 7/1 Provoking Cat, 9/1 For Gloryalleluia, 20/1 Empty Basket, 20/1 Bayou Queen", 
+        "race": {
+            "startDate": "2017-05-13T23:07:00.000Z", 
+            "numberOfRunners": 0, 
+            "meetingId": "2.136.1170513", 
+            "raceId": "2.136.1170513.2", 
+            "distance": 1760, 
+            "eligibility": "3yo+", 
+            "raceClassification": {
+                "code": "CF", 
+                "displayName": "Claiming Stakes", 
+                "classificationAbbr": "Cl", 
+                "classification": "Claiming Stakes", 
+                "displayNameAbbr": "Cl"
+            }, 
+            "raceTitle": "Race Two", 
+            "raceType": {
+                "full": "Flat", 
+                "abbr": "Flat", 
+                "key": "F"
+            }, 
+            "course": {
+                "name": "Evangeline Downs", 
+                "countryCode": "US", 
+                "courseId": "2.136", 
+                "country": "USA", 
+                "surfaceType": "Dirt", 
+                "timeformCourseCode": "EVD", 
+                "timezone": "America/Chicago"
+            }, 
+            "isResultAvailable": false, 
+            "markets": [
+                {
+                    "marketType": "WIN", 
+                    "numberOfWinners": 1, 
+                    "marketId": "1.131660320"
+                }, 
+                {
+                    "marketType": "OTHER_PLACE", 
+                    "numberOfWinners": 2, 
+                    "marketId": "1.131660321"
+                }, 
+                {
+                    "marketType": "OTHER_PLACE", 
+                    "numberOfWinners": 3, 
+                    "marketId": "1.131660322"
+                }
+            ], 
+            "betfairMeetingId": "28233875"
+        }, 
+        "numberOfNonRunners": 0, 
+        "timeform123Text": "1 Custom For Corales, 2 Day O, 3 Express Yourself", 
+        "runners": [
+            {
+                "comment": "5y mare: 1 win/8 runs, $15k in US/Can in 2016; 0 wins/5 runs, $5k 2017: 2.1/1, 2.75 lengths 2nd of 7 to Kool Aid Girl in $8k clmr (8f dirt) at Evangeline Downs, 9 days ago: effective from 6f to 8.5f: raced only on dirt: races mid-field.", 
+                "trainer": {
+                    "trainerId": "2.00271988", 
+                    "name": "Mervin Holland", 
+                    "location": "USA"
+                }, 
+                "draw": 1, 
+                "jockey": {
+                    "name": "Ashley Broussard", 
+                    "jockeyId": "2.00151659"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 9
+                    }
+                ], 
+                "name": "Express Yourself", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "10441456", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Mare", 
+                "age": 5, 
+                "ownerColours": "Blue, Red Bands on White Sleeves", 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 3, 
+                "winsAtCourse": 0, 
+                "timeform123Place": 3, 
+                "longHandicap": 0, 
+                "horseId": "2.12020296", 
+                "recentForm": "143562", 
+                "saddleCloth": "1", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "4y filly: 0 wins/1 run, $1k in US/Can in 2016; 2 wins/5 runs, $24k 2017: 3.1/1, 4.25 lengths 2nd of 8 to Wild Appointment in $12k clmr (6f dirt) at Evangeline Downs, 24 days ago: best effort at 8f: best recent form on dirt: races close to pace.", 
+                "trainer": {
+                    "trainerId": "2.00216184", 
+                    "name": "Delmar R. Caldwell", 
+                    "location": "USA"
+                }, 
+                "draw": 2, 
+                "jockey": {
+                    "name": "Diego Saenz", 
+                    "jockeyId": "2.00111679"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 24
+                    }
+                ], 
+                "name": "Day O", 
+                "weight": 120, 
+                "selections": [
+                    {
+                        "selectionId": "10088035", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "ownerColours": "White, Red Sleeves,  Blue Eye", 
+                "gender": "Filly", 
+                "age": 4, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 4, 
+                "winsAtCourse": 0, 
+                "timeform123Place": 2, 
+                "longHandicap": 0, 
+                "horseId": "2.13000642", 
+                "recentForm": "421912", 
+                "saddleCloth": "2", 
+                "winsAtDistance": 2
+            }, 
+            {
+                "comment": "5y mare: 1 win/8 runs, $15k in US/Can in 2016; 0 wins/3 runs, $3k 2017: 6.1/1, 8 lengths 5th of 10 to Beautiful Music in $8k clmr (5f dirt) at Evangeline Downs, 28 days ago: effective from 5f to 6.5f: raced only on dirt: races mid-field.", 
+                "trainer": {
+                    "trainerId": "2.00002532", 
+                    "name": "Samuel Breaux", 
+                    "location": "USA"
+                }, 
+                "draw": 3, 
+                "jockey": {
+                    "name": "Luis Negron", 
+                    "jockeyId": "2.00137241"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 28
+                    }
+                ], 
+                "name": "Provoking Cat", 
+                "weight": 123, 
+                "selections": [
+                    {
+                        "selectionId": "10092365", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Mare", 
+                "age": 5, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 2, 
+                "winsAtCourse": 1, 
+                "ownerColours": "Blue", 
+                "longHandicap": 0, 
+                "horseId": "2.12026627", 
+                "recentForm": "621425", 
+                "saddleCloth": "3", 
+                "winsAtDistance": 0
+            }, 
+            {
+                "comment": "6y mare: 0 wins/11 runs, $8k in US/Can in 2016; 0 wins/2 runs, $0k 2017: 25.1/1, 3.85 lengths 8th of 8 to Swamped in $9k clmr (8f dirt) at Evangeline Downs, 21 days ago: effective from 8f to 8.3f: raced only on dirt: races mid to rear: first-time blinkers.", 
+                "trainer": {
+                    "trainerId": "2.00271990", 
+                    "name": "Lee Thomas", 
+                    "location": "USA"
+                }, 
+                "draw": 4, 
+                "jockey": {
+                    "name": "Bethany Taylor", 
+                    "jockeyId": "2.00135483"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 21
+                    }
+                ], 
+                "name": "Empty Basket", 
+                "weight": 120, 
+                "selections": [
+                    {
+                        "selectionId": "9991357", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "wearing": {
+                    "full": "blinkers and Lasix", 
+                    "abbr": "bL", 
+                    "key": "2"
+                }, 
+                "gender": "Mare", 
+                "age": 6, 
+                "winsAtCourseAndDistance": 2, 
+                "starRating": 3, 
+                "winsAtCourse": 2, 
+                "ownerColours": "Black, White Trimmed Turquoise Sash", 
+                "longHandicap": 0, 
+                "horseId": "2.11005418", 
+                "recentForm": "365368", 
+                "saddleCloth": "4", 
+                "winsAtDistance": 2
+            }, 
+            {
+                "comment": "5y mare: 0 wins/3 runs, $1k in US/Can in 2016; 1 win/4 runs, $8k 2017: 13.2/1, 18.55 lengths 8th of 10 to Garlic in $8k clmr (8f dirt) at Evangeline Downs, 31 days ago: best effort at 8f: raced only on dirt: tracks pace: has left Vincent Chevis: inconsistent.", 
+                "trainer": {
+                    "trainerId": "2.00245229", 
+                    "name": "Roland Patt, Jr.", 
+                    "location": "USA"
+                }, 
+                "draw": 5, 
+                "jockey": {
+                    "name": "Alexis X. Batista", 
+                    "jockeyId": "2.00142803"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 31
+                    }
+                ], 
+                "name": "Bayou Queen", 
+                "weight": 120, 
+                "selections": [
+                    {
+                        "selectionId": "10449726", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Mare", 
+                "age": 5, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 3, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Black, Red Ball, Black 'RPJ', Red Balls on Sleeves", 
+                "longHandicap": 0, 
+                "horseId": "2.12018699", 
+                "recentForm": "555158", 
+                "saddleCloth": "5", 
+                "winsAtDistance": 2
+            }, 
+            {
+                "comment": "4y filly: 1 win/7 runs, $12k in US/Can in 2016; 0 wins/4 runs, $2k 2017: 0.8/1, 1.35 lengths 4th of 8 to Swamped in $9k clmr (8f dirt) at Evangeline Downs, 21 days ago: effective from 7.5f to 8f: best recent form on turf/dirt: races mid to rear: should not be far away.", 
+                "trainer": {
+                    "trainerId": "2.00003100", 
+                    "name": "Corale A. Richards", 
+                    "location": "USA"
+                }, 
+                "draw": 6, 
+                "jockey": {
+                    "name": "Colby J. Hernandez", 
+                    "jockeyId": "2.00123498"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 21
+                    }
+                ], 
+                "name": "Custom For Corales", 
+                "weight": 120, 
+                "selections": [
+                    {
+                        "selectionId": "10088039", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 4, 
+                "ownerColours": "Black, Neon Orange 'CR', Neon Orange Stars on Sleeves", 
+                "winsAtCourseAndDistance": 1, 
+                "starRating": 5, 
+                "winsAtCourse": 1, 
+                "timeform123Place": 1, 
+                "longHandicap": 0, 
+                "horseId": "2.13017198", 
+                "recentForm": "176934", 
+                "saddleCloth": "6", 
+                "winsAtDistance": 2
+            }, 
+            {
+                "comment": "4y filly: 0 wins/12 runs, $10k in US/Can in 2016; 1 win/2 runs, $7k 2017: 5.1/1, 2.25 lengths 1st of 8 from Can't Count That in $10k clmr (8f dirt) at Delta Downs, 113 days ago: effective from 6.5f to 8.5f: raced only on dirt: races mid to rear.", 
+                "trainer": {
+                    "trainerId": "2.00190106", 
+                    "name": "Kearney Segura", 
+                    "location": "USA"
+                }, 
+                "draw": 7, 
+                "jockey": {
+                    "name": "Alfredo Contreras", 
+                    "jockeyId": "2.00127537"
+                }, 
+                "daysSinceLastRun": [
+                    {
+                        "type": "F", 
+                        "days": 113
+                    }
+                ], 
+                "name": "For Gloryalleluia", 
+                "weight": 120, 
+                "selections": [
+                    {
+                        "selectionId": "10097095", 
+                        "marketType": "WIN", 
+                        "marketId": "1.131660320"
+                    }
+                ], 
+                "wearing": {
+                    "full": "Lasix", 
+                    "abbr": "L", 
+                    "key": "1"
+                }, 
+                "gender": "Filly", 
+                "age": 4, 
+                "winsAtCourseAndDistance": 0, 
+                "starRating": 2, 
+                "winsAtCourse": 0, 
+                "ownerColours": "Yellow, Blue \"AB\", Blue Stripes on Sleeves", 
+                "longHandicap": 0, 
+                "horseId": "2.13008532", 
+                "recentForm": "357761", 
+                "saddleCloth": "7", 
+                "winsAtDistance": 2
+            }
+        ]
+    }
+}
