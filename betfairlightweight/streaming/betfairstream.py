@@ -84,7 +84,8 @@ class BetfairStream(object):
         }
         self._send(message)
 
-    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter, initial_clk=None, clk=None):
+    def subscribe_to_markets(self, unique_id, market_filter, market_data_filter, initial_clk=None, clk=None,
+                             conflate_ms=None, heartbeat_ms=None, segmentation_enabled=True):
         """
         Market subscription request.
 
@@ -93,6 +94,10 @@ class BetfairStream(object):
         :param int unique_id: Unique id of stream
         :param str initial_clk: Sequence token for reconnect
         :param str clk: Sequence token for reconnect
+        :param int conflate_ms: conflation rate (bounds are 0 to 120000)
+        :param int heartbeat_ms: heartbeat rate (500 to 5000)
+        :param bool segmentation_enabled: allow the server to send large sets of data
+        in segments, instead of a single block
         """
         message = {
             'op': 'marketSubscription',
@@ -101,11 +106,15 @@ class BetfairStream(object):
             'marketDataFilter': market_data_filter,
             'initialClk': initial_clk,
             'clk': clk,
+            'conflateMs': conflate_ms,
+            'heartbeatMs': heartbeat_ms,
+            'segmentationEnabled': segmentation_enabled,
         }
         self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
 
-    def subscribe_to_orders(self, unique_id, order_filter=None, initial_clk=None, clk=None):
+    def subscribe_to_orders(self, unique_id, order_filter=None, initial_clk=None, clk=None, conflate_ms=None,
+                            heartbeat_ms=None, segmentation_enabled=True):
         """
         Order subscription request.
 
@@ -113,6 +122,10 @@ class BetfairStream(object):
         :param dict order_filter: Order filter to be applied
         :param str initial_clk: Sequence token for reconnect
         :param str clk: Sequence token for reconnect
+        :param int conflate_ms: conflation rate (bounds are 0 to 120000)
+        :param int heartbeat_ms: heartbeat rate (500 to 5000)
+        :param bool segmentation_enabled: allow the server to send large sets of data
+        in segments, instead of a single block
         """
         message = {
             'op': 'orderSubscription',
@@ -120,6 +133,9 @@ class BetfairStream(object):
             'orderFilter': order_filter,
             'initialClk': initial_clk,
             'clk': clk,
+            'conflateMs': conflate_ms,
+            'heartbeatMs': heartbeat_ms,
+            'segmentationEnabled': segmentation_enabled,
         }
         self.listener.register_stream(unique_id, 'orderSubscription')
         self._send(message)

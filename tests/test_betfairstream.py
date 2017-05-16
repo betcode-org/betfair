@@ -95,11 +95,13 @@ class BetfairStreamTest(unittest.TestCase):
         unique_id = 9876
         initial_clk = 'abcdef'
         clk = 'abc'
-        self.betfair_stream.subscribe_to_markets(unique_id, market_filter, market_data_filter, initial_clk, clk)
+        self.betfair_stream.subscribe_to_markets(unique_id, market_filter, market_data_filter, initial_clk, clk,
+                                                 heartbeat_ms=1, conflate_ms=2, segmentation_enabled=False)
 
         mock_send.assert_called_with(
                 {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': unique_id,
-                 'marketDataFilter': market_data_filter, 'initialClk': initial_clk, 'clk': clk}
+                 'marketDataFilter': market_data_filter, 'initialClk': initial_clk, 'clk': clk,
+                 'heartbeatMs': 1, 'conflateMs': 2, 'segmentationEnabled': False}
         )
         self.mock_listener.register_stream.assert_called_with(unique_id, 'marketSubscription')
 
@@ -108,10 +110,12 @@ class BetfairStreamTest(unittest.TestCase):
         unique_id = 3456
         initial_clk = 'abcdef'
         clk = 'abc'
-        self.betfair_stream.subscribe_to_orders(unique_id, initial_clk, clk)
-        mock_send.assert_called_with(
-            {'orderFilter': 'abcdef', 'id': 3456, 'op': 'orderSubscription', 'initialClk': 'abc', 'clk': None}
-        )
+        self.betfair_stream.subscribe_to_orders(unique_id, initial_clk, clk, heartbeat_ms=1, conflate_ms=2,
+                                                segmentation_enabled=False)
+        mock_send.assert_called_with({
+            'orderFilter': 'abcdef', 'id': 3456, 'op': 'orderSubscription', 'initialClk': 'abc', 'clk': None,
+            'heartbeatMs': 1, 'conflateMs': 2, 'segmentationEnabled': False
+        })
         self.mock_listener.register_stream.assert_called_with(unique_id, 'orderSubscription')
 
     @mock.patch('ssl.wrap_socket')
