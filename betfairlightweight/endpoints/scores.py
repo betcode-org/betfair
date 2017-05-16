@@ -31,39 +31,7 @@ class Scores(BaseEndpoint):
         (response, elapsed_time) = self.request(method, params, session)
         return self.process_response(response, resources.RaceDetails, elapsed_time, lightweight)
 
-    # Following requires app key to be authorised and has not been tested.
-
-    def list_scores(self, update_keys, session=None, lightweight=None):
-        """
-        Returns a list of current scores for the given events.
-
-        :param dict update_keys: The filter to select desired markets. All markets that match
-        the criteria in the filter are selected
-        :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource
-
-        :rtype: list[resources.Score]
-        """
-        params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listScores')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.Score, elapsed_time, lightweight)
-
-    def list_incidents(self, update_keys, session=None, lightweight=None):
-        """
-        Returns a list of incidents for the given events.
-
-        :param dict update_keys: The filter to select desired markets. All markets that match
-        the criteria in the filter are selected
-        :param requests.session session: Requests session object
-        :param bool lightweight: If True will return dict not a resource
-
-        :rtype: list[resources.Incidents]
-        """
-        params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listIncidents')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.Incidents, elapsed_time, lightweight)
+    # Following requires app key to be authorised
 
     def list_available_events(self, event_ids=None, event_type_ids=None, event_status=None, session=None,
                               lightweight=None):
@@ -82,6 +50,38 @@ class Scores(BaseEndpoint):
         method = '%s%s' % (self.URI, 'listAvailableEvents')
         (response, elapsed_time) = self.request(method, params, session)
         return self.process_response(response, resources.AvailableEvent, elapsed_time, lightweight)
+
+    def list_scores(self, update_keys, session=None, lightweight=None):
+        """
+        Returns a list of current scores for the given events.
+
+        :param list update_keys: The filter to select desired markets. All markets that match
+        the criteria in the filter are selected e.g. [{'eventId': '28205674', 'lastUpdateSequenceProcessed': 2}]
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.Score]
+        """
+        params = clean_locals(locals())
+        method = '%s%s' % (self.URI, 'listScores')
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response, resources.Score, elapsed_time, lightweight)
+
+    def list_incidents(self, update_keys, session=None, lightweight=None):
+        """
+        Returns a list of incidents for the given events.
+
+        :param dict update_keys: The filter to select desired markets. All markets that match
+        the criteria in the filter are selected e.g. [{'eventId': '28205674', 'lastUpdateSequenceProcessed': 2}]
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.Incidents]
+        """
+        params = clean_locals(locals())
+        method = '%s%s' % (self.URI, 'listIncidents')
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response, resources.Incidents, elapsed_time, lightweight)
 
     @property
     def url(self):
