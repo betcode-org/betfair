@@ -237,7 +237,18 @@ better than to use this magic incantation casually.
 """
 
 
-class PriceSize(object):
+class Slotable(object):
+    __slots__ = []
+
+    def __getstate__(self):
+        return {slot: getattr(self, slot) for slot in self.__slots__}
+
+    def __setstate__(self, d):
+        for slot in d:
+            setattr(self, slot, d[slot])
+
+
+class PriceSize(Slotable):
     """
     :type price: float
     :type size: float
@@ -269,7 +280,7 @@ class RunnerBookSP(object):
         self.lay_liability_taken = [PriceSize(**i) for i in layLiabilityTaken]
 
 
-class RunnerBookEX(object):
+class RunnerBookEX(Slotable):
     """
     :type available_to_back: list[PriceSize]
     :type available_to_lay: list[PriceSize]
@@ -343,7 +354,7 @@ class RunnerBookMatch(object):
         self.match_date = BaseResource.strip_datetime(matchDate)
 
 
-class RunnerBook(object):
+class RunnerBook(Slotable):
     """
     :type adjustment_factor: float
     :type ex: RunnerBookEX
