@@ -280,16 +280,12 @@ class RunnerBookSP(object):
         self.lay_liability_taken = [PriceSize(**i) for i in layLiabilityTaken]
 
 
-class RunnerBookEX(Slotable):
+class RunnerBookEX(object):
     """
     :type available_to_back: list[PriceSize]
     :type available_to_lay: list[PriceSize]
     :type traded_volume: list[PriceSize]
     """
-
-    __slots__ = [
-        'available_to_back', 'available_to_lay', 'traded_volume'
-    ]
 
     def __init__(self, availableToBack=None, availableToLay=None, tradedVolume=None):
         self.available_to_back = [PriceSize(**i) for i in availableToBack]
@@ -354,7 +350,7 @@ class RunnerBookMatch(object):
         self.match_date = BaseResource.strip_datetime(matchDate)
 
 
-class RunnerBook(Slotable):
+class RunnerBook(object):
     """
     :type adjustment_factor: float
     :type ex: RunnerBookEX
@@ -368,11 +364,6 @@ class RunnerBook(Slotable):
     :type status: unicode
     :type total_matched: float
     """
-
-    __slots__ = [
-        'selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date',
-        'sp', 'ex', 'orders', 'matches'
-    ]
 
     def __init__(self, selectionId, status, handicap, adjustmentFactor=None, lastPriceTraded=None, totalMatched=None,
                  removalDate=None, sp=None, ex=None, orders=None, matches=None):
