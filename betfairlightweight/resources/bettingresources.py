@@ -237,7 +237,18 @@ better than to use this magic incantation casually.
 """
 
 
-class PriceSize(object):
+class Slotable(object):
+    __slots__ = []
+
+    def __getstate__(self):
+        return {slot: getattr(self, slot) for slot in self.__slots__}
+
+    def __setstate__(self, d):
+        for slot in d:
+            setattr(self, slot, d[slot])
+
+
+class PriceSize(Slotable):
     """
     :type price: float
     :type size: float
@@ -275,10 +286,6 @@ class RunnerBookEX(object):
     :type available_to_lay: list[PriceSize]
     :type traded_volume: list[PriceSize]
     """
-
-    __slots__ = [
-        'available_to_back', 'available_to_lay', 'traded_volume'
-    ]
 
     def __init__(self, availableToBack=None, availableToLay=None, tradedVolume=None):
         self.available_to_back = [PriceSize(**i) for i in availableToBack]
@@ -357,11 +364,6 @@ class RunnerBook(object):
     :type status: unicode
     :type total_matched: float
     """
-
-    __slots__ = [
-        'selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date',
-        'sp', 'ex', 'orders', 'matches'
-    ]
 
     def __init__(self, selectionId, status, handicap, adjustmentFactor=None, lastPriceTraded=None, totalMatched=None,
                  removalDate=None, sp=None, ex=None, orders=None, matches=None):
