@@ -221,8 +221,8 @@ class Runner(object):
     :type wins_at_distance: int
     """
 
-    def __init__(self, age, draw, gender, horseId, longHandicap, name, ownerColours, saddleCloth,
-                 weight, jockey, selections, trainer, starRating=None, comment=None, isNonRunner=False,
+    def __init__(self, age=None, draw=None, gender=None, horseId=None, longHandicap=None, name=None, ownerColours=None, saddleCloth=None,
+                 weight=None, selections=None, trainer=None, jockey=None, starRating=None, comment=None, isNonRunner=False,
                  winsAtCourse=None, winsAtCourseAndDistance=None, winsAtDistance=None, daysSinceLastRun=None,
                  timeform123Place=None, officialRating=None, recentForm=None, wearing=None):
         self.age = age
@@ -244,9 +244,9 @@ class Runner(object):
         self.wins_at_course_and_distance = winsAtCourseAndDistance
         self.wins_at_distance = winsAtDistance
         self.days_since_last_run = [DaysSinceLastRun(**i) for i in daysSinceLastRun] if daysSinceLastRun else []
-        self.jockey = Jockey(**jockey)
-        self.selections = [Selection(**i) for i in selections]
-        self.trainer = Trainer(**trainer)
+        self.jockey = Jockey(**jockey) if jockey else None
+        self.selections = [Selection(**i) for i in selections] if selections else []
+        self.trainer = Trainer(**trainer) if trainer else None
         self.wearing = Wearing(**wearing) if wearing else None
 
 
