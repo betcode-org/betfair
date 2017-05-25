@@ -42,7 +42,7 @@ class BaseListener(object):
 
 class StreamListener(BaseListener):
     """Stream listener, processes results from socket,
-    holds a market and order stream which hold
+    holds a market or order stream which hold
     market_book caches
     """
 

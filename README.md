@@ -43,9 +43,7 @@ The library can then be used as follows:
 
 # streaming
 
-Currently two listeners available, below will run the base listener which prints anything it receives.
-Stream listener is able to hold an order stream and a market stream, although it is recommended to have one socket per
-stream. The listener can hold a cache and push market_books/order_books out via a queue.
+Currently two listeners available, below will run the base listener which prints anything it receives. Stream listener is able to hold an order stream or a market stream (one per listener). The listener can hold a cache and push market_books/order_books out via a queue.
 
 [Exchange Stream API](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
@@ -56,7 +54,7 @@ from betfairlightweight.filters import (
 )
 
 betfair_socket = trading.streaming.create_stream(
-    unique_id=2,
+    unique_id=0,
     description='Test Market Socket',
 )
 
@@ -71,7 +69,6 @@ market_data_filter = streaming_market_data_filter(
 )
 
 betfair_socket.subscribe_to_markets(
-    unique_id=12345,
     market_filter=market_filter,
     market_data_filter=market_data_filter,
 )

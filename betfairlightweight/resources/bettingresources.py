@@ -428,7 +428,6 @@ class MarketBook(BaseResource):
         self.total_available = kwargs.get('totalAvailable')
         self.total_matched = kwargs.get('totalMatched')
         self.version = kwargs.get('version')
-        self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
 
 
@@ -493,7 +492,6 @@ class CurrentOrders(BaseResource):
         self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
         self.streaming_update = kwargs.pop('streaming_update', None)
         self.publish_time = kwargs.pop('publish_time', None)
-        self.market_definition = kwargs.pop('market_definition', None)
         super(CurrentOrders, self).__init__(**kwargs)
         self.more_available = kwargs.get('moreAvailable')
         self.orders = [CurrentOrder(**i) for i in kwargs.get('currentOrders')]

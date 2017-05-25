@@ -345,6 +345,7 @@ class MarketBookCache(BaseResource):
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
+                publish_time=self.publish_time,
                 market_definition=self.market_definition,
                 **self.serialise
             )
@@ -382,7 +383,6 @@ class MarketBookCache(BaseResource):
             'runners': [
                 runner.serialise(self.market_definition_dict.get(runner.selection_id)) for runner in self.runners
             ],
-            'publishTime': self.publish_time,
         }
 
 
@@ -484,12 +484,14 @@ class OrderBookCache(BaseResource):
 
     def __init__(self, **kwargs):
         super(OrderBookCache, self).__init__(**kwargs)
+        self.publish_time = kwargs.get('publish_time')
         self.market_id = kwargs.get('id')
         self.closed = kwargs.get('closed')
         self.runners = [OrderBookRunner(**i) for i in kwargs.get('orc', [])]
 
     def update_cache(self, order_book, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
+        self.publish_time = publish_time
 
         for order_changes in order_book.get('orc', []):
             selection_id = order_changes.get('id')
@@ -509,6 +511,7 @@ class OrderBookCache(BaseResource):
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
+                publish_time=self.publish_time,
                 **self.serialise
             )
 
