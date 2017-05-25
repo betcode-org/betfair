@@ -26,13 +26,17 @@ class BaseListener(object):
             if self.market_stream is not None:
                 logger.warning('[Listener: %s]: marketSubscription stream already registered, replacing data' %
                                unique_id)
-            self.market_stream = self._add_stream(unique_id, operation)
+                self.market_stream.unique_id = unique_id
+            else:
+                self.market_stream = self._add_stream(unique_id, operation)
 
         elif operation == 'orderSubscription':
             if self.order_stream is not None:
                 logger.warning('[Listener: %s]: orderSubscription stream already registered, replacing data' %
                                unique_id)
-            self.order_stream = self._add_stream(unique_id, operation)
+                self.order_stream.unique_id = unique_id
+            else:
+                self.order_stream = self._add_stream(unique_id, operation)
 
     def on_data(self, raw_data):
         print(raw_data)
