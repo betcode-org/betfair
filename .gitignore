@@ -1,6 +1,7 @@
 *.py[cod]
 *.sw[op]
 .cache/
+node_modules/
 
 # Packages
 *.egg
