@@ -6,6 +6,8 @@ Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG]
 
 [Documentation](https://github.com/liampauling/betfairlightweight/wiki)
 
+[Join slack group](https://betfairlightweight.herokuapp.com)
+
 Currently tested on Python 2.7, 3.4, 3.5 and 3.6.
 
 # installation
