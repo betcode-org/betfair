@@ -15,11 +15,11 @@ class Streaming(object):
         """
         self.client = parent
 
-    def create_stream(self, unique_id, listener=None, timeout=11, buffer_size=1024, description='BetfairSocket'):
+    def create_stream(self, unique_id=0, listener=None, timeout=11, buffer_size=1024, description='BetfairSocket'):
         """
         Creates BetfairStream.
 
-        :param dict unique_id: Unique id of the stream
+        :param dict unique_id: Id used to start unique id's of the stream (+1 before every request)
         :param resources.Listener listener:  Listener class to use
         :param float timeout: Socket timeout
         :param int buffer_size: Socket buffer size
@@ -36,5 +36,4 @@ class Streaming(object):
             timeout=timeout,
             buffer_size=buffer_size,
             description=description,
-            # todo lightweight
         )

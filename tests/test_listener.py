@@ -13,8 +13,9 @@ class BaseListenerTest(unittest.TestCase):
         self.base_listener = BaseListener()
 
     def test_init(self):
-        assert self.base_listener.market_stream is None
-        assert self.base_listener.order_stream is None
+        assert self.base_listener.stream is None
+        assert self.base_listener.stream_unique_id is None
+        assert self.base_listener.stream_type is None
         assert self.base_listener.max_latency == 0.5
 
     @mock.patch('betfairlightweight.streaming.listener.BaseListener._add_stream', return_value=123)
@@ -24,21 +25,21 @@ class BaseListenerTest(unittest.TestCase):
 
         self.base_listener.register_stream(2, 'marketSubscription')
         mock_add_stream.assert_called_with(2, 'marketSubscription')
-        assert self.base_listener.market_stream == 123
+        assert self.base_listener.stream == 123
 
         self.base_listener.market_stream = 'test'
         self.base_listener.register_stream(2, 'marketSubscription')
         mock_add_stream.assert_called_with(2, 'marketSubscription')
-        assert self.base_listener.market_stream == 123
+        assert self.base_listener.stream == 123
 
         self.base_listener.register_stream(3, 'orderSubscription')
         mock_add_stream.assert_called_with(3, 'orderSubscription')
-        assert self.base_listener.order_stream == 123
+        assert self.base_listener.stream == 123
 
         self.base_listener.order_stream = 'test'
         self.base_listener.register_stream(3, 'orderSubscription')
         mock_add_stream.assert_called_with(3, 'orderSubscription')
-        assert self.base_listener.order_stream == 123
+        assert self.base_listener.stream == 123
 
     @mock.patch('sys.stdout')
     def test_on_data(self, mock_print):
@@ -71,6 +72,8 @@ class StreamListenerTest(unittest.TestCase):
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._on_change_message')
     @mock.patch('betfairlightweight.streaming.listener.StreamListener._error_handler', return_value=False)
     def test_on_data(self, mock_error_handler, mock_on_change_message, mock_on_status, mock_on_connection):
+        self.stream_listener.stream_unique_id = 2
+
         mock_response = create_mock_json('tests/resources/streaming_connection.json')
         self.stream_listener.on_data(mock_response.content)
         mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
@@ -101,30 +104,28 @@ class StreamListenerTest(unittest.TestCase):
         self.stream_listener._on_status({}, 1)
 
     def test_on_change_message(self):
-        market_stream = mock.Mock()
-        self.stream_listener.market_stream = market_stream
-        order_stream = mock.Mock()
-        self.stream_listener.order_stream = order_stream
+        stream = mock.Mock()
+        self.stream_listener.stream = stream
 
         mock_response = create_mock_json('tests/resources/streaming_mcm_SUB_IMAGE.json')
         self.stream_listener._on_change_message(mock_response.json(), 1)
-        market_stream.on_subscribe.assert_called_with(mock_response.json())
+        stream.on_subscribe.assert_called_with(mock_response.json())
 
         mock_response = create_mock_json('tests/resources/streaming_mcm_RESUB_DELTA.json')
         self.stream_listener._on_change_message(mock_response.json(), 1)
-        market_stream.on_resubscribe.assert_called_with(mock_response.json())
+        stream.on_resubscribe.assert_called_with(mock_response.json())
 
         mock_response = create_mock_json('tests/resources/streaming_mcm_HEARTBEAT.json')
         self.stream_listener._on_change_message(mock_response.json(), 1)
-        market_stream.on_heartbeat.assert_called_with(mock_response.json())
+        stream.on_heartbeat.assert_called_with(mock_response.json())
 
         mock_response = create_mock_json('tests/resources/streaming_mcm_update.json')
         self.stream_listener._on_change_message(mock_response.json(), 1)
-        market_stream.on_update.assert_called_with(mock_response.json())
+        stream.on_update.assert_called_with(mock_response.json())
 
         mock_response = create_mock_json('tests/resources/streaming_ocm_SUB_IMAGE.json')
         self.stream_listener._on_change_message(mock_response.json(), 1)
-        order_stream.on_subscribe.assert_called_with(mock_response.json())
+        stream.on_subscribe.assert_called_with(mock_response.json())
 
     @mock.patch('betfairlightweight.streaming.listener.OrderStream', return_value=456)
     @mock.patch('betfairlightweight.streaming.listener.MarketStream', return_value=123)
