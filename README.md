@@ -82,6 +82,8 @@ betfair_socket.start(async=False)
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+| [<img src="https://avatars0.githubusercontent.com/u/12016537?v=3" width="100px;"/><br /><sub>Liam</sub>](https://github.com/liampauling)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=liampauling "Code") [📖](https://github.com/liampauling/betfairlightweight/commits?author=liampauling "Documentation") [🚇](#infra-liampauling "Infrastructure (Hosting, Build-Tools, etc)") | [<img src="https://avatars3.githubusercontent.com/u/589279?v=3" width="100px;"/><br /><sub>Joshua Adelman</sub>](https://github.com/synapticarbors)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=synapticarbors "Code") | [<img src="https://avatars0.githubusercontent.com/u/18031339?v=3" width="100px;"/><br /><sub>agberk</sub>](https://github.com/agberk)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=agberk "Code") | [<img src="https://avatars2.githubusercontent.com/u/282580?v=3" width="100px;"/><br /><sub>Francesco Ceccon</sub>](https://github.com/fracek)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=fracek "Code") | [<img src="https://avatars3.githubusercontent.com/u/2331676?v=3" width="100px;"/><br /><sub>Edwin Goddard</sub>](https://github.com/heedfull)<br />[🔧](#tool-heedfull "Tools") |
+| :---: | :---: | :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
