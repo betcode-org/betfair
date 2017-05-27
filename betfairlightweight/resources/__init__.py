@@ -46,3 +46,8 @@ from .inplayserviceresources import (
     EventTimeline,
     Scores
 )
+
+from .streamingresources import (
+    MarketDefinition,
+    MarketDefinitionRunner
+)

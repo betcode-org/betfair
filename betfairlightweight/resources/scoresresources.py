@@ -12,6 +12,15 @@ class RaceDetails(BaseResource):
         self.last_updated = self.strip_datetime(kwargs.get('lastUpdated'))
 
 
+class UpdateContext(object):
+
+    def __init__(self, lastUpdated, updateSequence, updateType, eventTime=None):
+        self.last_updated = BaseResource.strip_datetime(lastUpdated)
+        self.update_sequence = updateSequence
+        self.update_type = updateType
+        self.event_time = eventTime
+
+
 class Score(BaseResource):
 
     def __init__(self, **kwargs):
@@ -20,8 +29,15 @@ class Score(BaseResource):
         self.event_type_id = kwargs.get('eventTypeId')
         self.event_status = kwargs.get('eventStatus')
         self.response_code = kwargs.get('responseCode')
-        self.update_context = kwargs.get('updateContext')
-        self.values = kwargs.get('values')  # todo not sure what this is
+        self.update_context = UpdateContext(**kwargs.get('updateContext')) if kwargs.get('updateContext') else None
+        self.values = kwargs.get('values')
+
+
+# class Incident(object):
+#
+#     def __int__(self, updateContext, values):
+#         self.update_context = updateContext
+#         self.values = values
 
 
 class Incidents(BaseResource):
@@ -32,7 +48,7 @@ class Incidents(BaseResource):
         self.event_type_id = kwargs.get('eventTypeId')
         self.event_status = kwargs.get('eventStatus')
         self.response_code = kwargs.get('responseCode')
-        self.incidents = kwargs.get('incidents')  # todo not sure what this is
+        self.incidents = kwargs.get('incidents')
 
 
 class AvailableEvent(BaseResource):

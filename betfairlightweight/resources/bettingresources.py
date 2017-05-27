@@ -237,7 +237,18 @@ better than to use this magic incantation casually.
 """
 
 
-class PriceSize(object):
+class Slotable(object):
+    __slots__ = []
+
+    def __getstate__(self):
+        return {slot: getattr(self, slot) for slot in self.__slots__}
+
+    def __setstate__(self, d):
+        for slot in d:
+            setattr(self, slot, d[slot])
+
+
+class PriceSize(Slotable):
     """
     :type price: float
     :type size: float
@@ -276,10 +287,6 @@ class RunnerBookEX(object):
     :type traded_volume: list[PriceSize]
     """
 
-    __slots__ = [
-        'available_to_back', 'available_to_lay', 'traded_volume'
-    ]
-
     def __init__(self, availableToBack=None, availableToLay=None, tradedVolume=None):
         self.available_to_back = [PriceSize(**i) for i in availableToBack]
         self.available_to_lay = [PriceSize(**i) for i in availableToLay]
@@ -306,7 +313,8 @@ class RunnerBookOrder(object):
     """
 
     def __init__(self, betId, avgPriceMatched, bspLiability, orderType, persistenceType, placedDate, price, side,
-                 sizeCancelled, sizeLapsed, sizeMatched, sizeRemaining, sizeVoided, status, size):
+                 sizeCancelled, sizeLapsed, sizeMatched, sizeRemaining, sizeVoided, status, size,
+                 customerStrategyRef=None, customerOrderRef=None):
         self.bet_id = betId
         self.avg_price_matched = avgPriceMatched
         self.bsp_liability = bspLiability
@@ -322,6 +330,8 @@ class RunnerBookOrder(object):
         self.size_voided = sizeVoided
         self.status = status
         self.size = size
+        self.customer_strategy_ref = customerStrategyRef
+        self.customer_order_ref = customerOrderRef
 
 
 class RunnerBookMatch(object):
@@ -334,7 +344,7 @@ class RunnerBookMatch(object):
     :type size: float
     """
 
-    def __init__(self, betId, matchId, price, side, size, matchDate):
+    def __init__(self, price, side, size, betId=None, matchId=None, matchDate=None):
         self.bet_id = betId
         self.match_id = matchId
         self.price = price
@@ -358,13 +368,8 @@ class RunnerBook(object):
     :type total_matched: float
     """
 
-    __slots__ = [
-        'selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date',
-        'sp', 'ex', 'orders', 'matches'
-    ]
-
     def __init__(self, selectionId, status, handicap, adjustmentFactor=None, lastPriceTraded=None, totalMatched=None,
-                 removalDate=None, sp=None, ex=None, orders=None, matches=None):
+                 removalDate=None, sp=None, ex=None, orders=None, matches=None, matchesByStrategy=None):
         self.selection_id = selectionId
         self.status = status
         self.total_matched = totalMatched
@@ -376,6 +381,7 @@ class RunnerBook(object):
         self.ex = RunnerBookEX(**ex) if ex else None
         self.orders = [RunnerBookOrder(**i) for i in orders] if orders else []
         self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
+        self.matches_by_strategy = matchesByStrategy
 
     def __str__(self):
         return 'RunnerBook: %s' % self.selection_id
