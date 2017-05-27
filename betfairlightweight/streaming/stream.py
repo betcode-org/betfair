@@ -129,7 +129,7 @@ class OrderStream(BaseStream):
             if order_book_cache:
                 order_book_cache.update_cache(order_book, publish_time)
             else:
-                self._caches[market_id] = OrderBookCache(**order_book)
+                self._caches[market_id] = OrderBookCache(publish_time=publish_time, **order_book)
                 logger.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
             self._updates_processed += 1
 
