@@ -17,6 +17,15 @@
         "doc",
         "infra"
       ]
+    },
+    {
+      "login": "synapticarbors",
+      "name": "Joshua Adelman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/589279?v=3",
+      "profile": "https://github.com/synapticarbors",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }

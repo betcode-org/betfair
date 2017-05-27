@@ -1,5 +1,5 @@
 # betfairlightweight
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
 [![Build Status](https://travis-ci.org/liampauling/betfairlightweight.svg?branch=master)](https://travis-ci.org/liampauling/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfairlightweight/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfairlightweight?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight)
 
@@ -83,8 +83,8 @@ betfair_socket.start(async=False)
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-| [<img src="https://avatars0.githubusercontent.com/u/12016537?v=3" width="100px;"/><br /><sub>Liam</sub>](https://github.com/liampauling)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=liampauling "Code") [📖](https://github.com/liampauling/betfairlightweight/commits?author=liampauling "Documentation") [🚇](#infra-liampauling "Infrastructure (Hosting, Build-Tools, etc)") |
-| :---: |
+| [<img src="https://avatars0.githubusercontent.com/u/12016537?v=3" width="100px;"/><br /><sub>Liam</sub>](https://github.com/liampauling)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=liampauling "Code") [📖](https://github.com/liampauling/betfairlightweight/commits?author=liampauling "Documentation") [🚇](#infra-liampauling "Infrastructure (Hosting, Build-Tools, etc)") | [<img src="https://avatars3.githubusercontent.com/u/589279?v=3" width="100px;"/><br /><sub>Joshua Adelman</sub>](https://github.com/synapticarbors)<br />[💻](https://github.com/liampauling/betfairlightweight/commits?author=synapticarbors "Code") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
