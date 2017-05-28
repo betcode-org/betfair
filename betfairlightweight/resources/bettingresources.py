@@ -415,7 +415,6 @@ class MarketBook(BaseResource):
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
         self.streaming_update = kwargs.pop('streaming_update', None)
-        self.publish_time = kwargs.pop('publish_time', None)
         self.market_definition = kwargs.pop('market_definition', None)
         super(MarketBook, self).__init__(**kwargs)
         self.market_id = kwargs.get('marketId')
@@ -435,6 +434,7 @@ class MarketBook(BaseResource):
         self.total_matched = kwargs.get('totalMatched')
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
+        self.publish_time = kwargs.get('publishTime')
 
 
 class CurrentOrder(object):

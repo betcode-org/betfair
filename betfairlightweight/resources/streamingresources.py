@@ -343,7 +343,6 @@ class MarketBookCache(BaseResource):
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
-                publish_time=self.publish_time,
                 market_definition=self.market_definition,
                 **self.serialise
             )
@@ -381,6 +380,7 @@ class MarketBookCache(BaseResource):
             'runners': [
                 runner.serialise(self.market_definition_dict.get(runner.selection_id)) for runner in self.runners
             ],
+            'publishTime': self.publish_time,
         }
 
 
