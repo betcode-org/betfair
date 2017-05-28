@@ -1,10 +1,12 @@
 from __future__ import print_function
 
 import unittest
+from tests import mock
+
 import datetime
 
 from betfairlightweight import resources
-from betfairlightweight.resources.accountresources import LegacyData
+from betfairlightweight.resources.accountresources import LegacyData, AccountStatement
 
 from tests.tools import create_mock_json
 
@@ -60,3 +62,16 @@ class AccountTest(unittest.TestCase):
         assert legacy_data.win_lose == 'winLose'
         assert legacy_data.selection_name == 'selectionName'
         assert legacy_data.commission_rate == 'commissionRate'
+
+    @mock.patch('betfairlightweight.resources.accountresources.LegacyData', return_value=mock.Mock())
+    def test_account_statement(self, mock_legacy_data):
+        account_statement = AccountStatement('amount', 'balance', 'itemClass', 'itemClassData', '2017-06-07 09:45', 'refId', {"a":1, "b":2})
+        assert account_statement.amount == 'amount'
+        assert account_statement.balance == 'balance'
+        assert account_statement.item_class == 'itemClass'
+        assert account_statement.item_class_data == 'itemClassData'
+        assert account_statement.item_date == datetime.datetime(2017,6,7,9,45)
+        assert account_statement.ref_id == 'refId'
+        assert account_statement.legacy_data == mock_legacy_data.return_value
+        mock_legacy_data.assert_called_with(a=1, b=2)
+        mock_legacy_data.assert_called_once()
