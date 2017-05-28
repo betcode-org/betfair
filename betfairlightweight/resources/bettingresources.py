@@ -434,7 +434,7 @@ class MarketBook(BaseResource):
         self.total_matched = kwargs.get('totalMatched')
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
-        self.publish_time = kwargs.get('publishTime')
+        self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
 
 
 class CurrentOrder(object):
