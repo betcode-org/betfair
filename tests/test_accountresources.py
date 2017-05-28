@@ -73,5 +73,4 @@ class AccountTest(unittest.TestCase):
         assert account_statement.item_date == datetime.datetime(2017,6,7,9,45)
         assert account_statement.ref_id == 'refId'
         assert account_statement.legacy_data == mock_legacy_data.return_value
-        mock_legacy_data.assert_called_with(a=1, b=2)
-        mock_legacy_data.assert_called_once()
+        mock_legacy_data.assert_called_once_with(a=1, b=2)
