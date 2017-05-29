@@ -606,7 +606,7 @@ class LimitOrder(object):
     :type time_in_force: unicode
     """
 
-    def __init__(self, price, size, persistenceType=None, timeInForce=None, minFillSize=None, betTargetType=None,
+    def __init__(self, price, size=None, persistenceType=None, timeInForce=None, minFillSize=None, betTargetType=None,
                  betTargetSize=None):
         self.persistence_type = persistenceType
         self.price = price
