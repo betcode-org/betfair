@@ -78,7 +78,7 @@ class FilterTest(unittest.TestCase):
         assert response == {'orderType': 'LIMIT', 'selectionId': 123, 'side': 'LAY'}
 
     def test_limit_order(self):
-        response = limit_order(1.1, 123, 'LAPSE')
+        response = limit_order(size=1.1, price=123, persistence_type='LAPSE')
         assert response == {'size': 1.1, 'price': 123, 'persistenceType': 'LAPSE'}
 
     def test_limit_on_close_order(self):
