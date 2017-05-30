@@ -181,7 +181,7 @@ def place_instruction(order_type, selection_id, side, handicap=None, limit_order
     }
 
 
-def limit_order(size, price, persistence_type, time_in_force=None, min_fill_size=None, bet_target_type=None,
+def limit_order(price, persistence_type=None, size=None, time_in_force=None, min_fill_size=None, bet_target_type=None,
                 bet_target_size=None):
     """
     Create a limit order to send to exchange.
