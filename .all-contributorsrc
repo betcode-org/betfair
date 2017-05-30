@@ -1,0 +1,58 @@
+{
+  "projectName": "betfairlightweight",
+  "projectOwner": "liampauling",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "liampauling",
+      "name": "Liam",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12016537?v=3",
+      "profile": "https://github.com/liampauling",
+      "contributions": [
+        "code",
+        "doc",
+        "infra"
+      ]
+    },
+    {
+      "login": "synapticarbors",
+      "name": "Joshua Adelman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/589279?v=3",
+      "profile": "https://github.com/synapticarbors",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "agberk",
+      "name": "agberk",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/18031339?v=3",
+      "profile": "https://github.com/agberk",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "fracek",
+      "name": "Francesco Ceccon",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/282580?v=3",
+      "profile": "https://github.com/fracek",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "heedfull",
+      "name": "Edwin Goddard",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2331676?v=3",
+      "profile": "https://github.com/heedfull",
+      "contributions": [
+        "tool"
+      ]
+    }
+  ]
+}
