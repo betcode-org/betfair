@@ -24,7 +24,7 @@ class MarketDefinitionRunner(object):
     :type status: unicode
     """
 
-    def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None):
+    def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
         self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
@@ -32,6 +32,7 @@ class MarketDefinitionRunner(object):
         self.bsp = bsp
         self.adjustment_factor = adjustmentFactor
         self.removal_date = BaseResource.strip_datetime(removalDate)
+        self.name = name  # historic data only
 
     def __str__(self):
         return 'MarketDefinitionRunner: %s' % self.selection_id
@@ -76,7 +77,8 @@ class MarketDefinition(object):
                  eventId, eventTypeId, inPlay, marketBaseRate, marketTime, numberOfActiveRunners, numberOfWinners,
                  openDate, persistenceEnabled, regulators, runnersVoidable, status, timezone, turnInPlayEnabled,
                  version, runners, countryCode=None, eachWayDivisor=None, venue=None, settledTime=None,
-                 suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None):
+                 suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None, name=None,
+                 eventName=None):
         self.bet_delay = betDelay
         self.betting_type = bettingType
         self.bsp_market = bspMarket
@@ -109,6 +111,8 @@ class MarketDefinition(object):
         self.line_min_unit = lineMinUnit
         self.line_interval = lineInterval
         self.runners = [MarketDefinitionRunner(**i) for i in runners]
+        self.name = name  # historic data only
+        self.event_name = eventName  # historic data only
 
 
 class RunnerBook(object):

@@ -93,17 +93,15 @@ class MarketStream(BaseStream):
         output_market_book = []
         for market_book in market_books:
             market_id = market_book.get('id')
-            if market_book.get('img'):
+            market_book_cache = self._caches.get(market_id)
+
+            if market_book.get('img') or market_book_cache is None:  # historic data does not contain img
                 self._caches[market_id] = MarketBookCache(publish_time=publish_time, **market_book)
                 logger.info('[MarketStream: %s] %s added' % (self.unique_id, market_id))
             else:
-                market_book_cache = self._caches.get(market_id)
-                if market_book_cache:
-                    market_book_cache.update_cache(market_book, publish_time)
-                    self._updates_processed += 1
-                else:
-                    logger.error('[MarketStream: %s] Received update for market not in cache: %s' %
-                                 (self.unique_id, market_book))
+                market_book_cache.update_cache(market_book, publish_time)
+                self._updates_processed += 1
+
             output_market_book.append(
                 self._caches[market_id].create_market_book(self.unique_id, market_book, self._lightweight)
             )
