@@ -442,12 +442,13 @@ class UnmatchedOrder(object):
 
 class OrderBookRunner(object):
 
-    def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None):
+    def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None, hc=None):
         self.selection_id = id
         self.full_image = fullImage
         self.matched_lays = ml
         self.matched_backs = mb
         self.unmatched_orders = [UnmatchedOrder(**i) for i in uo] if uo else []
+        self.handicap = hc
 
     def update_matched_backs(self, matched_backs):
         if not self.matched_backs:
