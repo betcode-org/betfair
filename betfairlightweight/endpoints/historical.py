@@ -48,5 +48,5 @@ class HistoricalStream(object):
 
     def _read_loop(self):
         with open(self.directory, 'r') as f:
-            for count, update in enumerate(f):
+            for update in f:
                 self.listener.on_data(update)
