@@ -32,6 +32,7 @@ class APIClient(BaseClient):
         self.streaming = endpoints.Streaming(self)
         self.in_play_service = endpoints.InPlayService(self)
         self.race_card = endpoints.RaceCard(self)
+        self.historical = endpoints.Historical(self)
 
     def __repr__(self):
         return '<APIClient [%s]>' % self.username

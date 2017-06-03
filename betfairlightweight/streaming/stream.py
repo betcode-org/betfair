@@ -78,6 +78,9 @@ class BaseStream(object):
     def _calc_latency(publish_time):
         return time.time() - publish_time / 1e3
 
+    def __len__(self):
+        return len(self._caches)
+
     def __str__(self):
         return '<BaseStream>'
 
@@ -96,14 +99,15 @@ class MarketStream(BaseStream):
             market_book_cache = self._caches.get(market_id)
 
             if market_book.get('img') or market_book_cache is None:  # historic data does not contain img
-                self._caches[market_id] = MarketBookCache(publish_time=publish_time, **market_book)
+                market_book_cache = MarketBookCache(publish_time=publish_time, **market_book)
+                self._caches[market_id] = market_book_cache
                 logger.info('[MarketStream: %s] %s added' % (self.unique_id, market_id))
             else:
                 market_book_cache.update_cache(market_book, publish_time)
                 self._updates_processed += 1
 
             output_market_book.append(
-                self._caches[market_id].create_market_book(self.unique_id, market_book, self._lightweight)
+                market_book_cache.create_market_book(self.unique_id, market_book, self._lightweight)
             )
 
         self.output_queue.put(output_market_book)
@@ -112,7 +116,7 @@ class MarketStream(BaseStream):
         return 'MarketStream'
 
     def __repr__(self):
-        return '<MarketStream [%s]>' % len(self._caches)
+        return '<MarketStream [%s]>' % len(self)
 
 
 class OrderStream(BaseStream):
@@ -141,4 +145,4 @@ class OrderStream(BaseStream):
         return 'OrderStream'
 
     def __repr__(self):
-        return '<OrderStream [%s]>' % len(self._caches)
+        return '<OrderStream [%s]>' % len(self)
