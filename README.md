@@ -49,6 +49,8 @@ Currently two listeners available, below will run the base listener which prints
 
 [Exchange Stream API](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
+In development so breaking changes likely.
+
 ```python
 from betfairlightweight.filters import (
     streaming_market_filter,
@@ -75,4 +77,21 @@ betfair_socket.subscribe_to_markets(
     market_data_filter=market_data_filter,
 )
 betfair_socket.start(async=False)
+```
+
+# historical data
+
+Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation.
+
+[Historical Data](https://historicdata.betfair.com/#/home)
+
+In development so breaking changes likely.
+
+```python
+
+stream = trading.historical.create_stream(
+    directory='horse-racing-pro-sample',
+)
+
+stream.start(async=False)
 ```
