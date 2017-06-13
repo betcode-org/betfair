@@ -390,8 +390,8 @@ class MarketBookCache(BaseResource):
 
 class UnmatchedOrder(object):
 
-    def __init__(self, id, p, s, side, status, pt, ot, pd, sm, sr, sl, sc, sv, rac, rc, rfo, rfs,
-                 md=None, avp=None, bsp=None, ld=None):
+    def __init__(self, id, p, s, side, status, pt, ot, pd, sm, sr, sl, sc, sv, rfo, rfs,
+                 md=None, avp=None, bsp=None, ld=None, rac=None, rc=None):
         self.bet_id = id
         self.price = p
         self.size = s
