@@ -1,5 +1,4 @@
 import datetime
-from operator import itemgetter
 
 from ..utils import update_available
 from .baseresource import BaseResource
@@ -115,6 +114,43 @@ class MarketDefinition(object):
         self.event_name = eventName  # historic data only
 
 
+class Available(object):
+
+    def __init__(self, prices, deletion_select, reverse=False):
+        self.prices = prices or []
+        self.deletion_select = deletion_select
+        self.reverse = reverse
+
+        self.serialise = []
+        self.sort()
+
+    def sort(self):
+        self.prices.sort(reverse=self.reverse)
+        self.serialise = [
+            {'price': volume[self.deletion_select-1], 'size': volume[self.deletion_select]} for volume in self.prices
+        ]
+
+    def clear(self):
+        self.prices = []
+        self.sort()
+
+    def update(self, book_update):
+        for book in book_update:
+            for (count, trade) in enumerate(self.prices):
+                if trade[0] == book[0]:
+                    if book[self.deletion_select] == 0:
+                        del self.prices[count]
+                        break
+                    else:
+                        self.prices[count] = book
+                        break
+            else:
+                if book[self.deletion_select] != 0:
+                    # handles betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
+                    self.prices.append(book)
+        self.sort()
+
+
 class RunnerBook(object):
 
     def __init__(self, id, ltp=None, tv=None, trd=None, atb=None, batb=None, bdatb=None, atl=None, batl=None,
@@ -122,156 +158,61 @@ class RunnerBook(object):
         self.selection_id = id
         self.last_price_traded = ltp
         self.total_matched = tv
-        self.traded = trd
-        self.available_to_back = atb
-        self.best_available_to_back = batb
-        self.best_display_available_to_back = bdatb
-        self.available_to_lay = atl
-        self.best_available_to_lay = batl
-        self.best_display_available_to_lay = bdatl
+        self.traded = Available(trd, 1)
+        self.available_to_back = Available(atb, 1, True)
+        self.best_available_to_back = Available(batb, 2, True)
+        self.best_display_available_to_back = Available(bdatb, 2, True)
+        self.available_to_lay = Available(atl, 1)
+        self.best_available_to_lay = Available(batl, 2)
+        self.best_display_available_to_lay = Available(bdatl, 2)
+        self.starting_price_back = Available(spb, 1)
+        self.starting_price_lay = Available(spl, 1)
         self.starting_price_near = spn
         self.starting_price_far = spf
-        self.starting_price_back = spb
-        self.starting_price_lay = spl
         self.handicap = hc
 
     def update_traded(self, traded_update):
         """:param traded_update: [price, size]
         """
         if not traded_update:
-            self.traded = traded_update
-        elif self.traded is None:
-            self.traded = traded_update
+            self.traded.clear()
         else:
-            update_available(self.traded, traded_update, 1)
-
-    def update_available_to_back(self, book_update):
-        """:param book_update: [price, size]
-        """
-        if self.available_to_back is None:
-            self.available_to_back = book_update
-        else:
-            update_available(self.available_to_back, book_update, 1)
-
-    def update_available_to_lay(self, book_update):
-        """:param book_update: [price, size]
-        """
-        if self.available_to_lay is None:
-            self.available_to_lay = book_update
-        else:
-            update_available(self.available_to_lay, book_update, 1)
-
-    def update_best_available_to_back(self, book_update):
-        """:param book_update: [level, price, size]
-        """
-        if self.best_available_to_back is None:
-            self.best_available_to_back = book_update
-        else:
-            update_available(self.best_available_to_back, book_update, 2)
-
-    def update_best_available_to_lay(self, book_update):
-        """:param book_update: [level, price, size]
-        """
-        if self.best_available_to_lay is None:
-            self.best_available_to_lay = book_update
-        else:
-            update_available(self.best_available_to_lay, book_update, 2)
-
-    def update_best_display_available_to_back(self, book_update):
-        """:param book_update: [level, price, size]
-        """
-        if self.best_display_available_to_back is None:
-            self.best_display_available_to_back = book_update
-        else:
-            update_available(self.best_display_available_to_back, book_update, 2)
-
-    def update_best_display_available_to_lay(self, book_update):
-        """:param book_update: [level, price, size]
-        """
-        if self.best_display_available_to_lay is None:
-            self.best_display_available_to_lay = book_update
-        else:
-            update_available(self.best_display_available_to_lay, book_update, 2)
-
-    def update_starting_price_back(self, book_update):
-        """:param book_update: [price, size]
-        """
-        if self.starting_price_back is None:
-            self.starting_price_back = book_update
-        else:
-            update_available(self.starting_price_back, book_update, 1)
-
-    def update_starting_price_lay(self, book_update):
-        """:param book_update: [price, size]
-        """
-        if self.starting_price_lay is None:
-            self.starting_price_lay = book_update
-        else:
-            update_available(self.starting_price_lay, book_update, 1)
-
-    @property
-    def serialise_traded_volume(self):
-        if self.traded:
-            return [
-                {'price': volume[0], 'size': volume[1]} for volume in sorted(self.traded, key=itemgetter(0))
-            ]
-        else:
-            return []
+            self.traded.update(traded_update)
 
     @property
     def serialise_available_to_back(self):
-        if self.available_to_back:
-            return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.available_to_back, key=itemgetter(0), reverse=True)]
-        elif self.best_display_available_to_back:
-            return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_display_available_to_back, key=itemgetter(0))]
-        elif self.best_available_to_back:
-            return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_available_to_back, key=itemgetter(0))]
+        if self.available_to_back.prices:
+            return self.available_to_back.serialise
+        elif self.best_display_available_to_back.prices:
+            return self.best_display_available_to_back.serialise
+        elif self.best_available_to_back.prices:
+            return self.best_available_to_back.serialise
         else:
             return []
 
     @property
     def serialise_available_to_lay(self):
-        if self.available_to_lay:
-            return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.available_to_lay, key=itemgetter(0))]
-        elif self.best_display_available_to_lay:
-            return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_display_available_to_lay, key=itemgetter(0))]
-        elif self.best_available_to_lay:
-            return [{'price': volume[1], 'size': volume[2]}
-                    for volume in sorted(self.best_available_to_lay, key=itemgetter(0))]
-        return []
-
-    @property
-    def serialise_starting_price_back(self):
-        if self.starting_price_back:
-            return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.starting_price_back, key=itemgetter(0))]
-        return []
-
-    @property
-    def serialise_starting_price_lay(self):
-        if self.starting_price_lay:
-            return [{'price': volume[0], 'size': volume[1]}
-                    for volume in sorted(self.starting_price_lay, key=itemgetter(0))]
+        if self.available_to_lay.prices:
+            return self.available_to_lay.serialise
+        elif self.best_display_available_to_lay.prices:
+            return self.best_display_available_to_lay.serialise
+        elif self.best_available_to_lay.prices:
+            return self.best_available_to_lay.serialise
         return []
 
     def serialise(self, runner_definition):
         return {
             'status': runner_definition.status,
             'ex': {
-                'tradedVolume': self.serialise_traded_volume,
+                'tradedVolume': self.traded.serialise,
                 'availableToBack': self.serialise_available_to_back,
                 'availableToLay': self.serialise_available_to_lay
             },
             'sp': {
                 'nearPrice': self.starting_price_near,
                 'farPrice': self.starting_price_far,
-                'backStakeTaken': self.serialise_starting_price_back,
-                'layLiabilityTaken': self.serialise_starting_price_lay,
+                'backStakeTaken': self.starting_price_back.serialise,
+                'layLiabilityTaken': self.starting_price_lay.serialise,
                 'actualSP': runner_definition.bsp
             },
             'adjustmentFactor': runner_definition.adjustment_factor,
@@ -321,21 +262,21 @@ class MarketBookCache(BaseResource):
                     if 'trd' in new_data:
                         runner.update_traded(new_data['trd'])
                     if 'atb' in new_data:
-                        runner.update_available_to_back(new_data['atb'])
+                        runner.available_to_back.update(new_data['atb'])
                     if 'atl' in new_data:
-                        runner.update_available_to_lay(new_data['atl'])
+                        runner.available_to_lay.update(new_data['atl'])
                     if 'batb' in new_data:
-                        runner.update_best_available_to_back(new_data['batb'])
+                        runner.best_available_to_back.update(new_data['batb'])
                     if 'batl' in new_data:
-                        runner.update_best_available_to_lay(new_data['batl'])
+                        runner.best_available_to_lay.update(new_data['batl'])
                     if 'bdatb' in new_data:
-                        runner.update_best_display_available_to_back(new_data['bdatb'])
+                        runner.best_display_available_to_back.update(new_data['bdatb'])
                     if 'bdatl' in new_data:
-                        runner.update_best_display_available_to_lay(new_data['bdatl'])
+                        runner.best_display_available_to_lay.update(new_data['bdatl'])
                     if 'spb' in new_data:
-                        runner.update_starting_price_back(new_data['spb'])
+                        runner.starting_price_back.update(new_data['spb'])
                     if 'spl' in new_data:
-                        runner.update_starting_price_lay(new_data['spl'])
+                        runner.starting_price_lay.update(new_data['spl'])
                 else:
                     self.runners.append(RunnerBook(**new_data))
 
