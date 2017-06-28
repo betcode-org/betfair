@@ -178,10 +178,11 @@ class TestMarketBookCache(unittest.TestCase):
             def __init__(self, selection_id, name):
                 self.selection_id = selection_id
                 self.name = name
+                self.handicap = None
 
         (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
         self.market_book_cache.runners = [a, b]
-        assert self.market_book_cache.runner_dict == {123: a, 456: b}
+        assert self.market_book_cache.runner_dict == {(123, None): a, (456, None): b}
 
     # def test_market_definition_dict(self):
     #

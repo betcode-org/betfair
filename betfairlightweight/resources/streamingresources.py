@@ -260,8 +260,9 @@ class MarketBookCache(BaseResource):
 
         if 'rc' in market_change:
             for new_data in market_change['rc']:
-                selection_id = new_data['id']
-                runner = self.runner_dict.get(selection_id)
+                runner = self.runner_dict.get(
+                    (new_data['id'], new_data.get('hc'))
+                )
                 if runner:
                     if 'ltp' in new_data:
                         runner.last_price_traded = new_data['ltp']
@@ -306,7 +307,7 @@ class MarketBookCache(BaseResource):
 
     @property
     def runner_dict(self):
-        return {runner.selection_id: runner for runner in self.runners}
+        return {(runner.selection_id, runner.handicap): runner for runner in self.runners}
 
     @property
     def serialise(self):
