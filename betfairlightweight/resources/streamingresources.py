@@ -109,14 +109,28 @@ class MarketDefinition(object):
         self.line_max_unit = lineMaxUnit
         self.line_min_unit = lineMinUnit
         self.line_interval = lineInterval
-        self.runners = [MarketDefinitionRunner(**i) for i in runners]
+        self.runners = [
+            MarketDefinitionRunner(**i) for i in runners
+        ]
         self.name = name  # historic data only
         self.event_name = eventName  # historic data only
+        self.runners_dict = {
+            runner.selection_id: runner for runner in self.runners
+        }
 
 
 class Available(object):
+    """
+    Data structure to hold prices/traded amount,
+    designed to be as quick as possible.
+    """
 
     def __init__(self, prices, deletion_select, reverse=False):
+        """
+        :param list prices: Current prices
+        :param int deletion_select: Used to decide if update should delete cache
+        :param bool reverse: Used for sorting
+        """
         self.prices = prices or []
         self.deletion_select = deletion_select
         self.reverse = reverse
@@ -179,7 +193,6 @@ class RunnerBook(object):
         else:
             self.traded.update(traded_update)
 
-    @property
     def serialise_available_to_back(self):
         if self.available_to_back.prices:
             return self.available_to_back.serialise
@@ -190,7 +203,6 @@ class RunnerBook(object):
         else:
             return []
 
-    @property
     def serialise_available_to_lay(self):
         if self.available_to_lay.prices:
             return self.available_to_lay.serialise
@@ -205,8 +217,8 @@ class RunnerBook(object):
             'status': runner_definition.status,
             'ex': {
                 'tradedVolume': self.traded.serialise,
-                'availableToBack': self.serialise_available_to_back,
-                'availableToLay': self.serialise_available_to_lay
+                'availableToBack': self.serialise_available_to_back(),
+                'availableToLay': self.serialise_available_to_lay()
             },
             'sp': {
                 'nearPrice': self.starting_price_near,
@@ -297,10 +309,6 @@ class MarketBookCache(BaseResource):
         return {runner.selection_id: runner for runner in self.runners}
 
     @property
-    def market_definition_dict(self):
-        return {runner.selection_id: runner for runner in self.market_definition.runners}
-
-    @property
     def serialise(self):
         """Creates standard market book json response,
         will error if EX_MARKET_DEF not incl.
@@ -323,7 +331,7 @@ class MarketBookCache(BaseResource):
             'numberOfRunners': len(self.market_definition.runners),
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
             'runners': [
-                runner.serialise(self.market_definition_dict.get(runner.selection_id)) for runner in self.runners
+                runner.serialise(self.market_definition.runners_dict[runner.selection_id]) for runner in self.runners
             ],
             'publishTime': self.publish_time,
         }

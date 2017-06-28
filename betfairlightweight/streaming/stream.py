@@ -49,13 +49,12 @@ class BaseStream(object):
     def on_update(self, data):
         self._update_clk(data)
 
-        publish_time = data.get('pt')
+        publish_time = data['pt']
         latency = self._calc_latency(publish_time)
         if latency > self._max_latency:
             logger.warning('[Stream: %s]: Latency high: %s' % (self.unique_id, latency))
 
-        book_data = data.get(self._lookup)
-        self._process(book_data, publish_time)
+        self._process(data[self._lookup], publish_time)
 
     def clear_cache(self):
         self._caches.clear()
@@ -95,7 +94,7 @@ class MarketStream(BaseStream):
     def _process(self, market_books, publish_time):
         output_market_book = []
         for market_book in market_books:
-            market_id = market_book.get('id')
+            market_id = market_book['id']
             market_book_cache = self._caches.get(market_id)
 
             if market_book.get('img') or market_book_cache is None:  # historic data does not contain img
@@ -126,7 +125,7 @@ class OrderStream(BaseStream):
     def _process(self, order_books, publish_time):
         output_order_book = []
         for order_book in order_books:
-            market_id = order_book.get('id')
+            market_id = order_book['id']
             order_book_cache = self._caches.get(market_id)
             if order_book_cache:
                 order_book_cache.update_cache(order_book, publish_time)

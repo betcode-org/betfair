@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import json
 import logging
 
@@ -28,10 +26,10 @@ class BaseListener(object):
         self.stream_unique_id = unique_id
 
     def on_data(self, raw_data):
-        print(raw_data)
+        logger.info(raw_data)
 
     def _add_stream(self, unique_id, operation):
-        print('Register: %s %s' % (operation, unique_id))
+        logger.info('Register: %s %s' % (operation, unique_id))
 
     def __str__(self):
         return '<BaseListener>'
@@ -70,7 +68,7 @@ class StreamListener(BaseListener):
         if self._error_handler(data, unique_id):
             return False
 
-        operation = data.get('op')
+        operation = data['op']
         if operation == 'connection':
             self._on_connection(data, unique_id)
         elif operation == 'status':
@@ -78,7 +76,7 @@ class StreamListener(BaseListener):
         elif operation in ['mcm', 'ocm']:
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 'HISTORICAL']:
-                logging.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
+                logger.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
                                 (unique_id, self.stream_unique_id))
                 return
             self._on_change_message(data, unique_id)

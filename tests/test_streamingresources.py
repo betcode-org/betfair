@@ -121,6 +121,101 @@ class TestMarketDefinition(unittest.TestCase):
         assert self.market_definition.market_base_rate == 5
 
 
+class TestMarketBookCache(unittest.TestCase):
+
+    def setUp(self):
+        self.market_book_cache = MarketBookCache(**{})
+
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketDefinition')
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
+    def test_update_cache_md(self, mock_strip_datetime, mock_market_definition):
+        publish_time = mock.Mock()
+        market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_md.json')
+        book_data = market_change.json().get('mc')
+
+        for book in book_data:
+            self.market_book_cache.update_cache(book, publish_time)
+            mock_strip_datetime.assert_called_with(publish_time)
+            mock_market_definition.assert_called_with(**book.get('marketDefinition'))
+            assert self.market_book_cache.market_definition == mock_market_definition(**book.get('marketDefinition'))
+
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
+    def test_update_cache_tv(self, mock_strip_datetime):
+        publish_time = mock.Mock()
+        market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_tv.json')
+        book_data = market_change.json().get('mc')
+
+        for book in book_data:
+            self.market_book_cache.update_cache(book, publish_time)
+            mock_strip_datetime.assert_called_with(publish_time)
+            assert self.market_book_cache.total_matched == book.get('tv')
+
+    # @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
+    # def test_update_cache_rc(self, mock_strip_datetime):
+    #     publish_time = mock.Mock()
+    #     market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE.json')
+    #     book_data = market_change.json().get('mc')
+    #
+    #     for book in book_data:
+    #         self.market_book_cache.update_cache(book, publish_time)
+    #         mock_strip_datetime.assert_called_with(publish_time)
+    #
+    #         assert self.market_book_cache.total_matched == book.get('tv')
+
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
+    @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
+    def test_create_market_book(self, mock_market_book, mock_serialise):
+        market_book = self.market_book_cache.create_market_book(1234, {}, False)
+
+        # assert market_book == mock_market_book(date_time_sent=self.market_book_cache._datetime_updated,
+        #                                        streaming_unique_id=1234)()
+        # mock_market_book.assert_called()
+
+    def test_runner_dict(self):
+        assert self.market_book_cache.runner_dict == {}
+
+        class Runner:
+            def __init__(self, selection_id, name):
+                self.selection_id = selection_id
+                self.name = name
+
+        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        self.market_book_cache.runners = [a, b]
+        assert self.market_book_cache.runner_dict == {123: a, 456: b}
+
+    # def test_market_definition_dict(self):
+    #
+    #     class Runner:
+    #         def __init__(self, selection_id, name):
+    #             self.id = selection_id
+    #             self.name = name
+    #
+    #     (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+    #     self.market_book_cache.market_definition = MarketDefinition(**{})
+    #     self.market_book_cache.market_definition.runners = [a, b]
+    #     assert self.market_book_cache.market_definition_dict == {123: a, 456: b}
+
+
+class TestRunnerBook(unittest.TestCase):
+
+    def setUp(self):
+        self.runner_book = RunnerBook(**{'id': 123})
+
+    def test_empty_serialise(self):
+        runner_definition = mock.Mock()
+        runner_definition.bsp = None
+        serialise_d = self.runner_book.serialise(runner_definition)
+
+        ex = serialise_d['ex']
+        # all empty lists
+        assert all(not ex[a] for a in ex.keys())
+
+        sp = serialise_d['sp']
+        # all 'None' or empty lists
+        assert all(not sp[a] for a in sp.keys())
+
+
+
 class TestOrderBookCache(unittest.TestCase):
 
     def setUp(self):
@@ -227,97 +322,3 @@ class TestUnmatchedOrder(unittest.TestCase):
 
     # def test_serialise(self):
     #     self.unmatched_order.serialise('1.23', 12345)
-
-
-class TestMarketBookCache(unittest.TestCase):
-
-    def setUp(self):
-        self.market_book_cache = MarketBookCache(**{})
-
-    @mock.patch('betfairlightweight.resources.streamingresources.MarketDefinition')
-    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
-    def test_update_cache_md(self, mock_strip_datetime, mock_market_definition):
-        publish_time = mock.Mock()
-        market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_md.json')
-        book_data = market_change.json().get('mc')
-
-        for book in book_data:
-            self.market_book_cache.update_cache(book, publish_time)
-            mock_strip_datetime.assert_called_with(publish_time)
-            mock_market_definition.assert_called_with(**book.get('marketDefinition'))
-            assert self.market_book_cache.market_definition == mock_market_definition(**book.get('marketDefinition'))
-
-    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
-    def test_update_cache_tv(self, mock_strip_datetime):
-        publish_time = mock.Mock()
-        market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_tv.json')
-        book_data = market_change.json().get('mc')
-
-        for book in book_data:
-            self.market_book_cache.update_cache(book, publish_time)
-            mock_strip_datetime.assert_called_with(publish_time)
-            assert self.market_book_cache.total_matched == book.get('tv')
-
-    # @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
-    # def test_update_cache_rc(self, mock_strip_datetime):
-    #     publish_time = mock.Mock()
-    #     market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE.json')
-    #     book_data = market_change.json().get('mc')
-    #
-    #     for book in book_data:
-    #         self.market_book_cache.update_cache(book, publish_time)
-    #         mock_strip_datetime.assert_called_with(publish_time)
-    #
-    #         assert self.market_book_cache.total_matched == book.get('tv')
-
-    @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
-    @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
-    def test_create_market_book(self, mock_market_book, mock_serialise):
-        market_book = self.market_book_cache.create_market_book(1234, {}, False)
-
-        # assert market_book == mock_market_book(date_time_sent=self.market_book_cache._datetime_updated,
-        #                                        streaming_unique_id=1234)()
-        # mock_market_book.assert_called()
-
-    def test_runner_dict(self):
-        assert self.market_book_cache.runner_dict == {}
-
-        class Runner:
-            def __init__(self, selection_id, name):
-                self.selection_id = selection_id
-                self.name = name
-
-        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
-        self.market_book_cache.runners = [a, b]
-        assert self.market_book_cache.runner_dict == {123: a, 456: b}
-
-    # def test_market_definition_dict(self):
-    #
-    #     class Runner:
-    #         def __init__(self, selection_id, name):
-    #             self.id = selection_id
-    #             self.name = name
-    #
-    #     (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
-    #     self.market_book_cache.market_definition = MarketDefinition(**{})
-    #     self.market_book_cache.market_definition.runners = [a, b]
-    #     assert self.market_book_cache.market_definition_dict == {123: a, 456: b}
-
-
-class TestRunnerBook(unittest.TestCase):
-
-    def setUp(self):
-        self.runner_book = RunnerBook(**{'id': 123})
-
-    def test_empty_serialise(self):
-        runner_definition = mock.Mock()
-        runner_definition.bsp = None
-        serialise_d = self.runner_book.serialise(runner_definition)
-
-        ex = serialise_d['ex']
-        # all empty lists
-        assert all(not ex[a] for a in ex.keys())
-
-        sp = serialise_d['sp']
-        # all 'None' or empty lists
-        assert all(not sp[a] for a in sp.keys())
