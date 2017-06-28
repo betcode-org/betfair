@@ -617,6 +617,26 @@ class LimitOrder(object):
         self.bet_target_size = betTargetSize
 
 
+class LimitOnCloseOrder(object):
+    """
+    :type liability: float
+    :type price: float
+    """
+
+    def __init__(self, liability, price):
+        self.liability = liability
+        self.price = price
+
+
+class MarketOnCloseOrder(object):
+    """
+    :type liability: float
+    """
+
+    def __init__(self, liability):
+        self.liability = liability
+
+
 class PlaceOrderInstruction(object):
     """
     :type customer_order_ref: unicode
@@ -627,13 +647,16 @@ class PlaceOrderInstruction(object):
     :type side: unicode
     """
 
-    def __init__(self, selectionId, side, orderType, limitOrder, handicap=None, customerOrderRef=None):
+    def __init__(self, selectionId, side, orderType, limitOrder=None, limitOnCloseOrder=None, marketOnCloseOrder=None,
+                 handicap=None, customerOrderRef=None):
         self.selection_id = selectionId
         self.side = side
         self.order_type = orderType
         self.handicap = handicap
         self.customer_order_ref = customerOrderRef
-        self.order = LimitOrder(**limitOrder)
+        self.order = LimitOrder(**limitOrder) if limitOrder else None
+        self.limit_on_close_order = LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
+        self.market_on_close_order = MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
 
 
 class PlaceOrderInstructionReports(object):

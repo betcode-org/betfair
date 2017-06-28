@@ -4,6 +4,11 @@ import unittest
 import datetime
 
 from betfairlightweight import resources
+from betfairlightweight.resources.bettingresources import (
+    LimitOrder,
+    LimitOnCloseOrder,
+    MarketOnCloseOrder,
+)
 
 from tests.tools import create_mock_json
 
@@ -254,6 +259,26 @@ class BettingResourcesTest(unittest.TestCase):
 
             assert len(resource.profit_and_losses) == len(market_profit['profitAndLosses'])
             # todo complete
+
+    def test_limit_order(self):
+        limit_order = LimitOrder(1.01, 12, persistenceType='LIMIT', timeInForce=True, minFillSize=2,
+                                 betTargetType='BACKERS_PROFIT', betTargetSize=3)
+        assert limit_order.price == 1.01
+        assert limit_order.size == 12
+        assert limit_order.persistence_type == 'LIMIT'
+        assert limit_order.time_in_force is True
+        assert limit_order.min_fill_size == 2
+        assert limit_order.bet_target_type == 'BACKERS_PROFIT'
+        assert limit_order.bet_target_size == 3
+
+    def test_limit_on_close_order(self):
+        limit_on_close_order = LimitOnCloseOrder(liability=12, price=100)
+        assert limit_on_close_order.liability == 12
+        assert limit_on_close_order.price == 100
+
+    def test_market_on_close_order(self):
+        market_on_close_order = MarketOnCloseOrder(liability=12)
+        assert market_on_close_order.liability == 12
 
     def test_place_orders(self):
         mock_response = create_mock_json('tests/resources/place_orders.json')

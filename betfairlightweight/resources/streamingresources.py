@@ -390,7 +390,7 @@ class MarketBookCache(BaseResource):
 
 class UnmatchedOrder(object):
 
-    def __init__(self, id, p, s, side, status, pt, ot, pd, sm, sr, sl, sc, sv, rfo, rfs,
+    def __init__(self, id, p, s, side, status, ot, pd, sm, sr, sl, sc, sv, rfo, rfs, pt=None,
                  md=None, avp=None, bsp=None, ld=None, rac=None, rc=None):
         self.bet_id = id
         self.price = p
@@ -424,7 +424,7 @@ class UnmatchedOrder(object):
             'matchedDate': self.matched_date.strftime(
                 '%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
             'orderType': StreamingOrderType[self.order_type].value,
-            'persistenceType': StreamingPersistenceType[self.persistence_type].value,
+            'persistenceType': StreamingPersistenceType[self.persistence_type].value if self.persistence_type else None,
             'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
             'priceSize': {
                 'price': self.price,
