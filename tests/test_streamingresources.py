@@ -232,8 +232,8 @@ class TestOrderBookCache(unittest.TestCase):
             self.order_book_cache.update_cache(order_book, 1234)
 
             for order_changes in order_book.get('orc'):
-                self.runner.update_matched_lays.assert_called_with(order_changes.get('ml', []))
-                self.runner.update_matched_backs.assert_called_with(order_book.get('mb', []))
+                self.runner.matched_lays.update.assert_called_with(order_changes.get('ml', []))
+                self.runner.matched_backs.update.assert_called_with(order_book.get('mb', []))
                 self.runner.update_unmatched.assert_called_with(order_changes.get('uo', []))
 
     @mock.patch('betfairlightweight.resources.streamingresources.OrderBookRunner')
@@ -274,46 +274,6 @@ class TestOrderBookRunner(unittest.TestCase):
 
     def setUp(self):
         self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': []})
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_backs_fresh(self, mock_update_available):
-        matched_backs = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_backs(matched_backs)
-
-        assert len(self.order_book_runner.matched_backs) == 1
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_backs_new(self, mock_update_available):
-        mock_matched_back = mock.Mock()
-        mock_matched_back.price = 1.01
-        mock_matched_back.size = 2.00
-        self.order_book_runner.matched_backs = [mock_matched_back]
-
-        matched_backs = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_backs(matched_backs)
-
-        mock_update_available.assert_called_with(self.order_book_runner.matched_backs, matched_backs, 1)
-        assert len(self.order_book_runner.matched_backs) == 1
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_lays_fresh(self, mock_update_available):
-        mock_matched_lay = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_lays(mock_matched_lay)
-
-        assert len(self.order_book_runner.matched_lays) == 1
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_backs_new(self, mock_update_available):
-        mock_matched_lay = mock.Mock()
-        mock_matched_lay.price = 1.01
-        mock_matched_lay.size = 2.00
-        self.order_book_runner.matched_lays = [mock_matched_lay]
-
-        matched_lays = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_lays(matched_lays)
-
-        mock_update_available.assert_called_with(self.order_book_runner.matched_lays, matched_lays, 1)
-        assert len(self.order_book_runner.matched_lays) == 1
 
 
 class TestUnmatchedOrder(unittest.TestCase):

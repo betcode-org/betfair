@@ -1,6 +1,5 @@
 import datetime
 
-from ..utils import update_available
 from .baseresource import BaseResource
 from .bettingresources import (
     MarketBook,
@@ -115,7 +114,7 @@ class MarketDefinition(object):
         self.name = name  # historic data only
         self.event_name = eventName  # historic data only
         self.runners_dict = {
-            runner.selection_id: runner for runner in self.runners
+            (runner.selection_id, runner.handicap): runner for runner in self.runners
         }
 
 
@@ -332,7 +331,9 @@ class MarketBookCache(BaseResource):
             'numberOfRunners': len(self.market_definition.runners),
             'numberOfActiveRunners': self.market_definition.number_of_active_runners,
             'runners': [
-                runner.serialise(self.market_definition.runners_dict[runner.selection_id]) for runner in self.runners
+                runner.serialise(
+                    self.market_definition.runners_dict[(runner.selection_id, runner.handicap)]
+                ) for runner in self.runners
             ],
             'publishTime': self.publish_time,
         }
@@ -399,23 +400,11 @@ class OrderBookRunner(object):
     def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None, hc=None, smc=None):
         self.selection_id = id
         self.full_image = fullImage
-        self.matched_lays = ml
-        self.matched_backs = mb
+        self.matched_lays = Available(ml, 1)
+        self.matched_backs = Available(mb, 1)
         self.unmatched_orders = [UnmatchedOrder(**i) for i in uo] if uo else []
         self.handicap = hc
         self.strategy_matches = smc
-
-    def update_matched_backs(self, matched_backs):
-        if not self.matched_backs:
-            self.matched_backs = [matched_back for matched_back in matched_backs]
-        else:
-            update_available(self.matched_backs, matched_backs, 1)
-
-    def update_matched_lays(self, matched_lays):
-        if not self.matched_lays:
-            self.matched_lays = [matched_lay for matched_lay in matched_lays]
-        else:
-            update_available(self.matched_lays, matched_lays, 1)
 
     def update_unmatched(self, unmatched_orders):
         order_dict = {order.bet_id: order for order in self.unmatched_orders}
@@ -451,8 +440,8 @@ class OrderBookCache(BaseResource):
             selection_id = order_changes['id']
             runner = self.runner_dict.get(selection_id)
             if runner:
-                runner.update_matched_lays(order_changes.get('ml', []))
-                runner.update_matched_backs(order_changes.get('mb', []))
+                runner.matched_lays.update(order_changes.get('ml', []))
+                runner.matched_backs.update(order_changes.get('mb', []))
                 runner.update_unmatched(order_changes.get('uo', []))
             else:
                 self.runners.append(OrderBookRunner(**order_changes))

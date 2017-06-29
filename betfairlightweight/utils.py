@@ -17,25 +17,6 @@ def check_status_code(response, codes=None):
         raise StatusCodeError(response.status_code)
 
 
-def update_available(available, book_update, deletion_select):
-    for book in book_update:
-        updated = False
-        for (count, trade) in enumerate(available):
-            if trade[0] == book[0]:
-                if book[deletion_select] == 0:
-                    del available[count]
-                    updated = True
-                    break
-                else:
-                    available[count] = book
-                    updated = True
-                    break
-
-        if not updated and book[deletion_select] != 0:
-            # handles betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
-            available.append(book)
-
-
 def clean_locals(data):
     """
     Clean up locals dict, remove empty and self/session/params params
