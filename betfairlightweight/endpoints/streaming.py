@@ -15,7 +15,8 @@ class Streaming(object):
         """
         self.client = parent
 
-    def create_stream(self, unique_id=0, listener=None, timeout=11, buffer_size=1024, description='BetfairSocket'):
+    def create_stream(self, unique_id=0, listener=None, timeout=11, buffer_size=1024, description='BetfairSocket',
+                      host=None):
         """
         Creates BetfairStream.
 
@@ -24,6 +25,7 @@ class Streaming(object):
         :param float timeout: Socket timeout
         :param int buffer_size: Socket buffer size
         :param str description: Betfair stream description
+        :param str host: Host endpoint (prod (default) or integration)
 
         :rtype: resources.BetfairStream
         """
@@ -36,4 +38,5 @@ class Streaming(object):
             timeout=timeout,
             buffer_size=buffer_size,
             description=description,
+            host=host,
         )
