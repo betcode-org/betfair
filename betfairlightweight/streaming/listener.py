@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import json
 import logging
 
@@ -28,25 +26,31 @@ class BaseListener(object):
         self.stream_unique_id = unique_id
 
     def on_data(self, raw_data):
-        print(raw_data)
+        logger.info(raw_data)
+
+    def snap(self, market_ids=None):
+        if self.stream:
+            return self.stream.snap(market_ids)
+        else:
+            return []
 
     def _add_stream(self, unique_id, operation):
-        print('Register: %s %s' % (operation, unique_id))
+        logger.info('Register: %s %s' % (operation, unique_id))
 
     def __str__(self):
-        return '<BaseListener>'
+        return 'BaseListener'
 
     def __repr__(self):
-        return str(self)
+        return '<BaseListener>'
 
 
 class StreamListener(BaseListener):
     """Stream listener, processes results from socket,
-    holds a market or order stream which hold
-    market_book caches
+    holds a stream which can hold order or market book
+    caches
     """
 
-    def __init__(self, output_queue, max_latency=0.5, lightweight=False):
+    def __init__(self, output_queue=None, max_latency=0.5, lightweight=False):
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
@@ -70,7 +74,7 @@ class StreamListener(BaseListener):
         if self._error_handler(data, unique_id):
             return False
 
-        operation = data.get('op')
+        operation = data['op']
         if operation == 'connection':
             self._on_connection(data, unique_id)
         elif operation == 'status':
@@ -78,8 +82,8 @@ class StreamListener(BaseListener):
         elif operation in ['mcm', 'ocm']:
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 'HISTORICAL']:
-                logging.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
-                                (unique_id, self.stream_unique_id))
+                logger.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
+                               (unique_id, self.stream_unique_id))
                 return
             self._on_change_message(data, unique_id)
 
@@ -136,6 +140,10 @@ class StreamListener(BaseListener):
             logger.error('[Subscription: %s] %s: %s' % (unique_id, data.get('errorCode'), data.get('errorMessage')))
             if data.get('connectionClosed'):
                 return True
+        if data.get('status'):
+            # Clients shouldn't disconnect if status 503 is returned; when the stream
+            # recovers updates will be sent containing the latest data
+            logger.warning('[Subscription: %s] status: %s' % (unique_id, data['status']))
 
     def __str__(self):
         return 'StreamListener'

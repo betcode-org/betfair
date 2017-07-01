@@ -2,9 +2,113 @@ import unittest
 from tests import mock
 
 from betfairlightweight.resources.streamingresources import (
-    MarketDefinition, OrderBookCache, OrderBookRunner, UnmatchedOrder, MarketBookCache, RunnerBook
+    MarketDefinition, OrderBookCache, OrderBookRunner, UnmatchedOrder, MarketBookCache, RunnerBook, Available,
+    MarketDefinitionRunner,
 )
+from betfairlightweight.resources.baseresource import BaseResource
 from tests.tools import create_mock_json
+
+
+class TestAvailable(unittest.TestCase):
+
+    def setUp(self):
+        self.prices = [[1, 1.02, 34.45], [0, 1.01, 12]]
+        self.available = Available(self.prices, 2)
+
+    def test_init(self):
+        assert self.available.prices == self.prices
+        assert self.available.deletion_select == 2
+        assert self.available.reverse is False
+
+    def test_sort(self):
+        self.available.sort()
+        assert self.available.prices == self.prices
+        assert self.available.serialise == [{'price': 1.01, 'size': 12}, {'price': 1.02, 'size': 34.45}]
+
+    def test_sort_short(self):
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        available = Available(current, 1)
+
+        assert available.serialise == [
+            {'price': 1.02, 'size': 1157.21}, {'price': 13, 'size': 28.01}, {'price': 27, 'size': 0.95}
+        ]
+
+    def test_clear(self):
+        self.available.clear()
+        assert self.available.prices == []
+
+    def test_update_available_new_update(self):
+        # [price, size]
+        book_update = [[30, 6.9]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[1.02, 1157.21],  [13, 28.01], [27, 0.95], [30, 6.9]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        assert current == expected
+
+        book_update = [[30, 6.9], [1.01, 12]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[1.01, 12], [1.02, 1157.21], [13, 28.01], [27, 0.95], [30, 6.9]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        assert current == expected
+
+        # [position, price, size]
+        book_update = [[0, 36, 0.57]]
+        current = []
+        expected = [[0, 36, 0.57]]
+
+        available = Available(current, 2)
+        available.update(book_update)
+        assert available.prices == expected
+
+    def test_update_available_new_replace(self):
+        # [price, size]
+        book_update = [[27, 6.9]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[1.02, 1157.21], [13, 28.01], [27, 6.9]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        assert current == expected
+
+        # [position, price, size]
+        book_update = [[0, 36, 0.57]]
+        current = [[0, 36, 10.57], [1, 38, 3.57]]
+        expected = [[0, 36, 0.57], [1, 38, 3.57]]
+
+        available = Available(current, 2)
+        available.update(book_update)
+        assert current == expected
+
+        # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
+        book_update = [[2, 0, 0], [1, 1.01, 9835.74], [0, 1.02, 1126.22]]
+        current = [[1, 1.01, 9835.74], [0, 1.02, 1126.22]]
+        expected = [[0, 1.02, 1126.22], [1, 1.01, 9835.74]]
+
+        available = Available(current, 2)
+        available.update(book_update)
+        assert current == expected
+
+    def test_update_available_new_remove(self):
+        book_update = [[27, 0]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[1.02, 1157.21], [13, 28.01]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        assert current == expected
+
+        # [position, price, size]
+        book_update = [[0, 36, 0], [1, 38, 0], [0, 38, 3.57]]
+        current = [[0, 36, 10.57], [1, 38, 3.57]]
+        expected = [[0, 38, 3.57]]
+
+        available = Available(current, 2)
+        available.update(book_update)
+        assert current == expected
 
 
 class TestMarketDefinition(unittest.TestCase):
@@ -19,112 +123,25 @@ class TestMarketDefinition(unittest.TestCase):
         assert self.market_definition.market_base_rate == 5
 
 
-class TestOrderBookCache(unittest.TestCase):
+class TestMarketDefinitionRunner(unittest.TestCase):
 
     def setUp(self):
-        self.order_book_cache = OrderBookCache(**{})
-        self.runner = mock.Mock()
-        self.runner.selection_id = 10895629
-        self.runner.serialise_orders = mock.Mock(return_value=[])
-        self.order_book_cache.runners = [self.runner]
+        self.mock_response = create_mock_json('tests/resources/streaming_market_definition.json')
+        market_definition = self.mock_response.json()
+        runner = market_definition['runners'][0]
+        self.market_definition_runner = MarketDefinitionRunner(**runner)
 
-    def test_update_cache(self):
-        mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
-        for order_book in mock_response.json().get('oc'):
-            self.order_book_cache.update_cache(order_book, 1234)
+    def test_init(self):
+        assert self.market_definition_runner.selection_id == 11131804
+        assert self.market_definition_runner.adjustment_factor == 44.323
+        assert self.market_definition_runner.sort_priority == 1
+        assert self.market_definition_runner.status == 'ACTIVE'
 
-            for order_changes in order_book.get('orc'):
-                self.runner.update_matched_lays.assert_called_with(order_changes.get('ml', []))
-                self.runner.update_matched_backs.assert_called_with(order_book.get('mb', []))
-                self.runner.update_unmatched.assert_called_with(order_changes.get('uo', []))
+    def test_str(self):
+        assert str(self.market_definition_runner) == 'MarketDefinitionRunner: 11131804'
 
-    @mock.patch('betfairlightweight.resources.streamingresources.OrderBookRunner')
-    def test_update_cache_new(self, mock_order_book_runner):
-        self.runner.selection_id = 108956
-        mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
-        for order_book in mock_response.json().get('oc'):
-            self.order_book_cache.update_cache(order_book, 1234)
-
-            for order_changes in order_book.get('orc'):
-                mock_order_book_runner.assert_called_with(**order_changes)
-
-    @mock.patch('betfairlightweight.resources.streamingresources.OrderBookCache.serialise')
-    @mock.patch('betfairlightweight.resources.streamingresources.CurrentOrders')
-    def test_create_order_book(self, mock_current_orders, mock_serialise):
-        current_orders = self.order_book_cache.create_order_book(123, {}, False)
-
-        assert current_orders == mock_current_orders()
-
-    def test_runner_dict(self):
-
-        class Runner:
-            def __init__(self, selection_id, name):
-                self.selection_id = selection_id
-                self.name = name
-
-        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
-        self.order_book_cache.runners = [a, b]
-        assert self.order_book_cache.runner_dict == {123: a, 456: b}
-
-    def test_serialise(self):
-        serialised = self.order_book_cache.serialise
-
-        assert serialised == {'currentOrders': [], 'moreAvailable': False}
-
-
-class TestOrderBookRunner(unittest.TestCase):
-
-    def setUp(self):
-        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': []})
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_backs_fresh(self, mock_update_available):
-        matched_backs = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_backs(matched_backs)
-
-        assert len(self.order_book_runner.matched_backs) == 1
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_backs_new(self, mock_update_available):
-        mock_matched_back = mock.Mock()
-        mock_matched_back.price = 1.01
-        mock_matched_back.size = 2.00
-        self.order_book_runner.matched_backs = [mock_matched_back]
-
-        matched_backs = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_backs(matched_backs)
-
-        mock_update_available.assert_called_with(self.order_book_runner.matched_backs, matched_backs, 1)
-        assert len(self.order_book_runner.matched_backs) == 1
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_lays_fresh(self, mock_update_available):
-        mock_matched_lay = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_lays(mock_matched_lay)
-
-        assert len(self.order_book_runner.matched_lays) == 1
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_matched_backs_new(self, mock_update_available):
-        mock_matched_lay = mock.Mock()
-        mock_matched_lay.price = 1.01
-        mock_matched_lay.size = 2.00
-        self.order_book_runner.matched_lays = [mock_matched_lay]
-
-        matched_lays = [[1.01, 4.00]]
-        self.order_book_runner.update_matched_lays(matched_lays)
-
-        mock_update_available.assert_called_with(self.order_book_runner.matched_lays, matched_lays, 1)
-        assert len(self.order_book_runner.matched_lays) == 1
-
-
-class TestUnmatchedOrder(unittest.TestCase):
-
-    def setUp(self):
-        self.unmatched_order = UnmatchedOrder(**{})
-
-    # def test_serialise(self):
-    #     self.unmatched_order.serialise('1.23', 12345)
+    def test_repr(self):
+        assert repr(self.market_definition_runner) == '<MarketDefinitionRunner>'
 
 
 class TestMarketBookCache(unittest.TestCase):
@@ -171,11 +188,12 @@ class TestMarketBookCache(unittest.TestCase):
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
     def test_create_market_book(self, mock_market_book, mock_serialise):
+        # lightweight
+        market_book = self.market_book_cache.create_market_book(1234, {}, True)
+        assert market_book == mock_serialise
+        # not lightweight
         market_book = self.market_book_cache.create_market_book(1234, {}, False)
-
-        # assert market_book == mock_market_book(date_time_sent=self.market_book_cache._datetime_updated,
-        #                                        streaming_unique_id=1234)()
-        # mock_market_book.assert_called()
+        assert market_book == mock_market_book()
 
     def test_runner_dict(self):
         assert self.market_book_cache.runner_dict == {}
@@ -184,22 +202,11 @@ class TestMarketBookCache(unittest.TestCase):
             def __init__(self, selection_id, name):
                 self.selection_id = selection_id
                 self.name = name
+                self.handicap = None
 
         (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
         self.market_book_cache.runners = [a, b]
-        assert self.market_book_cache.runner_dict == {123: a, 456: b}
-
-    # def test_market_definition_dict(self):
-    #
-    #     class Runner:
-    #         def __init__(self, selection_id, name):
-    #             self.id = selection_id
-    #             self.name = name
-    #
-    #     (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
-    #     self.market_book_cache.market_definition = MarketDefinition(**{})
-    #     self.market_book_cache.market_definition.runners = [a, b]
-    #     assert self.market_book_cache.market_definition_dict == {123: a, 456: b}
+        assert self.market_book_cache.runner_dict == {(123, None): a, (456, None): b}
 
 
 class TestRunnerBook(unittest.TestCase):
@@ -207,194 +214,53 @@ class TestRunnerBook(unittest.TestCase):
     def setUp(self):
         self.runner_book = RunnerBook(**{'id': 123})
 
-    # EX_TRADED
+    def test_update_traded(self):
+        self.mock_traded = mock.Mock()
+        self.runner_book.traded = self.mock_traded
 
-    def test_traded_update_new(self):
-        traded_update = [[18.5, 1.2]]
+        self.runner_book.update_traded([])
+        self.mock_traded.clear.assert_called_with()
 
-        self.runner_book.update_traded(traded_update)
-        assert self.runner_book.traded == traded_update
+        self.runner_book.update_traded([1, 2])
+        self.mock_traded.update.assert_called_with([1, 2])
 
-    def test_traded_update_removal(self):
-        traded_update = None
-        self.runner_book.traded = [[18.5, 1.2]]
+    def test_serialise_back(self):
+        mock_available_to_back = mock.Mock()
+        mock_available_to_back.prices = True
+        mock_best_available_to_back = mock.Mock()
+        mock_best_available_to_back.prices = True
+        mock_best_display_available_to_back = mock.Mock()
+        mock_best_display_available_to_back.prices = True
+        self.runner_book.available_to_back = mock_available_to_back
 
-        self.runner_book.update_traded(traded_update)
-        assert self.runner_book.traded == traded_update
+        assert self.runner_book.serialise_available_to_back() == mock_available_to_back.serialise
 
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_traded_update_fresh(self, mock_update_available):
-        traded_update = [[18.5, 1.2]]
-        current = [[18, 297.39], [17.5, 369.53], [17, 222.05]]
-        self.runner_book.traded = current
+        mock_available_to_back.prices = False
+        self.runner_book.best_available_to_back = mock_best_available_to_back
+        assert self.runner_book.serialise_available_to_back() == mock_best_available_to_back.serialise
 
-        self.runner_book.update_traded(traded_update)
-        mock_update_available.assert_called_with(current, traded_update, 1)
+        mock_best_available_to_back.prices = False
+        self.runner_book.best_display_available_to_back = mock_best_display_available_to_back
+        assert self.runner_book.serialise_available_to_back() == mock_best_display_available_to_back.serialise
 
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_traded_update_addition(self, mock_update_available):
-        traded_update = [[17.5, 999.99], [16, 2001.00]]
-        current = [[18, 297.39], [17.5, 369.53], [17, 222.05]]
-        self.runner_book.traded = current
+    def test_serialise_lay(self):
+        mock_available_to_lay = mock.Mock()
+        mock_available_to_lay.prices = True
+        mock_best_available_to_lay = mock.Mock()
+        mock_best_available_to_lay.prices = True
+        mock_best_display_available_to_lay = mock.Mock()
+        mock_best_display_available_to_lay.prices = True
+        self.runner_book.available_to_lay = mock_available_to_lay
 
-        self.runner_book.update_traded(traded_update)
-        mock_update_available.assert_called_with(current, traded_update, 1)
+        assert self.runner_book.serialise_available_to_lay() == mock_available_to_lay.serialise
 
-    # EX_ALL_OFFERS
+        mock_available_to_lay.prices = False
+        self.runner_book.best_available_to_lay = mock_best_available_to_lay
+        assert self.runner_book.serialise_available_to_lay() == mock_best_available_to_lay.serialise
 
-    def test_update_available_to_back_new(self):
-        book_update = [[30, 6.9]]
-
-        self.runner_book.update_available_to_back(book_update)
-        assert self.runner_book.available_to_back == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_available_to_back_new_update(self, mock_update_available):
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37]]
-        book_update = [[30, 6.9]]
-        self.runner_book.available_to_back = current
-
-        self.runner_book.update_available_to_back(book_update)
-        mock_update_available.assert_called_with(current, book_update, 1)
-
-    def test_update_available_to_lay_new(self):
-        book_update = [[30, 6.9]]
-
-        self.runner_book.update_available_to_lay(book_update)
-        assert self.runner_book.available_to_lay == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_available_to_lay_new_update(self, mock_update_available):
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37]]
-        book_update = [[30, 6.9]]
-        self.runner_book.available_to_lay = current
-
-        self.runner_book.update_available_to_lay(book_update)
-        mock_update_available.assert_called_with(current, book_update, 1)
-
-    # EX_BEST_OFFERS
-
-    def test_update_best_available_to_back_new(self):
-        book_update = [[0, 36, 2.57]]
-
-        self.runner_book.update_best_available_to_back(book_update)
-        assert self.runner_book.best_available_to_back == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_best_available_to_back_update(self, mock_update_available):
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37]]
-        book_update = [[30, 6.9]]
-        self.runner_book.best_available_to_back = current
-
-        self.runner_book.update_best_available_to_back(book_update)
-        mock_update_available.assert_called_with(current, book_update, 2)
-
-    def test_update_best_available_to_lay_new(self):
-        book_update = [[0, 36, 2.57]]
-
-        self.runner_book.update_best_available_to_lay(book_update)
-        assert self.runner_book.best_available_to_lay == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_best_available_to_lay_update(self, mock_update_available):
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [42, 5.37]]
-        book_update = [[30, 6.9]]
-        self.runner_book.best_available_to_lay = current
-
-        self.runner_book.update_best_available_to_lay(book_update)
-        mock_update_available.assert_called_with(current, book_update, 2)
-
-    # EX_BEST_OFFERS_DISP
-
-    def test_update_best_display_available_to_back_new(self):
-        book_update = [[0, 36, 2.57]]
-
-        self.runner_book.update_best_display_available_to_back(book_update)
-        assert self.runner_book.best_display_available_to_back == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_best_display_available_to_back_update(self, mock_update_available):
-        book_update = [[0, 36, 2.57]]
-        current = [[2, 36, 5.37], [1, 38, 8.81], [0, 46, 2.06]]
-        self.runner_book.best_display_available_to_back = current
-
-        self.runner_book.update_best_display_available_to_back(book_update)
-        mock_update_available.assert_called_with( current, book_update, 2)
-
-    def test_update_best_display_available_to_lay_new(self):
-        book_update = [[0, 36, 2.57]]
-
-        self.runner_book.update_best_display_available_to_lay(book_update)
-        assert self.runner_book.best_display_available_to_lay == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_best_display_available_to_lay_update(self, mock_update_available):
-        book_update = [[0, 36, 2.57]]
-        current = [[2, 36, 5.37], [1, 38, 8.81], [0, 46, 2.06]]
-        self.runner_book.best_display_available_to_lay = current
-
-        self.runner_book.update_best_display_available_to_lay(book_update)
-        mock_update_available.assert_called_with( current, book_update, 2)
-
-    # SP_TRADED
-
-    def test_update_starting_price_back_new(self):
-        book_update = [[36, 2.57]]
-
-        self.runner_book.update_starting_price_back(book_update)
-        assert self.runner_book.starting_price_back == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_starting_price_back(self, mock_update_available):
-        book_update = [[18.5, 1.2]]
-        current = [[18, 297.39], [17.5, 369.53], [17, 222.05]]
-        self.runner_book.starting_price_back = current
-
-        self.runner_book.update_starting_price_back(book_update)
-        mock_update_available.assert_called_with(current, book_update, 1)
-
-    def test_update_starting_price_lay_new(self):
-        book_update = [[36, 2.57]]
-
-        self.runner_book.update_starting_price_lay(book_update)
-        assert self.runner_book.starting_price_lay == book_update
-
-    @mock.patch('betfairlightweight.resources.streamingresources.update_available')
-    def test_update_starting_price_lay(self, mock_update_available):
-        book_update = [[18.5, 1.2]]
-        current = [[18, 297.39], [17.5, 369.53], [17, 222.05]]
-        self.runner_book.starting_price_lay = current
-
-        self.runner_book.update_starting_price_lay(book_update)
-        mock_update_available.assert_called_with(current, book_update, 1)
-
-    def test_serialise(self):
-        traded_update = [[18.4, 1.1]]
-        self.runner_book.update_traded(traded_update)
-        back_update = [[18.5, 1.2]]
-        self.runner_book.update_available_to_back(back_update)
-        lay_update = [[18.6, 1.3]]
-        self.runner_book.update_available_to_lay(lay_update)
-
-        sp_back_update = [[18.7, 1.4]]
-        self.runner_book.update_starting_price_back(sp_back_update)
-        sp_lay_update = [[18.8, 1.5]]
-        self.runner_book.update_starting_price_lay(sp_lay_update)
-
-        runner_definition = mock.Mock()
-        serialise_d = self.runner_book.serialise(runner_definition)
-        assert set(serialise_d.keys()) == \
-            {'status', 'totalMatched', 'adjustmentFactor',
-             'lastPriceTraded', 'sp', 'ex', 'handicap', 'selectionId', 'removalDate'}
-
-        ex = serialise_d['ex']
-        assert ex['tradedVolume'][0]['price'] == traded_update[0][0]
-        assert ex['availableToBack'][0]['price'] == back_update[0][0]
-        assert ex['availableToLay'][0]['price'] == lay_update[0][0]
-
-        sp = serialise_d['sp']
-        assert sp['backStakeTaken'][0]['price'] == sp_back_update[0][0]
-        assert sp['layLiabilityTaken'][0]['price'] == sp_lay_update[0][0]
+        mock_best_available_to_lay.prices = False
+        self.runner_book.best_display_available_to_lay = mock_best_display_available_to_lay
+        assert self.runner_book.serialise_available_to_lay() == mock_best_display_available_to_lay.serialise
 
     def test_empty_serialise(self):
         runner_definition = mock.Mock()
@@ -408,3 +274,92 @@ class TestRunnerBook(unittest.TestCase):
         sp = serialise_d['sp']
         # all 'None' or empty lists
         assert all(not sp[a] for a in sp.keys())
+
+
+class TestOrderBookCache(unittest.TestCase):
+
+    def setUp(self):
+        self.order_book_cache = OrderBookCache(**{})
+        self.runner = mock.Mock()
+        self.runner.selection_id = 10895629
+        self.runner.serialise_orders = mock.Mock(return_value=[])
+        self.order_book_cache.runners = [self.runner]
+
+    def test_update_cache(self):
+        mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
+        for order_book in mock_response.json().get('oc'):
+            self.order_book_cache.update_cache(order_book, 1234)
+
+            for order_changes in order_book.get('orc'):
+                # self.runner.matched_lays.update.assert_called_with(order_changes.get('ml', []))
+                # self.runner.matched_backs.update.assert_called_with(order_book.get('mb', []))
+                self.runner.update_unmatched.assert_called_with(order_changes.get('uo', []))
+
+    @mock.patch('betfairlightweight.resources.streamingresources.OrderBookRunner')
+    def test_update_cache_new(self, mock_order_book_runner):
+        self.runner.selection_id = 108956
+        mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
+        for order_book in mock_response.json().get('oc'):
+            self.order_book_cache.update_cache(order_book, 1234)
+
+            for order_changes in order_book.get('orc'):
+                mock_order_book_runner.assert_called_with(**order_changes)
+
+    @mock.patch('betfairlightweight.resources.streamingresources.OrderBookCache.serialise')
+    @mock.patch('betfairlightweight.resources.streamingresources.CurrentOrders')
+    def test_create_order_book(self, mock_current_orders, mock_serialise):
+        current_orders = self.order_book_cache.create_order_book(123, {}, False)
+
+        assert current_orders == mock_current_orders()
+
+    def test_runner_dict(self):
+
+        class Runner:
+            def __init__(self, selection_id, name):
+                self.selection_id = selection_id
+                self.name = name
+
+        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        self.order_book_cache.runners = [a, b]
+        assert self.order_book_cache.runner_dict == {123: a, 456: b}
+
+    def test_serialise(self):
+        serialised = self.order_book_cache.serialise
+
+        assert serialised == {'currentOrders': [], 'moreAvailable': False}
+
+
+class TestOrderBookRunner(unittest.TestCase):
+
+    def setUp(self):
+        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': []})
+
+
+class TestUnmatchedOrder(unittest.TestCase):
+
+    def setUp(self):
+        order = {
+            'id': 1, 'p': 2, 's': 3, 'side': 4, 'status': 5, 'pt': 6, 'ot': 7, 'pd': 8, 'sm': 9, 'sr': 10, 'sl': 11,
+            'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15
+        }
+        self.unmatched_order = UnmatchedOrder(**order)
+
+    def test_init(self):
+        assert self.unmatched_order.bet_id == 1
+        assert self.unmatched_order.price == 2
+        assert self.unmatched_order.size == 3
+        assert self.unmatched_order.side == 4
+        assert self.unmatched_order.status == 5
+        assert self.unmatched_order.persistence_type == 6
+        assert self.unmatched_order.order_type == 7
+        assert self.unmatched_order.placed_date == BaseResource.strip_datetime(8)
+        assert self.unmatched_order.size_matched == 9
+        assert self.unmatched_order.size_remaining == 10
+        assert self.unmatched_order.size_lapsed == 11
+        assert self.unmatched_order.size_cancelled == 12
+        assert self.unmatched_order.size_voided == 13
+        assert self.unmatched_order.reference_order == 14
+        assert self.unmatched_order.reference_strategy == 15
+
+    # def test_serialise(self):
+    #     self.unmatched_order.serialise('1.23', 12345)

@@ -3,6 +3,7 @@ import threading
 import socket
 import ssl
 import datetime
+import collections
 
 from ..exceptions import SocketError
 from ..compat import is_py3
@@ -13,12 +14,16 @@ class BetfairStream(object):
     pushes any received data to listener
     """
 
-    __host = 'stream-api.betfair.com'
     __port = 443
     __CRLF = '\r\n'
     __encoding = 'utf-8'
 
-    def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size, description):
+    HOSTS = collections.defaultdict(
+        lambda: 'stream-api.betfair.com',
+        integration='stream-api-integration.betfair.com',
+    )
+
+    def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size, description, host):
         self._unique_id = unique_id
         self.listener = listener
         self.app_key = app_key
@@ -26,6 +31,7 @@ class BetfairStream(object):
         self.timeout = timeout
         self.buffer_size = buffer_size
         self.description = description
+        self.host = self.HOSTS[host]
         self.receive_count = 0
         self.datetime_last_received = None
 
@@ -157,7 +163,7 @@ class BetfairStream(object):
         """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s = ssl.wrap_socket(s)
-        s.connect((self.__host, self.__port))
+        s.connect((self.host, self.__port))
         s.settimeout(self.timeout)
         return s
 

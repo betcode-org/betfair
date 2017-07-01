@@ -20,7 +20,7 @@ class BetfairStreamTest(unittest.TestCase):
         self.buffer_size = 1024
         self.description = 'test_stream'
         self.betfair_stream = BetfairStream(self.unique_id, self.mock_listener, self.app_key, self.session_token,
-                                            self.timeout, self.buffer_size, self.description)
+                                            self.timeout, self.buffer_size, self.description, None)
 
     def test_init(self):
         assert self.betfair_stream._unique_id == self.unique_id
@@ -30,11 +30,17 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream.timeout == self.timeout
         assert self.betfair_stream.buffer_size == self.buffer_size
         assert self.betfair_stream.description == self.description
+        assert self.betfair_stream.host == 'stream-api.betfair.com'
         assert self.betfair_stream.receive_count == 0
         assert self.betfair_stream.datetime_last_received is None
 
         assert self.betfair_stream._socket is None
         assert self.betfair_stream._running is False
+
+    def test_host_init(self):
+        betfair_stream = BetfairStream(self.unique_id, self.mock_listener, self.app_key, self.session_token,
+                                       self.timeout, self.buffer_size, self.description, 'integration')
+        assert betfair_stream.host == 'stream-api-integration.betfair.com'
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.authenticate')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._connect')

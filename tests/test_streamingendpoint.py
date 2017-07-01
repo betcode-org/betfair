@@ -26,5 +26,5 @@ class StreamingTest(unittest.TestCase):
         assert mock_betfair_stream.call_count == 1
         mock_betfair_stream.assert_called_with(1, 2, app_key=self.scores.client.app_key,
                                                session_token=self.scores.client.session_token, timeout=6,
-                                               buffer_size=1024, description='TestSocket')
+                                               buffer_size=1024, description='TestSocket', host=None)
         assert response == mock_betfair_stream()
