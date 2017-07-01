@@ -83,7 +83,7 @@ class StreamListener(BaseListener):
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 'HISTORICAL']:
                 logger.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
-                                (unique_id, self.stream_unique_id))
+                               (unique_id, self.stream_unique_id))
                 return
             self._on_change_message(data, unique_id)
 
