@@ -44,7 +44,7 @@ class StreamListener(BaseListener):
     market_book caches
     """
 
-    def __init__(self, output_queue, max_latency=0.5, lightweight=False):
+    def __init__(self, output_queue=None, max_latency=0.5, lightweight=False):
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight

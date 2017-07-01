@@ -70,6 +70,10 @@ class BaseStreamTest(unittest.TestCase):
     def test_process(self):
         self.stream._process(None, None)
 
+    def test_on_process(self):
+        self.stream.on_process([1, 2])
+        self.output_queue.put.assert_called_with([1, 2])
+
     def test_update_clk(self):
         self.stream._update_clk({'initialClk': 1234})
         assert self.stream._initial_clk == 1234

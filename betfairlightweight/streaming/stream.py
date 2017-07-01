@@ -59,6 +59,10 @@ class BaseStream(object):
     def clear_cache(self):
         self._caches.clear()
 
+    def on_process(self, output):
+        if self.output_queue:
+            self.output_queue.put(output)
+
     def _on_creation(self):
         logger.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
 
@@ -108,8 +112,7 @@ class MarketStream(BaseStream):
             output_market_book.append(
                 market_book_cache.create_market_book(self.unique_id, market_book, self._lightweight)
             )
-
-        self.output_queue.put(output_market_book)
+        self.on_process(output_market_book)
 
     def __str__(self):
         return 'MarketStream'
@@ -137,8 +140,7 @@ class OrderStream(BaseStream):
             output_order_book.append(
                 self._caches[market_id].create_order_book(self.unique_id, order_book, self._lightweight)
             )
-
-        self.output_queue.put(output_order_book)
+        self.on_process(output_order_book)
 
     def __str__(self):
         return 'OrderStream'
