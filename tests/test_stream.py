@@ -91,7 +91,7 @@ class BaseStreamTest(unittest.TestCase):
         assert len(self.stream) == 0
 
     def test_str(self):
-        assert str(self.stream) == '<BaseStream>'
+        assert str(self.stream) == 'BaseStream'
 
     def test_repr(self):
         assert repr(self.stream) == '<BaseStream>'

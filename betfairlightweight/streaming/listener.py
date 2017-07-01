@@ -28,20 +28,26 @@ class BaseListener(object):
     def on_data(self, raw_data):
         logger.info(raw_data)
 
+    def snap(self, market_ids=None):
+        if self.stream:
+            return self.stream.snap(market_ids)
+        else:
+            return []
+
     def _add_stream(self, unique_id, operation):
         logger.info('Register: %s %s' % (operation, unique_id))
 
     def __str__(self):
-        return '<BaseListener>'
+        return 'BaseListener'
 
     def __repr__(self):
-        return str(self)
+        return '<BaseListener>'
 
 
 class StreamListener(BaseListener):
     """Stream listener, processes results from socket,
-    holds a market or order stream which hold
-    market_book caches
+    holds a stream which can hold order or market book
+    caches
     """
 
     def __init__(self, output_queue=None, max_latency=0.5, lightweight=False):

@@ -121,10 +121,6 @@ class TestMarketDefinition(unittest.TestCase):
         assert len(self.market_definition.runners) == 7
         assert self.market_definition.bsp_market is True
         assert self.market_definition.market_base_rate == 5
-        assert list(self.market_definition.runners_dict.keys()) == [
-            (10257411, None), (11131804, None), (14341, None), (11530194, None), (11064886, None), (11404390, None),
-            (11527192, None)
-        ]
 
 
 class TestMarketDefinitionRunner(unittest.TestCase):

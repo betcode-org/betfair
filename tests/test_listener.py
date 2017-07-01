@@ -19,8 +19,7 @@ class BaseListenerTest(unittest.TestCase):
         assert self.base_listener.max_latency == 0.5
 
     @mock.patch('betfairlightweight.streaming.listener.BaseListener._add_stream', return_value=123)
-    @mock.patch('sys.stdout')
-    def test_register_stream(self, mock_print, mock_add_stream):
+    def test_register_stream(self, mock_add_stream):
         self.base_listener.register_stream(1, 'authentication')
 
         self.base_listener.register_stream(2, 'marketSubscription')
@@ -41,16 +40,22 @@ class BaseListenerTest(unittest.TestCase):
         mock_add_stream.assert_called_with(3, 'orderSubscription')
         assert self.base_listener.stream == 123
 
-    @mock.patch('sys.stdout')
-    def test_on_data(self, mock_print):
+    def test_on_data(self):
         self.base_listener.on_data({})
 
-    @mock.patch('sys.stdout')
-    def test_add_stream(self, mock_print):
+    def test_add_stream(self):
         self.base_listener._add_stream(1, 'operation')
 
+    def test_snap(self):
+        mock_stream = mock.Mock()
+        self.base_listener.stream = None
+        assert self.base_listener.snap() == []
+
+        self.base_listener.stream = mock_stream
+        assert self.base_listener.snap() == mock_stream.snap(None)
+
     def test_str(self):
-        assert str(self.base_listener) == '<BaseListener>'
+        assert str(self.base_listener) == 'BaseListener'
 
     def test_repr(self):
         assert repr(self.base_listener) == '<BaseListener>'
