@@ -140,6 +140,10 @@ class StreamListener(BaseListener):
             logger.error('[Subscription: %s] %s: %s' % (unique_id, data.get('errorCode'), data.get('errorMessage')))
             if data.get('connectionClosed'):
                 return True
+        if data.get('status'):
+            # Clients shouldn't disconnect if status 503 is returned; when the stream
+            # recovers updates will be sent containing the latest data
+            logger.warning('[Subscription: %s] status: %s' % (unique_id, data['status']))
 
     def __str__(self):
         return 'StreamListener'

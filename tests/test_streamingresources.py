@@ -291,8 +291,8 @@ class TestOrderBookCache(unittest.TestCase):
             self.order_book_cache.update_cache(order_book, 1234)
 
             for order_changes in order_book.get('orc'):
-                self.runner.matched_lays.update.assert_called_with(order_changes.get('ml', []))
-                self.runner.matched_backs.update.assert_called_with(order_book.get('mb', []))
+                # self.runner.matched_lays.update.assert_called_with(order_changes.get('ml', []))
+                # self.runner.matched_backs.update.assert_called_with(order_book.get('mb', []))
                 self.runner.update_unmatched.assert_called_with(order_changes.get('uo', []))
 
     @mock.patch('betfairlightweight.resources.streamingresources.OrderBookRunner')

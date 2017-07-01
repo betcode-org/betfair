@@ -173,8 +173,8 @@ class RunnerBook(object):
         self.total_matched = tv
         self.traded = Available(trd, 1)
         self.available_to_back = Available(atb, 1, True)
-        self.best_available_to_back = Available(batb, 2, True)
-        self.best_display_available_to_back = Available(bdatb, 2, True)
+        self.best_available_to_back = Available(batb, 2)
+        self.best_display_available_to_back = Available(bdatb, 2)
         self.available_to_lay = Available(atl, 1)
         self.best_available_to_lay = Available(batl, 2)
         self.best_display_available_to_lay = Available(bdatl, 2)
@@ -440,9 +440,12 @@ class OrderBookCache(BaseResource):
             selection_id = order_changes['id']
             runner = self.runner_dict.get(selection_id)
             if runner:
-                runner.matched_lays.update(order_changes.get('ml', []))
-                runner.matched_backs.update(order_changes.get('mb', []))
-                runner.update_unmatched(order_changes.get('uo', []))
+                if 'ml' in order_changes:
+                    runner.matched_lays.update(order_changes['ml'])
+                if 'mb' in order_changes:
+                    runner.matched_backs.update(order_changes['mb'])
+                if 'uo' in order_changes:
+                    runner.update_unmatched(order_changes['uo'])
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
