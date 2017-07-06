@@ -81,7 +81,7 @@ betfair_socket.start(async=False)
 
 # historical data
 
-Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation.
+Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see examples).
 
 [Historical Data](https://historicdata.betfair.com/#/home)
 
