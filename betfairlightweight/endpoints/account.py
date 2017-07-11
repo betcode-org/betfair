@@ -12,38 +12,47 @@ class Account(BaseEndpoint):
     URI = 'AccountAPING/v1.0/'
     connect_timeout = 6.05
 
-    def get_account_funds(self, wallet=None, session=None, lightweight=None):
+    def get_account_funds(self, wallet=None, session=None, lightweight=None, request_params=None):
         """
         Get available to bet amount.
 
         :param str wallet: Name of the wallet in question
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.AccountFunds
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'getAccountFunds')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountFunds, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.AccountFunds, elapsed_time, lightweight)
 
-    def get_account_details(self, session=None, lightweight=None):
+    def get_account_details(self, session=None, lightweight=None, request_params=None):
         """
         Returns the details relating your account, including your discount
         rate and Betfair point balance.
 
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
+
 
         :rtype: resources.AccountDetails
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'getAccountDetails')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountDetails, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.AccountDetails, elapsed_time, lightweight)
 
     def get_account_statement(self, locale=None, from_record=None, record_count=None, item_date_range=time_range(),
-                              include_item=None, wallet=None, session=None, lightweight=None):
+                              include_item=None, wallet=None, session=None, lightweight=None, request_params=None):
         """
         Get account statement.
 
@@ -55,28 +64,38 @@ class Account(BaseEndpoint):
         :param str wallet: Which wallet to return statementItems for.
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
+
 
         :rtype: resources.AccountStatementResult
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'getAccountStatement')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountStatementResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.AccountStatementResult, elapsed_time, lightweight)
 
-    def list_currency_rates(self, from_currency=None, session=None, lightweight=None):
+    def list_currency_rates(self, from_currency=None, session=None, lightweight=None, request_params=None):
         """
         Returns a list of currency rates based on given currency
 
         :param str from_currency: The currency from which the rates are computed
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
+
 
         :rtype: list[resources.CurrencyRate]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listCurrencyRates')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CurrencyRate, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.CurrencyRate, elapsed_time, lightweight)
 
     def transfer_funds(self, session=None):
         """
