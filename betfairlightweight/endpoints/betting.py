@@ -264,7 +264,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.MarketBook]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listMarketBook')
+        method = '%s%s' % (self.URI, 'listRunnerBook')
         if request_params:
             return self.raw_request(params, method)
         else:
