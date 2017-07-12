@@ -16,6 +16,7 @@ from betfairlightweight.filters import (
     streaming_market_data_filter,
     streaming_market_filter,
     streaming_order_filter,
+    streaming_data_fields,
 )
 
 
@@ -30,10 +31,10 @@ class FilterTest(unittest.TestCase):
 
     def test_streaming_market_data_filter(self):
         response = streaming_market_data_filter()
-        assert response == {}
+        assert response == {'fields': ['EX_MARKET_DEF', 'EX_TRADED', 'EX_ALL_OFFERS']}
 
         response = streaming_market_data_filter(ladder_levels=3)
-        assert response == {'ladderLevels': 3}
+        assert response == {'ladderLevels': 3, 'fields': ['EX_MARKET_DEF', 'EX_TRADED', 'EX_ALL_OFFERS']}
 
     def test_streaming_order_filter(self):
         response = streaming_order_filter()
@@ -100,3 +101,7 @@ class FilterTest(unittest.TestCase):
     def test_update_instruction(self):
         response = update_instruction('1.123', 'LAPSE')
         assert response == {'betId': '1.123', 'newPersistenceType': 'LAPSE'}
+
+    def test_streaming_data_fields(self):
+        response = streaming_data_fields()
+        assert response == ['EX_MARKET_DEF', 'EX_TRADED', 'EX_ALL_OFFERS']
