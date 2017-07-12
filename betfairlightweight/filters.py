@@ -48,7 +48,7 @@ def streaming_data_fields(ex_best_offers_disp=False, ex_best_offers=False, ex_al
     :rtype: list
     """
     args = locals()
-    return [k.upper() for k, v in args.items() if v is True]
+    return sorted([k.upper() for k, v in args.items() if v is True])
 
 
 def streaming_market_data_filter(fields=streaming_data_fields(), ladder_levels=None):

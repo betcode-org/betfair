@@ -30,11 +30,12 @@ class FilterTest(unittest.TestCase):
         assert response == {'marketIds': [1, 2]}
 
     def test_streaming_market_data_filter(self):
+        sorted_fields = sorted(['EX_ALL_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED'])
         response = streaming_market_data_filter()
-        assert response == {'fields': ['EX_MARKET_DEF', 'EX_TRADED', 'EX_ALL_OFFERS']}
+        assert response == {'fields': sorted_fields}
 
         response = streaming_market_data_filter(ladder_levels=3)
-        assert response == {'ladderLevels': 3, 'fields': ['EX_MARKET_DEF', 'EX_TRADED', 'EX_ALL_OFFERS']}
+        assert response == {'ladderLevels': 3, 'fields': sorted_fields}
 
     def test_streaming_order_filter(self):
         response = streaming_order_filter()
@@ -104,4 +105,4 @@ class FilterTest(unittest.TestCase):
 
     def test_streaming_data_fields(self):
         response = streaming_data_fields()
-        assert response == ['EX_MARKET_DEF', 'EX_TRADED', 'EX_ALL_OFFERS']
+        assert response == sorted(['EX_ALL_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED'])
