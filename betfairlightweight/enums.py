@@ -249,11 +249,11 @@ class MarketSort(Enum):
     :var LAST_TO_START: The most distant markets based on their expected start time
     """
     MinTraded = 'MINIMUM_TRADED'
-    maxTraded = 'MAXIMUM_TRADED'
-    MinAvail = 'MINIMUM_AVAILABLE'
-    MaxAvail = 'MAXIMUM_AVAILABLE'
+    MaxTraded = 'MAXIMUM_TRADED'
+    MinAvailable = 'MINIMUM_AVAILABLE'
+    MaxAvailable = 'MAXIMUM_AVAILABLE'
     FirstStart = 'FIRST_TO_START'
-    LatestStart = 'LAST_TO_START'
+    LastStart = 'LAST_TO_START'
 
 
 class MatchProjection(Enum):
@@ -277,7 +277,7 @@ class OrderProjection(Enum):
     """
     All = 'ALL'
     Executable = 'EXECUTABLE'
-    Traded = 'EXECUTION_COMPLETE'
+    ExecutionComplete = 'EXECUTION_COMPLETE'
 
 
 class RunnerStatus(Enum):
@@ -413,7 +413,7 @@ class PersistenceType(Enum):
     :var PERSIST: Persist the order to in-play. The bet will be place automatically into the in-play market at the start of the event.
     :var MARKET_ON_CLOSE: Put the order into the auction (SP) at turn-in-play
     """
-    Kill = 'LAPSE'
+    Cancel = 'LAPSE'
     Keep = 'PERSIST'
     ClosePrice = 'MARKET_ON_CLOSE'
 
@@ -452,8 +452,8 @@ class OrderStatus(Enum):
     :var EXPIRED: The order is no longer available for execution due to its time in force constraint. Not a valid search criteria on MarketFilter.
                   In the case of FILL_OR_KILL orders, this means the order has been killed because it could not be filled to your specifications.
     """
-    Executed = 'EXECUTION_COMPLETE'
-    AtExchange = 'EXECUTABLE'
+    ExecutionComplete = 'EXECUTION_COMPLETE'
+    Executable = 'EXECUTABLE'
     Expired = 'EXPIRED'
     Pending = 'PENDING'
 
@@ -473,7 +473,7 @@ class BetTargetType(Enum):
     :var PAYOUT: The total payout requested on a LimitOrder
     """
     Payout = 'PAYOUT'
-    Profit = 'BACKERS_PROFIT'
+    BackersProfit = 'BACKERS_PROFIT'
 
 
 class MarketBettingType(Enum):
