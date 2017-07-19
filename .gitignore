@@ -26,3 +26,6 @@ pip-log.txt
 nosetests.xml
 
 .DS_Store
+
+# IDE metafile ignores
+.idea
