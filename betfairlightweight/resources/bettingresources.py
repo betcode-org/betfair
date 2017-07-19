@@ -529,8 +529,8 @@ class ClearedOrder(object):
     """
 
     def __init__(self, betId, betCount, betOutcome, eventId, eventTypeId, handicap, lastMatchedDate, marketId,
-                 orderType, persistenceType, placedDate, priceMatched, priceReduced, priceRequested, profit,
-                 selectionId, settledDate, side, sizeSettled, customerStrategyRef=None, customerOrderRef=None):
+                 orderType, persistenceType, placedDate, priceMatched, priceReduced, profit, selectionId,
+                 settledDate, side, sizeSettled, priceRequested=None, customerStrategyRef=None, customerOrderRef=None):
         self.bet_id = betId
         self.bet_count = betCount
         self.bet_outcome = betOutcome
