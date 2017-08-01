@@ -161,7 +161,7 @@ class Selection(object):
     :type selection_id: unicode
     """
 
-    def __init__(self, marketId, marketType, selectionId, bsp=None):
+    def __init__(self, marketId=None, marketType=None, selectionId=None, bsp=None):
         self.market_id = marketId
         self.market_type = marketType
         self.selection_id = selectionId

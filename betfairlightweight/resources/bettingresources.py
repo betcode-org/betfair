@@ -160,7 +160,8 @@ class MarketCatalogueDescription(object):
 
     def __init__(self, bettingType, bspMarket, discountAllowed, marketBaseRate, marketTime, marketType,
                  persistenceEnabled, regulator, rules, rulesHasDate, suspendTime, turnInPlayEnabled, wallet,
-                 eachWayDivisor=None, clarifications=None):
+                 eachWayDivisor=None, clarifications=None,
+                 priceLadderDescription=None, keyLineDefinition=None):
         self.betting_type = bettingType
         self.bsp_market = bspMarket
         self.discount_allowed = discountAllowed
@@ -176,6 +177,8 @@ class MarketCatalogueDescription(object):
         self.wallet = wallet
         self.each_way_divisor = eachWayDivisor
         self.clarifications = clarifications
+        self.price_ladder_description = priceLadderDescription
+        self.key_line_definition = keyLineDefinition
 
 
 class RunnerCatalogue(object):
@@ -529,8 +532,8 @@ class ClearedOrder(object):
     """
 
     def __init__(self, betId, betCount, betOutcome, eventId, eventTypeId, handicap, lastMatchedDate, marketId,
-                 orderType, persistenceType, placedDate, priceMatched, priceReduced, priceRequested, profit,
-                 selectionId, settledDate, side, sizeSettled, customerStrategyRef=None, customerOrderRef=None):
+                 orderType, persistenceType, placedDate, priceMatched, priceReduced, profit, selectionId,
+                 settledDate, side, sizeSettled, priceRequested=None, customerStrategyRef=None, customerOrderRef=None):
         self.bet_id = betId
         self.bet_count = betCount
         self.bet_outcome = betOutcome
