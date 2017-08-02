@@ -34,6 +34,16 @@ class BaseListener(object):
         else:
             return []
 
+    @property
+    def initial_clk(self):
+        if self.stream:
+            return self.stream._initial_clk
+
+    @property
+    def clk(self):
+        if self.stream:
+            return self.stream._clk
+
     def _add_stream(self, unique_id, operation):
         logger.info('Register: %s %s' % (operation, unique_id))
 

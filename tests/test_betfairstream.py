@@ -98,17 +98,31 @@ class BetfairStreamTest(unittest.TestCase):
     def test_subscribe_to_markets(self, mock_send):
         market_filter = {'test': 123}
         market_data_filter = {'another_test': 123}
+        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter, heartbeat_ms=1, conflate_ms=2,
+                                                 segmentation_enabled=False)
+
+        mock_send.assert_called_with(
+                {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': self.betfair_stream._unique_id,
+                 'marketDataFilter': market_data_filter, 'initialClk': None, 'clk': None,
+                 'heartbeatMs': 1, 'conflateMs': 2, 'segmentationEnabled': False}
+        )
+        self.mock_listener.register_stream.assert_called_with(self.betfair_stream._unique_id, 'marketSubscription')
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
+    def test_resubscribe_to_markets(self, mock_send):
+        market_filter = {'test': 123}
+        market_data_filter = {'another_test': 123}
         initial_clk = 'abcdef'
         clk = 'abc'
-        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter, initial_clk, clk,
-                                                 heartbeat_ms=1, conflate_ms=2, segmentation_enabled=False)
+        self.betfair_stream.subscribe_to_markets(market_filter, market_data_filter, initial_clk, clk, heartbeat_ms=1,
+                                                 conflate_ms=2, segmentation_enabled=False)
 
         mock_send.assert_called_with(
                 {'op': 'marketSubscription', 'marketFilter': market_filter, 'id': self.betfair_stream._unique_id,
                  'marketDataFilter': market_data_filter, 'initialClk': initial_clk, 'clk': clk,
                  'heartbeatMs': 1, 'conflateMs': 2, 'segmentationEnabled': False}
         )
-        self.mock_listener.register_stream.assert_called_with(self.betfair_stream._unique_id, 'marketSubscription')
+        assert not self.mock_listener.register_stream.called
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_subscribe_to_orders(self, mock_send):

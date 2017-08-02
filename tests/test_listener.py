@@ -54,6 +54,16 @@ class BaseListenerTest(unittest.TestCase):
         self.base_listener.stream = mock_stream
         assert self.base_listener.snap() == mock_stream.snap(None)
 
+    def test_props(self):
+        assert self.base_listener.initial_clk is None
+        assert self.base_listener.clk is None
+        stream = mock.Mock()
+        stream._initial_clk = 2
+        stream._clk = 1
+        self.base_listener.stream = stream
+        assert self.base_listener.initial_clk == 2
+        assert self.base_listener.clk == 1
+
     def test_str(self):
         assert str(self.base_listener) == 'BaseListener'
 

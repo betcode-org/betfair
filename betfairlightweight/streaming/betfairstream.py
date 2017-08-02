@@ -115,7 +115,11 @@ class BetfairStream(object):
             'heartbeatMs': heartbeat_ms,
             'segmentationEnabled': segmentation_enabled,
         }
-        self.listener.register_stream(unique_id, 'marketSubscription')
+        if initial_clk and clk:
+            # if resubscribe only update unique_id
+            self.listener.stream_unique_id = unique_id
+        else:
+            self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
         return unique_id
 
