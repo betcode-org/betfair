@@ -44,7 +44,8 @@ class BaseStream(object):
         self._update_clk(data)
 
     def on_resubscribe(self, data):
-        self._update_clk(data)
+        self.on_update(data)
+        logger.info('[Stream: %s]: %s %s resubscribed' % (self.unique_id, len(self._caches), self._lookup))
 
     def on_update(self, data):
         self._update_clk(data)

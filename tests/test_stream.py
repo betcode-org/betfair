@@ -39,10 +39,10 @@ class BaseStreamTest(unittest.TestCase):
         self.stream.on_heartbeat({})
         mock_update_clk.assert_called_once_with({})
 
-    @mock.patch('betfairlightweight.streaming.stream.BaseStream._update_clk')
-    def test_on_resubscribe(self, mock_update_clk):
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream.on_update')
+    def test_on_resubscribe(self, mock_on_update):
         self.stream.on_resubscribe({})
-        mock_update_clk.assert_called_once_with({})
+        mock_on_update.assert_called_once_with({})
 
     @mock.patch('betfairlightweight.streaming.stream.BaseStream._process')
     @mock.patch('betfairlightweight.streaming.stream.BaseStream._calc_latency', return_value=0.1)
