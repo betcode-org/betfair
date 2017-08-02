@@ -13,6 +13,7 @@ class BaseListenerTest(unittest.TestCase):
         self.base_listener = BaseListener()
 
     def test_init(self):
+        assert self.base_listener.connection_id is None
         assert self.base_listener.stream is None
         assert self.base_listener.stream_unique_id is None
         assert self.base_listener.stream_type is None

@@ -5,7 +5,10 @@ import ssl
 import datetime
 import collections
 
-from ..exceptions import SocketError
+from ..exceptions import (
+    SocketError,
+    ListenerError,
+)
 from ..compat import is_py3
 
 
@@ -213,6 +216,7 @@ class BetfairStream(object):
         """
         if self.listener.on_data(received_data) is False:
             self.stop()
+            raise ListenerError(self.listener.connection_id, received_data)
 
     def _send(self, message):
         """If not running connects socket and

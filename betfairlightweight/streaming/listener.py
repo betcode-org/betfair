@@ -14,6 +14,7 @@ class BaseListener(object):
     def __init__(self, max_latency=0.5):
         self.max_latency = max_latency
 
+        self.connection_id = None
         self.stream = None
         self.stream_type = None  # marketSubscription/orderSubscription
         self.stream_unique_id = None
