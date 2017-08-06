@@ -13,6 +13,7 @@ class BaseListenerTest(unittest.TestCase):
         self.base_listener = BaseListener()
 
     def test_init(self):
+        assert self.base_listener.connection_id is None
         assert self.base_listener.stream is None
         assert self.base_listener.stream_unique_id is None
         assert self.base_listener.stream_type is None
@@ -53,6 +54,16 @@ class BaseListenerTest(unittest.TestCase):
 
         self.base_listener.stream = mock_stream
         assert self.base_listener.snap() == mock_stream.snap(None)
+
+    def test_props(self):
+        assert self.base_listener.initial_clk is None
+        assert self.base_listener.clk is None
+        stream = mock.Mock()
+        stream._initial_clk = 2
+        stream._clk = 1
+        self.base_listener.stream = stream
+        assert self.base_listener.initial_clk == 2
+        assert self.base_listener.clk == 1
 
     def test_str(self):
         assert str(self.base_listener) == 'BaseListener'
@@ -137,11 +148,11 @@ class StreamListenerTest(unittest.TestCase):
     def test_add_stream(self, mock_market_stream, mock_order_stream):
         new_stream = self.stream_listener._add_stream(1, 'marketSubscription')
         assert new_stream == 123
-        mock_market_stream.assert_called_with(1, self.output_queue, self.max_latency, False)
+        mock_market_stream.assert_called_with(self.stream_listener)
 
         new_stream = self.stream_listener._add_stream(1, 'orderSubscription')
         assert new_stream == 456
-        mock_order_stream.assert_called_with(1, self.output_queue, self.max_latency, False)
+        mock_order_stream.assert_called_with(self.stream_listener)
 
     def test_error_handler(self):
         mock_response = create_mock_json('tests/resources/streaming_connection.json')

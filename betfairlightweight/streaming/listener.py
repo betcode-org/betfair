@@ -14,6 +14,7 @@ class BaseListener(object):
     def __init__(self, max_latency=0.5):
         self.max_latency = max_latency
 
+        self.connection_id = None
         self.stream = None
         self.stream_type = None  # marketSubscription/orderSubscription
         self.stream_unique_id = None
@@ -33,6 +34,16 @@ class BaseListener(object):
             return self.stream.snap(market_ids)
         else:
             return []
+
+    @property
+    def initial_clk(self):
+        if self.stream is not None:
+            return self.stream._initial_clk
+
+    @property
+    def clk(self):
+        if self.stream is not None:
+            return self.stream._clk
 
     def _add_stream(self, unique_id, operation):
         logger.info('Register: %s %s' % (operation, unique_id))
@@ -120,13 +131,9 @@ class StreamListener(BaseListener):
 
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':
-            return MarketStream(
-                unique_id, self.output_queue, self.max_latency, self.lightweight
-            )
+            return MarketStream(self)
         elif stream_type == 'orderSubscription':
-            return OrderStream(
-                unique_id, self.output_queue, self.max_latency, self.lightweight
-            )
+            return OrderStream(self)
 
     @staticmethod
     def _error_handler(data, unique_id):

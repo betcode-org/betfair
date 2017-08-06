@@ -5,7 +5,10 @@ import ssl
 import datetime
 import collections
 
-from ..exceptions import SocketError
+from ..exceptions import (
+    SocketError,
+    ListenerError,
+)
 from ..compat import is_py3
 
 
@@ -115,7 +118,11 @@ class BetfairStream(object):
             'heartbeatMs': heartbeat_ms,
             'segmentationEnabled': segmentation_enabled,
         }
-        self.listener.register_stream(unique_id, 'marketSubscription')
+        if initial_clk and clk:
+            # if resubscribe only update unique_id
+            self.listener.stream_unique_id = unique_id
+        else:
+            self.listener.register_stream(unique_id, 'marketSubscription')
         self._send(message)
         return unique_id
 
@@ -143,7 +150,11 @@ class BetfairStream(object):
             'heartbeatMs': heartbeat_ms,
             'segmentationEnabled': segmentation_enabled,
         }
-        self.listener.register_stream(unique_id, 'orderSubscription')
+        if initial_clk and clk:
+            # if resubscribe only update unique_id
+            self.listener.stream_unique_id = unique_id
+        else:
+            self.listener.register_stream(unique_id, 'orderSubscription')
         self._send(message)
         return unique_id
 
@@ -209,6 +220,7 @@ class BetfairStream(object):
         """
         if self.listener.on_data(received_data) is False:
             self.stop()
+            raise ListenerError(self.listener.connection_id, received_data)
 
     def _send(self, message):
         """If not running connects socket and

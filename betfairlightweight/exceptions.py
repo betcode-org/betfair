@@ -125,6 +125,16 @@ class SocketError(BetfairError):
         super(SocketError, self).__init__(message)
 
 
+class ListenerError(BetfairError):
+    """
+    Exception raised if error with listener.
+    """
+
+    def __init__(self, connection_id, data):
+        message = 'connection_id: %s, data: %s' % (connection_id, data)
+        super(ListenerError, self).__init__(message)
+
+
 class RaceCardError(BetfairError):
     """
     Exception raised if error with race card request.

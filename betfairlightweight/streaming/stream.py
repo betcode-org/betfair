@@ -16,11 +16,8 @@ class BaseStream(object):
 
     _lookup = 'mc'
 
-    def __init__(self, unique_id, output_queue, max_latency, lightweight):
-        self.unique_id = unique_id
-        self.output_queue = output_queue
-        self._max_latency = max_latency
-        self._lightweight = lightweight
+    def __init__(self, listener):
+        self._listener = listener
 
         self._initial_clk = None
         self._clk = None
@@ -35,16 +32,16 @@ class BaseStream(object):
         self._update_clk(data)
         publish_time = data.get('pt')
 
-        book_data = data.get(self._lookup)
-        if book_data:
-            self._process(book_data, publish_time)
+        if self._lookup in data:
+            self._process(data[self._lookup], publish_time)
         logger.info('[Stream: %s]: %s %s added' % (self.unique_id, len(self._caches), self._lookup))
 
     def on_heartbeat(self, data):
         self._update_clk(data)
 
     def on_resubscribe(self, data):
-        self._update_clk(data)
+        self.on_update(data)
+        logger.info('[Stream: %s]: %s %s resubscribed' % (self.unique_id, len(self._caches), self._lookup))
 
     def on_update(self, data):
         self._update_clk(data)
@@ -54,7 +51,8 @@ class BaseStream(object):
         if latency > self._max_latency:
             logger.warning('[Stream: %s]: Latency high: %s' % (self.unique_id, latency))
 
-        self._process(data[self._lookup], publish_time)
+        if self._lookup in data:
+            self._process(data[self._lookup], publish_time)
 
     def clear_cache(self):
         self._caches.clear()
@@ -79,6 +77,22 @@ class BaseStream(object):
         if clk:
             self._clk = clk
         self.time_updated = datetime.datetime.utcnow()
+
+    @property
+    def unique_id(self):
+        return self._listener.stream_unique_id
+
+    @property
+    def output_queue(self):
+        return self._listener.output_queue
+
+    @property
+    def _max_latency(self):
+        return self._listener.max_latency
+
+    @property
+    def _lightweight(self):
+        return self._listener.lightweight
 
     @staticmethod
     def _calc_latency(publish_time):
