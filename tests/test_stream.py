@@ -8,15 +8,12 @@ from tests.tools import create_mock_json
 class BaseStreamTest(unittest.TestCase):
 
     def setUp(self):
-        self.output_queue = mock.Mock()
-        self.unique_id = 1
-        self.max_latency = 1.5
-        self.stream = BaseStream(self.unique_id, self.output_queue, self.max_latency, False)
+        self.listener = mock.Mock()
+        self.listener.max_latency = 0.5
+        self.stream = BaseStream(self.listener)
 
     def test_init(self):
-        assert self.stream.unique_id == self.unique_id
-        assert self.stream.output_queue == self.output_queue
-        assert self.stream._max_latency == self.max_latency
+        assert self.stream._listener == self.listener
 
         assert self.stream._initial_clk is None
         assert self.stream._clk is None
@@ -72,7 +69,7 @@ class BaseStreamTest(unittest.TestCase):
 
     def test_on_process(self):
         self.stream.on_process([1, 2])
-        self.output_queue.put.assert_called_with([1, 2])
+        self.stream.output_queue.put.assert_called_with([1, 2])
 
     def test_update_clk(self):
         self.stream._update_clk({'initialClk': 1234})
@@ -80,6 +77,18 @@ class BaseStreamTest(unittest.TestCase):
 
         self.stream._update_clk({'clk': 123})
         assert self.stream._clk == 123
+
+    def test_unique_id(self):
+        assert self.stream.unique_id == self.listener.stream_unique_id
+
+    def test_output_queue(self):
+        assert self.stream.output_queue == self.listener.output_queue
+
+    def test_max_latency(self):
+        assert self.stream._max_latency == self.listener.max_latency
+
+    def test_lightweight(self):
+        assert self.stream._lightweight == self.listener.lightweight
 
     @mock.patch('time.time', return_value=1485554805.107185)
     def test_calc_latency(self, mock_time):
@@ -100,10 +109,8 @@ class BaseStreamTest(unittest.TestCase):
 class MarketStreamTest(unittest.TestCase):
 
     def setUp(self):
-        self.output_queue = mock.Mock()
-        self.unique_id = 1
-        self.max_latency = 1.5
-        self.stream = MarketStream(self.unique_id, self.output_queue, self.max_latency, False)
+        self.listener = mock.Mock()
+        self.stream = MarketStream(self.listener)
 
     @mock.patch('betfairlightweight.streaming.stream.MarketStream._process')
     @mock.patch('betfairlightweight.streaming.stream.MarketStream._update_clk')
@@ -131,10 +138,8 @@ class MarketStreamTest(unittest.TestCase):
 class OrderStreamTest(unittest.TestCase):
 
     def setUp(self):
-        self.output_queue = mock.Mock()
-        self.unique_id = 1
-        self.max_latency = 1.5
-        self.stream = OrderStream(self.unique_id, self.output_queue, self.max_latency, False)
+        self.listener = mock.Mock()
+        self.stream = OrderStream(self.listener)
 
     def test_process(self):
         pass

@@ -148,11 +148,11 @@ class StreamListenerTest(unittest.TestCase):
     def test_add_stream(self, mock_market_stream, mock_order_stream):
         new_stream = self.stream_listener._add_stream(1, 'marketSubscription')
         assert new_stream == 123
-        mock_market_stream.assert_called_with(1, self.output_queue, self.max_latency, False)
+        mock_market_stream.assert_called_with(self.stream_listener)
 
         new_stream = self.stream_listener._add_stream(1, 'orderSubscription')
         assert new_stream == 456
-        mock_order_stream.assert_called_with(1, self.output_queue, self.max_latency, False)
+        mock_order_stream.assert_called_with(self.stream_listener)
 
     def test_error_handler(self):
         mock_response = create_mock_json('tests/resources/streaming_connection.json')
