@@ -76,7 +76,7 @@ class MarketDefinition(object):
                  openDate, persistenceEnabled, regulators, runnersVoidable, status, timezone, turnInPlayEnabled,
                  version, runners, countryCode=None, eachWayDivisor=None, venue=None, settledTime=None,
                  suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None, name=None,
-                 eventName=None, priceLadderDescription=None, keyLineDefinition=None):
+                 eventName=None, priceLadderDefinition=None, keyLineDefinition=None):
         self.bet_delay = betDelay
         self.betting_type = bettingType
         self.bsp_market = bspMarket
@@ -116,7 +116,7 @@ class MarketDefinition(object):
         self.runners_dict = {
             (runner.selection_id, runner.handicap): runner for runner in self.runners
         }
-        self.price_ladder_description = priceLadderDescription
+        self.price_ladder_definition = priceLadderDefinition
         self.key_line_definition = keyLineDefinition
 
 
