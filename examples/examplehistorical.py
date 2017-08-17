@@ -10,16 +10,18 @@ logging.basicConfig(level=logging.INFO)
 # create trading instance (no need to put in correct details)
 trading = betfairlightweight.APIClient('username', 'password')
 
-# create custom listener and stream
+
 class HistoricalStream(MarketStream):
-    def __init__(self, unique_id, output_queue, max_latency, lightweight):
-        super(HistoricalStream, self).__init__(unique_id, output_queue, max_latency, lightweight)
+    # create custom listener and stream
+
+    def __init__(self, listener):
+        super(HistoricalStream, self).__init__(listener)
         with open('output.txt', 'w') as output:
             output.write('Time,MarketId,Status,Inplay,SelectionId,LastPriceTraded\n')
 
-    def on_process(self, marketbooks):
+    def on_process(self, market_books):
         with open('output.txt', 'a') as output:
-            for market_book in marketbooks:
+            for market_book in market_books:
                 for runner in market_book.runners:
                     output.write('%s,%s,%s,%s,%s,%s\n' % (
                         market_book.publish_time, market_book.market_id, market_book.status, market_book.inplay,
@@ -30,9 +32,7 @@ class HistoricalStream(MarketStream):
 class HistoricalListener(StreamListener):
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':
-            return HistoricalStream(
-                unique_id, self.output_queue, self.max_latency, self.lightweight
-            )
+            return HistoricalStream(self)
 
 # create listener
 listener = HistoricalListener(

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/liampauling/betfairlightweight.svg?branch=master)](https://travis-ci.org/liampauling/betfairlightweight) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfairlightweight/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfairlightweight?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight)
 
-Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations, see examples.
+Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations, see [examples](https://github.com/liampauling/betfairlightweight/tree/master/examples).
 
 [Documentation](https://github.com/liampauling/betfairlightweight/wiki)
 
@@ -18,7 +18,7 @@ $ pip install betfairlightweight
 
 # setup
 
-Add your certificates to '/certs/' and app_key to environment variables with username as key before using.
+Add your certificates to '/certs/' and app_key (optional) to environment variables with username as key before using.
 
 .bash_profile
 ```
@@ -81,7 +81,7 @@ betfair_socket.start(async=False)
 
 # historical data
 
-Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see examples).
+Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see [examples](https://github.com/liampauling/betfairlightweight/tree/master/examples)).
 
 [Historical Data](https://historicdata.betfair.com/#/home)
 
