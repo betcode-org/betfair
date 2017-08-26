@@ -657,7 +657,7 @@ class PlaceOrderInstruction(object):
         self.order_type = orderType
         self.handicap = handicap
         self.customer_order_ref = customerOrderRef
-        self.order = LimitOrder(**limitOrder) if limitOrder else None
+        self.limit_order = LimitOrder(**limitOrder) if limitOrder else None
         self.limit_on_close_order = LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
         self.market_on_close_order = MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
 
