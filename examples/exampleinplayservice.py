@@ -12,7 +12,7 @@ from betfairlightweight.filters import (
 # setup logging
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
 
-# create trading instance (app key must be activated for streaming)
+# create trading instance
 username = os.environ.get('username')
 trading = betfairlightweight.APIClient(username)
 trading.login()
@@ -45,4 +45,4 @@ for update in timeline.update_detail:
         update.elapsed_regular_time,
         update.type,
         update.update_time,
-    )
+    )  # view resources or debug to see all values available
