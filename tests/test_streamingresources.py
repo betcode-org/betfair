@@ -1,8 +1,15 @@
 import unittest
+import datetime
 from tests import mock
 
 from betfairlightweight.resources.streamingresources import (
-    MarketDefinition, OrderBookCache, OrderBookRunner, UnmatchedOrder, MarketBookCache, RunnerBook, Available,
+    MarketDefinition,
+    OrderBookCache,
+    OrderBookRunner,
+    UnmatchedOrder,
+    MarketBookCache,
+    RunnerBook,
+    Available,
     MarketDefinitionRunner,
 )
 from betfairlightweight.resources.baseresource import BaseResource
@@ -136,6 +143,11 @@ class TestMarketDefinitionRunner(unittest.TestCase):
         assert self.market_definition_runner.adjustment_factor == 44.323
         assert self.market_definition_runner.sort_priority == 1
         assert self.market_definition_runner.status == 'ACTIVE'
+
+    def test_removal_date_string(self):
+        now = datetime.datetime.now()
+        self.market_definition_runner.removal_date = now
+        assert self.market_definition_runner.removal_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def test_str(self):
         assert str(self.market_definition_runner) == 'MarketDefinitionRunner: 11131804'
@@ -339,8 +351,8 @@ class TestUnmatchedOrder(unittest.TestCase):
 
     def setUp(self):
         order = {
-            'id': 1, 'p': 2, 's': 3, 'side': 4, 'status': 5, 'pt': 6, 'ot': 7, 'pd': 8, 'sm': 9, 'sr': 10, 'sl': 11,
-            'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15
+            'id': 1, 'p': 2, 's': 3, 'side': 'L', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 8, 'sm': 9, 'sr': 10,
+            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16,
         }
         self.unmatched_order = UnmatchedOrder(**order)
 
@@ -348,10 +360,10 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.bet_id == 1
         assert self.unmatched_order.price == 2
         assert self.unmatched_order.size == 3
-        assert self.unmatched_order.side == 4
-        assert self.unmatched_order.status == 5
-        assert self.unmatched_order.persistence_type == 6
-        assert self.unmatched_order.order_type == 7
+        assert self.unmatched_order.side == 'L'
+        assert self.unmatched_order.status == 'E'
+        assert self.unmatched_order.persistence_type == 'L'
+        assert self.unmatched_order.order_type == 'L'
         assert self.unmatched_order.placed_date == BaseResource.strip_datetime(8)
         assert self.unmatched_order.size_matched == 9
         assert self.unmatched_order.size_remaining == 10
@@ -360,6 +372,24 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.size_voided == 13
         assert self.unmatched_order.reference_order == 14
         assert self.unmatched_order.reference_strategy == 15
+        assert self.unmatched_order.lapsed_date == 16
 
-    # def test_serialise(self):
-    #     self.unmatched_order.serialise('1.23', 12345)
+    def test_placed_date_string(self):
+        now = datetime.datetime.now()
+        self.unmatched_order.placed_date = now
+        assert self.unmatched_order.placed_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    def test_matched_date_string(self):
+        now = datetime.datetime.now()
+        self.unmatched_order.matched_date = now
+        assert self.unmatched_order.matched_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    def test_serialise(self):
+        assert self.unmatched_order.serialise('1.23', 12345, 0.0) == {
+            'sizeLapsed': 11, 'persistenceType': 'LAPSE', 'sizeRemaining': 10,
+            'placedDate': '1970-01-01T00:00:00.008000Z', 'sizeVoided': 13, 'sizeCancelled': 12, 'betId': 1,
+            'customerOrderRef': 14, 'orderType': 'LIMIT', 'marketId': '1.23', 'matchedDate': None, 'side': 'LAY',
+            'selectionId': 12345, 'bspLiability': None, 'sizeMatched': 9, 'handicap': 0.0, 'averagePriceMatched': 0.0,
+            'status': 'EXECUTABLE', 'customerStrategyRef': 15, 'regulatorCode': None,
+            'priceSize': {'price': 2, 'size': 3}
+        }

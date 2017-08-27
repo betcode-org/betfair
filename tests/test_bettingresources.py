@@ -306,9 +306,9 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.place_instruction_reports[0].instruction.order_type == order['instruction']['orderType']
             assert resource.place_instruction_reports[0].instruction.handicap == order['instruction']['handicap']
 
-            assert resource.place_instruction_reports[0].instruction.order.persistence_type == order['instruction']['limitOrder']['persistenceType']
-            assert resource.place_instruction_reports[0].instruction.order.price == order['instruction']['limitOrder']['price']
-            assert resource.place_instruction_reports[0].instruction.order.size == order['instruction']['limitOrder']['size']
+            assert resource.place_instruction_reports[0].instruction.limit_order.persistence_type == order['instruction']['limitOrder']['persistenceType']
+            assert resource.place_instruction_reports[0].instruction.limit_order.price == order['instruction']['limitOrder']['price']
+            assert resource.place_instruction_reports[0].instruction.limit_order.size == order['instruction']['limitOrder']['size']
 
     def test_cancel_orders(self):
         mock_response = create_mock_json('tests/resources/cancel_orders.json')

@@ -22,7 +22,7 @@ class MarketDefinitionRunner(object):
     :type status: unicode
     """
 
-    def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
+    def __init__(self, id, sortPriority, status, hc=0, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
         self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
@@ -31,6 +31,11 @@ class MarketDefinitionRunner(object):
         self.adjustment_factor = adjustmentFactor
         self.removal_date = BaseResource.strip_datetime(removalDate)
         self.name = name  # historic data only
+
+    @property
+    def removal_date_string(self):
+        if self.removal_date:
+            return self.removal_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def __str__(self):
         return 'MarketDefinitionRunner: %s' % self.selection_id
@@ -169,7 +174,7 @@ class Available(object):
 class RunnerBook(object):
 
     def __init__(self, id, ltp=None, tv=None, trd=None, atb=None, batb=None, bdatb=None, atl=None, batl=None,
-                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=None):
+                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=0):
         self.selection_id = id
         self.last_price_traded = ltp
         self.total_matched = tv
@@ -229,7 +234,7 @@ class RunnerBook(object):
                 'actualSP': runner_definition.bsp
             },
             'adjustmentFactor': runner_definition.adjustment_factor,
-            'removalDate': runner_definition.removal_date,
+            'removalDate': runner_definition.removal_date_string,
             'lastPriceTraded': self.last_price_traded,
             'handicap': self.handicap,
             'totalMatched': self.total_matched,
@@ -367,18 +372,27 @@ class UnmatchedOrder(object):
         self.reference_strategy = rfs
         self.lapsed_date = ld
 
-    def serialise(self, market_id, selection_id):
+    @property
+    def placed_date_string(self):
+        if self.placed_date:
+            return self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    @property
+    def matched_date_string(self):
+        if self.matched_date:
+            return self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    def serialise(self, market_id, selection_id, handicap):
         return {
             'averagePriceMatched': self.average_price_matched or 0.0,
             'betId': self.bet_id,
             'bspLiability': self.bsp_liability,
-            'handicap': 0.0,
+            'handicap': handicap,
             'marketId': market_id,
-            'matchedDate': self.matched_date.strftime(
-                '%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
+            'matchedDate': self.matched_date_string,
             'orderType': StreamingOrderType[self.order_type].value,
             'persistenceType': StreamingPersistenceType[self.persistence_type].value if self.persistence_type else None,
-            'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'placedDate': self.placed_date_string,
             'priceSize': {
                 'price': self.price,
                 'size': self.size
@@ -399,7 +413,7 @@ class UnmatchedOrder(object):
 
 class OrderBookRunner(object):
 
-    def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None, hc=None, smc=None):
+    def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None, hc=0, smc=None):
         self.selection_id = id
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
@@ -421,7 +435,7 @@ class OrderBookRunner(object):
 
     def serialise_orders(self, market_id):
         return [
-            order.serialise(market_id, self.selection_id) for order in self.unmatched_orders
+            order.serialise(market_id, self.selection_id, self.handicap) for order in self.unmatched_orders
         ]
 
 

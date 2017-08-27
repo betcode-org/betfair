@@ -82,8 +82,8 @@ class EventTimeline(BaseResource):
         self.in_play_match_status = kwargs.get('inPlayMatchStatus')
         self.status = kwargs.get('status')
         self.time_elapsed = kwargs.get('timeElapsed')
-        self.score = Score(**kwargs.get('score'))
-        self.update_detail = [UpdateDetail(**i) for i in kwargs.get('updateDetails')]
+        self.score = Score(**kwargs.get('score')) if kwargs.get('score') else None
+        self.update_detail = [UpdateDetail(**i) for i in kwargs.get('updateDetails')] if kwargs.get('updateDetails') else []
 
 
 class FullTimeElapsed(object):
