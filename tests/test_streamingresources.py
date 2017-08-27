@@ -1,8 +1,15 @@
 import unittest
+import datetime
 from tests import mock
 
 from betfairlightweight.resources.streamingresources import (
-    MarketDefinition, OrderBookCache, OrderBookRunner, UnmatchedOrder, MarketBookCache, RunnerBook, Available,
+    MarketDefinition,
+    OrderBookCache,
+    OrderBookRunner,
+    UnmatchedOrder,
+    MarketBookCache,
+    RunnerBook,
+    Available,
     MarketDefinitionRunner,
 )
 from betfairlightweight.resources.baseresource import BaseResource
@@ -136,6 +143,11 @@ class TestMarketDefinitionRunner(unittest.TestCase):
         assert self.market_definition_runner.adjustment_factor == 44.323
         assert self.market_definition_runner.sort_priority == 1
         assert self.market_definition_runner.status == 'ACTIVE'
+
+    def test_removal_date_string(self):
+        now = datetime.datetime.now()
+        self.market_definition_runner.removal_date = now
+        assert self.market_definition_runner.removal_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def test_str(self):
         assert str(self.market_definition_runner) == 'MarketDefinitionRunner: 11131804'

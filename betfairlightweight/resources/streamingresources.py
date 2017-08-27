@@ -32,6 +32,11 @@ class MarketDefinitionRunner(object):
         self.removal_date = BaseResource.strip_datetime(removalDate)
         self.name = name  # historic data only
 
+    @property
+    def removal_date_string(self):
+        if self.removal_date:
+            return self.removal_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     def __str__(self):
         return 'MarketDefinitionRunner: %s' % self.selection_id
 
@@ -229,7 +234,7 @@ class RunnerBook(object):
                 'actualSP': runner_definition.bsp
             },
             'adjustmentFactor': runner_definition.adjustment_factor,
-            'removalDate': runner_definition.removal_date,
+            'removalDate': runner_definition.removal_date_string,
             'lastPriceTraded': self.last_price_traded,
             'handicap': self.handicap,
             'totalMatched': self.total_matched,
