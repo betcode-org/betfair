@@ -22,7 +22,7 @@ class MarketDefinitionRunner(object):
     :type status: unicode
     """
 
-    def __init__(self, id, sortPriority, status, hc=0, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
+    def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
         self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
@@ -170,7 +170,7 @@ class Available(object):
 class RunnerBook(object):
 
     def __init__(self, id, ltp=None, tv=None, trd=None, atb=None, batb=None, bdatb=None, atl=None, batl=None,
-                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=0):
+                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=None):
         self.selection_id = id
         self.last_price_traded = ltp
         self.total_matched = tv
