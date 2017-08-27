@@ -236,3 +236,267 @@ class StreamingOrderType(Enum):
 
 class StreamingRegulatorCode(Enum):
     REG_GGC = 'GIBRALTAR REGULATOR'
+
+
+class MarketSort(Enum):
+    """
+    Specify how to sort market data received from Betfair APING.
+    :var MinTraded: Minimum traded volume
+    :var MaxTraded: Maximum traded volume
+    :var MinAvailable: Minimum available to match
+    :var MaxAvailable: Maximum available to match
+    :var FirstStart: The closest markets based on their expected start time
+    :var LastStart: The most distant markets based on their expected start time
+    """
+    MinTraded = 'MINIMUM_TRADED'
+    MaxTraded = 'MAXIMUM_TRADED'
+    MinAvailable = 'MINIMUM_AVAILABLE'
+    MaxAvailable = 'MAXIMUM_AVAILABLE'
+    FirstStart = 'FIRST_TO_START'
+    LastStart = 'LAST_TO_START'
+
+
+class MatchProjection(Enum):
+    """
+    How to aggregate orders.
+    :var NoRoll: No rollup, return raw fragments
+    :var PriceRoll: Rollup matched amounts by distinct matched prices per side.
+    :var AvgPriceRoll: Rollup matched amounts by average matched price per side
+    """
+    NoRoll = 'NO_ROLLUP'
+    PriceRoll = 'ROLLED_UP_BY_PRICE'
+    AvgPriceRoll = 'ROLLED_UP_BY_AVG_PRICE'
+
+
+class OrderProjection(Enum):
+    """
+    Orders to include it market book data retrieved from exchange.
+    :var All: EXECUTABLE and EXECUTION_COMPLETE orders
+    :var Executable: An order that has a remaining unmatched portion
+    :var ExecutionComplete: An order that does not have any remaining unmatched portion
+    """
+    All = 'ALL'
+    Executable = 'EXECUTABLE'
+    ExecutionComplete = 'EXECUTION_COMPLETE'
+
+
+class RunnerStatus(Enum):
+    """
+    :var Active: ACTIVE
+    :var Winner: WINNER
+    :var Loser: LOSER
+    :var Placed: The runner was placed, applies to EACH_WAY marketTypes only.
+    :var Vacant: REMOVED_VACANT applies to Greyhounds.
+    :var Removed: REMOVED
+    :var Hidden: The selection is hidden from the market. This occurs in Horse Racing markets if runner does not hold an official entry.
+    """
+    Active = 'ACTIVE'
+    Winner = 'WINNER'
+    Loser = 'LOSER'
+    Placed = 'PLACED'
+    Vacant = 'REMOVED_VACANT'
+    Removed = 'REMOVED'
+    Hidden = 'HIDDEN'
+
+
+class TimeGranularity(Enum):
+    Days = 'DAYS'
+    Hours = 'HOURS'
+    Mins = 'MINUTES'
+
+
+class Side(Enum):
+    """
+    Bet side
+    :var Back: To back a team, horse or outcome is to bet on the selection to win.
+    :var Lay: To lay a team, horse, or outcome is to bet on the selection to lose.
+    """
+    Back = 'BACK'
+    Lay = 'LAY'
+
+
+class RollUpModel(Enum):
+    """
+    Roll up methods to apply to orders.
+    :var Stake: The volumes will be rolled up to the minimum value which is >= rollupLimit.
+    :var Payout: The volumes will be rolled up to the minimum value where the payout( price * volume ) is >= rollupLimit.
+    :var Liability: The volumes will be rolled up to the minimum value which is >= rollupLimit, until a lay price threshold.
+                            There after, the volumes will be rolled up to the minimum value such that the liability >= a minimum liability.
+    :var NoRoll: No rollup will be applied. However the volumes will be filtered by currency specific minimum stake unless overridden specifically for the channel.
+    """
+    Stake = 'STAKE'
+    Payout = 'PAYOUT'
+    Liability = 'MANAGED_LIABILITY'
+    NoRoll = 'NONE'
+
+
+class OrderBy(Enum):
+    """
+    Sort method to be applied to orders.
+    :var BetId: Deprecated Use BY_PLACE_TIME instead. Order by placed time, then bet id.
+    :var MarketId: Order by market id, then placed time, then bet id.
+    :var MatchTime: Order by time of last matched fragment (if any), then placed time, then bet id.
+                        Filters out orders which have no matched date.
+                        The dateRange filter (if specified) is applied to the matched date.
+    :var PlaceTime: Order by placed time, then bet id. This is an alias of to be deprecated BY_BET.
+                        The dateRange filter (if specified) is applied to the placed date.
+    :var SettleTime: Order by time of last settled fragment (if any due to partial market settlement),
+                          then by last match time, then placed time, then bet id.
+                          Filters out orders which have not been settled.
+                          The dateRange filter (if specified) is applied to the settled date.
+    :var VoidTime: Order by time of last voided fragment (if any), then by last match time, then placed time, then bet id.
+                       Filters out orders which have not been voided. The dateRange filter (if specified) is applied to the voided date.
+    """
+    BetId = 'BY_BET'
+    MarketId = 'BY_MARKET'
+    MatchTime = 'BY_MATCH_TIME'
+    PlaceTime = 'BY_PLACE_TIME'
+    SettleTime = 'BY_SETTLED_TIME'
+    VoidTime = 'BY_VOID_TIME'
+
+
+class SortDir(Enum):
+    """
+    Sorting by times enum.
+    :var TimeAscending: Order from earliest value to latest e.g. lowest betId is first in the results.
+    :var TimeDescending: Order from the latest value to the earliest e.g. highest betId is first in the results.
+    """
+    TimeAscending = 'EARLIEST_TO_LATEST'
+    TimeDescending = 'LATEST_TO_EARLIEST'
+
+
+class BetStatus(Enum):
+    """
+    Set bet status to filter for.
+    :var Settled: A matched bet that was settled normally
+    :var Voided: A matched bet that was subsequently voided by Betfair, before, during or after settlement
+    :var Lapsed: Unmatched bet that was cancelled by Betfair (for example at turn in play).
+    :var Cancelled: Unmatched bet that was cancelled by an explicit customer action.
+    """
+    Settled = 'SETTLED'
+    Voided = 'VOIDED'
+    Lapsed = 'LAPSED'
+    Cancelled = 'CANCELLED'
+
+
+class GroupBy(Enum):
+    """
+    Grouping of P&L reporting
+    :var EventType: A roll up of settled P&L, commission paid and number of bet orders, on a specified event type
+    :var Event: A roll up of settled P&L, commission paid and number of bet orders, on a specified event
+    :var Market: A roll up of settled P&L, commission paid and number of bet orders, on a specified market
+    :var Side: An averaged roll up of settled P&L, and number of bets, on the specified side of a specified selection within a specified market, that are either settled or voided
+    :var Bet: The P&L, commission paid, side and regulatory information etc, about each individual bet order
+    """
+    EventType = 'EVENT_TYPE'
+    Event = 'EVENT'
+    Market = 'MARKET'
+    Side = 'SIDE'
+    Bet = 'BET'
+
+
+class OrderType(Enum):
+    """
+    Define order type in sending orders to exchange.
+    :var LimitOrder: A normal exchange limit order for immediate execution
+    :var LimitOnClose: Limit order for the auction (SP)
+    :var MarketOnClose: Market order for the auction (SP)
+    """
+    LimitOrder = 'LIMIT'
+    LimitOnClose = 'LIMIT_ON_CLOSE'
+    MarketOnClose = 'MARKET_ON_CLOSE'
+
+
+class PersistenceType(Enum):
+    """
+    Description supplied to tell exchange how to handle bet.
+    :var Lapse: Lapse the order when the market is turned in-play
+    :var Persist: Persist the order to in-play. The bet will be place automatically into the in-play market at the start of the event.
+    :var MarketOnClose: Put the order into the auction (SP) at turn-in-play
+    """
+    Lapse = 'LAPSE'
+    Persist = 'PERSIST'
+    MarketOnClose = 'MARKET_ON_CLOSE'
+
+
+class Wallet(Enum):
+    """
+    Wallet to check for accounts purposes.
+    :var UK: The UK Exchange wallet
+    :var Aus: The Australian Exchange wallet - THIS IS NOW DEPRECATED
+    """
+    UK = 'UK'
+    Aus = 'AUSTRALIAN'
+
+
+class IncludeItem(Enum):
+    """
+    Items to include for transaction reporting.
+    :var All: Include all items
+    :var Banking: Include payments only
+    :var Exchange: Include exchange bets only
+    :var Poker: Include poker transactions only
+    """
+    All = 'ALL'
+    Banking = 'DEPOSITS_WITHDRAWALS'
+    Exchange = 'EXCHANGE'
+    Poker = 'POKER_ROOM'
+
+
+class OrderStatus(Enum):
+    """
+    Status of orders sent, in processing or completed at the exchange.
+    :var Pending: An asynchronous order is yet to be processed. Once the bet has been processed by the exchange (including waiting for any in-play delay),
+                  the result will be reported and available on the  Exchange Stream API and API NG. Not a valid search criteria on MarketFilter
+    :var ExecutionComplete: An order that does not have any remaining unmatched portion.
+    :var Executable: An order that has a remaining unmatched portion.
+    :var Expired: The order is no longer available for execution due to its time in force constraint. Not a valid search criteria on MarketFilter.
+                  In the case of FILL_OR_KILL orders, this means the order has been killed because it could not be filled to your specifications.
+    """
+    ExecutionComplete = 'EXECUTION_COMPLETE'
+    Executable = 'EXECUTABLE'
+    Expired = 'EXPIRED'
+    Pending = 'PENDING'
+
+
+class TimeInForce(Enum):
+    """
+    Used to define an order as fill and/or kill.
+    :var FillOrKill: Execute the transaction immediately and completely/between minFillSize and size or killed.
+    """
+    FillOrKill = 'FILL_OR_KILL'
+
+
+class BetTargetType(Enum):
+    """
+    Specify a bet to be for a specific payout or profit.
+    :var BackersProfit: The payout requested minus the calculated size at which this LimitOrder is to be placed
+    :var Payout: The total payout requested on a LimitOrder
+    """
+    Payout = 'PAYOUT'
+    BackersProfit = 'BACKERS_PROFIT'
+
+
+class MarketBettingType(Enum):
+    """
+    Specifying the market type on which a bet is to be placed.
+    :var Odds: Odds Market - Any market that doesn't fit any any of the below categories.
+    :var Line: Line Market - Now Deprecated
+    :var Range: Range Market - Now Deprecated
+    :var AsianDouble: Asian Handicap Market - A traditional Asian handicap market. Can be identified by marketType ASIAN_HANDICAP
+    :var AsianSingle: Asian Single Line Market - A market in which there can be 0 or multiple winners. e,.g marketType TOTAL_GOALS
+    :var FixedOdds: Sportsbook Odds Market. This type is deprecated and will be removed in future releases,
+                    when Sportsbook markets will be represented as ODDS market but with a different product type.
+    """
+    Odds = 'ODDS'
+    Line = 'LINE'
+    Range = 'RANGE'
+    AsianDouble = 'ASIAN_HANDICAP_DOUBLE_LINE'
+    AsianSingle = 'ASIAN_HANDICAP_SINGLE_LINE'
+    FixedOdds = 'FIXED_ODDS'
+
+
+class Exchange(Enum):
+    """Exchange location to point to."""
+    AUS = 'AUS'
+    UK = 'UK'

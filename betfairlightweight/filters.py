@@ -22,10 +22,38 @@ def streaming_market_filter(market_ids=None, bsp_market=None, betting_types=None
     }
 
 
-def streaming_market_data_filter(fields=None, ladder_levels=None):
+def streaming_data_fields(ex_best_offers_disp=False, ex_best_offers=False, ex_all_offers=True, ex_traded=True,
+                          ex_traded_vol=False, ex_ltp=False, ex_market_def=True, sp_traded=False, sp_projected=False):
     """
-    :param list fields: EX_BEST_OFFERS_DISP, EX_BEST_OFFERS, EX_ALL_OFFERS, EX_TRADED,
-    EX_TRADED_VOL, EX_LTP, EX_MARKET_DEF, SP_TRADED, SP_PROJECTED
+    Create PriceData filter list from all args passed as True.
+    :param ex_best_offers_disp: Best prices including virtual prices - depth is controlled by ladderLevels (1 to 10).
+                                Data fields returned: bdatb, bdatl. Data format returned: level, price, size.
+    :param ex_best_offers: Best prices not including virtual prices - depth is controlled by ladderLevels (1 to 10).
+                           Data fields returned: batb, batl. Data format returned: level, price, size.
+    :param ex_all_offers: Full available to BACK/LAY ladder.
+                          Data fields returned: atb, atl. Data format returned: price, size.
+    :param ex_traded: Full traded ladder.
+                      Data fields returned: trd. Data format returned: price, size.
+    :param ex_traded_vol: Market and runner level traded volume.
+                          Data fields returned: tv. Data format returned: size.
+    :param ex_ltp: Last traded price.
+                   Data fields returned: ltp. Data format returned: price.
+    :param ex_market_def: Send market definitions.
+                          Data fields returned: marketDefinition. Data format returned: MarketDefinition.
+    :param sp_traded: Starting price ladder.
+                      Data fields returned: spb, spl. Data format returned: price, size.
+    :param sp_projected: Starting price projection prices.
+                      Data fields returned: spn, spf. Data format returned: price.
+    :returns: string values of all args specified as True.
+    :rtype: list
+    """
+    args = locals()
+    return sorted([k.upper() for k, v in args.items() if v is True])
+
+
+def streaming_market_data_filter(fields=streaming_data_fields(), ladder_levels=None):
+    """
+    :param list fields: streaming_data_fields
     :param int ladder_levels: 1->10
 
     :return: dict
