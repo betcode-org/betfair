@@ -30,12 +30,8 @@ class MarketDefinitionRunner(object):
         self.bsp = bsp
         self.adjustment_factor = adjustmentFactor
         self.removal_date = BaseResource.strip_datetime(removalDate)
+        self.removal_date_string = removalDate
         self.name = name  # historic data only
-
-    @property
-    def removal_date_string(self):
-        if self.removal_date:
-            return self.removal_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def __str__(self):
         return 'MarketDefinitionRunner: %s' % self.selection_id

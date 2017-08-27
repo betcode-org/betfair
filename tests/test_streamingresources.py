@@ -143,11 +143,8 @@ class TestMarketDefinitionRunner(unittest.TestCase):
         assert self.market_definition_runner.adjustment_factor == 44.323
         assert self.market_definition_runner.sort_priority == 1
         assert self.market_definition_runner.status == 'ACTIVE'
-
-    def test_removal_date_string(self):
-        now = datetime.datetime.now()
-        self.market_definition_runner.removal_date = now
-        assert self.market_definition_runner.removal_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        assert self.market_definition_runner.removal_date is None
+        assert self.market_definition_runner.removal_date_string is None
 
     def test_str(self):
         assert str(self.market_definition_runner) == 'MarketDefinitionRunner: 11131804'
