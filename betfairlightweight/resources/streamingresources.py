@@ -372,6 +372,16 @@ class UnmatchedOrder(object):
         self.reference_strategy = rfs
         self.lapsed_date = ld
 
+    @property
+    def placed_date_string(self):
+        if self.placed_date:
+            return self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    @property
+    def matched_date_string(self):
+        if self.matched_date:
+            return self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     def serialise(self, market_id, selection_id, handicap):
         return {
             'averagePriceMatched': self.average_price_matched or 0.0,
@@ -379,11 +389,10 @@ class UnmatchedOrder(object):
             'bspLiability': self.bsp_liability,
             'handicap': handicap,
             'marketId': market_id,
-            'matchedDate': self.matched_date.strftime(
-                '%Y-%m-%dT%H:%M:%S.%fZ') if self.matched_date is not None else self.matched_date,
+            'matchedDate': self.matched_date_string,
             'orderType': StreamingOrderType[self.order_type].value,
             'persistenceType': StreamingPersistenceType[self.persistence_type].value if self.persistence_type else None,
-            'placedDate': self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'placedDate': self.placed_date_string,
             'priceSize': {
                 'price': self.price,
                 'size': self.size
