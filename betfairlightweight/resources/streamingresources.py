@@ -297,6 +297,7 @@ class MarketBookCache(BaseResource):
                         runner.starting_price_lay.update(new_data['spl'])
                 else:
                     self.runners.append(RunnerBook(**new_data))
+                    self._update_runner_dict()
 
     def create_market_book(self, unique_id, streaming_update, lightweight):
         if lightweight:
