@@ -1,7 +1,7 @@
-import unittest
 import datetime
-from tests import mock
+import unittest
 
+from betfairlightweight.resources.baseresource import BaseResource
 from betfairlightweight.resources.streamingresources import (
     MarketDefinition,
     OrderBookCache,
@@ -12,8 +12,8 @@ from betfairlightweight.resources.streamingresources import (
     Available,
     MarketDefinitionRunner,
 )
-from betfairlightweight.resources.baseresource import BaseResource
-from tests.tools import create_mock_json
+from tests import mock
+from tests.unit.tools import create_mock_json
 
 
 class TestAvailable(unittest.TestCase):

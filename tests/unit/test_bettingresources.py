@@ -1,7 +1,7 @@
 from __future__ import print_function
 
-import unittest
 import datetime
+import unittest
 
 from betfairlightweight import resources
 from betfairlightweight.resources.bettingresources import (
@@ -9,8 +9,7 @@ from betfairlightweight.resources.bettingresources import (
     LimitOnCloseOrder,
     MarketOnCloseOrder,
 )
-
-from tests.tools import create_mock_json
+from tests.unit.tools import create_mock_json
 
 
 class BettingResourcesTest(unittest.TestCase):

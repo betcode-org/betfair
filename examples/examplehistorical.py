@@ -3,7 +3,11 @@ import logging
 import betfairlightweight
 from betfairlightweight import StreamListener
 from betfairlightweight.streaming.stream import MarketStream
-import time
+
+"""
+Data needs to be downloaded from:
+    https://historicdata.betfair.com
+"""
 
 # setup logging
 logging.basicConfig(level=logging.INFO)
@@ -36,19 +40,15 @@ class HistoricalListener(StreamListener):
             return HistoricalStream(self)
 
 # create listener
-listener = StreamListener(
+listener = HistoricalListener(
     max_latency=1e100
 )
 
-# create historical stream
+# create historical stream, update directory to file location
 stream = trading.historical.create_stream(
-    directory='/tmp/1.132467988',
+    directory='/Users/liampauling/Downloads/Sites 3/xdw/api/c0a022d4-3460-41f1-af12-a0b68b136898/BASIC-1.132153978',
     listener=listener
 )
 
 # start stream
-start = time.time()
 stream.start(async=False)
-print(time.time() - start)
-# 54/59s
-# runner dict 49s
