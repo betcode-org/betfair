@@ -38,7 +38,7 @@ setup(
             'betfairlightweight': 'betfairlightweight'
         },
         install_requires=INSTALL_REQUIRES,
-        url='https://github.com/liampauling/betfairlightweight',
+        url='https://github.com/liampauling/betfair',
         license='MIT',
         author='liampauling',
         author_email='',

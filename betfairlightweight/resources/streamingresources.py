@@ -22,7 +22,7 @@ class MarketDefinitionRunner(object):
     :type status: unicode
     """
 
-    def __init__(self, id, sortPriority, status, hc=None, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
+    def __init__(self, id, sortPriority, status, hc=0, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
         self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
@@ -170,7 +170,7 @@ class Available(object):
 class RunnerBook(object):
 
     def __init__(self, id, ltp=None, tv=None, trd=None, atb=None, batb=None, bdatb=None, atl=None, batl=None,
-                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=None):
+                 bdatl=None, spn=None, spf=None, spb=None, spl=None, hc=0):
         self.selection_id = id
         self.last_price_traded = ltp
         self.total_matched = tv
@@ -250,6 +250,9 @@ class MarketBookCache(BaseResource):
             'marketDefinition' in kwargs else None
         self.runners = [RunnerBook(**i) for i in kwargs.get('rc', [])]
 
+        self.runner_dict = {}
+        self._update_runner_dict()
+
     def update_cache(self, market_change, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
@@ -263,7 +266,7 @@ class MarketBookCache(BaseResource):
         if 'rc' in market_change:
             for new_data in market_change['rc']:
                 runner = self.runner_dict.get(
-                    (new_data['id'], new_data.get('hc'))
+                    (new_data['id'], new_data.get('hc', 0))
                 )
                 if runner:
                     if 'ltp' in new_data:
@@ -294,6 +297,7 @@ class MarketBookCache(BaseResource):
                         runner.starting_price_lay.update(new_data['spl'])
                 else:
                     self.runners.append(RunnerBook(**new_data))
+                    self._update_runner_dict()
 
     def create_market_book(self, unique_id, streaming_update, lightweight):
         if lightweight:
@@ -307,9 +311,10 @@ class MarketBookCache(BaseResource):
                 **self.serialise
             )
 
-    @property
-    def runner_dict(self):
-        return {(runner.selection_id, runner.handicap): runner for runner in self.runners}
+    def _update_runner_dict(self):
+        self.runner_dict = {
+            (runner.selection_id, runner.handicap): runner for runner in self.runners
+        }
 
     @property
     def serialise(self):

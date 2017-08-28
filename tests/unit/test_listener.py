@@ -1,10 +1,10 @@
 from __future__ import print_function
 
 import unittest
-from tests import mock
 
 from betfairlightweight.streaming.listener import BaseListener, StreamListener
-from tests.tools import create_mock_json
+from tests import mock
+from tests.unit.tools import create_mock_json
 
 
 class BaseListenerTest(unittest.TestCase):

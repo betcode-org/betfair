@@ -1,12 +1,13 @@
 import unittest
-from tests import mock
+
 from requests.exceptions import ConnectionError
 
-from tests.tools import create_mock_json
-from betfairlightweight.endpoints.login import Login
 from betfairlightweight import APIClient
+from betfairlightweight.endpoints.login import Login
 from betfairlightweight.exceptions import LoginError, APIError
 from betfairlightweight.resources import LoginResource
+from tests import mock
+from tests.unit.tools import create_mock_json
 
 
 class LoginTest(unittest.TestCase):

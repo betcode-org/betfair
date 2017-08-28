@@ -1,12 +1,13 @@
 import unittest
-from tests import mock
+
 from requests.exceptions import ConnectionError
 
-from tests.tools import create_mock_json
-from betfairlightweight.endpoints.logout import Logout
 from betfairlightweight import APIClient
+from betfairlightweight.endpoints.logout import Logout
 from betfairlightweight.exceptions import LogoutError, APIError
 from betfairlightweight.resources import LogoutResource
+from tests import mock
+from tests.unit.tools import create_mock_json
 
 
 class LogoutTest(unittest.TestCase):
