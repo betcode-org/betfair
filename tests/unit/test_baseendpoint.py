@@ -1,13 +1,13 @@
-import unittest
 import ujson as json
-from tests import mock
+import unittest
+
 from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.baseendpoint import BaseEndpoint
 from betfairlightweight.exceptions import APIError
-
-from tests.tools import create_mock_json
+from tests import mock
+from tests.unit.tools import create_mock_json
 
 
 class BaseEndpointInit(unittest.TestCase):

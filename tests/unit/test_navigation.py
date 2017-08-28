@@ -1,11 +1,12 @@
 import unittest
-from tests import mock
+
 from requests.exceptions import ConnectionError
 
-from tests.tools import create_mock_json
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.navigation import Navigation
 from betfairlightweight.exceptions import APIError
+from tests import mock
+from tests.unit.tools import create_mock_json
 
 
 class NavigationInit(unittest.TestCase):

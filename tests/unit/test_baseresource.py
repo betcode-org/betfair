@@ -1,9 +1,9 @@
-import unittest
 import datetime
 import ujson as json
+import unittest
 
 from betfairlightweight.resources.baseresource import BaseResource
-from tests.tools import create_mock_json
+from tests.unit.tools import create_mock_json
 
 
 class BaseResourceInit(unittest.TestCase):

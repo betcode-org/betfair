@@ -1,11 +1,9 @@
 from __future__ import print_function
 
 import unittest
-import datetime
 
 from betfairlightweight import resources
-
-from tests.tools import create_mock_json
+from tests.unit.tools import create_mock_json
 
 
 class ScoreResourcesTest(unittest.TestCase):
