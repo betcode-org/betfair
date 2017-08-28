@@ -204,18 +204,19 @@ class TestMarketBookCache(unittest.TestCase):
         market_book = self.market_book_cache.create_market_book(1234, {}, False)
         assert market_book == mock_market_book()
 
-    def test_runner_dict(self):
+    def test_update_runner_dict(self):
         assert self.market_book_cache.runner_dict == {}
 
         class Runner:
-            def __init__(self, selection_id, name):
+            def __init__(self, selection_id, name, handicap):
                 self.selection_id = selection_id
                 self.name = name
-                self.handicap = None
+                self.handicap = handicap
 
-        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        (a, b) = (Runner(123, 'a', 1.25), Runner(456, 'b', -0.25))
         self.market_book_cache.runners = [a, b]
-        assert self.market_book_cache.runner_dict == {(123, None): a, (456, None): b}
+        self.market_book_cache._update_runner_dict()
+        assert self.market_book_cache.runner_dict == {(123, 1.25): a, (456, -0.25): b}
 
 
 class TestRunnerBook(unittest.TestCase):
