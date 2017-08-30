@@ -141,6 +141,20 @@ class VenueResult(BaseResource):
         self.venue = kwargs.get('venue')
 
 
+class LineRangeInfo(object):
+    """
+    :type marketUnit: unicode
+    :type interval: float
+    :type minUnitValue: float
+    :type maxUnitValue: float
+    """
+    def __init__(self, marketUnit, interval, minUnitValue, maxUnitValue):
+        self.market_unit = marketUnit
+        self.interval = interval
+        self.min_unit_value = minUnitValue
+        self.max_unit_value = maxUnitValue
+
+
 class MarketCatalogueDescription(object):
     """
     :type betting_type: unicode
@@ -163,7 +177,7 @@ class MarketCatalogueDescription(object):
     def __init__(self, bettingType, bspMarket, discountAllowed, marketBaseRate, marketTime, marketType,
                  persistenceEnabled, regulator, rules, rulesHasDate, suspendTime, turnInPlayEnabled, wallet,
                  eachWayDivisor=None, clarifications=None,
-                 priceLadderDescription=None, keyLineDefinition=None):
+                 priceLadderDescription=None, keyLineDefinition=None, lineRangeInfo=None):
         self.betting_type = bettingType
         self.bsp_market = bspMarket
         self.discount_allowed = discountAllowed
@@ -181,6 +195,7 @@ class MarketCatalogueDescription(object):
         self.clarifications = clarifications
         self.price_ladder_description = priceLadderDescription
         self.key_line_definition = keyLineDefinition
+        self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
 
 
 class RunnerCatalogue(object):
