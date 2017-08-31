@@ -155,6 +155,15 @@ class LineRangeInfo(object):
         self.max_unit_value = maxUnitValue
 
 
+class PriceLadderDescription(object):
+    """
+    :type type: unicode
+    """
+
+    def __init__(self, type):
+        self.type = type
+
+
 class MarketCatalogueDescription(object):
     """
     :type betting_type: unicode
@@ -193,8 +202,7 @@ class MarketCatalogueDescription(object):
         self.wallet = wallet
         self.each_way_divisor = eachWayDivisor
         self.clarifications = clarifications
-        self.price_ladder_description = priceLadderDescription
-        self.key_line_definition = keyLineDefinition
+        self.price_ladder_description = PriceLadderDescription(**priceLadderDescription) if priceLadderDescription else None
         self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
 
 
@@ -410,6 +418,17 @@ class RunnerBook(object):
         return '<RunnerBook>'
 
 
+class KeyLineSelection(object):
+    """
+    :type selectionId: int
+    :type handicap: float
+    """
+
+    def __init__(self, selectionId, handicap):
+        self.selection_id = selectionId
+        self.handicap = handicap
+
+
 class MarketBook(BaseResource):
     """
     :type bet_delay: int
@@ -455,6 +474,7 @@ class MarketBook(BaseResource):
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
         self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
+        self.key_line_description = [KeyLineSelection(**i) for i in kwargs.get('keyLineDescription', [])]
 
 
 class CurrentOrder(object):
