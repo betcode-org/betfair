@@ -1,13 +1,13 @@
 import os
 import logging
-import queue
 
 import betfairlightweight
-from betfairlightweight.filters import (
-    streaming_market_filter,
-    streaming_market_data_filter,
-)
 
+"""
+inplayservice is the API endpoint that the website uses to
+provide scores data, scores provides a snapshot whereas event
+timeline will give update details.
+"""
 
 # setup logging
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
@@ -34,7 +34,7 @@ for score in scores:
     )  # view resources or debug to see all values available
 
 
-# timeline request
+# timeline request (single)
 timeline = trading.in_play_service.get_event_timeline(
     event_id=event_id
 )
@@ -46,3 +46,18 @@ for update in timeline.update_detail:
         update.type,
         update.update_time,
     )  # view resources or debug to see all values available
+
+
+# timelines request (provide list / returns list)
+timelines = trading.in_play_service.get_event_timelines(
+    event_ids=[event_id]
+)
+print(timelines)
+for timeline in timelines:
+    for update in timeline.update_detail:
+        print(
+            update.update_id,
+            update.elapsed_regular_time,
+            update.type,
+            update.update_time,
+        )  # view resources or debug to see all values available

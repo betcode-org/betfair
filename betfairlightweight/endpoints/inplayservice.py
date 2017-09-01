@@ -20,6 +20,17 @@ class InPlayService(BaseEndpoint):
         (response, elapsed_time) = self.request(params=params, session=session, url=url)
         return self.process_response(response, resources.EventTimeline, elapsed_time, lightweight)
 
+    def get_event_timelines(self, event_ids, session=None, lightweight=None):
+        url = '%s%s' % (self.url, 'eventTimelines')
+        params = {
+            'eventIds': ','.join(str(x) for x in event_ids),
+            'alt': 'json',
+            'regionCode': 'UK',
+            'locale': 'en_GB'
+        }
+        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        return self.process_response(response, resources.EventTimeline, elapsed_time, lightweight)
+
     def get_scores(self, event_ids, session=None, lightweight=None):
         url = '%s%s' % (self.url, 'scores')
         params = {
