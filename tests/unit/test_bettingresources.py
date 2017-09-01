@@ -158,6 +158,11 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.description.wallet == market_catalogue['description']['wallet']
             assert resource.description.each_way_divisor == market_catalogue['description'].get('eachWayDivisor')
             assert resource.description.clarifications == market_catalogue['description'].get('clarifications')
+            assert resource.description.line_range_info.interval  == market_catalogue['description']['lineRangeInfo'].get('interval')
+            assert resource.description.line_range_info.market_unit == market_catalogue['description']['lineRangeInfo'].get('marketUnit')
+            assert resource.description.line_range_info.min_unit_value  == market_catalogue['description']['lineRangeInfo'].get('minUnitValue')
+            assert resource.description.line_range_info.max_unit_value  == market_catalogue['description']['lineRangeInfo'].get('maxUnitValue')
+            assert resource.description.price_ladder_description.type == market_catalogue['description']['priceLadderDescription'].get('type')
 
             assert len(resource.runners) == 10
             assert resource.runners[6].handicap == 0.0
