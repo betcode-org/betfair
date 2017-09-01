@@ -18,11 +18,11 @@ trading = betfairlightweight.APIClient(username)
 trading.login()
 
 # update
-event_id = 28350688
+event_ids = [28369618]
 
 # score request (provide list / returns list)
 scores = trading.in_play_service.get_scores(
-    event_ids=[event_id]
+    event_ids=event_ids
 )
 print(scores)
 for score in scores:
@@ -36,7 +36,7 @@ for score in scores:
 
 # timeline request (single)
 timeline = trading.in_play_service.get_event_timeline(
-    event_id=event_id
+    event_id=event_ids[0]
 )
 print(timeline)
 for update in timeline.update_detail:
@@ -50,7 +50,7 @@ for update in timeline.update_detail:
 
 # timelines request (provide list / returns list)
 timelines = trading.in_play_service.get_event_timelines(
-    event_ids=[event_id]
+    event_ids=event_ids
 )
 print(timelines)
 for timeline in timelines:

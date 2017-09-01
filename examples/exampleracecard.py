@@ -1,4 +1,3 @@
-import os
 import logging
 
 import betfairlightweight
@@ -8,8 +7,7 @@ import betfairlightweight
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
 
 # create trading instance
-username = os.environ.get('username')
-trading = betfairlightweight.APIClient(username)
+trading = betfairlightweight.APIClient('username', 'password')
 
 # update
 market_id = '1.133559518'

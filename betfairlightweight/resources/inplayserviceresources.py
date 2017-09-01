@@ -15,7 +15,7 @@ class HomeAwayBase(object):
                  games=None, numberOfCards=None, numberOfCorners=None, numberOfCornersFirstHalf=None,
                  numberOfCornersSecondHalf=None, numberOfRedCards=None, numberOfYellowCards=None, highlight=None,
                  aces=None, doubleFaults=None, gameSequence=None, bookingPoints=None, isServing=None, playerSeed=None,
-                 serviceBreaks=None, inning1=None):
+                 serviceBreaks=None, inning1=None, quarterByQuarter=None):
         self.booking_points = bookingPoints
         self.full_time_score = fullTimeScore
         self.games = games
@@ -39,6 +39,7 @@ class HomeAwayBase(object):
         self.player_seed = playerSeed
         self.service_breaks = serviceBreaks
         self.inning1 = Innings(**inning1) if inning1 else None  # todo more innings?
+        self.quarter_by_quarter = quarterByQuarter
 
 
 class Score(object):
@@ -59,8 +60,8 @@ class Score(object):
 
 class UpdateDetail(object):
 
-    def __init__(self, elapsedRegularTime, matchTime, type, updateId, updateTime, updateType, team=None, teamName=None,
-                 elapsedAddedTime=None):
+    def __init__(self, matchTime, type, updateTime, updateType, team=None, teamName=None, elapsedAddedTime=None,
+                 updateId=None, elapsedRegularTime=None, player=None):
         self.elapsed_regular_time = elapsedRegularTime
         self.match_time = matchTime
         self.type = type
@@ -70,6 +71,7 @@ class UpdateDetail(object):
         self.team = team
         self.team_name = teamName
         self.elapsed_added_time = elapsedAddedTime
+        self.player = player
 
 
 class EventTimeline(BaseResource):
