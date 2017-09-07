@@ -1,5 +1,3 @@
-import datetime
-
 from .baseendpoint import BaseEndpoint
 from .. import resources
 from ..utils import clean_locals

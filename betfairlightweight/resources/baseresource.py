@@ -1,10 +1,10 @@
 import datetime
 import ciso8601
-import ujson as json
 
 from ..compat import (
     basestring,
     integer_types,
+    json,
 )
 
 
