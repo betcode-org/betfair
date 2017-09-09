@@ -22,7 +22,7 @@ class InPlayServiceTest(unittest.TestCase):
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.process_response')
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request', return_value=(mock.Mock(), 1.3))
     def test_get_event_timeline(self, mock_request, mock_process_response):
-        event_id = [12345]
+        event_id = 12345
         params = {
             'eventId': event_id,
             'alt': 'json',
@@ -33,6 +33,23 @@ class InPlayServiceTest(unittest.TestCase):
 
         mock_request.assert_called_with(
                 url='https://www.betfair.com/inplayservice/v1.1/eventTimeline', session=None, params=params)
+        assert mock_request.call_count == 1
+        assert mock_process_response.call_count == 1
+
+    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.process_response')
+    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.request', return_value=(mock.Mock(), 1.3))
+    def test_get_event_timelines(self, mock_request, mock_process_response):
+        event_ids = [12345, 54321]
+        params = {
+            'eventIds': '12345,54321',
+            'alt': 'json',
+            'regionCode': 'UK',
+            'locale': 'en_GB'
+        }
+        self.in_play_service.get_event_timelines(event_ids)
+
+        mock_request.assert_called_with(
+                url='https://www.betfair.com/inplayservice/v1.1/eventTimelines', session=None, params=params)
         assert mock_request.call_count == 1
         assert mock_process_response.call_count == 1
 
