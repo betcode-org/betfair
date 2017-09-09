@@ -42,6 +42,23 @@ The library can then be used as follows:
 [<EventTypeResult>, <EventTypeResult>, ..]
 ```
 
+Following endpoints are available:
+
+```python
+>>> trading.login
+>>> trading.keep_alive
+>>> trading.logout
+
+>>> trading.betting
+>>> trading.account
+>>> trading.navigation
+>>> trading.scores
+>>> trading.streaming
+
+>>> trading.in_play_service
+>>> trading.race_card
+```
+
 
 # streaming
 
