@@ -15,7 +15,7 @@ class HomeAwayBase(object):
                  games=None, numberOfCards=None, numberOfCorners=None, numberOfCornersFirstHalf=None,
                  numberOfCornersSecondHalf=None, numberOfRedCards=None, numberOfYellowCards=None, highlight=None,
                  aces=None, doubleFaults=None, gameSequence=None, bookingPoints=None, isServing=None, playerSeed=None,
-                 serviceBreaks=None, inning1=None, quarterByQuarter=None):
+                 serviceBreaks=None, inning1=None, inning2=None, quarterByQuarter=None):
         self.booking_points = bookingPoints
         self.full_time_score = fullTimeScore
         self.games = games
@@ -38,7 +38,8 @@ class HomeAwayBase(object):
         self.is_serving = isServing
         self.player_seed = playerSeed
         self.service_breaks = serviceBreaks
-        self.inning1 = Innings(**inning1) if inning1 else None  # todo more innings?
+        self.inning1 = Innings(**inning1) if inning1 else None
+        self.inning2 = Innings(**inning2) if inning2 else None
         self.quarter_by_quarter = quarterByQuarter
 
 
