@@ -1,4 +1,7 @@
-from .betfairstream import BetfairStream
+from .betfairstream import (
+    BetfairStream,
+    HistoricalStream,
+)
 from .listener import (
     BaseListener,
     StreamListener,

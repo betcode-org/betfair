@@ -4,7 +4,10 @@ import time
 import threading
 from tests import mock
 
-from betfairlightweight.streaming.betfairstream import BetfairStream
+from betfairlightweight.streaming.betfairstream import (
+    BetfairStream,
+    HistoricalStream,
+)
 from betfairlightweight.exceptions import (
     SocketError,
     ListenerError,
@@ -229,3 +232,29 @@ class BetfairStreamTest(unittest.TestCase):
         assert str(self.betfair_stream) == '<BetfairStream [not running]>'
         self.betfair_stream._running = True
         assert str(self.betfair_stream) == '<BetfairStream [running]>'
+
+
+class HistoricalStreamTest(unittest.TestCase):
+
+    def setUp(self):
+        self.directory = 'test'
+        self.listener = mock.Mock()
+        self.stream = HistoricalStream(self.directory, self.listener)
+
+    def test_init(self):
+        assert self.stream.directory == self.directory
+        assert self.stream.listener == self.listener
+
+    @mock.patch('betfairlightweight.endpoints.streaming.HistoricalStream._read_loop')
+    def test_start(self, mock_read_loop):
+        self.stream.start()
+        mock_read_loop.assert_called_with()
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalStream._read_loop')
+    @mock.patch('betfairlightweight.streaming.betfairstream.threading')
+    def test_start_thread(self, mock_threading, mock_read_loop):
+        self.stream.start(async=True)
+        mock_threading.Thread.assert_called_with(name='HistoricalStream', target=mock_read_loop)
+
+    # def test_read_loop(self):
+    #     pass

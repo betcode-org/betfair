@@ -89,7 +89,7 @@ In development so breaking changes likely.
 
 ```python
 
-stream = trading.historical.create_stream(
+stream = trading.streaming.create_historical_stream(
     directory='horse-racing-pro-sample',
 )
 
