@@ -57,8 +57,11 @@ class BaseStream(object):
     def clear_cache(self):
         self._caches.clear()
 
-    def snap(self, market_ids):
-        raise NotImplementedError
+    def snap(self, market_ids=None):
+        return [
+            cache.create_resource(self.unique_id, None, self._lightweight) for cache in self._caches.values()
+            if market_ids is None or cache.market_id in market_ids
+        ]
 
     def on_process(self, output):
         if self.output_queue:
@@ -127,15 +130,9 @@ class MarketStream(BaseStream):
                 self._updates_processed += 1
 
             output_market_book.append(
-                market_book_cache.create_market_book(self.unique_id, market_book, self._lightweight)
+                market_book_cache.create_resource(self.unique_id, market_book, self._lightweight)
             )
         self.on_process(output_market_book)
-
-    def snap(self, market_ids):
-        return [
-            market.create_market_book(self.unique_id, None, self._lightweight) for market in self._caches.values()
-            if market_ids is None or market.market_id in market_ids
-        ]
 
     def __str__(self):
         return 'MarketStream'
@@ -161,15 +158,9 @@ class OrderStream(BaseStream):
             self._updates_processed += 1
 
             output_order_book.append(
-                self._caches[market_id].create_order_book(self.unique_id, order_book, self._lightweight)
+                self._caches[market_id].create_resource(self.unique_id, order_book, self._lightweight)
             )
         self.on_process(output_order_book)
-
-    def snap(self, market_ids):
-        return [
-            market.create_order_book(self.unique_id, None, self._lightweight) for market in self._caches.values()
-            if market_ids is None or market.market_id in market_ids
-        ]
 
     def __str__(self):
         return 'OrderStream'

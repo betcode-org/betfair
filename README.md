@@ -42,6 +42,23 @@ The library can then be used as follows:
 [<EventTypeResult>, <EventTypeResult>, ..]
 ```
 
+Following endpoints are available:
+
+```python
+>>> trading.login
+>>> trading.keep_alive
+>>> trading.logout
+
+>>> trading.betting
+>>> trading.account
+>>> trading.navigation
+>>> trading.scores
+>>> trading.streaming
+
+>>> trading.in_play_service
+>>> trading.race_card
+```
+
 
 # streaming
 
@@ -89,7 +106,7 @@ In development so breaking changes likely.
 
 ```python
 
-stream = trading.historical.create_stream(
+stream = trading.streaming.create_historical_stream(
     directory='horse-racing-pro-sample',
 )
 

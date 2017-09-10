@@ -1,6 +1,7 @@
 from ..streaming import (
     BaseListener,
     BetfairStream,
+    HistoricalStream,
 )
 
 
@@ -27,7 +28,7 @@ class Streaming(object):
         :param str description: Betfair stream description
         :param str host: Host endpoint (prod (default) or integration)
 
-        :rtype: resources.BetfairStream
+        :rtype: BetfairStream
         """
         listener = listener if listener else BaseListener()
         return BetfairStream(
@@ -40,3 +41,19 @@ class Streaming(object):
             description=description,
             host=host,
         )
+
+    @staticmethod
+    def create_historical_stream(directory, listener=None):
+        """
+        Uses streaming listener/cache to parse betfair
+        historical data:
+            https://historicdata.betfair.com/#/home
+
+        :param str directory: Directory of betfair data
+        :param BaseListener listener: Listener object
+
+        :rtype: HistoricalStream
+        """
+        listener = listener if listener else BaseListener()
+        listener.register_stream('HISTORICAL', 'marketSubscription')
+        return HistoricalStream(directory, listener)

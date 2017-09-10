@@ -1,5 +1,3 @@
-import warnings
-
 from .baseresource import BaseResource
 
 
@@ -697,11 +695,6 @@ class PlaceOrderInstruction(object):
         self.limit_order = LimitOrder(**limitOrder) if limitOrder else None
         self.limit_on_close_order = LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
         self.market_on_close_order = MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
-
-    @property
-    def order(self):
-        warnings.warn('.order will be changed to .limit_order from 1.5.0 onwards', PendingDeprecationWarning)
-        return self.limit_order
 
 
 class PlaceOrderInstructionReports(object):

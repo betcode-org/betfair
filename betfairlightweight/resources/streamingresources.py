@@ -299,7 +299,7 @@ class MarketBookCache(BaseResource):
                     self.runners.append(RunnerBook(**new_data))
                     self._update_runner_dict()
 
-    def create_market_book(self, unique_id, streaming_update, lightweight):
+    def create_resource(self, unique_id, streaming_update, lightweight):
         if lightweight:
             return self.serialise
         else:
@@ -466,7 +466,7 @@ class OrderBookCache(BaseResource):
             else:
                 self.runners.append(OrderBookRunner(**order_changes))
 
-    def create_order_book(self, unique_id, streaming_update, lightweight):
+    def create_resource(self, unique_id, streaming_update, lightweight):
         if lightweight:
             return self.serialise
         else:

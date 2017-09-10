@@ -240,3 +240,30 @@ class BetfairStream(object):
 
     def __repr__(self):
         return '<BetfairStream>'
+
+
+class HistoricalStream(object):
+    """Copy of 'Betfair Stream' for parsing
+    historical data.
+    """
+
+    def __init__(self, directory, listener):
+        """
+        :param str directory: Directory of betfair data
+        :param BaseListener listener: Listener object
+        """
+        self.directory = directory
+        self.listener = listener
+
+    def start(self, async=False):
+        if async:
+            t = threading.Thread(name='HistoricalStream', target=self._read_loop)
+            t.daemon = False
+            t.start()
+        else:
+            self._read_loop()
+
+    def _read_loop(self):
+        with open(self.directory, 'r') as f:
+            for update in f:
+                self.listener.on_data(update)

@@ -4,11 +4,11 @@ import betfairlightweight
 from betfairlightweight import StreamListener
 
 
-class HistoricalEndpointInit(unittest.TestCase):
+class HistoricalStreamTest(unittest.TestCase):
 
-    def test_historical_endpoint(self):
+    def test_historical_stream(self):
         trading = betfairlightweight.APIClient('username', 'password')
-        stream = trading.historical.create_stream(
+        stream = trading.streaming.create_historical_stream(
             directory='tests/resources/historicaldata/BASIC-1.132153978',
             listener=StreamListener()
         )

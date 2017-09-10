@@ -30,6 +30,12 @@ class BaseListener(object):
         logger.info(raw_data)
 
     def snap(self, market_ids=None):
+        """Returns a 'snap' of the current cache
+        data.
+
+        :param list market_ids: Market ids to return
+        :return: Return List of resources
+        """
         if self.stream:
             return self.stream.snap(market_ids)
         else:
@@ -62,6 +68,11 @@ class StreamListener(BaseListener):
     """
 
     def __init__(self, output_queue=None, max_latency=0.5, lightweight=False):
+        """
+        :param Queue output_queue: Queue used to return data
+        :param float max_latency: Logs warning if latency above value
+        :param bool lightweight: Returns dict instead of resource
+        """
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
