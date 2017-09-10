@@ -196,12 +196,12 @@ class TestMarketBookCache(unittest.TestCase):
 
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.MarketBook')
-    def test_create_market_book(self, mock_market_book, mock_serialise):
+    def test_create_resource(self, mock_market_book, mock_serialise):
         # lightweight
-        market_book = self.market_book_cache.create_market_book(1234, {}, True)
+        market_book = self.market_book_cache.create_resource(1234, {}, True)
         assert market_book == mock_serialise
         # not lightweight
-        market_book = self.market_book_cache.create_market_book(1234, {}, False)
+        market_book = self.market_book_cache.create_resource(1234, {}, False)
         assert market_book == mock_market_book()
 
     def test_update_runner_dict(self):
@@ -317,8 +317,8 @@ class TestOrderBookCache(unittest.TestCase):
 
     @mock.patch('betfairlightweight.resources.streamingresources.OrderBookCache.serialise')
     @mock.patch('betfairlightweight.resources.streamingresources.CurrentOrders')
-    def test_create_order_book(self, mock_current_orders, mock_serialise):
-        current_orders = self.order_book_cache.create_order_book(123, {}, False)
+    def test_create_resource(self, mock_current_orders, mock_serialise):
+        current_orders = self.order_book_cache.create_resource(123, {}, False)
 
         assert current_orders == mock_current_orders()
 

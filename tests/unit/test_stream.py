@@ -61,6 +61,22 @@ class BaseStreamTest(unittest.TestCase):
 
         assert self.stream._caches == {}
 
+    def test_snap(self):
+        market_books = self.stream.snap()
+        assert market_books == []
+
+        mock_cache = mock.Mock()
+        mock_cache.market_id = '1.1'
+        self.stream._caches = {'1.1': mock_cache}
+        market_books = self.stream.snap()
+        assert market_books == [mock_cache.create_resource()]
+
+        market_books = self.stream.snap(['1.2'])
+        assert market_books == []
+
+        market_books = self.stream.snap(['1.1'])
+        assert market_books == [mock_cache.create_resource()]
+
     def test_on_creation(self):
         self.stream._on_creation()
 
@@ -121,12 +137,12 @@ class MarketStreamTest(unittest.TestCase):
         self.stream.on_subscribe({'mc': {123}})
         mock_process.assert_called_once_with({123}, None)
 
-    @mock.patch('betfairlightweight.streaming.stream.MarketBookCache')
-    def test_process(self, mock_market_book_cache):
-        now = mock.Mock()
-        market_books = [mock.Mock()]
-        self.stream._caches = mock.Mock()
-        # self.stream._process(market_books, now)
+    # @mock.patch('betfairlightweight.streaming.stream.MarketBookCache')
+    # def test_process(self, mock_market_book_cache):
+    #     now = mock.Mock()
+    #     market_books = [mock.Mock()]
+    #     self.stream._caches = mock.Mock()
+    #     # self.stream._process(market_books, now)
 
     def test_str(self):
         assert str(self.stream) == 'MarketStream'
@@ -141,8 +157,8 @@ class OrderStreamTest(unittest.TestCase):
         self.listener = mock.Mock()
         self.stream = OrderStream(self.listener)
 
-    def test_process(self):
-        pass
+    # def test_process(self):
+    #     pass
 
     def test_str(self):
         assert str(self.stream) == 'OrderStream'

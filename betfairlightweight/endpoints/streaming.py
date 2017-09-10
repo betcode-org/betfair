@@ -28,7 +28,7 @@ class Streaming(object):
         :param str description: Betfair stream description
         :param str host: Host endpoint (prod (default) or integration)
 
-        :rtype: resources.BetfairStream
+        :rtype: BetfairStream
         """
         listener = listener if listener else BaseListener()
         return BetfairStream(

@@ -8,8 +8,20 @@ from .. import resources
 
 
 class InPlayService(BaseEndpoint):
+    """
+    In play service operations.
+    """
 
     def get_event_timeline(self, event_id, session=None, lightweight=None):
+        """
+        Returns event timeline for event id provided.
+
+        :param int event_id: Event id to return
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: resources.EventTimeline
+        """
         url = '%s%s' % (self.url, 'eventTimeline')
         params = {
             'eventId': event_id,
@@ -21,6 +33,16 @@ class InPlayService(BaseEndpoint):
         return self.process_response(response, resources.EventTimeline, elapsed_time, lightweight)
 
     def get_event_timelines(self, event_ids, session=None, lightweight=None):
+        """
+        Returns a list of event timelines based on event id's
+        supplied.
+
+        :param list event_ids: List of event id's to return
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.EventTimeline]
+        """
         url = '%s%s' % (self.url, 'eventTimelines')
         params = {
             'eventIds': ','.join(str(x) for x in event_ids),
@@ -32,6 +54,16 @@ class InPlayService(BaseEndpoint):
         return self.process_response(response, resources.EventTimeline, elapsed_time, lightweight)
 
     def get_scores(self, event_ids, session=None, lightweight=None):
+        """
+        Returns a list of scores based on event id's
+        supplied.
+
+        :param list event_ids: List of event id's to return
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.Scores]
+        """
         url = '%s%s' % (self.url, 'scores')
         params = {
             'eventIds': ','.join(str(x) for x in event_ids),

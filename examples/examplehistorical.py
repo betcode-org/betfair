@@ -45,7 +45,7 @@ listener = HistoricalListener(
 )
 
 # create historical stream, update directory to file location
-stream = trading.historical.create_stream(
+stream = trading.streaming.create_historical_stream(
     directory='/Users/liampauling/Downloads/Sites 3/xdw/api/c0a022d4-3460-41f1-af12-a0b68b136898/BASIC-1.132153978',
     listener=listener
 )
