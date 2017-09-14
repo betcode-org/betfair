@@ -183,18 +183,14 @@ class BetfairStream(object):
         to _data.
         """
         while self._running:
-            try:
-                received_data_raw = self._receive_all()
-                if self._running:
-                    self.receive_count += 1
-                    self.datetime_last_received = datetime.datetime.utcnow()
-                    received_data_split = received_data_raw.split(self.__CRLF)
-                    for received_data in received_data_split:
-                        if received_data:
-                            self._data(received_data)
-            except (socket.timeout, socket.error) as e:
-                self.stop()
-                raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
+            received_data_raw = self._receive_all()
+            if self._running:
+                self.receive_count += 1
+                self.datetime_last_received = datetime.datetime.utcnow()
+                received_data_split = received_data_raw.split(self.__CRLF)
+                for received_data in received_data_split:
+                    if received_data:
+                        self._data(received_data)
 
     def _receive_all(self):
         """Whilst socket is running receives data from socket,
@@ -206,11 +202,20 @@ class BetfairStream(object):
         else:
             crlf_bytes = self.__CRLF
 
-        while self._running and part[-2:] != crlf_bytes:
-            part = self._socket.recv(self.buffer_size)
-            if part:
+        try:
+            while self._running and part[-2:] != crlf_bytes:
+                part = self._socket.recv(self.buffer_size)
+
+                # an empty string indicates the server shutdown the socket
+                if len(part) == 0:
+                    raise SocketError('Connection closed by server')
+
                 data += part.decode(self.__encoding)
-        return data
+            return data
+
+        except (socket.timeout, socket.error) as e:
+            self.stop()
+            raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
 
     def _data(self, received_data):
         """Sends data to listener, if False is returned; socket

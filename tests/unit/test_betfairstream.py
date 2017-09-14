@@ -165,24 +165,9 @@ class BetfairStreamTest(unittest.TestCase):
         time.sleep(0.1)
 
         mock_data.assert_called_with('{}')
-        # mock_socket.close.assert_called_with()
+        mock_receive_all.assert_called_with()
         assert self.betfair_stream.datetime_last_received is not None
         assert self.betfair_stream.receive_count > 0
-
-    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
-    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._receive_all')
-    def test_read_loop_error(self, mock_receive_all, mock_stop):
-        mock_socket = mock.Mock()
-        self.betfair_stream._socket = mock_socket
-        self.betfair_stream._running = True
-
-        mock_receive_all.side_effect = socket.error()
-        with self.assertRaises(SocketError):
-            self.betfair_stream._read_loop()
-
-        mock_receive_all.side_effect = socket.timeout()
-        with self.assertRaises(SocketError):
-            self.betfair_stream._read_loop()
 
     def test_receive_all(self):
         mock_socket = mock.Mock()
@@ -197,6 +182,38 @@ class BetfairStreamTest(unittest.TestCase):
         data = self.betfair_stream._receive_all()
         mock_socket.recv.assert_called_with(self.buffer_size)
         assert data == data_return_value.decode('utf-8')
+
+    def test_receive_all_closed(self):
+        mock_socket = mock.Mock()
+        data_return_value = b''
+        mock_socket.recv.return_value = data_return_value
+        self.betfair_stream._socket = mock_socket
+        self.betfair_stream._running = True
+
+        with self.assertRaises(SocketError):
+            self.betfair_stream._receive_all()
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
+    def test_receive_all_error(self, mock_stop):
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+
+        self.betfair_stream._running = True
+        mock_socket.recv.side_effect = socket.error()
+        with self.assertRaises(SocketError):
+            self.betfair_stream._receive_all()
+        mock_stop.assert_called_with()
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
+    def test_receive_all_timeout(self, mock_stop):
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+
+        self.betfair_stream._running = True
+        mock_socket.recv.side_effect = socket.timeout()
+        with self.assertRaises(SocketError):
+            self.betfair_stream._receive_all()
+        mock_stop.assert_called_with()
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
     def test_data(self, mock_stop):
