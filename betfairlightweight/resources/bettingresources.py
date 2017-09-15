@@ -213,12 +213,12 @@ class RunnerCatalogue(object):
     :type sort_priority: int
     """
 
-    def __init__(self, selectionId, runnerName, sortPriority, handicap, metadata=None):
-        self.selection_id = selectionId
-        self.runner_name = runnerName
-        self.sort_priority = sortPriority
-        self.handicap = handicap
-        self.metadata = metadata
+    def __init__(self, **kwargs):
+        self.selection_id = kwargs.get('selectionId')
+        self.runner_name = kwargs.get('runnerName')
+        self.sort_priority = kwargs.get('sortPriority')
+        self.handicap = kwargs.get('handicap')
+        self.metadata = kwargs.get('metadata')
 
     def __str__(self):
         return 'RunnerCatalogue: %s' % self.selection_id
