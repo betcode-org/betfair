@@ -472,7 +472,10 @@ class MarketBook(BaseResource):
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
         self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
-        self.key_line_description = [KeyLineSelection(**i) for i in kwargs.get('keyLineDescription', [])]
+
+        # {u'keyLineDescription': {u'keyLine': [{u'handicap': -2.0, u'selectionId': 11624066}, {u'handicap': 2.0, u'selectionId': 61660}]}}
+        self.key_line_description = [KeyLineSelection(**i) for i in kwargs.get('keyLineDescription', {}).get('keyLine', [])]
+        self.price_ladder_definition = kwargs.get('priceLadderDefinition')
 
 
 class CurrentOrder(object):

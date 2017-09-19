@@ -4,6 +4,7 @@ from .baseresource import BaseResource
 from .bettingresources import (
     MarketBook,
     CurrentOrders,
+    PriceLadderDescription
 )
 from ..enums import (
     StreamingOrderType,
@@ -38,6 +39,21 @@ class MarketDefinitionRunner(object):
 
     def __repr__(self):
         return '<MarketDefinitionRunner>'
+
+
+class MarketDefinitionKeyLineSelection(object):
+    """
+    :type selectionId: int
+    :type handicap: float
+    """
+
+    def __init__(self, **kwargs):
+        self.selection_id = kwargs.get('id')
+        self.handicap = kwargs.get('hc')
+
+    def serialise(self):
+        return {'selectionId': self.selection_id,
+                'handicap': self.handicap}
 
 
 class MarketDefinition(object):
@@ -117,8 +133,21 @@ class MarketDefinition(object):
         self.runners_dict = {
             (runner.selection_id, runner.handicap): runner for runner in self.runners
         }
-        self.price_ladder_definition = priceLadderDefinition
-        self.key_line_definition = keyLineDefinition
+
+        # {u'type': u'CLASSIC'}
+        self.price_ladder_definition = \
+            PriceLadderDescription(**priceLadderDefinition) \
+            if priceLadderDefinition else None
+
+        # {u'kl': [{u'hc': -2, u'id': 11624066}, {u'hc': 2, u'id': 61660}]}
+        self.key_line_definitions = \
+            [MarketDefinitionKeyLineSelection(**i) for i in keyLineDefinition.get('kl', [])] \
+            if keyLineDefinition else []
+
+    def serialise_key_line_definitions(self):
+        return \
+            {'keyLine': [key_line_def.serialise() for key_line_def in
+                         self.key_line_definitions]}
 
 
 class Available(object):
@@ -344,6 +373,8 @@ class MarketBookCache(BaseResource):
                 ) for runner in self.runners
             ],
             'publishTime': self.publish_time,
+            'priceLadderDefinition': self.market_definition.price_ladder_definition,
+            'keyLineDescription': self.market_definition.serialise_key_line_definitions()
         }
 
 
