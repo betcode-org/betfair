@@ -4,6 +4,7 @@ from .baseresource import BaseResource
 from .bettingresources import (
     MarketBook,
     CurrentOrders,
+    PriceLadderDescription,
 )
 from ..enums import (
     StreamingOrderType,
@@ -38,6 +39,30 @@ class MarketDefinitionRunner(object):
 
     def __repr__(self):
         return '<MarketDefinitionRunner>'
+
+
+class MarketDefinitionKeyLineSelection(object):
+    """
+    :type selectionId: int
+    :type handicap: float
+    """
+
+    def __init__(self, **kwargs):
+        self.selection_id = kwargs.get('id')
+        self.handicap = kwargs.get('hc')
+
+    def serialise(self):
+        return {'selectionId': self.selection_id,
+                'handicap': self.handicap}
+
+
+class MarketDefinitionKeyLine(object):
+
+    def __init__(self, kl):
+        self.key_line = [MarketDefinitionKeyLineSelection(**i) for i in kl]
+
+    def serialise(self):
+        return {'keyLine': [i.serialise() for i in self.key_line]}
 
 
 class MarketDefinition(object):
@@ -117,8 +142,21 @@ class MarketDefinition(object):
         self.runners_dict = {
             (runner.selection_id, runner.handicap): runner for runner in self.runners
         }
-        self.price_ladder_definition = priceLadderDefinition
-        self.key_line_definition = keyLineDefinition
+
+        # {u'type': u'CLASSIC'}
+        self.price_ladder_definition = PriceLadderDescription(**priceLadderDefinition
+                                                              ) if priceLadderDefinition else None
+
+        # {u'kl': [{u'hc': -2, u'id': 11624066}, {u'hc': 2, u'id': 61660}]}
+        self.key_line_definitions = MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
+
+    def serialise_price_ladder_definition(self):
+        if self.price_ladder_definition:
+            return self.price_ladder_definition.serialise()
+
+    def serialise_key_line_definitions(self):
+        if self.key_line_definitions:
+            return self.key_line_definitions.serialise()
 
 
 class Available(object):
@@ -344,6 +382,8 @@ class MarketBookCache(BaseResource):
                 ) for runner in self.runners
             ],
             'publishTime': self.publish_time,
+            'priceLadderDefinition': self.market_definition.serialise_price_ladder_definition(),
+            'keyLineDescription': self.market_definition.serialise_key_line_definitions()
         }
 
 

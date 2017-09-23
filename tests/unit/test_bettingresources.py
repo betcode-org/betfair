@@ -199,30 +199,36 @@ class BettingResourcesTest(unittest.TestCase):
 
             assert len(resource.runners) == len(market_book['runners'])
 
-            for runner in market_book['runners']:
-                pass
-                # assert resource.runners[runner['selectionId']].selection_id == runner['selectionId']
-                # assert resource.runners[runner['selectionId']].status == runner['status']
-                # assert resource.runners[runner['selectionId']].total_matched == runner.get('totalMatched')
-                # assert resource.runners[runner['selectionId']].adjustment_factor == runner.get('adjustmentFactor')
-                # assert resource.runners[runner['selectionId']].handicap == runner['handicap']
-                # assert resource.runners[runner['selectionId']].last_price_traded == runner.get('lastPriceTraded')
+            for i, key_line in enumerate(market_book['keyLineDescription'].get('keyLine', [])):
+                assert key_line['handicap'] == resource.key_line_description.key_line[i].handicap
+                assert key_line['selectionId'] == resource.key_line_description.key_line[i].selection_id
+
+            for i, runner in enumerate(market_book['runners']):
+                resource_runner = resource.runners[i]
+                assert resource_runner.selection_id == runner['selectionId']
+                assert resource_runner.status == runner['status']
+                assert resource_runner.total_matched == runner.get('totalMatched')
+                assert resource_runner.adjustment_factor == runner.get('adjustmentFactor')
+                assert resource_runner.handicap == runner['handicap']
+                assert resource_runner.last_price_traded == runner.get('lastPriceTraded')
+
+                if runner.get('removalDate'):
+                    assert resource_runner.removal_date == datetime.datetime.strptime(
+                        runner['removalDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                # else:
+                #     assert resource_runner.sp.near_price == runner['sp']['nearPrice']
+                #     assert resource_runner.sp.far_price == runner['sp']['farPrice']
+                #     assert resource_runner.sp.actual_sp == runner['sp']['actualSP']
+
+                # assert resource_runner.sp.back_stake_taken == runner['sp']['backStakeTaken']
+                # assert resource_runner.sp.lay_liability_taken == runner['sp']['layLiabilityTaken']
                 #
-                # if runner.get('removalDate'):
-                #     assert resource.runners[runner['selectionId']].removal_date == datetime.datetime.strptime(
-                #         runner['removalDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
-                # # else:
-                # #     assert resource.runners[runner['selectionId']].sp.near_price == runner['sp']['nearPrice']
-                # #     assert resource.runners[runner['selectionId']].sp.far_price == runner['sp']['farPrice']
-                #     assert resource.runners[runner['selectionId']].sp.actual_sp == runner['sp']['actualSP']
-                # assert resource.runners[runner['selectionId']].sp.back_stake_taken == runner['sp']['backStakeTaken']
-                # assert resource.runners[runner['selectionId']].sp.lay_liability_taken == runner['sp']['layLiabilityTaken']
-                #
-                # assert resource.runners[runner['selectionId']].ex.available_to_back == runner['ex'].get('availableToBack')
-                # assert resource.runners[runner['selectionId']].ex.available_to_lay == runner['ex'].get('availableToLay')
-                # assert resource.runners[runner['selectionId']].ex.traded_volume == runner['ex'].get('tradedVolume')
-                # # print(resource.runners[runner['selectionId']].orders)
-                # # print(resource.runners[runner['selectionId']].matches)
+                # assert resource_runner.ex.available_to_back == runner['ex'].get('availableToBack')
+                # assert resource_runner.ex.available_to_lay == runner['ex'].get('availableToLay')
+                # assert resource_runner.ex.traded_volume == runner['ex'].get('tradedVolume')
+
+                # # print(resource_runner.orders)
+                # # print(resource_runner.matches)
                 # # todo complete
 
     def test_current_orders(self):
