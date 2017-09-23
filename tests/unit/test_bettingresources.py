@@ -200,8 +200,8 @@ class BettingResourcesTest(unittest.TestCase):
             assert len(resource.runners) == len(market_book['runners'])
 
             for i, key_line in enumerate(market_book['keyLineDescription'].get('keyLine', [])):
-                assert key_line['handicap'] == resource.key_line_description[i].handicap
-                assert key_line['selectionId'] == resource.key_line_description[i].selection_id
+                assert key_line['handicap'] == resource.key_line_description.key_line[i].handicap
+                assert key_line['selectionId'] == resource.key_line_description.key_line[i].selection_id
 
             for i, runner in enumerate(market_book['runners']):
                 resource_runner = resource.runners[i]

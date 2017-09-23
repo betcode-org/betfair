@@ -4,7 +4,7 @@ from .baseresource import BaseResource
 from .bettingresources import (
     MarketBook,
     CurrentOrders,
-    PriceLadderDescription
+    PriceLadderDescription,
 )
 from ..enums import (
     StreamingOrderType,
@@ -54,6 +54,15 @@ class MarketDefinitionKeyLineSelection(object):
     def serialise(self):
         return {'selectionId': self.selection_id,
                 'handicap': self.handicap}
+
+
+class MarketDefinitionKeyLine(object):
+
+    def __init__(self, kl):
+        self.key_line = [MarketDefinitionKeyLineSelection(**i) for i in kl]
+
+    def serialise(self):
+        return {'keyLine': [i.serialise() for i in self.key_line]}
 
 
 class MarketDefinition(object):
@@ -135,19 +144,19 @@ class MarketDefinition(object):
         }
 
         # {u'type': u'CLASSIC'}
-        self.price_ladder_definition = \
-            PriceLadderDescription(**priceLadderDefinition) \
-            if priceLadderDefinition else None
+        self.price_ladder_definition = PriceLadderDescription(**priceLadderDefinition
+                                                              ) if priceLadderDefinition else None
 
         # {u'kl': [{u'hc': -2, u'id': 11624066}, {u'hc': 2, u'id': 61660}]}
-        self.key_line_definitions = \
-            [MarketDefinitionKeyLineSelection(**i) for i in keyLineDefinition.get('kl', [])] \
-            if keyLineDefinition else []
+        self.key_line_definitions = MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
+
+    def serialise_price_ladder_definition(self):
+        if self.price_ladder_definition:
+            return self.price_ladder_definition.serialise()
 
     def serialise_key_line_definitions(self):
-        return \
-            {'keyLine': [key_line_def.serialise() for key_line_def in
-                         self.key_line_definitions]}
+        if self.key_line_definitions:
+            return self.key_line_definitions.serialise()
 
 
 class Available(object):
@@ -373,7 +382,7 @@ class MarketBookCache(BaseResource):
                 ) for runner in self.runners
             ],
             'publishTime': self.publish_time,
-            'priceLadderDefinition': self.market_definition.price_ladder_definition,
+            'priceLadderDefinition': self.market_definition.serialise_price_ladder_definition(),
             'keyLineDescription': self.market_definition.serialise_key_line_definitions()
         }
 
