@@ -7,7 +7,7 @@ from betfairlightweight import StreamListener
 class HistoricalStreamTest(unittest.TestCase):
 
     def test_historical_stream(self):
-        trading = betfairlightweight.APIClient('username', 'password')
+        trading = betfairlightweight.APIClient('username', 'password', app_key='appKey')
         stream = trading.streaming.create_historical_stream(
             directory='tests/resources/historicaldata/BASIC-1.132153978',
             listener=StreamListener()
