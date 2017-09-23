@@ -3,7 +3,10 @@ import datetime
 import ujson as json
 from requests import ConnectionError
 
-from ..exceptions import APIError
+from ..exceptions import (
+    APIError,
+    InvalidResponse,
+)
 from ..utils import check_status_code
 
 # monkeypatching requests
@@ -97,9 +100,15 @@ class BaseEndpoint(object):
         elif self.client.lightweight and lightweight is not False:
             return result
         elif isinstance(result, list):
-            return [resource(elapsed_time=elapsed_time, **x) for x in result]
+            try:
+                return [resource(elapsed_time=elapsed_time, **x) for x in result]
+            except TypeError:
+                raise InvalidResponse(response=result)
         else:
-            return resource(elapsed_time=elapsed_time, **result)
+            try:
+                return resource(elapsed_time=elapsed_time, **result)
+            except TypeError:
+                raise InvalidResponse(response=result)
 
     @property
     def url(self):

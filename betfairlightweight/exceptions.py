@@ -47,6 +47,17 @@ class StatusCodeError(BetfairError):
         super(StatusCodeError, self).__init__(message)
 
 
+class InvalidResponse(BetfairError):
+    """
+    Exception raised if invalid response
+    received from betfair.
+    """
+
+    def __init__(self, response):
+        message = 'Invalid response received: %s' % response
+        super(InvalidResponse, self).__init__(message)
+
+
 class LoginError(BetfairError):
     """
     Exception raised if sessionToken is not found.

@@ -5,7 +5,10 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.baseendpoint import BaseEndpoint
-from betfairlightweight.exceptions import APIError
+from betfairlightweight.exceptions import (
+    APIError,
+    InvalidResponse,
+)
 from tests import mock
 from tests.unit.tools import create_mock_json
 
@@ -104,7 +107,32 @@ class BaseEndPointTest(unittest.TestCase):
         assert type(response) == list
         assert response[0] == mock_resource()
 
+    def test_base_endpoint_process_response_no_error(self):
 
+        class MockResource(object):
+            def __init__(self, elapsed_time, hello):
+                self.elapsed_time = elapsed_time
+                self.hello = hello
+
+        mock_resource = MockResource
+        response_list = [{'hello': 'world'}]
+
+        response = self.base_endpoint.process_response(response_list, mock_resource, 0, False)
+        assert type(response) == list
+        assert response[0].__dict__ == mock_resource(elapsed_time=0, **response_list[0]).__dict__
+
+    def test_base_endpoint_process_response_error(self):
+
+        class MockResource(object):
+            def __init__(self, elapsed_time, hello):
+                self.elapsed_time = elapsed_time
+                self.hello = hello
+
+        mock_resource = MockResource
+        response_list = [{}]  # missing 'hello'
+
+        with self.assertRaises(InvalidResponse):
+            self.base_endpoint.process_response(response_list, mock_resource, 0, False)
 
     def test_base_endpoint_url(self):
         assert self.base_endpoint.url == '%s%s' % (self.base_endpoint.client.api_uri, 'betting/json-rpc/v1')
