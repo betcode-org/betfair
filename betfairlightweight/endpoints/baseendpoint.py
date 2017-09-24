@@ -1,6 +1,5 @@
 import requests
 import datetime
-import ujson as json
 from requests import ConnectionError
 
 from ..exceptions import (
@@ -8,6 +7,7 @@ from ..exceptions import (
     InvalidResponse,
 )
 from ..utils import check_status_code
+from ..compat import json
 
 # monkeypatching requests
 # https://github.com/kennethreitz/requests/issues/1595

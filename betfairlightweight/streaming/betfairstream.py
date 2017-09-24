@@ -1,4 +1,3 @@
-import ujson as json
 import threading
 import socket
 import ssl
@@ -9,7 +8,10 @@ from ..exceptions import (
     SocketError,
     ListenerError,
 )
-from ..compat import is_py3
+from ..compat import (
+    is_py3,
+    json,
+)
 
 
 class BetfairStream(object):
