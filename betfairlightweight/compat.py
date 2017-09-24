@@ -27,13 +27,18 @@ elif is_py3:
     numeric_types = (int, float)
     integer_types = (int,)
 
+# will attempt to use c libraries if installed
+
 try:
     import ujson as json
 except ImportError:
     import json
 
-try:  # todo
+try:
     import ciso8601
-    parse_datetime = ciso8601.parse_datetime_unaware
+
+    def parse_datetime(datetime_string):
+        return ciso8601.parse_datetime_unaware(datetime_string)
 except ImportError:
-    parse_datetime = datetime.datetime.strptime(None, "%Y-%m-%dT%H:%M:%S.%fZ")
+    def parse_datetime(datetime_string):
+        return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")

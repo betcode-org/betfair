@@ -1,10 +1,10 @@
 import datetime
-import ciso8601
 
 from ..compat import (
     basestring,
     integer_types,
     json,
+    parse_datetime,
 )
 
 
@@ -29,7 +29,7 @@ class BaseResource(object):
         """
         if isinstance(value, basestring):
             try:
-                return ciso8601.parse_datetime_unaware(value)
+                return parse_datetime(value)
             except ValueError:
                 return
         elif isinstance(value, integer_types):
