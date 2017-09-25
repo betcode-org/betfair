@@ -1,4 +1,3 @@
-import ujson as json
 import threading
 import socket
 import ssl
@@ -9,7 +8,10 @@ from ..exceptions import (
     SocketError,
     ListenerError,
 )
-from ..compat import is_py3
+from ..compat import (
+    is_py3,
+    json,
+)
 
 
 class BetfairStream(object):
@@ -208,6 +210,7 @@ class BetfairStream(object):
 
                 # an empty string indicates the server shutdown the socket
                 if len(part) == 0:
+                    self.stop()
                     raise SocketError('Connection closed by server')
 
                 data += part.decode(self.__encoding)

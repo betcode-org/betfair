@@ -183,7 +183,8 @@ class BetfairStreamTest(unittest.TestCase):
         mock_socket.recv.assert_called_with(self.buffer_size)
         assert data == data_return_value.decode('utf-8')
 
-    def test_receive_all_closed(self):
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
+    def test_receive_all_closed(self, mock_stop):
         mock_socket = mock.Mock()
         data_return_value = b''
         mock_socket.recv.return_value = data_return_value
@@ -192,6 +193,7 @@ class BetfairStreamTest(unittest.TestCase):
 
         with self.assertRaises(SocketError):
             self.betfair_stream._receive_all()
+        mock_stop.assert_called_with()
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
     def test_receive_all_error(self, mock_stop):

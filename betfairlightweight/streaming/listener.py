@@ -1,4 +1,4 @@
-import json
+import json  # ujson causes issues
 import logging
 
 from .stream import (

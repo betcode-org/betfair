@@ -1,4 +1,5 @@
 import sys
+import datetime
 
 
 _ver = sys.version_info
@@ -25,3 +26,19 @@ elif is_py3:
     basestring = (str, bytes)
     numeric_types = (int, float)
     integer_types = (int,)
+
+# will attempt to use c libraries if installed
+
+try:
+    import ujson as json
+except ImportError:
+    import json
+
+try:
+    import ciso8601
+
+    def parse_datetime(datetime_string):
+        return ciso8601.parse_datetime_unaware(datetime_string)
+except ImportError:
+    def parse_datetime(datetime_string):
+        return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")

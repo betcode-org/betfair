@@ -128,6 +128,7 @@ class TestMarketDefinition(unittest.TestCase):
         assert len(self.market_definition.runners) == 7
         assert self.market_definition.bsp_market is True
         assert self.market_definition.market_base_rate == 5
+        assert len(self.market_definition.key_line_definitions.key_line) == 2
 
 
 class TestMarketDefinitionRunner(unittest.TestCase):

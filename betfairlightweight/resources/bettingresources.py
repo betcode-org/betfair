@@ -161,6 +161,9 @@ class PriceLadderDescription(object):
     def __init__(self, type):
         self.type = type
 
+    def serialise(self):
+        return {'type': self.type}
+
 
 class MarketCatalogueDescription(object):
     """
@@ -213,12 +216,12 @@ class RunnerCatalogue(object):
     :type sort_priority: int
     """
 
-    def __init__(self, selectionId, runnerName, sortPriority, handicap, metadata=None):
-        self.selection_id = selectionId
-        self.runner_name = runnerName
-        self.sort_priority = sortPriority
-        self.handicap = handicap
-        self.metadata = metadata
+    def __init__(self, **kwargs):
+        self.selection_id = kwargs.get('selectionId')
+        self.runner_name = kwargs.get('runnerName')
+        self.sort_priority = kwargs.get('sortPriority')
+        self.handicap = kwargs.get('handicap')
+        self.metadata = kwargs.get('metadata')
 
     def __str__(self):
         return 'RunnerCatalogue: %s' % self.selection_id
@@ -416,6 +419,12 @@ class RunnerBook(object):
         return '<RunnerBook>'
 
 
+class KeyLine(object):
+
+    def __init__(self, keyLine):
+        self.key_line = [KeyLineSelection(**i) for i in keyLine]
+
+
 class KeyLineSelection(object):
     """
     :type selectionId: int
@@ -472,7 +481,13 @@ class MarketBook(BaseResource):
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
         self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
-        self.key_line_description = [KeyLineSelection(**i) for i in kwargs.get('keyLineDescription', [])]
+
+        # {u'keyLineDescription': {u'keyLine': [{u'handicap': -2.0, u'selectionId': 11624066},
+        #   {u'handicap': 2.0, u'selectionId': 61660}]}}
+        self.key_line_description = KeyLine(**kwargs.get('keyLineDescription')
+                                            ) if kwargs.get('keyLineDescription') else None
+        self.price_ladder_definition = PriceLadderDescription(**kwargs.get('priceLadderDefinition')
+                                                              ) if kwargs.get('priceLadderDefinition') else None
 
 
 class CurrentOrder(object):
