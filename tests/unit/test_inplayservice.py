@@ -1,5 +1,4 @@
 import unittest
-from json import JSONDecodeError
 from tests import mock
 from requests.exceptions import ConnectionError
 
