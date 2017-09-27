@@ -2,7 +2,11 @@ import re
 import datetime
 from requests import ConnectionError
 
-from ..exceptions import APIError, RaceCardError
+from ..exceptions import (
+    APIError,
+    RaceCardError,
+    InvalidResponse,
+)
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
 from .. import resources
@@ -58,7 +62,10 @@ class RaceCard(BaseEndpoint):
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
-        response_data = response.json()
+        try:
+            response_data = response.json()
+        except ValueError:
+            raise InvalidResponse(response.text)
 
         check_status_code(response)
         return response_data, elapsed_time
