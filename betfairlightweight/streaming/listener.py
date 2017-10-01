@@ -42,6 +42,11 @@ class BaseListener(object):
             return []
 
     @property
+    def updates_processed(self):
+        if self.stream:
+            return self.stream._updates_processed
+
+    @property
     def initial_clk(self):
         if self.stream is not None:
             return self.stream._initial_clk
