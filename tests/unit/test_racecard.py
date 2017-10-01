@@ -4,7 +4,7 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.racecard import RaceCard
-from betfairlightweight.exceptions import APIError, RaceCardError
+from betfairlightweight.exceptions import APIError, RaceCardError, InvalidResponse
 
 
 class RaceCardTest(unittest.TestCase):
@@ -80,6 +80,18 @@ class RaceCardTest(unittest.TestCase):
 
         mock_get.side_effect = ValueError()
         with self.assertRaises(APIError):
+            self.race_card.request()
+
+    @mock.patch('betfairlightweight.endpoints.racecard.check_status_code')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.headers')
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request_error(self, mock_get, mock_login_headers, mock_create_req, mock_check_status_code):
+        response = mock.Mock()
+        mock_get.return_value = response
+        response.json.side_effect = ValueError()
+
+        with self.assertRaises(InvalidResponse):
             self.race_card.request()
 
     def test_create_req(self):

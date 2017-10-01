@@ -4,7 +4,7 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.inplayservice import InPlayService
-from betfairlightweight.exceptions import APIError
+from betfairlightweight.exceptions import APIError, InvalidResponse
 
 
 class InPlayServiceTest(unittest.TestCase):
@@ -95,6 +95,20 @@ class InPlayServiceTest(unittest.TestCase):
 
         mock_get.side_effect = ValueError()
         with self.assertRaises(APIError):
+            self.in_play_service.request(params=params, url=url)
+
+    @mock.patch('betfairlightweight.endpoints.inplayservice.check_status_code')
+    @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.headers')
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request_json_error(self, mock_get, mock_headers, mock_check_status_code):
+        params = [1, 2, 3]
+        url = '123'
+
+        response = mock.Mock()
+        mock_get.return_value = response
+        response.json.side_effect = ValueError()
+
+        with self.assertRaises(InvalidResponse):
             self.in_play_service.request(params=params, url=url)
 
     def test_headers(self):

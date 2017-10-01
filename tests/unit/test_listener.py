@@ -65,6 +65,14 @@ class BaseListenerTest(unittest.TestCase):
         assert self.base_listener.initial_clk == 2
         assert self.base_listener.clk == 1
 
+    def test_updates_processed(self):
+        assert self.base_listener.updates_processed is None
+
+        mock_stream = mock.Mock()
+        mock_stream._updates_processed = 100
+        self.base_listener.stream = mock_stream
+        assert self.base_listener.updates_processed == 100
+
     def test_str(self):
         assert str(self.base_listener) == 'BaseListener'
 
