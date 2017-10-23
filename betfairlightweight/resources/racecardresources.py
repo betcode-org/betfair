@@ -23,7 +23,7 @@ class RaceClassification(object):
     :type display_name_abbr: unicode
     """
 
-    def __init__(self, classification, classificationAbbr, code, displayName, displayNameAbbr):
+    def __init__(self, code=None, displayName=None, displayNameAbbr=None, classification=None, classificationAbbr=None):
         self.classification = classification
         self.classification_abbr = classificationAbbr
         self.code = code

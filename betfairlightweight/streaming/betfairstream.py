@@ -64,11 +64,14 @@ class BetfairStream(object):
         """
         self._running = False
 
-        if self._socket is not None:
-            try:
-                self._socket.shutdown(2)  # SHUT_RDWR
-            except OSError:
-                pass
+        if self._socket is None:
+            return
+        try:
+            self._socket.shutdown(socket.SHUT_RDWR)
+            self._socket.close()
+        except socket.error:
+            pass
+        self._socket = None
 
     def authenticate(self):
         """Authentication request.
@@ -204,21 +207,20 @@ class BetfairStream(object):
         else:
             crlf_bytes = self.__CRLF
 
-        try:
-            while self._running and part[-2:] != crlf_bytes:
+        while self._running and part[-2:] != crlf_bytes:
+            try:
                 part = self._socket.recv(self.buffer_size)
+            except (socket.timeout, socket.error) as e:
+                self.stop()
+                raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
 
-                # an empty string indicates the server shutdown the socket
-                if len(part) == 0:
-                    self.stop()
-                    raise SocketError('Connection closed by server')
+            # an empty string indicates the server shutdown the socket
+            if len(part) == 0:
+                self.stop()
+                raise SocketError('Connection closed by server')
 
-                data += part.decode(self.__encoding)
-            return data
-
-        except (socket.timeout, socket.error) as e:
-            self.stop()
-            raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
+            data += part.decode(self.__encoding)
+        return data
 
     def _data(self, received_data):
         """Sends data to listener, if False is returned; socket
@@ -241,7 +243,11 @@ class BetfairStream(object):
             self._connect()
             self.authenticate()
         message_dumped = json.dumps(message) + self.__CRLF
-        self._socket.send(message_dumped.encode())
+        try:
+            self._socket.send(message_dumped.encode())
+        except (socket.timeout, socket.error) as e:
+            self.stop()
+            raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
 
     def __str__(self):
         return '<BetfairStream [%s]>' % ('running' if self._running else 'not running')

@@ -75,6 +75,7 @@ class BetfairStreamTest(unittest.TestCase):
     def test_stop(self):
         self.betfair_stream.stop()
         assert self.betfair_stream._running is False
+        assert self.betfair_stream._socket is None
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_authenticate(self, mock_send):
@@ -243,6 +244,30 @@ class BetfairStreamTest(unittest.TestCase):
         assert mock_connect.call_count == 1
         assert mock_authenticate.call_count == 1
         assert mock_socket.send.call_count == 1
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
+    def test_send_timeout(self, mock_stop):
+        self.betfair_stream._running = True
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+        mock_socket.send.side_effect = socket.timeout()
+        message = {'message': 1}
+
+        with self.assertRaises(SocketError):
+            self.betfair_stream._send(message)
+        mock_stop.assert_called_with()
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.stop')
+    def test_send_error(self, mock_stop):
+        self.betfair_stream._running = True
+        mock_socket = mock.Mock()
+        self.betfair_stream._socket = mock_socket
+        mock_socket.send.side_effect = socket.error()
+        message = {'message': 1}
+
+        with self.assertRaises(SocketError):
+            self.betfair_stream._send(message)
+        mock_stop.assert_called_with()
 
     def test_repr(self):
         assert repr(self.betfair_stream) == '<BetfairStream>'
