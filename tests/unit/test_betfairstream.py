@@ -75,6 +75,7 @@ class BetfairStreamTest(unittest.TestCase):
     def test_stop(self):
         self.betfair_stream.stop()
         assert self.betfair_stream._running is False
+        assert self.betfair_stream._socket is None
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_authenticate(self, mock_send):

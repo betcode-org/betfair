@@ -64,11 +64,14 @@ class BetfairStream(object):
         """
         self._running = False
 
-        if self._socket is not None:
-            try:
-                self._socket.shutdown(2)  # SHUT_RDWR
-            except OSError:
-                pass
+        if self._socket is None:
+            return
+        try:
+            self._socket.shutdown(socket.SHUT_RDWR)
+            self._socket.close()
+        except socket.error:
+            pass
+        self._socket = None
 
     def authenticate(self):
         """Authentication request.
