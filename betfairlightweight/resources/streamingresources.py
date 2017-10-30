@@ -102,7 +102,7 @@ class MarketDefinition(object):
                  openDate, persistenceEnabled, regulators, runnersVoidable, status, timezone, turnInPlayEnabled,
                  version, runners, countryCode=None, eachWayDivisor=None, venue=None, settledTime=None,
                  suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None, name=None,
-                 eventName=None, priceLadderDefinition=None, keyLineDefinition=None):
+                 eventName=None, priceLadderDefinition=None, keyLineDefinition=None, raceType=None):
         self.bet_delay = betDelay
         self.betting_type = bettingType
         self.bsp_market = bspMarket
@@ -149,6 +149,7 @@ class MarketDefinition(object):
 
         # {u'kl': [{u'hc': -2, u'id': 11624066}, {u'hc': 2, u'id': 61660}]}
         self.key_line_definitions = MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
+        self.race_type = raceType
 
     def serialise_price_ladder_definition(self):
         if self.price_ladder_definition:
