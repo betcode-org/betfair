@@ -186,8 +186,8 @@ class MarketCatalogueDescription(object):
 
     def __init__(self, bettingType, bspMarket, discountAllowed, marketBaseRate, marketTime, marketType,
                  persistenceEnabled, regulator, rules, rulesHasDate, suspendTime, turnInPlayEnabled, wallet,
-                 eachWayDivisor=None, clarifications=None,
-                 priceLadderDescription=None, keyLineDefinition=None, lineRangeInfo=None):
+                 eachWayDivisor=None, clarifications=None, priceLadderDescription=None, keyLineDefinition=None,
+                 lineRangeInfo=None, raceType=None):
         self.betting_type = bettingType
         self.bsp_market = bspMarket
         self.discount_allowed = discountAllowed
@@ -205,6 +205,7 @@ class MarketCatalogueDescription(object):
         self.clarifications = clarifications
         self.price_ladder_description = PriceLadderDescription(**priceLadderDescription) if priceLadderDescription else None
         self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
+        self.race_type = raceType
 
 
 class RunnerCatalogue(object):
