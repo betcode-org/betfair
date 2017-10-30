@@ -15,33 +15,40 @@ logging.basicConfig(level=logging.INFO)
 # create trading instance (no need to put in correct details)
 trading = betfairlightweight.APIClient('username', 'password')
 
-import queue
-from pympler.tracker import SummaryTracker
-tracker = SummaryTracker()
 
-q = queue.Queue()
+class HistoricalStream(MarketStream):
+    # create custom listener and stream
+
+    def __init__(self, listener):
+        super(HistoricalStream, self).__init__(listener)
+        with open('output.txt', 'w') as output:
+            output.write('Time,MarketId,Status,Inplay,SelectionId,LastPriceTraded\n')
+
+    def on_process(self, market_books):
+        with open('output.txt', 'a') as output:
+            for market_book in market_books:
+                for runner in market_book.runners:
+                    output.write('%s,%s,%s,%s,%s,%s\n' % (
+                        market_book.publish_time, market_book.market_id, market_book.status, market_book.inplay,
+                        runner.selection_id, runner.last_price_traded or ''
+                    ))
+
+
+class HistoricalListener(StreamListener):
+    def _add_stream(self, unique_id, stream_type):
+        if stream_type == 'marketSubscription':
+            return HistoricalStream(self)
 
 # create listener
-listener = StreamListener(
-    max_latency=1e100,
-    output_queue=q
+listener = HistoricalListener(
+    max_latency=1e100
 )
 
 # create historical stream, update directory to file location
 stream = trading.streaming.create_historical_stream(
-    directory='examplessecret/horse-racing-pro-sample',
+    directory='/Users/liampauling/Downloads/Sites 3/xdw/api/c0a022d4-3460-41f1-af12-a0b68b136898/BASIC-1.132153978',
     listener=listener
 )
 
 # start stream
-stream.start(async=True)
-
-x = 0
-while True:
-    data = q.get()
-    print(data[0].publish_time)
-    x += 1
-    if x % 100:
-        tracker.print_diff()
-
-tracker.print_diff()
+stream.start(async=False)
