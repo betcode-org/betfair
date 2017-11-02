@@ -31,7 +31,7 @@ class KeepAlive(BaseEndpoint):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
         try:
-            response = session.post(self.url, headers=self.client.keep_alive_headers, cert=self.client.cert)
+            response = session.post(self.url, headers=self.client.keep_alive_headers)
         except ConnectionError:
             raise APIError(None, exception='ConnectionError')
         except Exception as e:
