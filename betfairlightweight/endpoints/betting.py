@@ -14,7 +14,8 @@ class Betting(BaseEndpoint):
 
     URI = 'SportsAPING/v1.0/'
 
-    def list_event_types(self, filter=market_filter(), locale=None, session=None, lightweight=None):
+    def list_event_types(self, filter=market_filter(), locale=None, session=None,
+                         lightweight=None, request_params=None):
         """
         Returns a list of Event Types (i.e. Sports) associated with the markets
         selected by the MarketFilter.
@@ -23,15 +24,21 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
+
 
         :rtype: list[resources.EventTypeResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listEventTypes')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.EventTypeResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.EventTypeResult, elapsed_time, lightweight)
 
-    def list_competitions(self, filter=market_filter(), locale=None, session=None, lightweight=None):
+    def list_competitions(self, filter=market_filter(), locale=None, session=None,
+                          lightweight=None, request_params=None):
         """
         Returns a list of Competitions (i.e., World Cup 2013) associated with
         the markets selected by the MarketFilter.
@@ -40,15 +47,20 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.CompetitionResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listCompetitions')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CompetitionResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.CompetitionResult, elapsed_time, lightweight)
 
-    def list_time_ranges(self, filter=market_filter(), granularity='DAYS', session=None, lightweight=None):
+    def list_time_ranges(self, filter=market_filter(), granularity='DAYS', session=None,
+                         lightweight=None, request_params=None):
         """
         Returns a list of time ranges in the granularity specified in the
         request (i.e. 3PM to 4PM, Aug 14th to Aug 15th) associated with
@@ -59,15 +71,20 @@ class Betting(BaseEndpoint):
         to markets selected by the market filter
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.TimeRangeResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listTimeRanges')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.TimeRangeResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.TimeRangeResult, elapsed_time, lightweight)
 
-    def list_events(self, filter=market_filter(), locale=None, session=None, lightweight=None):
+    def list_events(self, filter=market_filter(), locale=None, session=None,
+                    lightweight=None, request_params=None):
         """
         Returns a list of Events (i.e, Reading vs. Man United) associated with
         the markets selected by the MarketFilter.
@@ -76,15 +93,20 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.EventResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listEvents')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.EventResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.EventResult, elapsed_time, lightweight)
 
-    def list_market_types(self, filter=market_filter(), locale=None, session=None, lightweight=None):
+    def list_market_types(self, filter=market_filter(), locale=None, session=None,
+                          lightweight=None, request_params=None):
         """
         Returns a list of market types (i.e. MATCH_ODDS, NEXT_GOAL) associated with
         the markets selected by the MarketFilter.
@@ -93,15 +115,19 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.MarketTypeResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listMarketTypes')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.MarketTypeResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.MarketTypeResult, elapsed_time, lightweight)
 
-    def list_countries(self, filter=market_filter(), locale=None, session=None, lightweight=None):
+    def list_countries(self, filter=market_filter(), locale=None, session=None, lightweight=None, request_params=None):
         """
         Returns a list of Countries associated with the markets selected by
         the MarketFilter.
@@ -110,15 +136,19 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.CountryResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listCountries')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CountryResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.CountryResult, elapsed_time, lightweight)
 
-    def list_venues(self, filter=market_filter(), locale=None, session=None, lightweight=None):
+    def list_venues(self, filter=market_filter(), locale=None, session=None, lightweight=None, request_params=None):
         """
         Returns a list of Venues (i.e. Cheltenham, Ascot) associated with
         the markets selected by the MarketFilter.
@@ -127,16 +157,20 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.VenueResult]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listVenues')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.VenueResult, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.VenueResult, elapsed_time, lightweight)
 
     def list_market_catalogue(self, filter=market_filter(), market_projection=None, sort=None, max_results=1,
-                              locale=None, session=None, lightweight=None):
+                              locale=None, session=None, lightweight=None, request_params=None):
         """
         Returns a list of information about published (ACTIVE/SUSPENDED) markets
         that does not change (or changes very rarely).
@@ -149,18 +183,22 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.MarketCatalogue]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listMarketCatalogue')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.MarketCatalogue, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.MarketCatalogue, elapsed_time, lightweight)
 
-    def list_market_book(self, market_ids, price_projection=None, order_projection=None,
-                         match_projection=None, include_overall_position=None, partition_matched_by_strategy_ref=None,
+    def list_market_book(self, market_ids, price_projection=None, order_projection=None, match_projection=None,
+                         include_overall_position=None, partition_matched_by_strategy_ref=None,
                          customer_strategy_refs=None, currency_code=None, matched_since=None, bet_ids=None, locale=None,
-                         session=None, lightweight=None):
+                         session=None, lightweight=None, request_params=None):
         """
         Returns a list of dynamic data about markets. Dynamic data includes prices,
         the status of the market, the status of selections, the traded volume, and
@@ -182,17 +220,60 @@ class Betting(BaseEndpoint):
         :param str locale: The language used for the response
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.MarketBook]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listMarketBook')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.MarketBook, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.MarketBook, elapsed_time, lightweight)
+
+    def list_runner_book(self, market_id, selection_id, handicap=None, price_projection=None, order_projection=None,
+                         match_projection=None, include_overall_position=None, partition_matched_by_strategy_ref=None,
+                         customer_strategy_refs=None, currency_code=None, matched_since=None, bet_ids=None, locale=None,
+                         session=None, lightweight=None, request_params=None):
+        """
+        Returns a list of dynamic data about a market and a specified runner.
+        Dynamic data includes prices, the status of the market, the status of selections, 
+        the traded volume, and the status of any orders you have placed in the market..
+
+        :param str market_id: The unique id for the market.
+        :param int selection_id: The unique id for the runner.
+        :param float handicap: The projection of price data you want to receive in the response.
+        :param dict price_projection: The projection of price data you want to receive in the response
+        :param str order_projection: The orders you want to receive in the response
+        :param str match_projection: If you ask for orders, specifies the representation of matches
+        :param bool include_overall_position: If you ask for orders, returns matches for each selection
+        :param bool partition_matched_by_strategy_ref: If you ask for orders, returns the breakdown of matches
+        by strategy for each selection
+        :param list customer_strategy_refs: If you ask for orders, restricts the results to orders matching
+        any of the specified set of customer defined strategies
+        :param str currency_code: A Betfair standard currency code
+        :param str matched_since: If you ask for orders, restricts the results to orders that have at
+        least one fragment matched since the specified date
+        :param list bet_ids: If you ask for orders, restricts the results to orders with the specified bet IDs
+        :param str locale: The language used for the response
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
+
+        :rtype: list[resources.MarketBook]
+        """
+        params = clean_locals(locals())
+        method = '%s%s' % (self.URI, 'listRunnerBook')
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.MarketBook, elapsed_time, lightweight)
 
     def list_current_orders(self, bet_ids=None, market_ids=None, order_projection=None, customer_order_refs=None,
                             customer_strategy_refs=None, date_range=time_range(), order_by=None, sort_dir=None,
-                            from_record=None, record_count=None, session=None, lightweight=None):
+                            from_record=None, record_count=None, session=None, lightweight=None, request_params=None):
         """
         Returns a list of your current orders.
 
@@ -211,18 +292,23 @@ class Betting(BaseEndpoint):
         :param int record_count: Specifies how many records will be returned from the index position 'fromRecord'
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.CurrentOrders
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listCurrentOrders')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CurrentOrders, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.CurrentOrders, elapsed_time, lightweight)
 
     def list_cleared_orders(self, bet_status='SETTLED', event_type_ids=None, event_ids=None, market_ids=None,
                             runner_ids=None, bet_ids=None, customer_order_refs=None, customer_strategy_refs=None,
                             side=None, settled_date_range=time_range(), group_by=None, include_item_description=None,
-                            locale=None, from_record=None, record_count=None, session=None, lightweight=None):
+                            locale=None, from_record=None, record_count=None, session=None,
+                            lightweight=None, request_params=None):
         """
         Returns a list of settled bets based on the bet status,
         ordered by settled date.
@@ -245,16 +331,20 @@ class Betting(BaseEndpoint):
         :param int record_count: Specifies how many records will be returned from the index position 'fromRecord'
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.ClearedOrders
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listClearedOrders')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.ClearedOrders, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.ClearedOrders, elapsed_time, lightweight)
 
     def list_market_profit_and_loss(self, market_ids, include_settled_bets=None, include_bsp_bets=None,
-                                    net_of_commission=None, session=None, lightweight=None):
+                                    net_of_commission=None, session=None, lightweight=None, request_params=None):
         """
         Retrieve profit and loss for a given list of OPEN markets.
 
@@ -265,16 +355,20 @@ class Betting(BaseEndpoint):
         rate for this market including any special tariffs
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: list[resources.MarketProfitLoss]
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'listMarketProfitAndLoss')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.MarketProfitLoss, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.MarketProfitLoss, elapsed_time, lightweight)
 
-    def place_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                     customer_strategy_ref=None, async=None, session=None, lightweight=None):
+    def place_orders(self, market_id, instructions, customer_ref=None, market_version=None, customer_strategy_ref=None,
+                     async=None, session=None, lightweight=None, request_params=None):
         """
         Place new orders into market.
 
@@ -290,15 +384,20 @@ class Betting(BaseEndpoint):
         the orders should be placed asynchronously
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.PlaceOrders
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'placeOrders')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.PlaceOrders, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.PlaceOrders, elapsed_time, lightweight)
 
-    def cancel_orders(self, market_id=None, instructions=None, customer_ref=None, session=None, lightweight=None):
+    def cancel_orders(self, market_id=None, instructions=None, customer_ref=None, session=None,
+                      lightweight=None, request_params=None):
         """
         Cancel all bets OR cancel all bets on a market OR fully or partially
         cancel particular orders on a market.
@@ -309,15 +408,20 @@ class Betting(BaseEndpoint):
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.CancelOrders
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'cancelOrders')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CancelOrders, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.CancelOrders, elapsed_time, lightweight)
 
-    def update_orders(self, market_id, instructions, customer_ref=None, session=None, lightweight=None):
+    def update_orders(self, market_id, instructions, customer_ref=None, session=None,
+                      lightweight=None, request_params=None):
         """
         Update non-exposure changing field.
 
@@ -327,16 +431,20 @@ class Betting(BaseEndpoint):
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.UpdateOrders
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'updateOrders')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.UpdateOrders, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.UpdateOrders, elapsed_time, lightweight)
 
     def replace_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                       async=None, session=None, lightweight=None):
+                       async=None, session=None, lightweight=None, request_params=None):
         """
         This operation is logically a bulk cancel followed by a bulk place.
         The cancel is completed first then the new orders are placed.
@@ -352,10 +460,14 @@ class Betting(BaseEndpoint):
         if the orders should be replaced asynchronously
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
+        :param bool request_params: If True will return dictionary of request parameters. Takes precedence over all.
 
         :rtype: resources.ReplaceOrders
         """
         params = clean_locals(locals())
         method = '%s%s' % (self.URI, 'replaceOrders')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.ReplaceOrders, elapsed_time, lightweight)
+        if request_params:
+            return self.raw_request(params, method)
+        else:
+            (response, elapsed_time) = self.request(method, params, session)
+            return self.process_response(response, resources.ReplaceOrders, elapsed_time, lightweight)

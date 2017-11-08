@@ -1,6 +1,7 @@
 *.py[cod]
 *.sw[op]
 .cache/
+.idea/
 
 # Packages
 *.egg
