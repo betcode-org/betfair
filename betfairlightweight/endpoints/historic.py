@@ -14,7 +14,7 @@ from ..utils import clean_locals, check_status_code
 requests.models.json = json
 
 
-class Historical(BaseEndpoint):
+class Historic(BaseEndpoint):
 
     def get_my_data(self, session=None):
         """

@@ -44,7 +44,6 @@ The library can then be used as follows:
 
 Following endpoints are available:
 
-```python
 >>> trading.[login](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Login)
 >>> trading.[keep_alive](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-KeepAlive)
 >>> trading.[logout](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Logout)
@@ -58,7 +57,6 @@ Following endpoints are available:
 
 >>> trading.in_play_service
 >>> trading.race_card
-```
 
 
 # streaming
@@ -94,25 +92,26 @@ In development so breaking changes likely.
         market_filter=market_filter,
         market_data_filter=market_data_filter,
     )
+
 >>> betfair_socket.start(async=False)
 ```
 
-# historical data
+# historic data
 
-The historical endpoint provides some basic abstraction for the historicaldata api:
+The historic endpoint provides some basic abstraction for the historicdata api:
 
-[Historical Data API](https://historicdata.betfair.com/#/apidocs)
+[Historic Data API](https://historicdata.betfair.com/#/apidocs)
 
 ```python
 
->>> trading.historical.get_my_data()
+>>> trading.historic.get_my_data()
 
 [{'plan': 'Basic Plan', 'purchaseItemId': 1343, 'sport': 'Cricket', 'forDate': '2017-06-01T00:00:00'}]
 ```
 
 Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see [examples](https://github.com/liampauling/betfair/tree/master/examples)).
 
-[Historical Data](https://historicdata.betfair.com/#/home)
+[Historic Data](https://historicdata.betfair.com/#/home)
 
 In development so breaking changes likely.
 
