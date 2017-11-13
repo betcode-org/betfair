@@ -44,19 +44,19 @@ The library can then be used as follows:
 
 Following endpoints are available:
 
->>> trading.[login](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Login)
->>> trading.[keep_alive](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-KeepAlive)
->>> trading.[logout](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Logout)
+- trading.[login](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Login)
+- trading.[keep_alive](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-KeepAlive)
+- trading.[logout](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Logout)
 
->>> trading.[betting](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Betting+API)
->>> trading.[account](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Accounts+API)
->>> trading.[navigation](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Navigation+Data+For+Applications)
->>> trading.[scores](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Race+Status+API)
->>> trading.[streaming](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
->>> trading.[historical](https://historicdata.betfair.com/#/apidocs)
+- trading.[betting](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Betting+API)
+- trading.[account](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Accounts+API)
+- trading.[navigation](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Navigation+Data+For+Applications)
+- trading.[scores](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Race+Status+API)
+- trading.[streaming](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
+- trading.[historical](https://historicdata.betfair.com/#/apidocs)
 
->>> trading.in_play_service
->>> trading.race_card
+- trading.in_play_service
+- trading.race_card
 
 
 # streaming
