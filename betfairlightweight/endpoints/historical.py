@@ -5,7 +5,7 @@ from requests import ConnectionError
 
 from ..exceptions import APIError
 from ..compat import json
-from .. import resources
+# from .. import resources
 from .baseendpoint import BaseEndpoint
 from ..utils import clean_locals, check_status_code
 
@@ -22,16 +22,16 @@ class Historical(BaseEndpoint):
 
         :param requests.session session: Requests session object
 
-        :rtype: list[resources.EventTypeResult]
+        :rtype: dict
         """
         params = clean_locals(locals())
         method = 'GetMyData'
         (response, elapsed_time) = self.request(method, params, session)
         return response
 
-    def get_collections_available(self, sport, plan, from_day, from_month, from_year, to_day, to_month, to_year,
-                                  event_id=None, event_name=None, market_types_collection=[],
-                                  countries_collection=[], file_type_collection=[], session=None):
+    def get_collection_options(self, sport, plan, from_day, from_month, from_year, to_day, to_month, to_year,
+                                  event_id=None, event_name=None, market_types_collection=None,
+                                  countries_collection=None, file_type_collection=None, session=None):
         """
         Returns a dictionary of file counts by market_types, countries and file_types.
 
@@ -58,8 +58,8 @@ class Historical(BaseEndpoint):
         return response
 
     def get_data_size(self, sport, plan, from_day, from_month, from_year, to_day, to_month, to_year, event_id=None,
-                      event_name=None, market_types_collection=[], countries_collection=[], file_type_collection=[],
-                      session=None):
+                      event_name=None, market_types_collection=None, countries_collection=None,
+                      file_type_collection=None, session=None):
         """
         Returns a dictionary of file count and combines size files.
 
@@ -86,8 +86,8 @@ class Historical(BaseEndpoint):
         return response
 
     def get_file_list(self, sport, plan, from_day, from_month, from_year, to_day, to_month, to_year, event_id=None,
-                      event_name=None, market_types_collection=[], countries_collection=[], file_type_collection=[],
-                      session=None):
+                      event_name=None, market_types_collection=None, countries_collection=None,
+                      file_type_collection=None, session=None):
         """
         Returns a list of files which can then be used to download.
 
@@ -125,9 +125,9 @@ class Historical(BaseEndpoint):
         if store_directory:
             local_filename = os.path.join(store_directory, local_filename)
         r = requests.get(
-            'http://historicdata.betfair.com/api/DownloadFile',
+            '%s%s' % (self.url, 'DownloadFile'),
             params={'filePath': file_path},
-            headers=self.historical_headers,
+            headers=self.headers,
             stream=True,
         )
         with open(local_filename, 'wb') as f:
@@ -146,9 +146,9 @@ class Historical(BaseEndpoint):
         date_time_sent = datetime.datetime.utcnow()
         try:
             response = session.post(
-                '%s%s' % (self.historical_url, method),
+                '%s%s' % (self.url, method),
                 data=json.dumps(params),
-                headers=self.historical_headers,
+                headers=self.headers,
                 timeout=(self.connect_timeout, self.read_timeout)
             )
         except ConnectionError:
@@ -161,9 +161,12 @@ class Historical(BaseEndpoint):
         return response_data, elapsed_time
 
     @property
-    def historical_headers(self):
-        return {'ssoid': self.client.session_token, 'content-type': 'application/json'}
+    def headers(self):
+        return {
+            'ssoid': self.client.session_token,
+            'Content-Type': 'application/json',
+        }
 
     @property
-    def historical_url(self):
+    def url(self):
         return 'https://historicdata.betfair.com/api/'
