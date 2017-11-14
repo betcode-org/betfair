@@ -44,20 +44,19 @@ The library can then be used as follows:
 
 Following endpoints are available:
 
-```python
->>> trading.login
->>> trading.keep_alive
->>> trading.logout
+- trading.[login](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Login)
+- trading.[keep_alive](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-KeepAlive)
+- trading.[logout](http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=3834909#Login&SessionManagement-Logout)
 
->>> trading.betting
->>> trading.account
->>> trading.navigation
->>> trading.scores
->>> trading.streaming
+- trading.[betting](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Betting+API)
+- trading.[account](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Accounts+API)
+- trading.[navigation](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Navigation+Data+For+Applications)
+- trading.[scores](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Race+Status+API)
+- trading.[streaming](http://docs.developer.betfair.com/docs/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
+- trading.[historical](https://historicdata.betfair.com/#/apidocs)
 
->>> trading.in_play_service
->>> trading.race_card
-```
+- trading.in_play_service
+- trading.race_card
 
 
 # streaming
@@ -69,46 +68,58 @@ Currently two listeners available, below will run the base listener which prints
 In development so breaking changes likely.
 
 ```python
-from betfairlightweight.filters import (
-    streaming_market_filter,
-    streaming_market_data_filter,
-)
+>>> from betfairlightweight.filters import (
+        streaming_market_filter,
+        streaming_market_data_filter,
+    )
 
-betfair_socket = trading.streaming.create_stream(
-    unique_id=0,
-    description='Test Market Socket',
-)
+>>> betfair_socket = trading.streaming.create_stream(
+        unique_id=0,
+        description='Test Market Socket',
+    )
 
-market_filter = streaming_market_filter(
-    event_type_ids=['7'],
-    country_codes=['IE'],
-    market_types=['WIN'],
-)
-market_data_filter = streaming_market_data_filter(
-    fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF'],
-    ladder_levels=3
-)
+>>> market_filter = streaming_market_filter(
+        event_type_ids=['7'],
+        country_codes=['IE'],
+        market_types=['WIN'],
+    )
+>>> market_data_filter = streaming_market_data_filter(
+        fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF'],
+        ladder_levels=3
+    )
 
-betfair_socket.subscribe_to_markets(
-    market_filter=market_filter,
-    market_data_filter=market_data_filter,
-)
-betfair_socket.start(async=False)
+>>> betfair_socket.subscribe_to_markets(
+        market_filter=market_filter,
+        market_data_filter=market_data_filter,
+    )
+
+>>> betfair_socket.start(async=False)
 ```
 
-# historical data
+# historic data
+
+The historic endpoint provides some basic abstraction for the historicdata api:
+
+[Historic Data API](https://historicdata.betfair.com/#/apidocs)
+
+```python
+
+>>> trading.historic.get_my_data()
+
+[{'plan': 'Basic Plan', 'purchaseItemId': 1343, 'sport': 'Cricket', 'forDate': '2017-06-01T00:00:00'}]
+```
 
 Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see [examples](https://github.com/liampauling/betfair/tree/master/examples)).
 
-[Historical Data](https://historicdata.betfair.com/#/home)
+[Historic Data](https://historicdata.betfair.com/#/home)
 
 In development so breaking changes likely.
 
 ```python
 
-stream = trading.streaming.create_historical_stream(
-    directory='horse-racing-pro-sample',
-)
+>>> stream = trading.streaming.create_historical_stream(
+        directory='horse-racing-pro-sample',
+    )
 
-stream.start(async=False)
+>>> stream.start(async=False)
 ```
