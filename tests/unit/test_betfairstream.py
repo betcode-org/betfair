@@ -299,6 +299,12 @@ class HistoricalStreamTest(unittest.TestCase):
     def test_start_thread(self, mock_threading, mock_read_loop):
         self.stream.start(async=True)
         mock_threading.Thread.assert_called_with(name='HistoricalStream', target=mock_read_loop)
+        assert self.stream._running is True
+
+    def test_stop(self):
+        self.stream._running = True
+        self.stream.stop()
+        assert self.stream._running is False
 
     # def test_read_loop(self):
     #     pass

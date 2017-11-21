@@ -23,3 +23,4 @@ class HistoricalStreamTest(unittest.TestCase):
 
         market = stream.listener.stream._caches.get('1.132153978')
         assert len(market.runners) == 14
+        assert stream._running == False
