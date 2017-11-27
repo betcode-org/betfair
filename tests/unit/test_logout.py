@@ -25,17 +25,16 @@ class LogoutTest(unittest.TestCase):
         assert isinstance(response, LogoutResource)
         assert self.logout.client.session_token is None
 
-    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
     @mock.patch('betfairlightweight.baseclient.BaseClient.keep_alive_headers')
     @mock.patch('betfairlightweight.baseclient.requests.post')
-    def test_request(self, mock_post, mock_logout_headers, mock_cert):
+    def test_request(self, mock_post, mock_logout_headers):
         mock_response = create_mock_json('tests/resources/logout_success.json')
         mock_post.return_value = mock_response
 
         url = 'https://identitysso.betfair.com/api/logout'
         response = self.logout.request()
 
-        mock_post.assert_called_once_with(url, headers=mock_logout_headers, cert=mock_cert)
+        mock_post.assert_called_once_with(url, headers=mock_logout_headers)
         assert response[0] == mock_response.json()
 
     @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
