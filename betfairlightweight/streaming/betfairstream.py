@@ -289,7 +289,9 @@ class HistoricalStream(object):
                     if self.listener.on_data(update) is False:
                         # if on_data returns an error stop the stream
                         self.stop()
-                        raise ListenerError(self.listener.connection_id, update)
+                    if not self._running:
+                        break
+
                 else:
                     # if f has finished, also stop the stream
                     self.stop()
