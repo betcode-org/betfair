@@ -268,8 +268,10 @@ class HistoricalStream(object):
         """
         self.directory = directory
         self.listener = listener
+        self._running = False
 
     def start(self, async=False):
+        self._running = True
         if async:
             t = threading.Thread(name='HistoricalStream', target=self._read_loop)
             t.daemon = False
@@ -277,7 +279,19 @@ class HistoricalStream(object):
         else:
             self._read_loop()
 
+    def stop(self):
+        self._running = False
+
     def _read_loop(self):
-        with open(self.directory, 'r') as f:
-            for update in f:
-                self.listener.on_data(update)
+        while self._running:
+            with open(self.directory, 'r') as f:
+                for update in f:
+                    if self.listener.on_data(update) is False:
+                        # if on_data returns an error stop the stream
+                        self.stop()
+                    if not self._running:
+                        break
+
+                else:
+                    # if f has finished, also stop the stream
+                    self.stop()
