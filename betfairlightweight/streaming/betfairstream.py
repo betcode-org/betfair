@@ -283,15 +283,14 @@ class HistoricalStream(object):
         self._running = False
 
     def _read_loop(self):
-        while self._running:
-            with open(self.directory, 'r') as f:
-                for update in f:
-                    if self.listener.on_data(update) is False:
-                        # if on_data returns an error stop the stream
-                        self.stop()
-                    if not self._running:
-                        break
-
-                else:
-                    # if f has finished, also stop the stream
+        with open(self.directory, 'r') as f:
+            for update in f:
+                if self.listener.on_data(update) is False:
+                    # if on_data returns an error stop the stream and raise error
                     self.stop()
+                    raise ListenerError('HISTORICAL', update)
+                if not self._running:
+                    break
+            else:
+                # if f has finished, also stop the stream
+                self.stop()

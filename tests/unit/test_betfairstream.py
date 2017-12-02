@@ -288,11 +288,13 @@ class HistoricalStreamTest(unittest.TestCase):
     def test_init(self):
         assert self.stream.directory == self.directory
         assert self.stream.listener == self.listener
+        assert self.stream._running is False
 
     @mock.patch('betfairlightweight.endpoints.streaming.HistoricalStream._read_loop')
     def test_start(self, mock_read_loop):
         self.stream.start()
         mock_read_loop.assert_called_with()
+        assert self.stream._running is True
 
     @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalStream._read_loop')
     @mock.patch('betfairlightweight.streaming.betfairstream.threading')
