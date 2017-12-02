@@ -2,7 +2,8 @@ from .utils import to_camel_case
 
 
 def streaming_market_filter(market_ids=None, bsp_market=None, betting_types=None, event_type_ids=None, event_ids=None,
-                            turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None):
+                            turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None,
+                            race_types=None):
     """
     :param list market_ids: filter market data to data pertaining to specific marketIds.
     :param list event_type_ids: filter market data to data pertaining to specific event_type ids.
@@ -13,6 +14,7 @@ def streaming_market_filter(market_ids=None, bsp_market=None, betting_types=None
     :param list betting_types: filter on betting types
     :param list market_types: filter market data by market types.
     :param list country_codes: filter based on country codes
+    :param list race_types: filter race types
 
     :return: dict
     """
@@ -68,7 +70,8 @@ def time_range(from_=None, to=None):  # todo datetime conversion
 
 def market_filter(text_query=None, event_type_ids=None, event_ids=None, competition_ids=None, market_ids=None,
                   venues=None, bsp_only=None, turn_in_play_enabled=None, in_play_only=None, market_betting_types=None,
-                  market_countries=None, market_type_codes=None, market_start_time=None, with_orders=None):
+                  market_countries=None, market_type_codes=None, market_start_time=None, with_orders=None,
+                  race_types=None):
     """
     :param str text_query: restrict markets by text associated with it, e.g name, event, comp.
     :param list event_type_ids: filter market data to data pertaining to specific event_type ids.
@@ -84,6 +87,7 @@ def market_filter(text_query=None, event_type_ids=None, event_ids=None, competit
     :param list market_type_codes: filter market data to match the type of market e.g. MATCH_ODDS.
     :param dict market_start_time: filter market data by time at which it starts.
     :param str with_orders: filter market data by specified order status.
+    :param list race_types: filter race types.
 
     :return: dict
     """
