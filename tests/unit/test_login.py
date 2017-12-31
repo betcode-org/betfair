@@ -4,7 +4,7 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.login import Login
-from betfairlightweight.exceptions import LoginError, APIError
+from betfairlightweight.exceptions import LoginError, APIError, InvalidResponse
 from betfairlightweight.resources import LoginResource
 from tests import mock
 from tests.unit.tools import create_mock_json
@@ -50,6 +50,18 @@ class LoginTest(unittest.TestCase):
 
         mock_post.side_effect = ConnectionError()
         with self.assertRaises(APIError):
+            self.login.request()
+
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.login_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request_json_error(self, mock_post, mock_login_headers, mock_cert):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError()
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(InvalidResponse):
             self.login.request()
 
     def test_login_error_handler(self):

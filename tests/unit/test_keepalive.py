@@ -4,7 +4,7 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.keepalive import KeepAlive, APIError
-from betfairlightweight.exceptions import KeepAliveError
+from betfairlightweight.exceptions import KeepAliveError, InvalidResponse
 from betfairlightweight.resources.authresources import KeepAliveResource
 from tests import mock
 from tests.unit.tools import create_mock_json
@@ -48,6 +48,17 @@ class KeepAliveTest(unittest.TestCase):
         mock_post.side_effect = ConnectionError()
 
         with self.assertRaises(APIError):
+            self.keep_alive.request()
+
+    @mock.patch('betfairlightweight.baseclient.BaseClient.keep_alive_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request_json_error(self, mock_post, mock_keep_alive_headers):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError()
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(InvalidResponse):
             self.keep_alive.request()
 
     def test_keep_alive_error_handler(self):

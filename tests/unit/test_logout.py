@@ -4,7 +4,7 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.logout import Logout
-from betfairlightweight.exceptions import LogoutError, APIError
+from betfairlightweight.exceptions import LogoutError, APIError, InvalidResponse
 from betfairlightweight.resources import LogoutResource
 from tests import mock
 from tests.unit.tools import create_mock_json
@@ -48,6 +48,18 @@ class LogoutTest(unittest.TestCase):
 
         mock_post.side_effect = ConnectionError()
         with self.assertRaises(APIError):
+            self.logout.request()
+
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.keep_alive_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request_json_error(self, mock_post, mock_logout_headers, mock_cert):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError()
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(InvalidResponse):
             self.logout.request()
 
     def test_logout_error_handler(self):

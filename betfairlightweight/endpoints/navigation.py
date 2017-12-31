@@ -1,6 +1,9 @@
 from requests import ConnectionError
 
-from ..exceptions import APIError
+from ..exceptions import (
+    APIError,
+    InvalidResponse,
+)
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
 
@@ -32,7 +35,12 @@ class Navigation(BaseEndpoint):
             raise APIError(None, method, params, e)
 
         check_status_code(response)
-        return response.json()
+        try:
+            response_data = response.json()
+        except ValueError:
+            raise InvalidResponse(response.text)
+
+        return response_data
 
     @property
     def url(self):
