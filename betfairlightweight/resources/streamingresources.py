@@ -172,12 +172,24 @@ class Available(object):
         :param int deletion_select: Used to decide if update should delete cache
         :param bool reverse: Used for sorting
         """
-        self.prices = prices or []
+        self.prices = self._process_prices(prices)
         self.deletion_select = deletion_select
         self.reverse = reverse
 
         self.serialise = []
         self.sort()
+
+    @staticmethod
+    def _process_prices(prices):
+        # 145 prevents empty prices
+        _prices = prices or []
+        output_prices = []
+        for price in _prices:
+            if price[-1] == 0 and price[-2] == 0:
+                continue
+            else:
+                output_prices.append(price)
+        return output_prices
 
     def sort(self):
         self.prices.sort(reverse=self.reverse)
