@@ -4,7 +4,7 @@ from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.navigation import Navigation
-from betfairlightweight.exceptions import APIError
+from betfairlightweight.exceptions import APIError, InvalidResponse
 from tests import mock
 from tests.unit.tools import create_mock_json
 
@@ -56,6 +56,18 @@ class NavigationTest(unittest.TestCase):
         mock_get.side_effect = ValueError()
 
         with self.assertRaises(APIError):
+            self.navigation.request()
+
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.get')
+    def test_request_json_error(self, mock_get, mock_request_headers, mock_cert):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError()
+        mock_get.return_value = mock_response
+
+        with self.assertRaises(InvalidResponse):
             self.navigation.request()
 
     def test_url(self):

@@ -88,12 +88,12 @@ class InPlayService(BaseEndpoint):
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
+        check_status_code(response)
         try:
             response_data = response.json()
         except ValueError:
             raise InvalidResponse(response.text)
 
-        check_status_code(response)
         return response_data, elapsed_time
 
     @property

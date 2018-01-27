@@ -28,6 +28,13 @@ class HistoricalStream(MarketStream):
         with open('output.txt', 'a') as output:
             for market_book in market_books:
                 for runner in market_book.runners:
+
+                    # how to get runner details from the market definition
+                    market_def = market_book.market_definition
+                    runner_def = market_def.runners_dict.get(
+                        (runner.selection_id, runner.handicap)
+                    )
+
                     output.write('%s,%s,%s,%s,%s,%s\n' % (
                         market_book.publish_time, market_book.market_id, market_book.status, market_book.inplay,
                         runner.selection_id, runner.last_price_traded or ''
@@ -38,6 +45,7 @@ class HistoricalListener(StreamListener):
     def _add_stream(self, unique_id, stream_type):
         if stream_type == 'marketSubscription':
             return HistoricalStream(self)
+
 
 # create listener
 listener = HistoricalListener(

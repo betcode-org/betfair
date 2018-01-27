@@ -3,7 +3,11 @@ from requests import ConnectionError
 
 from .baseendpoint import BaseEndpoint
 from ..resources import LogoutResource
-from ..exceptions import LogoutError, APIError
+from ..exceptions import (
+    LogoutError,
+    APIError,
+    InvalidResponse,
+)
 from ..utils import check_status_code
 
 
@@ -38,9 +42,12 @@ class Logout(BaseEndpoint):
             raise APIError(None, exception=e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
-        response_data = response.json()
-
         check_status_code(response)
+        try:
+            response_data = response.json()
+        except ValueError:
+            raise InvalidResponse(response.text)
+
         if self._error_handler:
             self._error_handler(response_data)
         return response_data, elapsed_time

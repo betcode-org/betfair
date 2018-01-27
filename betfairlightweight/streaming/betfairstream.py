@@ -211,8 +211,11 @@ class BetfairStream(object):
             try:
                 part = self._socket.recv(self.buffer_size)
             except (socket.timeout, socket.error) as e:
-                self.stop()
-                raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
+                if self._running:
+                    self.stop()
+                    raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
+                else:
+                    return  # 133, prevents error if stop is called mid recv
 
             # an empty string indicates the server shutdown the socket
             if len(part) == 0:

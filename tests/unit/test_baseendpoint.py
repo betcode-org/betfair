@@ -70,6 +70,19 @@ class BaseEndPointTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.base_endpoint.request(None, None, None)
 
+    @mock.patch('betfairlightweight.endpoints.baseendpoint.BaseEndpoint.create_req')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
+    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
+    @mock.patch('betfairlightweight.baseclient.requests.post')
+    def test_request_json_error(self, mock_post, mock_request_headers, mock_cert, mock_create_req):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError()
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(InvalidResponse):
+            self.base_endpoint.request(None, None, None)
+
     def test_base_endpoint_error_handler(self):
         mock_response = create_mock_json('tests/resources/base_endpoint_success.json')
         assert self.base_endpoint._error_handler(mock_response.json()) is None
