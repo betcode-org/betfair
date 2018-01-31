@@ -62,4 +62,4 @@ class Login(BaseEndpoint):
 
     @property
     def data(self):
-        return 'username=%s&password=%s' % (self.client.username, self.client.password)
+        return {'username': self.client.username, 'password': self.client.password}
