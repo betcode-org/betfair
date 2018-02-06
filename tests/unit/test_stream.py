@@ -68,6 +68,7 @@ class BaseStreamTest(unittest.TestCase):
         mock_cache = mock.Mock()
         mock_cache.market_id = '1.1'
         self.stream._caches = {'1.1': mock_cache}
+
         market_books = self.stream.snap()
         assert market_books == [mock_cache.create_resource()]
 
@@ -76,6 +77,19 @@ class BaseStreamTest(unittest.TestCase):
 
         market_books = self.stream.snap(['1.1'])
         assert market_books == [mock_cache.create_resource()]
+
+    def test_snap_dict_size_err(self):
+        mock_cache = mock.Mock()
+        mock_cache.market_id = '1.1'
+
+        def _change_dict(*_, **__):
+            self.stream._caches['1.{}'.format(len(self.stream._caches))] = \
+                mock_cache
+
+        mock_cache.create_resource = _change_dict
+        self.stream._caches = {'1.{}'.format(i): mock_cache for i in range(2)}
+
+        self.stream.snap()
 
     def test_on_creation(self):
         self.stream._on_creation()
