@@ -1,7 +1,4 @@
-import threading
 import unittest
-
-import time
 
 from betfairlightweight.streaming.stream import BaseStream, MarketStream, OrderStream
 from tests import mock
