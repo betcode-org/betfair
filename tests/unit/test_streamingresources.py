@@ -130,6 +130,12 @@ class TestMarketDefinition(unittest.TestCase):
         assert self.market_definition.market_base_rate == 5
         assert len(self.market_definition.key_line_definitions.key_line) == 2
 
+    def test_missing_open_date(self):
+        response_json = dict(self.mock_response.json())
+        response_json.pop('openDate')
+        market_definition = MarketDefinition(**response_json)
+        assert market_definition.open_date is None
+
 
 class TestMarketDefinitionRunner(unittest.TestCase):
 
