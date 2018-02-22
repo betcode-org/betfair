@@ -282,8 +282,8 @@ class Betting(BaseEndpoint):
         :param list instructions: The number of place instructions
         :param str customer_ref: Optional parameter allowing the client to pass a unique string
         (up to 32 chars) that is used to de-dupe mistaken re-submissions
-        :param str market_version: Optional parameter allowing the client to specify which
-        version of the market the orders should be placed on
+        :param dict market_version: Optional parameter allowing the client to specify which
+        version of the market the orders should be placed on, e.g. "{'version': 123456}"
         :param str customer_strategy_ref: An optional reference customers can use to specify
         which strategy has sent the order
         :param bool async: An optional flag (not setting equates to false) which specifies if
@@ -346,8 +346,8 @@ class Betting(BaseEndpoint):
         of replace instructions per request is 60
         :param str customer_ref: Optional parameter allowing the client to pass a unique
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
-        :param str market_version: Optional parameter allowing the client to specify
-        which version of the market the orders should be placed on
+        :param dict market_version: Optional parameter allowing the client to specify
+        which version of the market the orders should be placed on, e.g. "{'version': 123456}"
         :param str async: An optional flag (not setting equates to false) which specifies
         if the orders should be replaced asynchronously
         :param requests.session session: Requests session object
