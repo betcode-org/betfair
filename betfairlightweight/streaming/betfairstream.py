@@ -26,6 +26,7 @@ class BetfairStream(object):
     HOSTS = collections.defaultdict(
         lambda: 'stream-api.betfair.com',
         integration='stream-api-integration.betfair.com',
+        race='sports-data-stream-api.betfair.com',
     )
 
     def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size, description, host):
@@ -160,6 +161,15 @@ class BetfairStream(object):
             self.listener.stream_unique_id = unique_id
         else:
             self.listener.register_stream(unique_id, 'orderSubscription')
+        self._send(message)
+        return unique_id
+
+    def subscribe_to_races(self):
+        unique_id = self.new_unique_id()
+        message = {
+            'op': 'raceSubscription',
+            'id': unique_id,
+        }
         self._send(message)
         return unique_id
 
