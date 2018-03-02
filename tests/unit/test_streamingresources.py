@@ -19,13 +19,20 @@ from tests.unit.tools import create_mock_json
 class TestAvailable(unittest.TestCase):
 
     def setUp(self):
-        self.prices = [[1, 1.02, 34.45], [0, 1.01, 12]]
+        self.prices = [[0, 1.01, 12], [1, 1.02, 34.45]]
         self.available = Available(self.prices, 2)
 
     def test_init(self):
         assert self.available.prices == self.prices
         assert self.available.deletion_select == 2
         assert self.available.reverse is False
+
+    def test__process_prices(self):
+        assert self.available._process_prices(None) == []
+        assert self.available._process_prices([[1, 2, 3]]) == [[1, 2, 3]]
+        assert self.available._process_prices([[1, 2, 3], [4, 0, 6], [7, 8, 0]]) == [[1, 2, 3], [4, 0, 6], [7, 8, 0]]
+        assert self.available._process_prices([[1, 2, 3], [4, 0, 6], [7, 0, 0]]) == [[1, 2, 3], [4, 0, 6]]
+        assert self.available._process_prices([[1, 2, 3], [4, 0, 0], [7, 8, 0]]) == [[1, 2, 3], [7, 8, 0]]
 
     def test_sort(self):
         self.available.sort()
@@ -52,7 +59,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
         book_update = [[30, 6.9], [1.01, 12]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
@@ -60,7 +67,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
@@ -79,7 +86,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
@@ -88,7 +95,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 2)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
         book_update = [[2, 0, 0], [1, 1.01, 9835.74], [0, 1.02, 1126.22]]
@@ -97,7 +104,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 2)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
     def test_update_available_new_remove(self):
         book_update = [[27, 0]]
@@ -106,7 +113,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
         # [position, price, size]
         book_update = [[0, 36, 0], [1, 38, 0], [0, 38, 3.57]]
@@ -115,7 +122,7 @@ class TestAvailable(unittest.TestCase):
 
         available = Available(current, 2)
         available.update(book_update)
-        assert current == expected
+        assert available.prices == expected
 
 
 class TestMarketDefinition(unittest.TestCase):
