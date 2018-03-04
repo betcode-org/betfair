@@ -5,6 +5,7 @@ import time
 from .cache import (
     MarketBookCache,
     OrderBookCache,
+    RaceCache,
 )
 
 logger = logging.getLogger(__name__)
@@ -167,3 +168,48 @@ class OrderStream(BaseStream):
 
     def __repr__(self):
         return '<OrderStream [%s]>' % len(self)
+
+
+class RaceStream(BaseStream):
+
+    """
+    Cache contains latest update:
+        raceId: RaceCache
+    """
+
+    _lookup = ('rpm', 'rcm')
+
+    def _process(self, update, publish_time):
+        race_id = update['raceId']
+        race_cache = self._caches.get(race_id)
+        if not race_cache:
+            self._caches[race_id] = race_cache = RaceCache()
+        race_cache.update_cache(update, publish_time)
+
+        output = race_cache.create_resource(self.unique_id, update, self._lightweight)
+        self.on_process(output)
+
+    def snap(self, race_ids=None):
+        return super(RaceStream, self).snap(market_ids=race_ids)
+
+    def on_update(self, data):
+        self._update_clk(data)
+
+        publish_time = data['pt']
+        publish_latency = self._calc_latency(publish_time)
+        feed_time = data['pt']
+        feed_latency = self._calc_latency(feed_time)
+
+        if publish_latency > self._max_latency:
+            logger.warning('[Stream: %s]: Publish latency high: %s' % (self.unique_id, publish_latency))
+        if feed_latency > self._max_latency:
+            logger.warning('[Stream: %s]: Feed latency high: %s' % (self.unique_id, feed_latency))
+
+        if self._lookup[0] in data or self._lookup[1]:
+            self._process(data, publish_time)
+
+    def __str__(self):
+        return 'RaceStream'
+
+    def __repr__(self):
+        return '<RaceStream [%s]>' % len(self)

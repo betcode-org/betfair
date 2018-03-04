@@ -1,6 +1,11 @@
 import unittest
 
-from betfairlightweight.streaming.stream import BaseStream, MarketStream, OrderStream
+from betfairlightweight.streaming.stream import (
+    BaseStream,
+    MarketStream,
+    OrderStream,
+    RaceStream,
+)
 from tests import mock
 from tests.unit.tools import create_mock_json
 
@@ -197,3 +202,31 @@ class OrderStreamTest(unittest.TestCase):
 
     def test_repr(self):
         assert repr(self.stream) == '<OrderStream [0]>'
+
+
+class RaceStreamTest(unittest.TestCase):
+
+    def setUp(self):
+        self.listener = mock.Mock()
+        self.stream = RaceStream(self.listener)
+
+    @mock.patch('betfairlightweight.streaming.stream.RaceCache')
+    @mock.patch('betfairlightweight.streaming.stream.RaceStream.on_process')
+    def test_process(self, mock_on_process, mock_race_cache):
+        update = {'raceId': '28587288.1650', 'yad': 'a'}
+        publish_time = 1234
+
+        self.stream._process(update, publish_time)
+        assert self.stream._caches['28587288.1650'] == mock_race_cache()
+        mock_race_cache().update_cache.assert_called_with(update, publish_time)
+        mock_race_cache().create_resource.assert_called_with(self.stream.unique_id, update, self.stream._lightweight)
+
+    @mock.patch('betfairlightweight.streaming.stream.BaseStream.snap')
+    def test_snap(self, mock_snap):
+        assert self.stream.snap('123.44') == mock_snap()
+
+    def test_str(self):
+        assert str(self.stream) == 'RaceStream'
+
+    def test_repr(self):
+        assert repr(self.stream) == '<RaceStream [0]>'

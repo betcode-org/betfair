@@ -4,6 +4,7 @@ import logging
 from .stream import (
     MarketStream,
     OrderStream,
+    RaceStream,
 )
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ class BaseListener(object):
 
         self.connection_id = None
         self.stream = None
-        self.stream_type = None  # marketSubscription/orderSubscription
+        self.stream_type = None  # marketSubscription/orderSubscription/raceSubscription
         self.stream_unique_id = None
 
     def register_stream(self, unique_id, operation):
@@ -106,7 +107,7 @@ class StreamListener(BaseListener):
             self._on_connection(data, unique_id)
         elif operation == 'status':
             self._on_status(data, unique_id)
-        elif operation in ['mcm', 'ocm']:
+        elif operation in ['mcm', 'ocm', 'rcm', 'rpm']:
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 'HISTORICAL']:
                 logger.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
@@ -150,6 +151,8 @@ class StreamListener(BaseListener):
             return MarketStream(self)
         elif stream_type == 'orderSubscription':
             return OrderStream(self)
+        elif stream_type == 'raceSubscription':
+            return RaceStream(self)
 
     @staticmethod
     def _error_handler(data, unique_id):

@@ -170,6 +170,7 @@ class BetfairStream(object):
             'op': 'raceSubscription',
             'id': unique_id,
         }
+        self.listener.register_stream(unique_id, 'raceSubscription')
         self._send(message)
         return unique_id
 

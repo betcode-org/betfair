@@ -9,6 +9,7 @@ from betfairlightweight.streaming.cache import (
     MarketBookCache,
     RunnerBook,
     Available,
+    RaceCache,
 )
 from betfairlightweight.exceptions import CacheError
 from tests import mock
@@ -358,4 +359,49 @@ class TestUnmatchedOrder(unittest.TestCase):
             'selectionId': 12345, 'bspLiability': None, 'sizeMatched': 9, 'handicap': 0.0, 'averagePriceMatched': 0.0,
             'status': 'EXECUTABLE', 'customerStrategyRef': 15, 'regulatorCode': None,
             'priceSize': {'price': 2, 'size': 3}
+        }
+
+
+class TestRaceCache(unittest.TestCase):
+
+    def setUp(self):
+        self.race_cache = RaceCache()
+
+    def test_init(self):
+        assert self.race_cache.publish_time is None
+        assert self.race_cache.rpm is None
+        assert self.race_cache.rcm == {}
+
+    def test_update_rpm(self):
+        update = {'id': 12, 'op': 'rpm', 'd': 123}
+        publish_time = 1518626764
+        self.race_cache.update_cache(update, publish_time)
+
+        assert self.race_cache._datetime_updated is not None
+        assert self.race_cache.publish_time == publish_time
+        assert self.race_cache.rpm == update
+
+    def test_update_rcm(self):
+        update = {'id': 12, 'op': 'rcm', 'd': 123, 'selId': 12345}
+        publish_time = 1518626764
+        self.race_cache.update_cache(update, publish_time)
+
+        assert self.race_cache._datetime_updated is not None
+        assert self.race_cache.publish_time == publish_time
+        assert self.race_cache.rcm == {12345: update}
+
+    @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')
+    def test_create_resource_lightweight(self, mock_serialise):
+        assert self.race_cache.create_resource(12, {}, True) == mock_serialise
+
+    # @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')
+    # def test_create_resource(self, mock_serialise):
+    #     assert self.race_cache.create_resource(12, {}, False) == mock_serialise
+
+    def test_serialise(self):
+        self.race_cache.rpm = {'test': 123}
+        self.race_cache.rcm = {'two': 456}
+        assert self.race_cache.serialise == {
+            'rpm': {'test': 123},
+            'rcm': {'two': 456}
         }

@@ -396,3 +396,40 @@ class OrderBookCache(BaseResource):
             'currentOrders': orders,
             'moreAvailable': False
         }
+
+
+class RaceCache(BaseResource):
+
+    def __init__(self, **kwargs):
+        super(RaceCache, self).__init__(**kwargs)
+        self.publish_time = None
+        self.rpm = None
+        self.rcm = {}
+
+    def update_cache(self, update, publish_time):
+        self._datetime_updated = self.strip_datetime(publish_time)
+        self.publish_time = publish_time
+
+        if update['op'] == 'rpm':
+            self.rpm = update
+        elif update['op'] == 'rcm':
+            self.rcm[update['selId']] = update
+
+    def create_resource(self, unique_id, streaming_update, lightweight):
+        if lightweight:
+            return self.serialise
+        # else:
+        #     return Race(
+        #         elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+        #         streaming_unique_id=unique_id,
+        #         streaming_update=streaming_update,
+        #         publish_time=self.publish_time,
+        #         **self.serialise
+        #     )
+
+    @property
+    def serialise(self):
+        return {
+            'rpm': self.rpm,
+            'rcm': self.rcm
+        }
