@@ -21,7 +21,6 @@ class MarketDefinitionRunner(object):
         self.bsp = bsp
         self.adjustment_factor = adjustmentFactor
         self.removal_date = BaseResource.strip_datetime(removalDate)
-        self.removal_date_string = removalDate
         self.name = name  # historic data only
 
     def __str__(self):
@@ -41,18 +40,11 @@ class MarketDefinitionKeyLineSelection(object):
         self.selection_id = kwargs.get('id')
         self.handicap = kwargs.get('hc')
 
-    def serialise(self):
-        return {'selectionId': self.selection_id,
-                'handicap': self.handicap}
-
 
 class MarketDefinitionKeyLine(object):
 
     def __init__(self, kl):
         self.key_line = [MarketDefinitionKeyLineSelection(**i) for i in kl]
-
-    def serialise(self):
-        return {'keyLine': [i.serialise() for i in self.key_line]}
 
 
 class MarketDefinition(object):
@@ -127,24 +119,11 @@ class MarketDefinition(object):
         self.runners = [
             MarketDefinitionRunner(**i) for i in runners
         ]
-        self.name = name  # historic data only
-        self.event_name = eventName  # historic data only
-        self.runners_dict = {
-            (runner.selection_id, runner.handicap): runner for runner in self.runners
-        }
-
-        # {u'type': u'CLASSIC'}
-        self.price_ladder_definition = PriceLadderDescription(**priceLadderDefinition
-                                                              ) if priceLadderDefinition else None
-
-        # {u'kl': [{u'hc': -2, u'id': 11624066}, {u'hc': 2, u'id': 61660}]}
+        self.price_ladder_definition = PriceLadderDescription(
+            **priceLadderDefinition
+        ) if priceLadderDefinition else None
         self.key_line_definitions = MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
         self.race_type = raceType
 
-    def serialise_price_ladder_definition(self):
-        if self.price_ladder_definition:
-            return self.price_ladder_definition.serialise()
-
-    def serialise_key_line_definitions(self):
-        if self.key_line_definitions:
-            return self.key_line_definitions.serialise()
+        self.name = name  # historic data only
+        self.event_name = eventName  # historic data only
