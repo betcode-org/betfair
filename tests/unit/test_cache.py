@@ -119,11 +119,10 @@ class TestAvailable(unittest.TestCase):
 class TestMarketBookCache(unittest.TestCase):
 
     def setUp(self):
-        self.market_book_cache = MarketBookCache(**{})
+        self.market_book_cache = MarketBookCache(**{'marketDefinition': {'runners': {}}})
 
-    @mock.patch('betfairlightweight.streaming.cache.MarketDefinition')
     @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.strip_datetime')
-    def test_update_cache_md(self, mock_strip_datetime, mock_market_definition):
+    def test_update_cache_md(self, mock_strip_datetime):
         publish_time = mock.Mock()
         market_change = create_mock_json('tests/resources/streaming_mcm_UPDATE_md.json')
         book_data = market_change.json().get('mc')
@@ -131,8 +130,7 @@ class TestMarketBookCache(unittest.TestCase):
         for book in book_data:
             self.market_book_cache.update_cache(book, publish_time)
             mock_strip_datetime.assert_called_with(publish_time)
-            mock_market_definition.assert_called_with(**book.get('marketDefinition'))
-            assert self.market_book_cache.market_definition == mock_market_definition(**book.get('marketDefinition'))
+            assert self.market_book_cache.market_definition == book.get('marketDefinition')
 
     @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.strip_datetime')
     def test_update_cache_tv(self, mock_strip_datetime):
@@ -158,8 +156,9 @@ class TestMarketBookCache(unittest.TestCase):
     #         assert self.market_book_cache.total_matched == book.get('tv')
 
     @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.serialise')
+    @mock.patch('betfairlightweight.streaming.cache.MarketDefinition')
     @mock.patch('betfairlightweight.streaming.cache.MarketBook')
-    def test_create_resource(self, mock_market_book, mock_serialise):
+    def test_create_resource(self, mock_market_book, mock_market_definition, mock_serialise):
         # lightweight
         market_book = self.market_book_cache.create_resource(1234, {}, True)
         assert market_book == mock_serialise
@@ -236,8 +235,9 @@ class TestRunnerBook(unittest.TestCase):
         assert self.runner_book.serialise_available_to_lay() == mock_best_display_available_to_lay.serialise
 
     def test_empty_serialise(self):
-        runner_definition = mock.Mock()
-        runner_definition.bsp = None
+        runner_definition = {
+            'bdp': None,
+        }
         serialise_d = self.runner_book.serialise(runner_definition)
 
         ex = serialise_d['ex']
