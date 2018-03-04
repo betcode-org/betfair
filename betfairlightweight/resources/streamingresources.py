@@ -130,6 +130,10 @@ class MarketDefinition(object):
 
 
 class Race(BaseResource):
+    """
+    :type rpm: dict
+    :type rcm: dict
+    """
 
     def __init__(self, **kwargs):
         super(Race, self).__init__(**kwargs)
@@ -140,6 +144,17 @@ class Race(BaseResource):
 
 
 class RaceProgress(BaseResource):
+    """
+    :type publish_time: int
+    :type feed_time: int
+    :type race_id: unicode
+    :type gate: unicode
+    :type sectional_time: float
+    :type running_time: float
+    :type speed: float
+    :type progress: float
+    :type order: list
+    """
 
     def __init__(self, **kwargs):
         super(RaceProgress, self).__init__(**kwargs)
@@ -155,6 +170,15 @@ class RaceProgress(BaseResource):
 
 
 class RaceChange(BaseResource):
+    """
+    :type publish_time: int
+    :type feed_time: int
+    :type race_id: unicode
+    :type selection_id: int
+    :type lat: float
+    :type long: float
+    :type speed: float
+    """
 
     def __init__(self, **kwargs):
         super(RaceChange, self).__init__(**kwargs)

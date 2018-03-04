@@ -43,7 +43,7 @@ class Streaming(object):
         )
 
     @staticmethod
-    def create_historical_stream(directory, listener=None):
+    def create_historical_stream(directory, listener=None, operation='marketSubscription'):
         """
         Uses streaming listener/cache to parse betfair
         historical data:
@@ -51,9 +51,10 @@ class Streaming(object):
 
         :param str directory: Directory of betfair data
         :param BaseListener listener: Listener object
+        :param str operation: Operation type
 
         :rtype: HistoricalStream
         """
         listener = listener if listener else BaseListener()
-        listener.register_stream('HISTORICAL', 'marketSubscription')
+        listener.register_stream('HISTORICAL', operation)
         return HistoricalStream(directory, listener)

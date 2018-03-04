@@ -20,7 +20,7 @@ class StreamingTest(unittest.TestCase):
         self.streaming = Streaming(client)
 
     @mock.patch('betfairlightweight.endpoints.streaming.BetfairStream')
-    def test_list_race_details(self, mock_betfair_stream):
+    def test_create_stream(self, mock_betfair_stream):
         response = self.streaming.create_stream(1, 2, 6, 1024, 'TestSocket')
 
         assert mock_betfair_stream.call_count == 1
@@ -30,10 +30,10 @@ class StreamingTest(unittest.TestCase):
         assert response == mock_betfair_stream()
 
     @mock.patch('betfairlightweight.endpoints.streaming.HistoricalStream')
-    def test_create_stream(self, mock_stream):
+    def test_create_historical_stream(self, mock_stream):
         dir = 'test'
         listener = mock.Mock()
-        self.streaming.create_historical_stream(dir, listener)
+        self.streaming.create_historical_stream(dir, listener, 'test')
 
-        listener.register_stream.assert_called_with('HISTORICAL', 'marketSubscription')
+        listener.register_stream.assert_called_with('HISTORICAL', 'test')
         mock_stream.assert_called_with(dir, listener)
