@@ -1,3 +1,5 @@
+from .baseresource import BaseResource
+
 from .authresources import (
     LoginResource,
     KeepAliveResource,
