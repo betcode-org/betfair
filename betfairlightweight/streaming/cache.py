@@ -5,6 +5,7 @@ from ..resources import (
     MarketBook,
     CurrentOrders,
     MarketDefinition,
+    Race,
 )
 from ..enums import (
     StreamingOrderType,
@@ -411,21 +412,25 @@ class RaceCache(BaseResource):
         self.publish_time = publish_time
 
         if update['op'] == 'rpm':
+            update.pop('op', None)
+            update.pop('id', None)
             self.rpm = update
         elif update['op'] == 'rcm':
+            update.pop('op', None)
+            update.pop('id', None)
             self.rcm[update['selId']] = update
 
     def create_resource(self, unique_id, streaming_update, lightweight):
         if lightweight:
             return self.serialise
-        # else:
-        #     return Race(
-        #         elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
-        #         streaming_unique_id=unique_id,
-        #         streaming_update=streaming_update,
-        #         publish_time=self.publish_time,
-        #         **self.serialise
-        #     )
+        else:
+            return Race(
+                elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+                streaming_unique_id=unique_id,
+                streaming_update=streaming_update,
+                publish_time=self.publish_time,
+                **self.serialise
+            )
 
     @property
     def serialise(self):

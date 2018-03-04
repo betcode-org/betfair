@@ -394,9 +394,11 @@ class TestRaceCache(unittest.TestCase):
     def test_create_resource_lightweight(self, mock_serialise):
         assert self.race_cache.create_resource(12, {}, True) == mock_serialise
 
+    # @mock.patch('betfairlightweight.streaming.cache.Race')
     # @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')
-    # def test_create_resource(self, mock_serialise):
-    #     assert self.race_cache.create_resource(12, {}, False) == mock_serialise
+    # def test_create_resource(self, mock_serialise, mock_race):
+    #     # print(self.race_cache.create_resource(12, {}, False))
+    #     self.assertIsInstance(self.race_cache.create_resource(12, {}, False), mock_race)
 
     def test_serialise(self):
         self.race_cache.rpm = {'test': 123}

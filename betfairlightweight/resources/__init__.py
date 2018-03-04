@@ -51,5 +51,6 @@ from .inplayserviceresources import (
 
 from .streamingresources import (
     MarketDefinition,
-    MarketDefinitionRunner
+    MarketDefinitionRunner,
+    Race,
 )

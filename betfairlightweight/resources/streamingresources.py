@@ -127,3 +127,41 @@ class MarketDefinition(object):
 
         self.name = name  # historic data only
         self.event_name = eventName  # historic data only
+
+
+class Race(BaseResource):
+
+    def __init__(self, **kwargs):
+        super(Race, self).__init__(**kwargs)
+        self.race_progress = RaceProgress(**kwargs.get('rpm'))
+        self.race_change = [
+            RaceChange(**value) for key, value in kwargs.get('rcm', {}).items()
+        ]
+
+
+class RaceProgress(BaseResource):
+
+    def __init__(self, **kwargs):
+        super(RaceProgress, self).__init__(**kwargs)
+        self.publish_time = self.strip_datetime(kwargs.get('pt'))
+        self.feed_time = self.strip_datetime(kwargs.get('ft'))
+        self.race_id = kwargs.get('raceId')
+        self.gate = kwargs.get('gate')
+        self.sectional_time = kwargs.get('st')
+        self.running_time = kwargs.get('rt')
+        self.speed = kwargs.get('spd')
+        self.progress = kwargs.get('prg')
+        self.order = kwargs.get('ord')
+
+
+class RaceChange(BaseResource):
+
+    def __init__(self, **kwargs):
+        super(RaceChange, self).__init__(**kwargs)
+        self.publish_time = self.strip_datetime(kwargs.get('pt'))
+        self.feed_time = self.strip_datetime(kwargs.get('ft'))
+        self.race_id = kwargs.get('raceId')
+        self.selection_id = kwargs.get('selId')
+        self.lat = kwargs.get('lat')
+        self.long = kwargs.get('long')
+        self.speed = kwargs.get('spd')
