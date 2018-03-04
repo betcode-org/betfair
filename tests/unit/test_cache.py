@@ -10,6 +10,7 @@ from betfairlightweight.streaming.cache import (
     RunnerBook,
     Available,
 )
+from betfairlightweight.exceptions import CacheError
 from tests import mock
 from tests.unit.tools import create_mock_json
 
@@ -120,6 +121,10 @@ class TestMarketBookCache(unittest.TestCase):
 
     def setUp(self):
         self.market_book_cache = MarketBookCache(**{'marketDefinition': {'runners': {}}})
+
+    def test_error(self):
+        with self.assertRaises(CacheError):
+            self.market_book_cache = MarketBookCache()
 
     @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.strip_datetime')
     def test_update_cache_md(self, mock_strip_datetime):

@@ -12,6 +12,7 @@ from ..enums import (
     StreamingSide,
     StreamingStatus,
 )
+from ..exceptions import CacheError
 
 
 class Available(object):
@@ -139,7 +140,9 @@ class MarketBookCache(BaseResource):
         self.market_id = kwargs.get('id')
         self.image = kwargs.get('img')
         self.total_matched = kwargs.get('tv')
-        self.market_definition = kwargs['marketDefinition']  # todo raise error if no marketDefinition
+        if 'marketDefinition' not in kwargs:
+            raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
+        self.market_definition = kwargs['marketDefinition']
         self.runners = [RunnerBook(**i) for i in kwargs.get('rc', [])]
 
         self.runner_dict = {}
