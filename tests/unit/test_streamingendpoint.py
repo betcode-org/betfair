@@ -5,19 +5,14 @@ from betfairlightweight import APIClient
 from betfairlightweight.endpoints import Streaming
 
 
-class StreamingInit(unittest.TestCase):
-
-    def test_base_endpoint_init(self):
-        client = APIClient('username', 'password', 'app_key')
-        streaming = Streaming(client)
-        assert streaming.client == client
-
-
 class StreamingTest(unittest.TestCase):
 
     def setUp(self):
-        client = APIClient('username', 'password', 'app_key', 'UK')
-        self.streaming = Streaming(client)
+        self.client = APIClient('username', 'password', 'app_key', 'UK')
+        self.streaming = Streaming(self.client)
+
+    def test_init(self):
+        assert self.streaming.client == self.client
 
     @mock.patch('betfairlightweight.endpoints.streaming.BetfairStream')
     def test_create_stream(self, mock_betfair_stream):
@@ -31,9 +26,9 @@ class StreamingTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.endpoints.streaming.HistoricalStream')
     def test_create_historical_stream(self, mock_stream):
-        dir = 'test'
+        directory = 'test'
         listener = mock.Mock()
-        self.streaming.create_historical_stream(dir, listener, 'test')
+        self.streaming.create_historical_stream(directory, listener, 'test')
 
         listener.register_stream.assert_called_with('HISTORICAL', 'test')
-        mock_stream.assert_called_with(dir, listener)
+        mock_stream.assert_called_with(directory, listener)
