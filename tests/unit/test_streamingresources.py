@@ -69,6 +69,8 @@ class TestRaceProgress(unittest.TestCase):
         self.race_progress = RaceProgress(**self.mock_response.json())
 
     def test_init(self):
+        assert self.race_progress.publish_time_epoch == 1518626764
+        assert self.race_progress.feed_time_epoch == 1518626674
         assert self.race_progress.race_id == "28587288.1650"
         assert self.race_progress.gate == "1f"
         assert self.race_progress.sectional_time == 10.6
@@ -85,6 +87,8 @@ class TestRaceChange(unittest.TestCase):
         self.race_change = RaceChange(**self.mock_response.json())
 
     def test_init(self):
+        assert self.race_change.publish_time_epoch == 1518626764
+        assert self.race_change.feed_time_epoch == 1518626674
         assert self.race_change.race_id == "28587288.1650"
         assert self.race_change.selection_id == 7390417
         assert self.race_change.lat == 51.4189543

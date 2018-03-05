@@ -158,6 +158,8 @@ class RaceProgress(BaseResource):
 
     def __init__(self, **kwargs):
         super(RaceProgress, self).__init__(**kwargs)
+        self.publish_time_epoch = kwargs.get('pt')
+        self.feed_time_epoch = kwargs.get('ft')
         self.publish_time = self.strip_datetime(kwargs.get('pt'))
         self.feed_time = self.strip_datetime(kwargs.get('ft'))
         self.race_id = kwargs.get('raceId')
@@ -182,6 +184,8 @@ class RaceChange(BaseResource):
 
     def __init__(self, **kwargs):
         super(RaceChange, self).__init__(**kwargs)
+        self.publish_time_epoch = kwargs.get('pt')
+        self.feed_time_epoch = kwargs.get('ft')
         self.publish_time = self.strip_datetime(kwargs.get('pt'))
         self.feed_time = self.strip_datetime(kwargs.get('ft'))
         self.race_id = kwargs.get('raceId')

@@ -185,6 +185,7 @@ class RaceStream(BaseStream):
         if not race_cache:
             self._caches[race_id] = race_cache = RaceCache()
         race_cache.update_cache(update, publish_time)
+        self._updates_processed += 1
 
         output = race_cache.create_resource(self.unique_id, update, self._lightweight)
         self.on_process(output)
@@ -193,7 +194,6 @@ class RaceStream(BaseStream):
         return super(RaceStream, self).snap(market_ids=race_ids)
 
     def on_update(self, data):
-        self._update_clk(data)
 
         publish_time = data['pt']
         publish_latency = self._calc_latency(publish_time)
@@ -205,7 +205,7 @@ class RaceStream(BaseStream):
         if feed_latency > self._max_latency:
             logger.warning('[Stream: %s]: Feed latency high: %s' % (self.unique_id, feed_latency))
 
-        if self._lookup[0] in data or self._lookup[1]:
+        if data['op'] in self._lookup:
             self._process(data, publish_time)
 
     def __str__(self):
