@@ -174,39 +174,35 @@ class RaceStream(BaseStream):
 
     """
     Cache contains latest update:
-        raceId: RaceCache
+        marketId: RaceCache
     """
 
-    _lookup = ('rpm', 'rcm')
+    _lookup = 'rc'
 
-    def _process(self, update, publish_time):
-        race_id = update['raceId']
-        race_cache = self._caches.get(race_id)
-        if not race_cache:
-            self._caches[race_id] = race_cache = RaceCache()
-        race_cache.update_cache(update, publish_time)
-        self._updates_processed += 1
+    def on_subscribe(self, data):
+        """The initial message returned after
+        a subscribe - This will currently not
+        contain any Race Changes (rc) but may
+        do in the future"""
+        pass
 
-        output = race_cache.create_resource(self.unique_id, update, self._lightweight)
+    def _process(self, race_updates, publish_time):
+        output = []
+        for update in race_updates:
+            market_id = update['mid']
+
+            race_cache = self._caches.get(market_id)
+            if not race_cache:
+                self._caches[market_id] = race_cache = RaceCache(
+                    publish_time=publish_time, **update
+                )
+            race_cache.update_cache(update, publish_time)
+            self._updates_processed += 1
+
+            output.append(
+                race_cache.create_resource(self.unique_id, update, self._lightweight)
+            )
         self.on_process(output)
-
-    def snap(self, race_ids=None):
-        return super(RaceStream, self).snap(market_ids=race_ids)
-
-    def on_update(self, data):
-
-        publish_time = data['pt']
-        publish_latency = self._calc_latency(publish_time)
-        feed_time = data['pt']
-        feed_latency = self._calc_latency(feed_time)
-
-        if publish_latency > self._max_latency:
-            logger.warning('[Stream: %s]: Publish latency high: %s' % (self.unique_id, publish_latency))
-        if feed_latency > self._max_latency:
-            logger.warning('[Stream: %s]: Feed latency high: %s' % (self.unique_id, feed_latency))
-
-        if data['op'] in self._lookup:
-            self._process(data, publish_time)
 
     def __str__(self):
         return 'RaceStream'

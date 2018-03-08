@@ -365,30 +365,31 @@ class TestUnmatchedOrder(unittest.TestCase):
 class TestRaceCache(unittest.TestCase):
 
     def setUp(self):
-        self.race_cache = RaceCache()
+        update = {'mid': "1.12", "id": "12.12"}
+        self.race_cache = RaceCache(**update)
 
     def test_init(self):
         assert self.race_cache.publish_time is None
-        assert self.race_cache.rpm is None
-        assert self.race_cache.rcm == {}
+        assert self.race_cache.rpc is None
+        assert self.race_cache.rrc == []
 
     def test_update_rpm(self):
-        update = {'id': 12, 'op': 'rpm', 'd': 123}
+        update = {'rpc': 1234}
         publish_time = 1518626764
         self.race_cache.update_cache(update, publish_time)
 
         assert self.race_cache._datetime_updated is not None
         assert self.race_cache.publish_time == publish_time
-        assert self.race_cache.rpm == update
+        assert self.race_cache.rpc == 1234
 
-    def test_update_rcm(self):
-        update = {'id': 12, 'op': 'rcm', 'd': 123, 'selId': 12345}
+    def test_update_rrc(self):
+        update = {'rrc': [{'id': 1}]}
         publish_time = 1518626764
         self.race_cache.update_cache(update, publish_time)
 
         assert self.race_cache._datetime_updated is not None
         assert self.race_cache.publish_time == publish_time
-        assert self.race_cache.rcm == {12345: update}
+        assert len(self.race_cache.rrc) == 1
 
     @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')
     def test_create_resource_lightweight(self, mock_serialise):
@@ -401,9 +402,9 @@ class TestRaceCache(unittest.TestCase):
     #     self.assertIsInstance(self.race_cache.create_resource(12, {}, False), mock_race)
 
     def test_serialise(self):
-        self.race_cache.rpm = {'test': 123}
-        self.race_cache.rcm = {'two': 456}
+        self.race_cache.rpc = {'test': 123}
+        self.race_cache.rrc = {'two': 456}
         assert self.race_cache.serialise == {
-            'rpm': {'test': 123},
-            'rcm': {'two': 456}
+            'rpc': {'test': 123},
+            'rrc': {'two': 456}
         }

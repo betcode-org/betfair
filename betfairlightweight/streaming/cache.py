@@ -399,26 +399,40 @@ class OrderBookCache(BaseResource):
         }
 
 
+class RunnerChange:
+
+    def __init__(self, change):
+        self.change = change
+
+
 class RaceCache(BaseResource):
 
     def __init__(self, **kwargs):
         super(RaceCache, self).__init__(**kwargs)
-        self.publish_time = None
-        self.rpm = None
-        self.rcm = {}
+        self.publish_time = kwargs.get('publish_time')
+        self.market_id = kwargs.get('mid')
+        self.race_id = kwargs.get('id')
+        self.rpc = kwargs.get('rpc')                                 # RaceProgressChange
+        self.rrc = [RunnerChange(i) for i in kwargs.get('rrc', [])]  # RaceRunnerChange
 
     def update_cache(self, update, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
 
-        if update['op'] == 'rpm':
-            update.pop('op', None)
-            update.pop('id', None)
-            self.rpm = update
-        elif update['op'] == 'rcm':
-            update.pop('op', None)
-            update.pop('id', None)
-            self.rcm[update['selId']] = update
+        if 'rpc' in update:
+            self.rpc = update['rpc']
+
+        if 'rrc' in update:
+            runner_dict = {runner.change['id']: runner for runner in self.rrc}
+
+            for runner_update in update['rrc']:
+                runner = runner_dict.get(runner_update['id'])
+                if runner:
+                    runner.change = runner_update
+                else:
+                    self.rrc.append(
+                        RunnerChange(runner_update)
+                    )
 
     def create_resource(self, unique_id, streaming_update, lightweight):
         if lightweight:
@@ -429,12 +443,14 @@ class RaceCache(BaseResource):
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
                 publish_time=self.publish_time,
+                market_id=self.market_id,
+                race_id=self.race_id,
                 **self.serialise
             )
 
     @property
     def serialise(self):
         return {
-            'rpm': self.rpm,
-            'rcm': self.rcm
+            'rpc': self.rpc,
+            'rrc': self.rrc
         }

@@ -40,9 +40,9 @@ class HistoricalRaceStreamTest(unittest.TestCase):
         assert stream.listener.stream_type == 'raceSubscription'
         assert stream.listener.stream_unique_id == 'HISTORICAL'
 
-        assert stream.listener.stream._updates_processed == 6
+        assert stream.listener.stream._updates_processed == 2
         assert len(stream.listener.stream._caches) == 1
 
-        market = stream.listener.stream._caches.get('28587288.1650')
-        assert len(market.rcm) == 5
+        market = stream.listener.stream._caches.get('1.1234567')
+        assert len(market.rrc) == 2
         assert stream._running is False

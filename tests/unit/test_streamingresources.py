@@ -59,20 +59,18 @@ class TestRace(unittest.TestCase):
 
     def test_init(self):
         self.assertIsInstance(self.race.race_progress, RaceProgress)
-        self.assertIsInstance(self.race.race_change[0], RaceChange)
+        self.assertIsInstance(self.race.race_runners[0], RaceChange)
 
 
 class TestRaceProgress(unittest.TestCase):
 
     def setUp(self):
-        self.mock_response = create_mock_json('tests/resources/streaming_rpm.json')
-        self.race_progress = RaceProgress(**self.mock_response.json())
+        self.mock_response = create_mock_json('tests/resources/streaming_rcm.json')
+        self.race_progress = RaceProgress(**self.mock_response.json()['rc'][0]['rpc'])
 
     def test_init(self):
-        assert self.race_progress.publish_time_epoch == 1518626764
         assert self.race_progress.feed_time_epoch == 1518626674
-        assert self.race_progress.race_id == "28587288.1650"
-        assert self.race_progress.gate == "1f"
+        assert self.race_progress.gate_name == "1f"
         assert self.race_progress.sectional_time == 10.6
         assert self.race_progress.running_time == 46.7
         assert self.race_progress.speed == 17.8
@@ -84,12 +82,10 @@ class TestRaceChange(unittest.TestCase):
 
     def setUp(self):
         self.mock_response = create_mock_json('tests/resources/streaming_rcm.json')
-        self.race_change = RaceChange(**self.mock_response.json())
+        self.race_change = RaceChange(**self.mock_response.json()['rc'][0]['rrc'][0])
 
     def test_init(self):
-        assert self.race_change.publish_time_epoch == 1518626764
         assert self.race_change.feed_time_epoch == 1518626674
-        assert self.race_change.race_id == "28587288.1650"
         assert self.race_change.selection_id == 7390417
         assert self.race_change.lat == 51.4189543
         assert self.race_change.long == -0.4058491

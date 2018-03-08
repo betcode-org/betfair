@@ -124,7 +124,7 @@ class StreamListenerTest(unittest.TestCase):
         mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
         mock_on_change_message.assert_called_with(mock_response.json(), mock_response.json().get('id'))
 
-        mock_response = create_mock_json('tests/resources/streaming_rpm.json')
+        mock_response = create_mock_json('tests/resources/streaming_rcm.json')
         self.stream_listener.on_data(mock_response.content)
         mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
         mock_on_change_message.assert_called_with(mock_response.json(), mock_response.json().get('id'))
@@ -169,10 +169,6 @@ class StreamListenerTest(unittest.TestCase):
 
         # race
         mock_response = create_mock_json('tests/resources/streaming_rcm.json')
-        self.stream_listener._on_change_message(mock_response.json(), 1)
-        stream.on_update.assert_called_with(mock_response.json())
-
-        mock_response = create_mock_json('tests/resources/streaming_rpm.json')
         self.stream_listener._on_change_message(mock_response.json(), 1)
         stream.on_update.assert_called_with(mock_response.json())
 
