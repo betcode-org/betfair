@@ -405,6 +405,8 @@ class TestRaceCache(unittest.TestCase):
         self.race_cache.rpc = {'test': 123}
         self.race_cache.rrc = {'two': 456}
         assert self.race_cache.serialise == {
+            'market_id': '1.12',
+            'race_id': '12.12',
             'rpc': {'test': 123},
             'rrc': {'two': 456}
         }

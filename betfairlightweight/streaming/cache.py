@@ -443,14 +443,14 @@ class RaceCache(BaseResource):
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
                 publish_time=self.publish_time,
-                market_id=self.market_id,
-                race_id=self.race_id,
                 **self.serialise
             )
 
     @property
     def serialise(self):
         return {
+            'market_id': self.market_id,
+            'race_id': self.race_id,
             'rpc': self.rpc,
             'rrc': self.rrc
         }
