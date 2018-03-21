@@ -2,7 +2,7 @@ import datetime
 import logging
 import time
 
-from ..resources.streamingresources import (
+from .cache import (
     MarketBookCache,
     OrderBookCache,
 )

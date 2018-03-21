@@ -146,6 +146,15 @@ class ListenerError(BetfairError):
         super(ListenerError, self).__init__(message)
 
 
+class CacheError(BetfairError):
+    """
+    Exception raised if error with cache.
+    """
+
+    def __init__(self, message):
+        super(CacheError, self).__init__(message)
+
+
 class RaceCardError(BetfairError):
     """
     Exception raised if error with race card request.
