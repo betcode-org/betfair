@@ -131,17 +131,23 @@ class MarketDefinition(object):
 
 class Race(BaseResource):
     """
+    :type market_id: unicode
+    :type race_id: unicode
     :type rpm: dict
     :type rcm: dict
     """
 
     def __init__(self, **kwargs):
+        self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
+        self.streaming_update = kwargs.pop('streaming_update', None)
+        self.publish_time_epoch = kwargs.get('pt')
+        self.publish_time = self.strip_datetime(kwargs.get('pt'))
         super(Race, self).__init__(**kwargs)
-        self.market_id = kwargs.get('market_id')
-        self.race_id = kwargs.get('race_id')
-        self.race_progress = RaceProgress(**kwargs.get('rpm', {}))
+        self.market_id = kwargs.get('mid')
+        self.race_id = kwargs.get('id')
+        self.race_progress = RaceProgress(**kwargs.get('rpc', {}))
         self.race_runners = [
-            RaceChange(**value) for key, value in kwargs.get('rcm', {}).items()
+            RaceChange(**runner) for runner in kwargs.get('rrc', [])
         ]
 
 

@@ -442,15 +442,15 @@ class RaceCache(BaseResource):
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
-                publish_time=self.publish_time,
                 **self.serialise
             )
 
     @property
     def serialise(self):
         return {
-            'market_id': self.market_id,
-            'race_id': self.race_id,
+            'pt': self.publish_time,
+            'mid': self.market_id,
+            'id': self.race_id,
             'rpc': self.rpc,
-            'rrc': self.rrc
+            'rrc': [runner.change for runner in self.rrc]
         }

@@ -54,10 +54,12 @@ class TestMarketDefinitionRunner(unittest.TestCase):
 class TestRace(unittest.TestCase):
 
     def setUp(self):
-        self.mock_response = {'rpm': {}, 'rcm': {'1234.56': {'test': 'me'}}}
+        self.mock_response = {'mid': '1.123', 'id': '1234.56', 'rpc': {}, 'rrc': [{'test': 'me'}]}
         self.race = Race(**self.mock_response)
 
     def test_init(self):
+        assert self.race.market_id == '1.123'
+        assert self.race.race_id == '1234.56'
         self.assertIsInstance(self.race.race_progress, RaceProgress)
         self.assertIsInstance(self.race.race_runners[0], RaceChange)
 

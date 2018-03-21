@@ -403,10 +403,14 @@ class TestRaceCache(unittest.TestCase):
 
     def test_serialise(self):
         self.race_cache.rpc = {'test': 123}
-        self.race_cache.rrc = {'two': 456}
+        mock_runner = mock.Mock()
+        mock_runner.change = {'test': 'me'}
+        self.race_cache.rrc = [mock_runner]
+        self.race_cache.publish_time = 12
         assert self.race_cache.serialise == {
-            'market_id': '1.12',
-            'race_id': '12.12',
+            'pt': 12,
+            'mid': '1.12',
+            'id': '12.12',
             'rpc': {'test': 123},
-            'rrc': {'two': 456}
+            'rrc': [{'test': 'me'}]
         }
