@@ -64,11 +64,11 @@ class BetfairStream(object):
         """Stops read loop and closes socket if it has been created.
         """
 
-        
+
         self._running = False
         for read_thread in self.read_threads:
-            read_thread.join()
-
+            read_thread.join() #Leting the threads see that self.__running is false
+        self.read_thread =[] #Stop keeping track of the threads
 
         if self._socket is None:
             return
