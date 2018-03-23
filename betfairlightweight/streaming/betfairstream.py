@@ -39,7 +39,7 @@ class BetfairStream(object):
         self.host = self.HOSTS[host]
         self.receive_count = 0
         self.datetime_last_received = None
-
+        self.read_threads = []
         self._socket = None
         self._running = False
 
@@ -56,13 +56,19 @@ class BetfairStream(object):
             t = threading.Thread(name=self.description, target=self._read_loop)
             t.daemon = False
             t.start()
+            self.read_threads.append(t)
         else:
             self._read_loop()
 
     def stop(self):
         """Stops read loop and closes socket if it has been created.
         """
+
+        
         self._running = False
+        for read_thread in self.read_threads:
+            read_thread.join()
+
 
         if self._socket is None:
             return
