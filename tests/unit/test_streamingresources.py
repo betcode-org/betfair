@@ -54,7 +54,7 @@ class TestMarketDefinitionRunner(unittest.TestCase):
 class TestRace(unittest.TestCase):
 
     def setUp(self):
-        self.mock_response = {'mid': '1.123', 'id': '1234.56', 'rpc': {}, 'rrc': [{'test': 'me'}]}
+        self.mock_response = {'mid': '1.123', 'id': '1234.56', 'rpc': {'hi': 'world'}, 'rrc': [{'test': 'me'}]}
         self.race = Race(**self.mock_response)
 
     def test_init(self):

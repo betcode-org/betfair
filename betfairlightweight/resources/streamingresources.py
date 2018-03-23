@@ -145,9 +145,9 @@ class Race(BaseResource):
         super(Race, self).__init__(**kwargs)
         self.market_id = kwargs.get('mid')
         self.race_id = kwargs.get('id')
-        self.race_progress = RaceProgress(**kwargs.get('rpc', {}))
+        self.race_progress = RaceProgress(**kwargs['rpc']) if kwargs.get('rpc') else None
         self.race_runners = [
-            RaceChange(**runner) for runner in kwargs.get('rrc', [])
+            RaceChange(**runner) for runner in kwargs.get('rrc') or []
         ]
 
 

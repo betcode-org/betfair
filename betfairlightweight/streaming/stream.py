@@ -196,6 +196,7 @@ class RaceStream(BaseStream):
                 self._caches[market_id] = race_cache = RaceCache(
                     publish_time=publish_time, **update
                 )
+                logger.info('[RaceStream: %s] %s added' % (self.unique_id, market_id))
             race_cache.update_cache(update, publish_time)
             self._updates_processed += 1
 
