@@ -67,8 +67,9 @@ class BetfairStream(object):
 
         self._running = False
         for read_thread in self.read_threads:
-            read_thread.join() #Leting the threads see that self.__running is false
-        self.read_thread =[] #Stop keeping track of the threads
+            read_thread.join() #Letting the threads see that self.__running is false
+        
+        self.read_threads =[] #Stop keeping track of the threads
 
         if self._socket is None:
             return

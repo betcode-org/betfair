@@ -39,6 +39,7 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream.host == 'stream-api.betfair.com'
         assert self.betfair_stream.receive_count == 0
         assert self.betfair_stream.datetime_last_received is None
+        assert self.betfair_stream.read_threads is []
 
         assert self.betfair_stream._socket is None
         assert self.betfair_stream._running is False
@@ -76,6 +77,7 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream.stop()
         assert self.betfair_stream._running is False
         assert self.betfair_stream._socket is None
+        assert self.betfair_stream.read_threads is []
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._send')
     def test_authenticate(self, mock_send):
