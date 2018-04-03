@@ -256,7 +256,7 @@ class MarketBookCache(BaseResource):
 class UnmatchedOrder(object):
 
     def __init__(self, id, p, s, side, status, ot, pd, sm, sr, sl, sc, sv, rfo, rfs, pt=None,
-                 md=None, avp=None, bsp=None, ld=None, rac=None, rc=None):
+                 md=None, avp=None, bsp=None, ld=None, rac=None, rc=None, lsrc=None, **kwargs):
         self.bet_id = id
         self.price = p
         self.size = s
@@ -278,6 +278,7 @@ class UnmatchedOrder(object):
         self.reference_order = rfo
         self.reference_strategy = rfs
         self.lapsed_date = ld
+        self.lapse_status_reason_code = lsrc  # todo add to output?
 
     @property
     def placed_date_string(self):

@@ -319,7 +319,7 @@ class TestUnmatchedOrder(unittest.TestCase):
     def setUp(self):
         order = {
             'id': 1, 'p': 2, 's': 3, 'side': 'L', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 8, 'sm': 9, 'sr': 10,
-            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16,
+            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16, 'lsrc': 17, 'error': 'test'
         }
         self.unmatched_order = UnmatchedOrder(**order)
 
@@ -340,6 +340,7 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.reference_order == 14
         assert self.unmatched_order.reference_strategy == 15
         assert self.unmatched_order.lapsed_date == 16
+        assert self.unmatched_order.lapse_status_reason_code == 17
 
     def test_placed_date_string(self):
         now = datetime.datetime.now()
