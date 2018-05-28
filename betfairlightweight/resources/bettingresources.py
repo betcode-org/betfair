@@ -565,6 +565,16 @@ class CurrentOrders(BaseResource):
 
 
 class ItemDescription(object):
+    """
+    :type event_desc: unicode
+    :type event_type_desc: unicode
+    :type market_desc: unicode
+    :type market_start_time: datetime
+    :type market_type: unicode
+    :type number_of_winners: int
+    :type runner_desc: unicode
+    :type each_way_divisor: unicode
+    """
 
     def __init__(self, eventDesc=None, eventTypeDesc=None, marketDesc=None, marketStartTime=None, marketType=None,
                  numberOfWinners=None, runnerDesc=None, eachWayDivisor=None):
@@ -603,6 +613,7 @@ class ClearedOrder(object):
     :type side: unicode
     :type size_settled: float
     :type size_cancelled float
+    :type item_description ItemDescription
     """
 
     def __init__(self, **kwargs):
