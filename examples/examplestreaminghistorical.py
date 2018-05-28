@@ -31,7 +31,8 @@ class HistoricalStream(MarketStream):
 
                     # how to get runner details from the market definition
                     market_def = market_book.market_definition
-                    runner_def = market_def.runners_dict.get(
+                    runners_dict = {(runner.selection_id, runner.handicap): runner for runner in market_def.runners}
+                    runner_def = runners_dict.get(
                         (runner.selection_id, runner.handicap)
                     )
 
