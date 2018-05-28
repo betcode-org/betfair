@@ -557,6 +557,20 @@ class CurrentOrders(BaseResource):
         self.orders = [CurrentOrder(**i) for i in kwargs.get('currentOrders')]
 
 
+class ItemDescription(object):
+
+    def __init__(self, eventDesc=None, eventTypeDesc=None, marketDesc=None, marketStartTime=None, marketType=None,
+                 numberOfWinners=None, runnerDesc=None, eachWayDivisor=None):
+        self.event_desc = eventDesc
+        self.event_type_desc = eventTypeDesc
+        self.market_desc = marketDesc
+        self.market_start_time = BaseResource.strip_datetime(marketStartTime)
+        self.market_type = marketType
+        self.number_of_winners = numberOfWinners
+        self.runner_desc = runnerDesc
+        self.each_way_divisor = eachWayDivisor
+
+
 class ClearedOrder(object):
     """
     :type bet_count: int
@@ -608,6 +622,8 @@ class ClearedOrder(object):
         self.size_cancelled = kwargs.get("sizeCancelled")
         self.customer_strategy_ref = kwargs.get("customerStrategyRef")
         self.customer_order_ref = kwargs.get("customerOrderRef")
+        self.item_description = ItemDescription(**kwargs.get("itemDescription")
+                                                ) if 'itemDescription' in kwargs else None
 
 
 class ClearedOrders(BaseResource):
