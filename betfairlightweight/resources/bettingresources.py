@@ -422,8 +422,11 @@ class RunnerBook(object):
 
 class KeyLine(object):
 
-    def __init__(self, keyLine):
-        self.key_line = [KeyLineSelection(**i) for i in keyLine]
+    def __init__(self, **kwargs):
+        if 'keyLine' in kwargs:
+            self.key_line = [KeyLineSelection(**i) for i in kwargs['keyLine']]
+        elif 'kl' in kwargs:
+            self.key_line = [KeyLineSelection(**i) for i in kwargs['kl']]
 
 
 class KeyLineSelection(object):
@@ -432,9 +435,16 @@ class KeyLineSelection(object):
     :type handicap: float
     """
 
-    def __init__(self, selectionId, handicap):
-        self.selection_id = selectionId
-        self.handicap = handicap
+    def __init__(self, **kwargs):
+        if 'selectionId' in kwargs:
+            self.selection_id = kwargs['selectionId']
+        elif 'id' in kwargs:
+            self.selection_id = kwargs['id']
+
+        if 'handicap' in kwargs:
+            self.handicap = kwargs['handicap']
+        elif 'hc' in kwargs:
+            self.handicap = kwargs['hc']
 
 
 class MarketBook(BaseResource):
@@ -482,9 +492,6 @@ class MarketBook(BaseResource):
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
         self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
-
-        # {u'keyLineDescription': {u'keyLine': [{u'handicap': -2.0, u'selectionId': 11624066},
-        #   {u'handicap': 2.0, u'selectionId': 61660}]}}
         self.key_line_description = KeyLine(**kwargs.get('keyLineDescription')
                                             ) if kwargs.get('keyLineDescription') else None
         self.price_ladder_definition = PriceLadderDescription(**kwargs.get('priceLadderDefinition')
