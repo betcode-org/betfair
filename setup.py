@@ -5,12 +5,12 @@ from setuptools import setup
 
 
 INSTALL_REQUIRES = [
-    'requests',
-    'ciso8601',
-    'ujson',
+    'requests==2.18.4',
+    'ciso8601==2.0.0',
+    'ujson==1.35',
 ]
 TEST_REQUIRES = [
-    'mock'
+    'mock==2.0.0'
 ]
 
 if sys.version_info < (3, 4):
