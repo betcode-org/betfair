@@ -422,8 +422,11 @@ class RunnerBook(object):
 
 class KeyLine(object):
 
-    def __init__(self, keyLine):
-        self.key_line = [KeyLineSelection(**i) for i in keyLine]
+    def __init__(self, **kwargs):
+        if 'keyLine' in kwargs:
+            self.key_line = [KeyLineSelection(**i) for i in kwargs['keyLine']]
+        elif 'kl' in kwargs:
+            self.key_line = [KeyLineSelection(**i) for i in kwargs['kl']]
 
 
 class KeyLineSelection(object):
@@ -432,9 +435,16 @@ class KeyLineSelection(object):
     :type handicap: float
     """
 
-    def __init__(self, selectionId, handicap):
-        self.selection_id = selectionId
-        self.handicap = handicap
+    def __init__(self, **kwargs):
+        if 'selectionId' in kwargs:
+            self.selection_id = kwargs['selectionId']
+        elif 'id' in kwargs:
+            self.selection_id = kwargs['id']
+
+        if 'handicap' in kwargs:
+            self.handicap = kwargs['handicap']
+        elif 'hc' in kwargs:
+            self.handicap = kwargs['hc']
 
 
 class MarketBook(BaseResource):
@@ -482,9 +492,6 @@ class MarketBook(BaseResource):
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
         self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
-
-        # {u'keyLineDescription': {u'keyLine': [{u'handicap': -2.0, u'selectionId': 11624066},
-        #   {u'handicap': 2.0, u'selectionId': 61660}]}}
         self.key_line_description = KeyLine(**kwargs.get('keyLineDescription')
                                             ) if kwargs.get('keyLineDescription') else None
         self.price_ladder_definition = PriceLadderDescription(**kwargs.get('priceLadderDefinition')
@@ -557,6 +564,30 @@ class CurrentOrders(BaseResource):
         self.orders = [CurrentOrder(**i) for i in kwargs.get('currentOrders')]
 
 
+class ItemDescription(object):
+    """
+    :type event_desc: unicode
+    :type event_type_desc: unicode
+    :type market_desc: unicode
+    :type market_start_time: datetime
+    :type market_type: unicode
+    :type number_of_winners: int
+    :type runner_desc: unicode
+    :type each_way_divisor: unicode
+    """
+
+    def __init__(self, eventDesc=None, eventTypeDesc=None, marketDesc=None, marketStartTime=None, marketType=None,
+                 numberOfWinners=None, runnerDesc=None, eachWayDivisor=None):
+        self.event_desc = eventDesc
+        self.event_type_desc = eventTypeDesc
+        self.market_desc = marketDesc
+        self.market_start_time = BaseResource.strip_datetime(marketStartTime)
+        self.market_type = marketType
+        self.number_of_winners = numberOfWinners
+        self.runner_desc = runnerDesc
+        self.each_way_divisor = eachWayDivisor
+
+
 class ClearedOrder(object):
     """
     :type bet_count: int
@@ -576,36 +607,41 @@ class ClearedOrder(object):
     :type price_reduced: bool
     :type price_requested: float
     :type profit: float
+    :type commission: float
     :type selection_id: int
     :type settled_date: datetime.datetime
     :type side: unicode
     :type size_settled: float
+    :type size_cancelled float
+    :type item_description ItemDescription
     """
 
-    def __init__(self, betId, betCount, betOutcome, eventId, eventTypeId, handicap, lastMatchedDate, marketId,
-                 orderType, persistenceType, placedDate, priceMatched, priceReduced, profit, selectionId,
-                 settledDate, side, sizeSettled, priceRequested=None, customerStrategyRef=None, customerOrderRef=None):
-        self.bet_id = betId
-        self.bet_count = betCount
-        self.bet_outcome = betOutcome
-        self.event_id = eventId
-        self.event_type_id = eventTypeId
-        self.handicap = handicap
-        self.last_matched_date = BaseResource.strip_datetime(lastMatchedDate)
-        self.market_id = marketId
-        self.order_type = orderType
-        self.persistence_type = persistenceType
-        self.placed_date = BaseResource.strip_datetime(placedDate)
-        self.price_matched = priceMatched
-        self.price_reduced = priceReduced
-        self.price_requested = priceRequested
-        self.profit = profit
-        self.selection_id = selectionId
-        self.settled_date = BaseResource.strip_datetime(settledDate)
-        self.side = side
-        self.size_settled = sizeSettled
-        self.customer_strategy_ref = customerStrategyRef
-        self.customer_order_ref = customerOrderRef
+    def __init__(self, **kwargs):
+        self.bet_id = kwargs.get("betId")
+        self.bet_count = kwargs.get("betCount")
+        self.bet_outcome = kwargs.get("betOutcome")
+        self.event_id = kwargs.get("eventId")
+        self.event_type_id = kwargs.get("eventTypeId")
+        self.handicap = kwargs.get("handicap")
+        self.last_matched_date = BaseResource.strip_datetime(kwargs.get("lastMatchedDate"))
+        self.market_id = kwargs.get("marketId")
+        self.order_type = kwargs.get("orderType")
+        self.persistence_type = kwargs.get("persistenceType")
+        self.placed_date = BaseResource.strip_datetime(kwargs.get("placedDate"))
+        self.price_matched = kwargs.get("priceMatched")
+        self.price_reduced = kwargs.get("priceReduced")
+        self.price_requested = kwargs.get("priceRequested")
+        self.profit = kwargs.get("profit")
+        self.commission = kwargs.get("commission")
+        self.selection_id = kwargs.get("selectionId")
+        self.settled_date = BaseResource.strip_datetime(kwargs.get("settledDate"))
+        self.side = kwargs.get("side")
+        self.size_settled = kwargs.get("sizeSettled")
+        self.size_cancelled = kwargs.get("sizeCancelled")
+        self.customer_strategy_ref = kwargs.get("customerStrategyRef")
+        self.customer_order_ref = kwargs.get("customerOrderRef")
+        self.item_description = ItemDescription(**kwargs.get("itemDescription")
+                                                ) if 'itemDescription' in kwargs else None
 
 
 class ClearedOrders(BaseResource):
