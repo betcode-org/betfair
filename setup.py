@@ -5,6 +5,7 @@ from setuptools import setup
 
 
 INSTALL_REQUIRES = [
+    'setuptools==39.2.0',
     'requests==2.18.4',
     'ciso8601==2.0.0',
     'ujson==1.35',
