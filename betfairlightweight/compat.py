@@ -38,7 +38,13 @@ try:
     import ciso8601
 
     def parse_datetime(datetime_string):
-        return ciso8601.parse_datetime_unaware(datetime_string)
+        try:
+            return ciso8601.parse_datetime_as_naive(datetime_string)
+        except ValueError:
+            return
 except ImportError:
     def parse_datetime(datetime_string):
-        return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        try:
+            return datetime.datetime.strptime(datetime_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        except ValueError:
+            return
