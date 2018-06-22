@@ -1,5 +1,5 @@
 setuptools==39.2.0
-requests==2.18.4
+requests==2.19.1
 enum34 ; python_version < '3.4'
-ciso8601==2.0.0
+ciso8601==2.0.1
 ujson==1.35
