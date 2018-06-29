@@ -116,27 +116,33 @@ class Historic(BaseEndpoint):
         (response, elapsed_time) = self.request(method, params, session)
         return response
 
-    def download_file(self, file_path, store_directory=None):
+    def download_file(self, file_path, store_directory=None, chunk_size=1024):
         """
         Download a file from betfair historical and store in given directory or current directory.
-        
+
         :param file_path: the file path as given by get_file_list method.
         :param store_directory: directory path to store data files in.
+        :param chunk_size: download chunk size; if None, do not stream download
         :return: name of file.
         """
         local_filename = file_path.split('/')[-1]
         if store_directory:
             local_filename = os.path.join(store_directory, local_filename)
+
         r = requests.get(
             '%s%s' % (self.url, 'DownloadFile'),
             params={'filePath': file_path},
             headers=self.headers,
-            stream=True,
+            stream=True if chunk_size is not None else False,
         )
         with open(local_filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
+            if chunk_size is not None:
+                for chunk in r.iter_content(chunk_size=chunk_size):
+                    if chunk:
+                        f.write(chunk)
+            else:
+                f.write(r.content)
+
         return local_filename
 
     def request(self, method, params, session):
