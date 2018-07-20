@@ -143,15 +143,17 @@ class MarketBookCache(BaseResource):
         if 'marketDefinition' not in kwargs:
             raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
         self.market_definition = kwargs['marketDefinition']
-        self.runners = [RunnerBook(**i) for i in kwargs.get('rc', [])]
 
+        self.runners = []
         self.runner_dict = {}
         self.market_definition_runner_dict = {}
         self._update_runner_dict()
         self._update_market_definition_runner_dict()
 
+        self.update_cache({'rc': kwargs.get('rc', [])}, self.publish_time)
+
     def update_cache(self, market_change, publish_time):
-        self._datetime_updated = self.strip_datetime(publish_time)
+        self._datetime_updated = self.strip_datetime(publish_time) or self._datetime_updated
         self.publish_time = publish_time
 
         if 'marketDefinition' in market_change:
