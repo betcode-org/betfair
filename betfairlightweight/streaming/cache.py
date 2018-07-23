@@ -150,8 +150,6 @@ class MarketBookCache(BaseResource):
         self._update_runner_dict()
         self._update_market_definition_runner_dict()
 
-        self.update_cache({'rc': kwargs.get('rc', [])}, self.publish_time)
-
     def update_cache(self, market_change, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time) or self._datetime_updated
         self.publish_time = publish_time
@@ -355,7 +353,7 @@ class OrderBookCache(BaseResource):
         self.publish_time = kwargs.get('publish_time')
         self.market_id = kwargs.get('id')
         self.closed = kwargs.get('closed')
-        self.runners = [OrderBookRunner(**i) for i in kwargs.get('orc', [])]
+        self.runners = []
 
     def update_cache(self, order_book, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)

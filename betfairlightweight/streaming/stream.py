@@ -125,9 +125,9 @@ class MarketStream(BaseStream):
                 market_book_cache = MarketBookCache(publish_time=publish_time, **market_book)
                 self._caches[market_id] = market_book_cache
                 logger.info('[MarketStream: %s] %s added' % (self.unique_id, market_id))
-            else:
-                market_book_cache.update_cache(market_book, publish_time)
-                self._updates_processed += 1
+
+            market_book_cache.update_cache(market_book, publish_time)
+            self._updates_processed += 1
 
             output_market_book.append(
                 market_book_cache.create_resource(self.unique_id, market_book, self._lightweight)
@@ -150,11 +150,13 @@ class OrderStream(BaseStream):
         for order_book in order_books:
             market_id = order_book['id']
             order_book_cache = self._caches.get(market_id)
-            if order_book_cache:
-                order_book_cache.update_cache(order_book, publish_time)
-            else:
-                self._caches[market_id] = OrderBookCache(publish_time=publish_time, **order_book)
+
+            if order_book_cache is None:
+                order_book_cache = OrderBookCache(publish_time=publish_time, **order_book)
+                self._caches[market_id] = order_book_cache
                 logger.info('[OrderStream: %s] %s added' % (self.unique_id, market_id))
+
+            order_book_cache.update_cache(order_book, publish_time)
             self._updates_processed += 1
 
             output_order_book.append(
