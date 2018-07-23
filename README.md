@@ -93,7 +93,7 @@ In development so breaking changes likely.
         market_data_filter=market_data_filter,
     )
 
->>> betfair_socket.start(async=False)
+>>> betfair_socket.start(_async=False)
 ```
 
 # historic data
@@ -121,5 +121,5 @@ In development so breaking changes likely.
         directory='horse-racing-pro-sample',
     )
 
->>> stream.start(async=False)
+>>> stream.start(_async=False)
 ```

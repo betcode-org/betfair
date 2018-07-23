@@ -18,7 +18,7 @@ class BaseClient(object):
 
     IDENTITY_URLS = collections.defaultdict(
             lambda: 'https://identitysso.betfair.com/api/',
-            spain='https://identitysso.betfair.es',
+            spain='https://identitysso.betfair.es/api/',
             italy='https://identitysso.betfair.it/api/',
             romania='https://idenititysso.betfair.ro',
             w_con='https://identitysso.w-con.betfair.com',
