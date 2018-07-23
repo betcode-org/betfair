@@ -13,6 +13,7 @@ Release History
 **Bug Fixes**
 
 - Refactor of the use of update_cache to prevent duplicate RunnerBook objects #180.
+- Spanish URL updated, closes #164.
 
 **Breaking Changes**
 
