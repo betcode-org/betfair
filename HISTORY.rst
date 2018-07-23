@@ -3,18 +3,20 @@
 Release History
 ---------------
 
-1.7.0 (2018-06-22)
+1.7.0 (2018-07-23)
 +++++++++++++++++++
 
 **Improvements**
 
+- Better logging when market added to cache and initial socket responses.
+
 **Bug Fixes**
 
-- Refactor of the use of update_cache to prevent duplicate RunnerBook objects #180
+- Refactor of the use of update_cache to prevent duplicate RunnerBook objects #180.
 
 **Breaking Changes**
 
-- async renamed to _async due to it being a reserved word in py3.7
+- async renamed to _async due to it being a reserved word in py3.7.
 
 1.6.4 (2018-06-22)
 +++++++++++++++++++
