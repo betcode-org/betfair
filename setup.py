@@ -1,11 +1,17 @@
 import re
 import os
+import sys
 
 from setuptools import setup
 
 
 with open(os.path.join(os.path.dirname(__file__), 'requirements.txt')) as f:
     INSTALL_REQUIRES = f.read().splitlines()
+
+if sys.version_info < (3, 4):
+    INSTALL_REQUIRES.extend([
+        'enum34',
+    ])
 
 TESTS_REQUIRE = [
     'mock==2.0.0'
