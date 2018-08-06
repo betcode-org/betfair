@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+1.7.1 (2018-08-06)
++++++++++++++++++++
+
+**Improvements**
+
+-
+
+**Bug Fixes**
+
+- async renamed to _async in betting endpoint for py3.7
+
 1.7.0 (2018-07-23)
 +++++++++++++++++++
 

@@ -274,7 +274,7 @@ class Betting(BaseEndpoint):
         return self.process_response(response, resources.MarketProfitLoss, elapsed_time, lightweight)
 
     def place_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                     customer_strategy_ref=None, async=None, session=None, lightweight=None):
+                     customer_strategy_ref=None, _async=None, session=None, lightweight=None):
         """
         Place new orders into market.
 
@@ -286,7 +286,7 @@ class Betting(BaseEndpoint):
         version of the market the orders should be placed on, e.g. "{'version': 123456}"
         :param str customer_strategy_ref: An optional reference customers can use to specify
         which strategy has sent the order
-        :param bool async: An optional flag (not setting equates to false) which specifies if
+        :param bool _async: An optional flag (not setting equates to false) which specifies if
         the orders should be placed asynchronously
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
@@ -336,7 +336,7 @@ class Betting(BaseEndpoint):
         return self.process_response(response, resources.UpdateOrders, elapsed_time, lightweight)
 
     def replace_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                       async=None, session=None, lightweight=None):
+                       _async=None, session=None, lightweight=None):
         """
         This operation is logically a bulk cancel followed by a bulk place.
         The cancel is completed first then the new orders are placed.
@@ -348,7 +348,7 @@ class Betting(BaseEndpoint):
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param dict market_version: Optional parameter allowing the client to specify
         which version of the market the orders should be placed on, e.g. "{'version': 123456}"
-        :param str async: An optional flag (not setting equates to false) which specifies
+        :param bool _async: An optional flag (not setting equates to false) which specifies
         if the orders should be replaced asynchronously
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
