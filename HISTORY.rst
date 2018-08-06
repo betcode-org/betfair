@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.7.2 (2018-08-06)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- requirements.txt added to MANIFEST
+
 1.7.1 (2018-08-06)
 +++++++++++++++++++
 
