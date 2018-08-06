@@ -22,6 +22,7 @@ init:
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - "pip install setuptools==39.2.0"
   - "python setup.py install"
 
 test_script:
