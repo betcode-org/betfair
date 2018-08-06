@@ -1,23 +1,15 @@
-import sys
 import re
+import os
 
 from setuptools import setup
 
 
-INSTALL_REQUIRES = [
-    'setuptools==39.2.0',
-    'requests==2.19.1',
-    'ciso8601==2.0.1',
-    'ujson==1.35',
-]
+with open(os.path.join(os.path.dirname(__file__), 'requirements.txt')) as f:
+    INSTALL_REQUIRES = f.read().splitlines()
+
 TEST_REQUIRES = [
     'mock==2.0.0'
 ]
-
-if sys.version_info < (3, 4):
-    INSTALL_REQUIRES.extend([
-        'enum34',
-    ])
 
 with open('betfairlightweight/__init__.py', 'r') as f:
     version = re.search(

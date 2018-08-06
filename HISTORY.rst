@@ -8,7 +8,7 @@ Release History
 
 **Improvements**
 
--
+- setup.py updated to use requirements only.
 
 **Bug Fixes**
 
