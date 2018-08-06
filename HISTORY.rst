@@ -10,6 +10,8 @@ Release History
 
 - Working locally on py3.7!
 - setup.py updated to use requirements only.
+- py3.7 added to appveyor but pending travis to get their act together.
+- Travis and appveyor yml cleanup.
 
 **Bug Fixes**
 
