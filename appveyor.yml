@@ -14,16 +14,16 @@ environment:
     - PYTHON: "C:\\Python36"
       PYTHON_VERSION: "3.6.x"
 
+    - PYTHON: "C:\\Python37"
+      PYTHON_VERSION: "3.7.x"
+
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - cmd: if %PYTHON_VERSION% == 2.7.x pip install enum34
   - "pip install setuptools==39.2.0"
-  - "pip install -r requirements.txt"
   - "python setup.py install"
 
 test_script:
-  - "pip install mock"
   - "python setup.py test"
