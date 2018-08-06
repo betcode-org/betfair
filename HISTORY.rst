@@ -8,6 +8,7 @@ Release History
 
 **Improvements**
 
+- Working locally on py3.7!
 - setup.py updated to use requirements only.
 
 **Bug Fixes**
