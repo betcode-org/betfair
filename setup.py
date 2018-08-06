@@ -7,7 +7,7 @@ from setuptools import setup
 with open(os.path.join(os.path.dirname(__file__), 'requirements.txt')) as f:
     INSTALL_REQUIRES = f.read().splitlines()
 
-TEST_REQUIRES = [
+TESTS_REQUIRE = [
     'mock==2.0.0'
 ]
 
@@ -31,6 +31,7 @@ setup(
             'betfairlightweight': 'betfairlightweight'
         },
         install_requires=INSTALL_REQUIRES,
+        tests_require=TESTS_REQUIRE,
         url='https://github.com/liampauling/betfair',
         license='MIT',
         author='liampauling',
