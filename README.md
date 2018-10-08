@@ -35,6 +35,12 @@ The library can then be used as follows:
 >>> trading.login()
 ```
 
+or the following for interactive login (no certs)
+
+```python
+>>> trading.login_interactive()
+```
+
 
 ```python
 >>> event_types = trading.betting.list_event_types()
