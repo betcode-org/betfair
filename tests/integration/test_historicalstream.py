@@ -35,7 +35,7 @@ class HistoricalRaceStreamTest(unittest.TestCase):
             listener=StreamListener(),
             operation='raceSubscription'
         )
-        stream.start(async=False)
+        stream.start(_async=False)
 
         assert stream.listener.stream_type == 'raceSubscription'
         assert stream.listener.stream_unique_id == 'HISTORICAL'
