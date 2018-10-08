@@ -196,10 +196,9 @@ class RaceStream(BaseStream):
             market_id = update['mid']
 
             race_cache = self._caches.get(market_id)
-            if not race_cache:
-                self._caches[market_id] = race_cache = RaceCache(
-                    publish_time=publish_time, **update
-                )
+            if race_cache is None:
+                race_cache = RaceCache(publish_time=publish_time, **update)
+                self._caches[market_id] = race_cache
                 logger.info('[RaceStream: %s] %s added' % (self.unique_id, market_id))
             race_cache.update_cache(update, publish_time)
             self._updates_processed += 1
