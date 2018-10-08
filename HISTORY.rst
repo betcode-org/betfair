@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.7.3 (2018-10-08)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Error handling added to RaceCard.login()
+
 1.7.2 (2018-08-06)
 +++++++++++++++++++
 

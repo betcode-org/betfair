@@ -26,7 +26,12 @@ class RaceCard(BaseEndpoint):
         :param requests.session session: Requests session object
         """
         session = session or self.client.session
-        response = session.get(self.login_url)
+        try:
+            response = session.get(self.login_url)
+        except ConnectionError:
+            raise APIError(None, self.login_url, None, 'ConnectionError')
+        except Exception as e:
+            raise APIError(None, self.login_url, None, e)
         app_key = re.findall(r'''"appKey":\s"(.*?)"''', response.text)
         if app_key:
             self.app_key = app_key[0]
