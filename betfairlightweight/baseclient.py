@@ -149,7 +149,8 @@ class BaseClient(object):
     @property
     def login_headers(self):
         return {
-            'X-Application': '1',
+            'Accept': 'application/json',
+            'X-Application': self.app_key,
             'content-type': 'application/x-www-form-urlencoded'
         }
 
@@ -169,5 +170,6 @@ class BaseClient(object):
             'X-Authentication': self.session_token,
             'content-type': 'application/json',
             'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive'
+            'Connection': 'keep-alive',
+            'User-Agent': 'betfairlightweight',
         }

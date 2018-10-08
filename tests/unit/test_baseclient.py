@@ -109,7 +109,8 @@ class BaseClientTest(unittest.TestCase):
         assert self.client.get_app_key() is None
 
     def test_client_headers(self):
-        assert self.client.login_headers == {'X-Application': '1',
+        assert self.client.login_headers == {'Accept': 'application/json',
+                                             'X-Application': self.client.app_key,
                                              'content-type': 'application/x-www-form-urlencoded'}
         assert self.client.keep_alive_headers == {'Accept': 'application/json',
                                                   'X-Application': self.client.app_key,
@@ -119,7 +120,8 @@ class BaseClientTest(unittest.TestCase):
                                                'X-Authentication': self.client.session_token,
                                                'content-type': 'application/json',
                                                'Accept-Encoding': 'gzip, deflate',
-                                               'Connection': 'keep-alive'}
+                                               'Connection': 'keep-alive',
+                                               'User-Agent': 'betfairlightweight'}
 
     def test_client_logged_in_session(self):
         self.client.set_session_token('session_token')
