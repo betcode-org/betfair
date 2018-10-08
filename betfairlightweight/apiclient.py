@@ -23,6 +23,7 @@ class APIClient(BaseClient):
         )
 
         self.login = endpoints.Login(self)
+        self.login_interactive = endpoints.LoginInteractive(self)
         self.keep_alive = endpoints.KeepAlive(self)
         self.logout = endpoints.Logout(self)
         self.betting = endpoints.Betting(self)

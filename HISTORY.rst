@@ -6,6 +6,11 @@ Release History
 1.7.3 (2018-10-08)
 +++++++++++++++++++
 
+**Improvements**
+
+- LoginInteractive endpoint added.
+- User-Agent added to request headers.
+
 **Bug Fixes**
 
 - Error handling added to RaceCard.login()
