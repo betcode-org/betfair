@@ -1,4 +1,4 @@
-include LICENSE README.md
+include LICENSE README.md requirements.txt
 graft tests
 
 global-exclude *.py[co] .DS_Store

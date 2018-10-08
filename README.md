@@ -8,7 +8,7 @@ Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG]
 
 [Join slack group](https://betfairlightweight.herokuapp.com)
 
-Currently tested on Python 2.7, 3.4, 3.5 and 3.6.
+Currently tested on Python 2.7, 3.4, 3.5, 3.6 and 3.7.
 
 # installation
 
@@ -33,6 +33,12 @@ The library can then be used as follows:
 >>> trading = betfairlightweight.APIClient('username', 'password', app_key='app_key')
 
 >>> trading.login()
+```
+
+or the following for interactive login (no certs)
+
+```python
+>>> trading.login_interactive()
 ```
 
 
@@ -93,7 +99,7 @@ In development so breaking changes likely.
         market_data_filter=market_data_filter,
     )
 
->>> betfair_socket.start(async=False)
+>>> betfair_socket.start(_async=False)
 ```
 
 # historic data
@@ -121,5 +127,5 @@ In development so breaking changes likely.
         directory='horse-racing-pro-sample',
     )
 
->>> stream.start(async=False)
+>>> stream.start(_async=False)
 ```

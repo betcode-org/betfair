@@ -44,16 +44,16 @@ class BetfairStream(object):
         self._socket = None
         self._running = False
 
-    def start(self, async=False):
+    def start(self, _async=False):
         """Starts read loop, new thread if async and
         connects/authenticates if not already running.
 
-        :param async: If True new thread is started
+        :param _async: If True new thread is started
         """
         if not self._running:
             self._connect()
             self.authenticate()
-        if async:
+        if _async:
             t = threading.Thread(name=self.description, target=self._read_loop)
             t.daemon = False
             t.start()
@@ -284,9 +284,9 @@ class HistoricalStream(object):
         self.listener = listener
         self._running = False
 
-    def start(self, async=False):
+    def start(self, _async=False):
         self._running = True
-        if async:
+        if _async:
             t = threading.Thread(name='HistoricalStream', target=self._read_loop)
             t.daemon = False
             t.start()

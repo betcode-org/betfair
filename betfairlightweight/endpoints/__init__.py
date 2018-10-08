@@ -1,4 +1,5 @@
 from .login import Login
+from .logininteractive import LoginInteractive
 from .keepalive import KeepAlive
 from .logout import Logout
 from .betting import Betting

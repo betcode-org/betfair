@@ -186,6 +186,15 @@ class TestMarketBookCache(unittest.TestCase):
         self.market_book_cache._update_runner_dict()
         assert self.market_book_cache.runner_dict == {(123, 1.25): a, (456, -0.25): b}
 
+    def test_init_multiple_rc(self):
+        # Initialize data with multiple rc entries for the same selection
+        data = {'marketDefinition': {'runners': {}}}
+        data['rc'] = [{'atb': [[1.01, 200]], 'id': 13536143}, {'atl': [[1000.0, 200]], 'id': 13536143}]
+
+        market_book_cache = MarketBookCache(**data)
+
+        assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
+
 
 class TestRunnerBook(unittest.TestCase):
 
