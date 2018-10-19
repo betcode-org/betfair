@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+1.8.1 (2018-10-)
++++++++++++++++++++
+
+**Improvements**
+
+-
+
+**Bug Fixes**
+
+- RaceCard resource bug fix.
+
 1.8.0 (2018-10-08)
 +++++++++++++++++++
 
