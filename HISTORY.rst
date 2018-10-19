@@ -8,7 +8,7 @@ Release History
 
 **Improvements**
 
--
+- Str representation added to PriceSize object.
 
 **Bug Fixes**
 
