@@ -195,3 +195,5 @@ class RaceChange(BaseResource):
         self.lat = kwargs.get('lat')
         self.long = kwargs.get('long')
         self.speed = kwargs.get('spd')
+        self.progress = kwargs.get('prg')
+        self.sfq = kwargs.get('sfq')
