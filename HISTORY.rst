@@ -3,7 +3,7 @@
 Release History
 ---------------
 
-1.8.1 (2018-10-)
+1.8.1 (2018-10-12)
 +++++++++++++++++++
 
 **Improvements**
@@ -13,6 +13,10 @@ Release History
 **Bug Fixes**
 
 - RaceCard resource bug fix.
+
+**Dependencies**
+
+- Upgrade to requests 2.20.1 (security fix)
 
 1.8.0 (2018-10-08)
 +++++++++++++++++++
