@@ -8,6 +8,7 @@ from betfairlightweight.resources.bettingresources import (
     LimitOrder,
     LimitOnCloseOrder,
     MarketOnCloseOrder,
+    PriceSize,
 )
 from tests.unit.tools import create_mock_json
 
@@ -230,6 +231,12 @@ class BettingResourcesTest(unittest.TestCase):
                 # # print(resource_runner.orders)
                 # # print(resource_runner.matches)
                 # # todo complete
+
+    def test_price_size(self):
+        price_size = PriceSize(**{'price': 1.01, 'size': 2048})
+        self.assertEqual(price_size.price, 1.01)
+        self.assertEqual(price_size.size, 2048)
+        self.assertEqual(str(price_size), 'Price: 1.01 Size: 2048')
 
     def test_current_orders(self):
         mock_response = create_mock_json('tests/resources/list_current_orders.json')

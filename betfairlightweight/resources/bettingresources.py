@@ -292,6 +292,9 @@ class PriceSize(Slotable):
         self.price = price
         self.size = size
 
+    def __str__(self):
+        return 'Price: %s Size: %s' % (self.price, self.size)
+
 
 class RunnerBookSP(object):
     """
