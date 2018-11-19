@@ -93,4 +93,4 @@ class TestRaceChange(unittest.TestCase):
         assert self.race_change.long == -0.4058491
         assert self.race_change.speed == 17.8
         assert self.race_change.progress == 2051
-        assert self.race_change.sfq == 2.07
+        assert self.race_change.stride_frequency == 2.07

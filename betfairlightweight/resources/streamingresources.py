@@ -185,6 +185,8 @@ class RaceChange(BaseResource):
     :type lat: float
     :type long: float
     :type speed: float
+    :type progress: float
+    :type stride_frequency: float
     """
 
     def __init__(self, **kwargs):
@@ -196,4 +198,4 @@ class RaceChange(BaseResource):
         self.long = kwargs.get('long')
         self.speed = kwargs.get('spd')
         self.progress = kwargs.get('prg')
-        self.sfq = kwargs.get('sfq')
+        self.stride_frequency = kwargs.get('sfq')  # in Hz
