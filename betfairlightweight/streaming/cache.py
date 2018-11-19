@@ -249,6 +249,7 @@ class MarketBookCache(BaseResource):
             'publishTime': self.publish_time,
             'priceLadderDefinition': self.market_definition.get('priceLadderDefinition'),
             'keyLineDescription': self.market_definition.get('keyLineDefinition'),
+            'marketDefinition': self.market_definition,  # used in lightweight
         }
 
 
