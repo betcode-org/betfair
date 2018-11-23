@@ -3,6 +3,15 @@
 Release History
 ---------------
 
+1.8.2 (2018-11-23)
++++++++++++++++++++
+
+**Improvements**
+
+- Certificate url for login updated.
+- publish_time_epoch added to MarketBook.
+- marketDefinition added to serialise so that lightweight has it returned.
+
 1.8.1 (2018-10-12)
 +++++++++++++++++++
 
