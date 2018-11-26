@@ -32,7 +32,7 @@ class LoginTest(unittest.TestCase):
         mock_response = create_mock_json('tests/resources/login_success.json')
         mock_post.return_value = mock_response
 
-        url = 'https://identitysso.betfair.com/api/certlogin'
+        url = 'https://identitysso-cert.betfair.com/api/certlogin'
         response = self.login.request()
 
         mock_post.assert_called_once_with(url, data={'username': 'username', 'password': 'password'},
@@ -73,7 +73,7 @@ class LoginTest(unittest.TestCase):
             self.login._error_handler(mock_response.json())
 
     def test_url(self):
-        assert self.login.url == 'https://identitysso.betfair.com/api/certlogin'
+        assert self.login.url == 'https://identitysso-cert.betfair.com/api/certlogin'
 
     def test_data(self):
         assert self.login.data == {'username': 'username', 'password': 'password'}

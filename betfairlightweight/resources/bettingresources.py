@@ -495,6 +495,7 @@ class MarketBook(BaseResource):
         self.version = kwargs.get('version')
         self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
         self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
+        self.publish_time_epoch = kwargs.get('publishTime')
         self.key_line_description = KeyLine(**kwargs.get('keyLineDescription')
                                             ) if kwargs.get('keyLineDescription') else None
         self.price_ladder_definition = PriceLadderDescription(**kwargs.get('priceLadderDefinition')
