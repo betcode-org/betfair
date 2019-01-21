@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+1.8.3 (2019-01-21)
++++++++++++++++++++
+
+**Improvements**
+
+- Cert endpoints updated.
+- License update.
+
+**Bug Fixes**
+
+- Travis now builds py3.7!
+
 1.8.2 (2018-11-23)
 +++++++++++++++++++
 
