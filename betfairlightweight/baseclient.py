@@ -18,11 +18,20 @@ class BaseClient(object):
 
     IDENTITY_URLS = collections.defaultdict(
             lambda: 'https://identitysso.betfair.com/api/',
-            spain='https://identitysso.betfair.es',
+            spain='https://identitysso.betfair.es/api/',
             italy='https://identitysso.betfair.it/api/',
             romania='https://idenititysso.betfair.ro',
             w_con='https://identitysso.w-con.betfair.com',
             europe='https://identitysso.betfaironline.eu',
+    )
+
+    IDENTITY_CERT_URLS = collections.defaultdict(
+        lambda: 'https://identitysso-cert.betfair.com/api/',
+        spain='https://identitysso-cert.betfair.es/api/',
+        italy='https://identitysso-cert.betfair.it/api/',
+        romania='https://identitysso-cert.betfair.ro/api/',
+        # w_con='https://identitysso.w-con.betfair.com',
+        # europe='https://identitysso.betfaironline.eu',
     )
 
     API_URLS = collections.defaultdict(
@@ -60,6 +69,7 @@ class BaseClient(object):
         self._login_time = None
         self.session_token = None
         self.identity_uri = self.IDENTITY_URLS[locale]
+        self.identity_cert_uri = self.IDENTITY_CERT_URLS[locale]
         self.api_uri = self.API_URLS[locale]
         self.navigation_uri = self.NAVIGATION_URLS[locale]
 
@@ -149,7 +159,8 @@ class BaseClient(object):
     @property
     def login_headers(self):
         return {
-            'X-Application': '1',
+            'Accept': 'application/json',
+            'X-Application': self.app_key,
             'content-type': 'application/x-www-form-urlencoded'
         }
 
@@ -169,5 +180,6 @@ class BaseClient(object):
             'X-Authentication': self.session_token,
             'content-type': 'application/json',
             'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive'
+            'Connection': 'keep-alive',
+            'User-Agent': 'betfairlightweight',
         }

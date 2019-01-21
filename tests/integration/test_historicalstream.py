@@ -12,13 +12,13 @@ class HistoricalStreamTest(unittest.TestCase):
             directory='tests/resources/historicaldata/BASIC-1.132153978',
             listener=StreamListener()
         )
-        stream.start(async=False)
+        stream.start(_async=False)
 
         assert stream.listener.stream_type == 'marketSubscription'
         assert stream.listener.stream_unique_id == 'HISTORICAL'
         assert stream.listener.clk == '3522512789'
 
-        assert stream.listener.stream._updates_processed == 479
+        assert stream.listener.stream._updates_processed == 480
         assert len(stream.listener.stream._caches) == 1
 
         market = stream.listener.stream._caches.get('1.132153978')

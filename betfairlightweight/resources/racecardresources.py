@@ -69,7 +69,8 @@ class Course(object):
     :type timezone: unicode
     """
 
-    def __init__(self, country, countryCode, courseId, name, surfaceType, timeformCourseCode, timezone, courseType=None):
+    def __init__(self, country, countryCode, courseId, name, surfaceType=None, timeformCourseCode=None, timezone=None,
+                 courseType=None):
         self.country = country
         self.country_code = countryCode
         self.course_id = courseId

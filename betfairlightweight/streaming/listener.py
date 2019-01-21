@@ -22,9 +22,9 @@ class BaseListener(object):
     def register_stream(self, unique_id, operation):
         if self.stream is not None:
             logger.warning('[Listener: %s]: stream already registered, replacing data' % unique_id)
-        self.stream = self._add_stream(unique_id, operation)
-        self.stream_type = operation
         self.stream_unique_id = unique_id
+        self.stream_type = operation
+        self.stream = self._add_stream(unique_id, operation)
 
     def on_data(self, raw_data):
         logger.info(raw_data)
@@ -119,6 +119,8 @@ class StreamListener(BaseListener):
 
         :param data: Received data
         """
+        if unique_id is None:
+            unique_id = self.stream_unique_id
         self.connection_id = data.get('connectionId')
         logger.info('[Connect: %s]: connection_id: %s' % (unique_id, self.connection_id))
 

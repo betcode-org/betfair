@@ -11,9 +11,9 @@ from ..exceptions import (
 from ..utils import check_status_code
 
 
-class Login(BaseEndpoint):
+class LoginInteractive(BaseEndpoint):
     """
-    Login operations.
+    Interactive Login operations (no certs).
     """
 
     _error = LoginError
@@ -28,14 +28,14 @@ class Login(BaseEndpoint):
         :rtype: LoginResource
         """
         (response, elapsed_time) = self.request(self.url, session=session)
-        self.client.set_session_token(response.get('sessionToken'))
+        self.client.set_session_token(response.get('token'))
         return self.process_response(response, LoginResource, elapsed_time, lightweight)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
         try:
-            response = session.post(self.url, data=self.data, headers=self.client.login_headers, cert=self.client.cert)
+            response = session.post(self.url, data=self.data, headers=self.client.login_headers)
         except ConnectionError:
             raise APIError(None, exception='ConnectionError')
         except Exception as e:
@@ -53,12 +53,12 @@ class Login(BaseEndpoint):
         return response_data, elapsed_time
 
     def _error_handler(self, response, method=None, params=None):
-        if response.get('loginStatus') != 'SUCCESS':
+        if response.get('status') != 'SUCCESS':
             raise self._error(response)
 
     @property
     def url(self):
-        return '%s%s' % (self.client.identity_cert_uri, 'certlogin')
+        return '%s%s' % (self.client.identity_uri, 'login')
 
     @property
     def data(self):

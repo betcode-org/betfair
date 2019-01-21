@@ -43,6 +43,20 @@ class RaceCardTest(unittest.TestCase):
         mock_session.get.assert_called_with(self.race_card.login_url)
         assert mock_session.get.call_count == 1
 
+    def test_login_connection_error(self):
+        mock_session = mock.Mock()
+        mock_session.get.side_effect = ConnectionError()
+
+        with self.assertRaises(APIError):
+            self.race_card.login(mock_session)
+
+    def test_login_unknown_error(self):
+        mock_session = mock.Mock()
+        mock_session.get.side_effect = ValueError()
+
+        with self.assertRaises(APIError):
+            self.race_card.login(mock_session)
+
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.process_response')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request', return_value=(mock.Mock(), 1.3))
     def test_get_race_card(self, mock_request, mock_process_response):

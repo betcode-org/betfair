@@ -28,42 +28,49 @@ class BaseClientInit(unittest.TestCase):
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        assert client.identity_cert_uri == 'https://identitysso-cert.betfair.com/api/'
 
         client = APIClient('bf_username', 'password', 'app_key', locale='australia')
         assert client.locale == 'australia'
         assert client.identity_uri == 'https://identitysso.betfair.com/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        assert client.identity_cert_uri == 'https://identitysso-cert.betfair.com/api/'
 
         client = APIClient('bf_username', 'password', 'app_key', locale='spain')
         assert client.locale == 'spain'
-        assert client.identity_uri == 'https://identitysso.betfair.es'
+        assert client.identity_uri == 'https://identitysso.betfair.es/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json'
+        assert client.identity_cert_uri == 'https://identitysso-cert.betfair.es/api/'
 
         client = APIClient('bf_username', 'password', 'app_key', locale='italy')
         assert client.locale == 'italy'
         assert client.identity_uri == 'https://identitysso.betfair.it/api/'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
+        assert client.identity_cert_uri == 'https://identitysso-cert.betfair.it/api/'
 
         client = APIClient('bf_username', 'password', 'app_key', locale='romania')
         assert client.locale == 'romania'
         assert client.identity_uri == 'https://idenititysso.betfair.ro'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        assert client.identity_cert_uri == 'https://identitysso-cert.betfair.ro/api/'
 
         client = APIClient('bf_username', 'password', 'app_key', locale='w_con')
         assert client.locale == 'w_con'
         assert client.identity_uri == 'https://identitysso.w-con.betfair.com'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        # assert client.identity_cert_uri == 'https://identitysso-cert.betfair.com/api/'
 
         client = APIClient('bf_username', 'password', 'app_key', locale='europe')
         assert client.locale == 'europe'
         assert client.identity_uri == 'https://identitysso.betfaironline.eu'
         assert client.api_uri == 'https://api.betfair.com/exchange/'
         assert client.navigation_uri == 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        # assert client.identity_cert_uri == 'https://identitysso-cert.betfair.com/api/'
 
 
 class BaseClientTest(unittest.TestCase):
@@ -109,7 +116,8 @@ class BaseClientTest(unittest.TestCase):
         assert self.client.get_app_key() is None
 
     def test_client_headers(self):
-        assert self.client.login_headers == {'X-Application': '1',
+        assert self.client.login_headers == {'Accept': 'application/json',
+                                             'X-Application': self.client.app_key,
                                              'content-type': 'application/x-www-form-urlencoded'}
         assert self.client.keep_alive_headers == {'Accept': 'application/json',
                                                   'X-Application': self.client.app_key,
@@ -119,7 +127,8 @@ class BaseClientTest(unittest.TestCase):
                                                'X-Authentication': self.client.session_token,
                                                'content-type': 'application/json',
                                                'Accept-Encoding': 'gzip, deflate',
-                                               'Connection': 'keep-alive'}
+                                               'Connection': 'keep-alive',
+                                               'User-Agent': 'betfairlightweight'}
 
     def test_client_logged_in_session(self):
         self.client.set_session_token('session_token')

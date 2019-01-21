@@ -6,7 +6,7 @@ from .streaming import StreamListener
 from . import filters
 
 __title__ = 'betfairlightweight'
-__version__ = '1.6.4'
+__version__ = '1.8.2'
 __author__ = 'Liam Pauling'
 
 # Set default logging handler to avoid "No handler found" warnings.

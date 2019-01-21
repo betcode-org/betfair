@@ -64,7 +64,9 @@ class LoginError(BetfairError):
     """
 
     def __init__(self, response):
-        login_status = response.get('loginStatus', 'UNKNOWN')
+        login_status = response.get('loginStatus')
+        if login_status is None:  # different response when interactive login requested
+            login_status = response.get('error', 'UNKNOWN')
         message = 'API login: %s' % login_status
         super(LoginError, self).__init__(message)
 
