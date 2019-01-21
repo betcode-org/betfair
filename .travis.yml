@@ -2,14 +2,17 @@ language: python
 
 sudo: false
 
-dist: xenial
-
 python:
   - "2.7"
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7"
+# Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
+matrix:
+  include:
+    - python: "3.7"
+      dist: xenial
+      sudo: true
 
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then travis_retry pip install enum34 mock; fi
