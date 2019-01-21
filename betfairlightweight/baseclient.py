@@ -17,12 +17,12 @@ class BaseClient(object):
     """
 
     IDENTITY_URLS = collections.defaultdict(
-            lambda: 'https://identitysso.betfair.com/api/',
-            spain='https://identitysso.betfair.es/api/',
-            italy='https://identitysso.betfair.it/api/',
-            romania='https://idenititysso.betfair.ro',
-            w_con='https://identitysso.w-con.betfair.com',
-            europe='https://identitysso.betfaironline.eu',
+        lambda: 'https://identitysso.betfair.com/api/',
+        spain='https://identitysso.betfair.es/api/',
+        italy='https://identitysso.betfair.it/api/',
+        romania='https://identitysso.betfair.ro/api/',
+        sweden='https://identitysso.betfair.se/api/',
+        australia='https://identitysso.betfair.au/api/',
     )
 
     IDENTITY_CERT_URLS = collections.defaultdict(
@@ -30,18 +30,17 @@ class BaseClient(object):
         spain='https://identitysso-cert.betfair.es/api/',
         italy='https://identitysso-cert.betfair.it/api/',
         romania='https://identitysso-cert.betfair.ro/api/',
-        # w_con='https://identitysso.w-con.betfair.com',
-        # europe='https://identitysso.betfaironline.eu',
+        sweden='https://identitysso-cert.betfair.se/api/',
     )
 
     API_URLS = collections.defaultdict(
-            lambda: 'https://api.betfair.com/exchange/'
+        lambda: 'https://api.betfair.com/exchange/'
     )
 
     NAVIGATION_URLS = collections.defaultdict(
-            lambda: 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
-            spain='https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json',
-            italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
+        lambda: 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
+        spain='https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json',
+        italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
     )
 
     def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None,
