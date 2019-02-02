@@ -3,13 +3,14 @@
 Release History
 ---------------
 
-1.8.3 (2019-01-21)
+1.8.3 (2019-02-02)
 +++++++++++++++++++
 
 **Improvements**
 
 - Cert endpoints updated.
 - License update.
+- Readme update.
 
 **Bug Fixes**
 
