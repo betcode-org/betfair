@@ -57,11 +57,11 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream.start()
         mock_read_loop.assert_called_with()
 
-        self.betfair_stream.start(_async=True)
+        self.betfair_stream.start(async_=True)
         mock_threading.Thread.assert_called_with(name=self.description, target=mock_read_loop)
 
         self.betfair_stream._running = False
-        self.betfair_stream.start(_async=False)
+        self.betfair_stream.start(async_=False)
         mock_connect.assert_called_with()
         mock_authenticate.assert_called_with()
 
@@ -299,7 +299,7 @@ class HistoricalStreamTest(unittest.TestCase):
     @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalStream._read_loop')
     @mock.patch('betfairlightweight.streaming.betfairstream.threading')
     def test_start_thread(self, mock_threading, mock_read_loop):
-        self.stream.start(_async=True)
+        self.stream.start(async_=True)
         mock_threading.Thread.assert_called_with(name='HistoricalStream', target=mock_read_loop)
         assert self.stream._running is True
 

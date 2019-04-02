@@ -49,7 +49,7 @@ streaming_unique_id = stream.subscribe_to_markets(
 )
 
 # start stream
-stream.start(_async=True)
+stream.start(async_=True)
 
 """
 Data can also be accessed by using the snap function in the listener, e.g:
