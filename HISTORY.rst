@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.9.0 (2019-04-04)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #206 _async renamed to async_ due to camel case bug
+
 1.8.3 (2019-02-02)
 +++++++++++++++++++
 

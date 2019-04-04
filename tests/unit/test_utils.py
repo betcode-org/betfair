@@ -32,6 +32,7 @@ class UtilsTest(unittest.TestCase):
 
     def test_convert_to_camel_case(self):
         assert to_camel_case('hello_world') == 'helloWorld'
+        assert to_camel_case('async_') == 'async'
 
 
 class UtilsTestCleanLocals(unittest.TestCase):
