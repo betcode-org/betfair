@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+1.9.1 (2019-04-04)
++++++++++++++++++++
+
+**Improvements**
+
+- #54 listRunnerBook added to .betting
+
 1.9.0 (2019-04-04)
 +++++++++++++++++++
 
