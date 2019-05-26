@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+1.10.0 (2019-05-26)
++++++++++++++++++++
+
+**Improvements**
+
+- #163 Historical stream generator added (no threads)
+
+**Bug Fixes**
+
+- #165 error handling added to closed connection
+- #175 locals.copy() used to prevent OverflowError in VSCode
+
 1.9.1 (2019-04-04)
 +++++++++++++++++++
 
