@@ -300,3 +300,28 @@ class HistoricalStream(object):
             else:
                 # if f has finished, also stop the stream
                 self.stop()
+
+
+class HistoricalGeneratorStream(HistoricalStream):
+    """Copy of 'Betfair Stream' for parsing
+    historical data (no threads).
+    """
+
+    def get_generator(self):
+        return self._read_loop
+
+    def _read_loop(self):
+        self._running = True
+        with open(self.directory, "r") as f:
+            for update in f:
+                if self.listener.on_data(update) is False:
+                    # if on_data returns an error stop the stream and raise error
+                    self.stop()
+                    raise ListenerError("HISTORICAL", update)
+                if not self._running:
+                    break
+                else:
+                    yield self.listener.snap()
+            else:
+                # if f has finished, also stop the stream
+                self.stop()

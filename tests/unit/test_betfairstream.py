@@ -7,6 +7,7 @@ from tests import mock
 from betfairlightweight.streaming.betfairstream import (
     BetfairStream,
     HistoricalStream,
+    HistoricalGeneratorStream,
 )
 from betfairlightweight.exceptions import (
     SocketError,
@@ -281,7 +282,7 @@ class BetfairStreamTest(unittest.TestCase):
 class HistoricalStreamTest(unittest.TestCase):
 
     def setUp(self):
-        self.directory = 'test'
+        self.directory = 'tests/resources/historicaldata/BASIC-1.132153978'
         self.listener = mock.Mock()
         self.stream = HistoricalStream(self.directory, self.listener)
 
@@ -308,5 +309,37 @@ class HistoricalStreamTest(unittest.TestCase):
         self.stream.stop()
         assert self.stream._running is False
 
-    # def test_read_loop(self):
-    #     pass
+    @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalStream.stop')
+    def test__read_loop(self, mock_stop):
+        self.stream._running = True
+        self.stream._read_loop()
+        self.assertEqual(self.listener.on_data.call_count, 480)
+        self.listener.on_data.snap()
+        mock_stop.assert_called_with()
+        self.assertTrue(self.stream._running)
+
+
+class HistoricalGeneratorStreamTest(unittest.TestCase):
+
+    def setUp(self):
+        self.directory = 'tests/resources/historicaldata/BASIC-1.132153978'
+        self.listener = mock.Mock()
+        self.stream = HistoricalGeneratorStream(self.directory, self.listener)
+
+    def test_init(self):
+        assert self.stream.directory == self.directory
+        assert self.stream.listener == self.listener
+        assert self.stream._running is False
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalGeneratorStream._read_loop')
+    def test_get_generator(self, mock_read_loop):
+        self.assertEqual(self.stream.get_generator(), mock_read_loop)
+
+    @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalGeneratorStream.stop')
+    def test__read_loop(self, mock_stop):
+        data = [i for i in self.stream._read_loop()]
+        self.assertEqual(len(data), 480)
+        self.assertEqual(self.listener.on_data.call_count, 480)
+        self.listener.on_data.snap()
+        mock_stop.assert_called_with()
+        self.assertTrue(self.stream._running)
