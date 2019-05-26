@@ -1,6 +1,7 @@
 from .betfairstream import (
     BetfairStream,
     HistoricalStream,
+    HistoricalGeneratorStream,
 )
 from .listener import (
     BaseListener,
