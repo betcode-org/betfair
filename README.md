@@ -133,3 +133,17 @@ In development so breaking changes likely.
 
 >>> stream.start(async_=False)
 ```
+
+or use the  stream generator:
+
+```python
+
+>>> stream = trading.streaming.create_historical_generator_stream(
+        directory='horse-racing-pro-sample',
+    )
+
+>>> g = stream.get_generator()
+
+>>> for i in g:
+>>>     print(i)
+```

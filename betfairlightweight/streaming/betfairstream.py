@@ -304,7 +304,7 @@ class HistoricalGeneratorStream(HistoricalStream):
     historical data (no threads).
     """
 
-    def get_gen(self):
+    def get_generator(self):
         return self._read_loop
 
     def _read_loop(self):
