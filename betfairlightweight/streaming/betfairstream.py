@@ -219,8 +219,11 @@ class BetfairStream(object):
 
             # an empty string indicates the server shutdown the socket
             if len(part) == 0:
-                self.stop()
-                raise SocketError('Connection closed by server')
+                if self._running:
+                    self.stop()
+                    raise SocketError('[Connect: %s]: Connection closed by server' % (self._unique_id,))
+                else:
+                    return  # 165, prevents error if stop is called mid recv
 
             data += part.decode(self.__encoding)
         return data
