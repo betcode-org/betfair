@@ -2,6 +2,7 @@ from ..streaming import (
     BaseListener,
     BetfairStream,
     HistoricalStream,
+    HistoricalGeneratorStream
 )
 
 
@@ -58,3 +59,19 @@ class Streaming(object):
         listener = listener if listener else BaseListener()
         listener.register_stream('HISTORICAL', operation)
         return HistoricalStream(directory, listener)
+
+    @staticmethod
+    def create_historical_generator_stream(directory, listener=None):
+        """
+        Uses generator listener/cache to parse betfair
+        historical data:
+            https://historicdata.betfair.com/#/home
+
+        :param str directory: Directory of betfair data
+        :param BaseListener listener: Listener object
+
+        :rtype: HistoricalGeneratorStream
+        """
+        listener = listener if listener else BaseListener()
+        listener.register_stream('HISTORICAL', 'marketSubscription')
+        return HistoricalGeneratorStream(directory, listener)

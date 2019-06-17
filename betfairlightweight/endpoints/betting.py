@@ -190,6 +190,41 @@ class Betting(BaseEndpoint):
         (response, elapsed_time) = self.request(method, params, session)
         return self.process_response(response, resources.MarketBook, elapsed_time, lightweight)
 
+    def list_runner_book(self, market_id, selection_id, handicap=None, price_projection=None, order_projection=None,
+                         match_projection=None, include_overall_position=None, partition_matched_by_strategy_ref=None,
+                         customer_strategy_refs=None, currency_code=None, matched_since=None, bet_ids=None, locale=None,
+                         session=None, lightweight=None):
+        """
+        Returns a list of dynamic data about a market and a specified runner. 
+        Dynamic data includes prices, the status of the market, the status of selections, 
+        the traded volume, and the status of any orders you have placed in the market
+
+        :param unicode market_id: The unique id for the market
+        :param int selection_id: The unique id for the selection in the market
+        :param double handicap: The projection of price data you want to receive in the response
+        :param dict price_projection: The projection of price data you want to receive in the response
+        :param str order_projection: The orders you want to receive in the response
+        :param str match_projection: If you ask for orders, specifies the representation of matches
+        :param bool include_overall_position: If you ask for orders, returns matches for each selection
+        :param bool partition_matched_by_strategy_ref: If you ask for orders, returns the breakdown of matches
+        by strategy for each selection
+        :param list customer_strategy_refs: If you ask for orders, restricts the results to orders matching
+        any of the specified set of customer defined strategies
+        :param str currency_code: A Betfair standard currency code
+        :param str matched_since: If you ask for orders, restricts the results to orders that have at
+        least one fragment matched since the specified date
+        :param list bet_ids: If you ask for orders, restricts the results to orders with the specified bet IDs
+        :param str locale: The language used for the response
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.MarketBook]
+        """
+        params = clean_locals(locals())
+        method = '%s%s' % (self.URI, 'listRunnerBook')
+        (response, elapsed_time) = self.request(method, params, session)
+        return self.process_response(response, resources.MarketBook, elapsed_time, lightweight)
+
     def list_current_orders(self, bet_ids=None, market_ids=None, order_projection=None, customer_order_refs=None,
                             customer_strategy_refs=None, date_range=time_range(), order_by=None, sort_dir=None,
                             from_record=None, record_count=None, session=None, lightweight=None):
@@ -274,7 +309,7 @@ class Betting(BaseEndpoint):
         return self.process_response(response, resources.MarketProfitLoss, elapsed_time, lightweight)
 
     def place_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                     customer_strategy_ref=None, _async=None, session=None, lightweight=None):
+                     customer_strategy_ref=None, async_=None, session=None, lightweight=None):
         """
         Place new orders into market.
 
@@ -286,7 +321,7 @@ class Betting(BaseEndpoint):
         version of the market the orders should be placed on, e.g. "{'version': 123456}"
         :param str customer_strategy_ref: An optional reference customers can use to specify
         which strategy has sent the order
-        :param bool _async: An optional flag (not setting equates to false) which specifies if
+        :param bool async_: An optional flag (not setting equates to false) which specifies if
         the orders should be placed asynchronously
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
@@ -336,7 +371,7 @@ class Betting(BaseEndpoint):
         return self.process_response(response, resources.UpdateOrders, elapsed_time, lightweight)
 
     def replace_orders(self, market_id, instructions, customer_ref=None, market_version=None,
-                       _async=None, session=None, lightweight=None):
+                       async_=None, session=None, lightweight=None):
         """
         This operation is logically a bulk cancel followed by a bulk place.
         The cancel is completed first then the new orders are placed.
@@ -348,7 +383,7 @@ class Betting(BaseEndpoint):
         string (up to 32 chars) that is used to de-dupe mistaken re-submissions
         :param dict market_version: Optional parameter allowing the client to specify
         which version of the market the orders should be placed on, e.g. "{'version': 123456}"
-        :param bool _async: An optional flag (not setting equates to false) which specifies
+        :param bool async_: An optional flag (not setting equates to false) which specifies
         if the orders should be replaced asynchronously
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource

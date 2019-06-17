@@ -127,6 +127,20 @@ class BettingTest(unittest.TestCase):
         assert len(response) == 1
 
     @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
+    def test_list_runner_book(self, mock_response):
+        mock = create_mock_json('tests/resources/list_runner_book.json')
+        mock_response.return_value = (mock.json(), 1.3)
+        marketId = mock.Mock()
+        selectionId = mock.Mock()
+
+        response = self.betting.list_runner_book(marketId, selectionId)
+        assert mock.json.call_count == 1
+        mock_response.assert_called_with('SportsAPING/v1.0/listRunnerBook', 
+                                         {'marketId': marketId, 'selectionId': selectionId}, None)
+        assert isinstance(response[0], resources.MarketBook)
+        assert len(response) == 1
+
+    @mock.patch('betfairlightweight.endpoints.betting.Betting.request')
     def test_list_current_orders(self, mock_response):
         mock = create_mock_json('tests/resources/list_current_orders.json')
         mock_response.return_value = (mock.json(), 1.3)

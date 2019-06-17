@@ -72,6 +72,14 @@ class FilterTest(unittest.TestCase):
         assert response == {
             'rolloverStakes': False, 'priceData': [], 'exBestOffersOverrides': {}, 'virtualise': True
         }
+        response = price_projection(price_data=price_data(sp_available=True))
+        assert response == {
+            'rolloverStakes': False, 'priceData': ["SP_AVAILABLE"], 'exBestOffersOverrides': {}, 'virtualise': True
+        }
+        response = price_projection()
+        assert response == {
+            'rolloverStakes': False, 'priceData': [], 'exBestOffersOverrides': {}, 'virtualise': True
+        }
 
     def test_place_instruction(self):
         response = place_instruction('LIMIT', 123, 'LAY')

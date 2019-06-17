@@ -12,7 +12,7 @@ class StreamingTest(unittest.TestCase):
         self.streaming = Streaming(self.client)
 
     def test_init(self):
-        assert self.streaming.client == self.client
+        self.assertEqual(self.streaming.client, self.client)
 
     @mock.patch('betfairlightweight.endpoints.streaming.BetfairStream')
     def test_create_stream(self, mock_betfair_stream):
@@ -26,9 +26,18 @@ class StreamingTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.endpoints.streaming.HistoricalStream')
     def test_create_historical_stream(self, mock_stream):
-        directory = 'test'
+        dir = 'test'
         listener = mock.Mock()
-        self.streaming.create_historical_stream(directory, listener, 'test')
+        self.streaming.create_historical_stream(dir, listener)
 
-        listener.register_stream.assert_called_with('HISTORICAL', 'test')
-        mock_stream.assert_called_with(directory, listener)
+        listener.register_stream.assert_called_with('HISTORICAL', 'marketSubscription')
+        mock_stream.assert_called_with(dir, listener)
+
+    @mock.patch('betfairlightweight.endpoints.streaming.HistoricalGeneratorStream')
+    def test_create_historical_generator_stream(self, mock_stream):
+        dir = 'test'
+        listener = mock.Mock()
+        self.streaming.create_historical_generator_stream(dir, listener)
+
+        listener.register_stream.assert_called_with('HISTORICAL', 'marketSubscription')
+        mock_stream.assert_called_with(dir, listener)

@@ -1,3 +1,4 @@
+
 # betfairlightweight
 
 [![Build Status](https://travis-ci.org/liampauling/betfair.svg?branch=master)](https://travis-ci.org/liampauling/betfair) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight)
@@ -18,19 +19,22 @@ $ pip install betfairlightweight
 
 # setup
 
-Add your certificates to '/certs/' and app_key (optional) to environment variables with username as key before using.
+In order to connect to the Betfair API you will need an App Key, SSL Certificates and a username/password.
 
-.bash_profile
-```
-export username = "appkey"
-```
+### App Key
+Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Application+Keys) instructions to get your app key. You can either go for a delayed or a live key.
+
+### SSL certificates
+Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Non-Interactive+%28bot%29+login) instructions to set up your SSL certificates. Save your .ctr and .key files to a local directory. The default directory where the library is looking for the keys if '/certs' but you can specify any other directory.
+
+### Using the library
 
 The library can then be used as follows:
 
 ```python
 >>> import betfairlightweight
 
->>> trading = betfairlightweight.APIClient('username', 'password', app_key='app_key')
+>>> trading = betfairlightweight.APIClient('username', 'password', app_key='app_key', certs='/certs')
 
 >>> trading.login()
 ```
@@ -99,7 +103,7 @@ In development so breaking changes likely.
         market_data_filter=market_data_filter,
     )
 
->>> betfair_socket.start(_async=False)
+>>> betfair_socket.start(async_=False)
 ```
 
 # historic data
@@ -127,5 +131,19 @@ In development so breaking changes likely.
         directory='horse-racing-pro-sample',
     )
 
->>> stream.start(_async=False)
+>>> stream.start(async_=False)
+```
+
+or use the  stream generator:
+
+```python
+
+>>> stream = trading.streaming.create_historical_generator_stream(
+        directory='horse-racing-pro-sample',
+    )
+
+>>> g = stream.get_generator()
+
+>>> for i in g:
+>>>     print(i)
 ```

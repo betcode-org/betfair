@@ -3,6 +3,45 @@
 Release History
 ---------------
 
+1.10.0 (2019-05-26)
++++++++++++++++++++
+
+**Improvements**
+
+- #163 Historical stream generator added (no threads)
+
+**Bug Fixes**
+
+- #165 error handling added to closed connection
+- #175 locals.copy() used to prevent OverflowError in VSCode
+
+1.9.1 (2019-04-04)
++++++++++++++++++++
+
+**Improvements**
+
+- #54 listRunnerBook added to .betting
+
+1.9.0 (2019-04-04)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #206 _async renamed to async_ due to camel case bug
+
+1.8.3 (2019-02-02)
++++++++++++++++++++
+
+**Improvements**
+
+- Cert endpoints updated.
+- License update.
+- Readme update.
+
+**Bug Fixes**
+
+- Travis now builds py3.7!
+
 1.8.2 (2018-11-23)
 +++++++++++++++++++
 

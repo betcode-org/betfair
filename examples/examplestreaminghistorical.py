@@ -60,4 +60,4 @@ stream = trading.streaming.create_historical_stream(
 )
 
 # start stream
-stream.start(_async=False)
+stream.start(async_=False)

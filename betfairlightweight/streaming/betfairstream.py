@@ -44,16 +44,16 @@ class BetfairStream(object):
         self._socket = None
         self._running = False
 
-    def start(self, _async=False):
+    def start(self, async_=False):
         """Starts read loop, new thread if async and
         connects/authenticates if not already running.
 
-        :param _async: If True new thread is started
+        :param async_: If True new thread is started
         """
         if not self._running:
             self._connect()
             self.authenticate()
-        if _async:
+        if async_:
             t = threading.Thread(name=self.description, target=self._read_loop)
             t.daemon = False
             t.start()
@@ -230,8 +230,11 @@ class BetfairStream(object):
 
             # an empty string indicates the server shutdown the socket
             if len(part) == 0:
-                self.stop()
-                raise SocketError('Connection closed by server')
+                if self._running:
+                    self.stop()
+                    raise SocketError('[Connect: %s]: Connection closed by server' % (self._unique_id,))
+                else:
+                    return  # 165, prevents error if stop is called mid recv
 
             data += part.decode(self.__encoding)
         return data
@@ -284,9 +287,9 @@ class HistoricalStream(object):
         self.listener = listener
         self._running = False
 
-    def start(self, _async=False):
+    def start(self, async_=False):
         self._running = True
-        if _async:
+        if async_:
             t = threading.Thread(name='HistoricalStream', target=self._read_loop)
             t.daemon = False
             t.start()
@@ -305,6 +308,31 @@ class HistoricalStream(object):
                     raise ListenerError('HISTORICAL', update)
                 if not self._running:
                     break
+            else:
+                # if f has finished, also stop the stream
+                self.stop()
+
+
+class HistoricalGeneratorStream(HistoricalStream):
+    """Copy of 'Betfair Stream' for parsing
+    historical data (no threads).
+    """
+
+    def get_generator(self):
+        return self._read_loop
+
+    def _read_loop(self):
+        self._running = True
+        with open(self.directory, "r") as f:
+            for update in f:
+                if self.listener.on_data(update) is False:
+                    # if on_data returns an error stop the stream and raise error
+                    self.stop()
+                    raise ListenerError("HISTORICAL", update)
+                if not self._running:
+                    break
+                else:
+                    yield self.listener.snap()
             else:
                 # if f has finished, also stop the stream
                 self.stop()
