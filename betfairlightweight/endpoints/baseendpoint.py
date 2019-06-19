@@ -11,7 +11,7 @@ from ..compat import json
 
 # monkeypatching requests
 # https://github.com/kennethreitz/requests/issues/1595
-requests.models.json = json
+requests.models.complexjson = json
 
 
 class BaseEndpoint(object):
