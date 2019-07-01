@@ -6,7 +6,7 @@ from ..exceptions import (
     APIError,
     InvalidResponse,
 )
-from ..compat import json, requests
+from ..compat import json, json_loads, requests
 from .baseendpoint import BaseEndpoint
 from ..utils import clean_locals, check_status_code
 
@@ -156,7 +156,7 @@ class Historic(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = response.json()
+            response_data = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 

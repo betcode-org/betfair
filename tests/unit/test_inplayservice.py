@@ -76,6 +76,9 @@ class InPlayServiceTest(unittest.TestCase):
     def test_request(self, mock_get, mock_headers, mock_check_status_code):
         params = [1, 2, 3]
         url = '123'
+        mock_response = mock.Mock()
+        mock_response.text = '{}'
+        mock_get.return_value = mock_response
 
         self.in_play_service.request(params=params, url=url)
 
@@ -97,16 +100,17 @@ class InPlayServiceTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.in_play_service.request(params=params, url=url)
 
+    @mock.patch('betfairlightweight.endpoints.inplayservice.json_loads', side_effect=ValueError)
     @mock.patch('betfairlightweight.endpoints.inplayservice.check_status_code')
     @mock.patch('betfairlightweight.endpoints.inplayservice.InPlayService.headers')
     @mock.patch('betfairlightweight.baseclient.requests.get')
-    def test_request_json_error(self, mock_get, mock_headers, mock_check_status_code):
+    def test_request_json_error(self, mock_get, mock_headers, mock_check_status_code, mock_json_loads):
         params = [1, 2, 3]
         url = '123'
 
-        response = mock.Mock()
-        mock_get.return_value = response
-        response.json.side_effect = ValueError()
+        mock_response = mock.Mock()
+        mock_response.text = '{}'
+        mock_get.return_value = mock_response
 
         with self.assertRaises(InvalidResponse):
             self.in_play_service.request(params=params, url=url)

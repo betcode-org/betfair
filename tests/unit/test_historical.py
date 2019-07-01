@@ -86,6 +86,10 @@ class HistoricalTest(unittest.TestCase):
         method = 'test'
         url = 'https://historicdata.betfair.com/api/test'
 
+        mock_response = mock.Mock()
+        mock_response.text = '{}'
+        mock_post.return_value = mock_response
+
         self.historic.request(method=method, params=params, session=None)
 
         mock_post.assert_called_with(

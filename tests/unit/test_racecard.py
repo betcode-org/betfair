@@ -78,6 +78,10 @@ class RaceCardTest(unittest.TestCase):
     def test_request(self, mock_get, mock_login_headers, mock_create_req, mock_check_status_code):
         mock_login_headers.return_value = {}
 
+        mock_response = mock.Mock()
+        mock_response.text = '{}'
+        mock_get.return_value = mock_response
+
         self.race_card.request()
 
         mock_get.assert_called_with(
@@ -96,14 +100,15 @@ class RaceCardTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.race_card.request()
 
+    @mock.patch('betfairlightweight.endpoints.racecard.json_loads', side_effect=ValueError)
     @mock.patch('betfairlightweight.endpoints.racecard.check_status_code')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.create_req')
     @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.headers')
     @mock.patch('betfairlightweight.baseclient.requests.get')
-    def test_request_error(self, mock_get, mock_login_headers, mock_create_req, mock_check_status_code):
+    def test_request_error(self, mock_get, mock_login_headers, mock_create_req, mock_check_status_code, mock_json_loads
+                           ):
         response = mock.Mock()
         mock_get.return_value = response
-        response.json.side_effect = ValueError()
 
         with self.assertRaises(InvalidResponse):
             self.race_card.request()
