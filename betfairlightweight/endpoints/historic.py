@@ -1,5 +1,4 @@
 import os
-import requests
 import datetime
 from requests import ConnectionError
 
@@ -7,14 +6,9 @@ from ..exceptions import (
     APIError,
     InvalidResponse,
 )
-from ..compat import json
-# from .. import resources
+from ..compat import json, requests
 from .baseendpoint import BaseEndpoint
 from ..utils import clean_locals, check_status_code
-
-# monkeypatching requests
-# https://github.com/kennethreitz/requests/issues/1595
-requests.models.json = json
 
 
 class Historic(BaseEndpoint):

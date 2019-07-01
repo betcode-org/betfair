@@ -1,4 +1,3 @@
-import requests
 import collections
 import datetime
 import os
@@ -8,7 +7,7 @@ from .exceptions import (
     AppKeyError,
     CertsError,
 )
-from .compat import FileNotFoundError
+from .compat import requests, FileNotFoundError
 
 
 class BaseClient(object):

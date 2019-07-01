@@ -1,6 +1,6 @@
 import sys
 import datetime
-
+import requests
 
 _ver = sys.version_info
 
@@ -31,8 +31,18 @@ elif is_py3:
 
 try:
     import ujson as json
+
+    def json_loads(s, **kwargs):
+        return json.loads(s, precise_float=True, **kwargs)
 except ImportError:
     import json
+
+    def json_loads(s, **kwargs):
+        return json.loads(s, **kwargs)
+
+# monkeypatching requests
+# https://github.com/kennethreitz/requests/issues/1595
+# requests.compat.json = json
 
 try:
     import ciso8601

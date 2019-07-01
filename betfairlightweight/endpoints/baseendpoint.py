@@ -1,4 +1,3 @@
-import requests
 import datetime
 from requests import ConnectionError
 
@@ -8,10 +7,6 @@ from ..exceptions import (
 )
 from ..utils import check_status_code
 from ..compat import json
-
-# monkeypatching requests
-# https://github.com/kennethreitz/requests/issues/1595
-requests.models.json = json
 
 
 class BaseEndpoint(object):
