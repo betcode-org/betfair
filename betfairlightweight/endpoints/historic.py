@@ -1,4 +1,5 @@
 import os
+import requests
 import datetime
 from requests import ConnectionError
 
@@ -6,7 +7,7 @@ from ..exceptions import (
     APIError,
     InvalidResponse,
 )
-from ..compat import json, json_loads, requests
+from ..compat import json, json_loads
 from .baseendpoint import BaseEndpoint
 from ..utils import clean_locals, check_status_code
 

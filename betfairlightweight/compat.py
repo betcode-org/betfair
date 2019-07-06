@@ -1,6 +1,5 @@
 import sys
 import datetime
-import requests
 
 _ver = sys.version_info
 
@@ -39,10 +38,6 @@ except ImportError:
 
     def json_loads(s, **kwargs):
         return json.loads(s, **kwargs)
-
-# monkeypatching requests
-# https://github.com/kennethreitz/requests/issues/1595
-# requests.compat.json = json
 
 try:
     import ciso8601
