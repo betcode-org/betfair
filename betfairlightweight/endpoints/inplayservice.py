@@ -105,4 +105,4 @@ class InPlayService(BaseEndpoint):
 
     @property
     def url(self):
-        return 'https://www.betfair.com/inplayservice/v1.1/'
+        return 'https://ips.betfair.com/inplayservice/v1.1/'
