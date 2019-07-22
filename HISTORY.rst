@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+1.10.1 (2019-07-22)
++++++++++++++++++++
+
+**Improvements**
+
+- RaceCard get_race_result function added (used by mobile app)
+
+**Bug Fixes**
+
+- #221 inplayservice subdomain updated (ips)
+
 1.10.0 (2019-05-26)
 +++++++++++++++++++
 
