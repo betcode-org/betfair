@@ -53,14 +53,15 @@ class RaceCard(BaseEndpoint):
             raise RaceCardError("You need to login before requesting a race_card\n"
                                 "APIClient.race_card.login()")
         params = self.create_race_card_req(market_ids, data_entries)
-        (response, elapsed_time) = self.request(params=params, session=session)
+        (response, elapsed_time) = self.request("raceCard", params=params, session=session)
         return self.process_response(response, resources.RaceCard, elapsed_time, lightweight)
 
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
+        url = "%s%s" % (self.url, method)
         try:
-            response = session.get(self.url, params=params, headers=self.headers)
+            response = session.get(url, params=params, headers=self.headers)
         except ConnectionError:
             raise APIError(None, method, params, 'ConnectionError')
         except Exception as e:
@@ -98,4 +99,4 @@ class RaceCard(BaseEndpoint):
 
     @property
     def url(self):
-        return 'https://www.betfair.com/rest/v2/raceCard'
+        return 'https://www.betfair.com/rest/v2/'
