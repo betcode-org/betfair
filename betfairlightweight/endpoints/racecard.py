@@ -56,6 +56,24 @@ class RaceCard(BaseEndpoint):
         (response, elapsed_time) = self.request("raceCard", params=params, session=session)
         return self.process_response(response, resources.RaceCard, elapsed_time, lightweight)
 
+    def get_race_result(self, market_ids, data_entries=None, session=None, lightweight=True):
+        """
+        Returns a list of race results based on event ids provided.
+
+        :param list market_ids: The filter to select desired events
+        :param str data_entries: Data to be returned
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.RaceResult]
+        """
+        if not self.app_key:
+            raise RaceCardError("You need to login before requesting a race_card\n"
+                                "APIClient.race_card.login()")
+        params = self.create_race_result_req(market_ids, data_entries)
+        (response, elapsed_time) = self.request("raceResults", params=params, session=session)
+        return self.process_response(response, resources, elapsed_time, lightweight)
+
     def request(self, method=None, params=None, session=None):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
@@ -83,6 +101,16 @@ class RaceCard(BaseEndpoint):
         return {
             'dataEntries': data_entries,
             'marketId': ','.join(market_ids)
+        }
+
+    @staticmethod
+    def create_race_result_req(market_ids, data_entries):
+        if not data_entries:
+            data_entries = 'RUNNERS, MARKETS, PRICES, RACE, COURSE'
+        return {
+            'dataEntries': data_entries,
+            'marketId': ','.join(market_ids),
+            'sortBy': 'DATE_DESC',
         }
 
     @property
