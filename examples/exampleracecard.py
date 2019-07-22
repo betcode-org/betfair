@@ -34,3 +34,13 @@ for race_card in race_cards:
             runner.name,
             runner.comment,
         )
+
+
+# results request (provide list / returns list of dictionaries)
+results = trading.race_card.get_race_result(
+    market_ids=[market_id]
+)
+
+print(results)
+for result in results:
+    print(result)

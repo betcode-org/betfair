@@ -68,7 +68,23 @@ class RaceCardTest(unittest.TestCase):
         self.race_card.app_key = '1234'
         self.race_card.get_race_card(market_ids=market_ids, data_entries=data_entries)
 
-        mock_request.assert_called_once_with("raceCard", session=None, params={'marketId': '1,2', 'dataEntries': 'test'})
+        mock_request.assert_called_once_with(
+            "raceCard", session=None, params={'marketId': '1,2', 'dataEntries': 'test'})
+        assert mock_request.call_count == 1
+
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.process_response')
+    @mock.patch('betfairlightweight.endpoints.racecard.RaceCard.request', return_value=(mock.Mock(), 1.3))
+    def test_get_race_result(self, mock_request, mock_process_response):
+        market_ids = ['1', '2']
+        data_entries = 'test'
+        with self.assertRaises(RaceCardError):
+            self.race_card.get_race_result(market_ids)
+
+        self.race_card.app_key = '1234'
+        self.race_card.get_race_result(market_ids=market_ids, data_entries=data_entries)
+
+        mock_request.assert_called_once_with(
+            "raceResults", session=None, params={'marketId': '1,2', 'sortBy': 'DATE_DESC', 'dataEntries': 'test'})
         assert mock_request.call_count == 1
 
     @mock.patch('betfairlightweight.endpoints.racecard.check_status_code')
@@ -108,7 +124,7 @@ class RaceCardTest(unittest.TestCase):
         with self.assertRaises(InvalidResponse):
             self.race_card.request()
 
-    def test_create_req(self):
+    def test_create_race_card_req(self):
         assert self.race_card.create_race_card_req(['1', '2'], None) == {
             'dataEntries': "RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS",
             'marketId': '1,2'
@@ -116,6 +132,18 @@ class RaceCardTest(unittest.TestCase):
         assert self.race_card.create_race_card_req(['1', '2'], ['RACE']) == {
             'dataEntries': ['RACE'],
             'marketId': '1,2'
+        }
+
+    def test_create_race_result_req(self):
+        assert self.race_card.create_race_result_req(['1', '2'], None) == {
+            'dataEntries': "RUNNERS, MARKETS, PRICES, RACE, COURSE",
+            'marketId': '1,2',
+            'sortBy': 'DATE_DESC',
+        }
+        assert self.race_card.create_race_result_req(['1', '2'], ['RACE']) == {
+            'dataEntries': ['RACE'],
+            'marketId': '1,2',
+            'sortBy': 'DATE_DESC',
         }
 
     def test_headers(self):
