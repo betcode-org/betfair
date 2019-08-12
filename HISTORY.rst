@@ -3,12 +3,13 @@
 Release History
 ---------------
 
-1.10.1 (2019-07-22)
+1.10.1 (2019-08-12)
 +++++++++++++++++++
 
 **Improvements**
 
 - RaceCard get_race_result function added (used by mobile app)
+- Streaming generator listener now defaults to StreamListener
 
 **Bug Fixes**
 
