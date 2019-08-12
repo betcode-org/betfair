@@ -13,6 +13,7 @@ Release History
 **Bug Fixes**
 
 - #221 inplayservice subdomain updated (ips)
+- #215 marketCatalogue no ERO data
 
 1.10.0 (2019-05-26)
 +++++++++++++++++++
