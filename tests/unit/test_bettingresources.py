@@ -172,6 +172,13 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.runners[6].sort_priority == 7
             assert resource.runners[6].metadata == {'runnerId': '872710'}
 
+    def test_market_catalogue_no_ero_data(self):
+        mock_response = create_mock_json('tests/resources/list_market_catalogue_no_ero.json')
+        market_catalogues = mock_response.json().get('result')
+
+        for market_catalogue in market_catalogues:
+            resources.MarketCatalogue(elapsed_time=self.ELAPSED_TIME, **market_catalogue)
+
     def test_market_book(self):
         mock_response = create_mock_json('tests/resources/list_market_book.json')
         market_books = mock_response.json().get('result')

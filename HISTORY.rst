@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+1.10.1 (2019-08-12)
++++++++++++++++++++
+
+**Improvements**
+
+- RaceCard get_race_result function added (used by mobile app)
+- Streaming generator listener now defaults to StreamListener
+
+**Bug Fixes**
+
+- #221 inplayservice subdomain updated (ips)
+- #215 marketCatalogue no ERO data
+
 1.10.0 (2019-05-26)
 +++++++++++++++++++
 
