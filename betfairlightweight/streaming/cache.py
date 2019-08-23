@@ -362,7 +362,10 @@ class OrderBookCache(BaseResource):
 
         for order_changes in order_book.get('orc', []):
             selection_id = order_changes['id']
-            runner = self.runner_dict.get(selection_id)
+            handicap = order_changes.get('hc', 0)
+            runner = self.runner_dict.get(
+                (selection_id, handicap)
+            )
             if runner:
                 if 'ml' in order_changes:
                     runner.matched_lays.update(order_changes['ml'])
@@ -387,7 +390,7 @@ class OrderBookCache(BaseResource):
 
     @property
     def runner_dict(self):
-        return {runner.selection_id: runner for runner in self.runners}
+        return {(runner.selection_id, runner.handicap): runner for runner in self.runners}
 
     @property
     def serialise(self):
