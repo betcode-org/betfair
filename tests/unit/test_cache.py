@@ -281,7 +281,6 @@ class TestOrderBookCache(unittest.TestCase):
 
         self.assertEqual(len(self.order_book_cache.runners), 5)
         self.assertEqual(len(self.order_book_cache.runner_dict), 5)
-
         for k, v in self.order_book_cache.runner_dict.items():
             if k == (7017905, 0):
                 self.assertEqual(len(v.unmatched_orders), 2)
@@ -307,6 +306,12 @@ class TestOrderBookCache(unittest.TestCase):
 
             for order_changes in order_book.get('orc'):
                 mock_order_book_runner.assert_called_with(**order_changes)
+
+    def test_update_cache_closed(self):
+        mock_response = create_mock_json('tests/resources/streaming_ocm_SUB_IMAGE.json')
+        for order_book in mock_response.json().get('oc'):
+            self.order_book_cache.update_cache(order_book, 1234)
+        self.assertTrue(self.order_book_cache.closed)
 
     @mock.patch('betfairlightweight.streaming.cache.OrderBookCache.serialise')
     @mock.patch('betfairlightweight.streaming.cache.CurrentOrders')

@@ -359,6 +359,8 @@ class OrderBookCache(BaseResource):
     def update_cache(self, order_book, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
+        if "closed" in order_book:
+            self.closed = order_book["closed"]
 
         for order_changes in order_book.get('orc', []):
             selection_id = order_changes['id']
