@@ -266,7 +266,9 @@ class UnmatchedOrder(object):
         self.persistence_type = pt
         self.order_type = ot
         self.placed_date = BaseResource.strip_datetime(pd)
+        self.placed_date_string = self.create_placed_date_string()
         self.matched_date = BaseResource.strip_datetime(md)
+        self.matched_date_string = self.create_matched_date_string()
         self.average_price_matched = avp
         self.size_matched = sm
         self.size_remaining = sr
@@ -280,13 +282,11 @@ class UnmatchedOrder(object):
         self.lapsed_date = ld
         self.lapse_status_reason_code = lsrc  # todo add to output?
 
-    @property
-    def placed_date_string(self):
+    def create_placed_date_string(self):
         if self.placed_date:
             return self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    @property
-    def matched_date_string(self):
+    def create_matched_date_string(self):
         if self.matched_date:
             return self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 

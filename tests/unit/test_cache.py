@@ -371,7 +371,7 @@ class TestUnmatchedOrder(unittest.TestCase):
     def setUp(self):
         order = {
             'id': 1, 'p': 2, 's': 3, 'side': 'L', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 8, 'sm': 9, 'sr': 10,
-            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16, 'lsrc': 17, 'error': 'test'
+            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16, 'lsrc': 17, 'error': 'test', 'md': 4
         }
         self.unmatched_order = UnmatchedOrder(**order)
 
@@ -395,21 +395,19 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.lapse_status_reason_code == 17
 
     def test_placed_date_string(self):
-        now = datetime.datetime.now()
-        self.unmatched_order.placed_date = now
+        now = BaseResource.strip_datetime(8)
         assert self.unmatched_order.placed_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def test_matched_date_string(self):
-        now = datetime.datetime.now()
-        self.unmatched_order.matched_date = now
+        now = BaseResource.strip_datetime(4)
         assert self.unmatched_order.matched_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def test_serialise(self):
         assert self.unmatched_order.serialise('1.23', 12345, 0.0) == {
             'sizeLapsed': 11, 'persistenceType': 'LAPSE', 'sizeRemaining': 10,
             'placedDate': '1970-01-01T00:00:00.008000Z', 'sizeVoided': 13, 'sizeCancelled': 12, 'betId': 1,
-            'customerOrderRef': 14, 'orderType': 'LIMIT', 'marketId': '1.23', 'matchedDate': None, 'side': 'LAY',
+            'customerOrderRef': 14, 'orderType': 'LIMIT', 'marketId': '1.23', 'side': 'LAY',
             'selectionId': 12345, 'bspLiability': None, 'sizeMatched': 9, 'handicap': 0.0, 'averagePriceMatched': 0.0,
             'status': 'EXECUTABLE', 'customerStrategyRef': 15, 'regulatorCode': None,
-            'priceSize': {'price': 2, 'size': 3}
+            'priceSize': {'price': 2, 'size': 3}, 'matchedDate': '1970-01-01T00:00:00.004000Z'
         }
