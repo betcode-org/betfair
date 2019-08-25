@@ -341,7 +341,29 @@ class TestOrderBookCache(unittest.TestCase):
 class TestOrderBookRunner(unittest.TestCase):
 
     def setUp(self):
-        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': []})
+        uo = [
+            {"id": 1, "p": "a", "s": "a", "side": "a", "ot": "a", "pd": "a", "sm": "a", "sr": "a", "sl": "a",
+             "sc": "a", "sv": "a", "rfo": "a", "rfs": "a", "status": "a"},
+            {"id": 2, "p": "b", "s": "a", "side": "a", "ot": "a", "pd": "a", "sm": "a", "sr": "a", "sl": "a",
+             "sc": "a", "sv": "a", "rfo": "a", "rfs": "a", "status": "b"},
+        ]
+        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': uo})
+
+    def test_update_unmatched(self):
+        unmatched_orders = [
+            {"id": 2, "p": "b", "s": "a", "side": "a", "ot": "a", "pd": "a", "sm": "a", "sr": "a", "sl": "a",
+             "sc": "a", "sv": "a", "rfo": "a", "rfs": "a", "status": "c"}
+        ]
+        self.order_book_runner.update_unmatched(unmatched_orders)
+
+        self.assertEqual(
+            self.order_book_runner.unmatched_orders[1].status,
+            "a"
+        )
+        self.assertEqual(
+            self.order_book_runner.unmatched_orders[2].status,
+            "c"
+        )
 
 
 class TestUnmatchedOrder(unittest.TestCase):

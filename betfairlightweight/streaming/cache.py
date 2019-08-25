@@ -326,24 +326,17 @@ class OrderBookRunner(object):
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
         self.matched_backs = Available(mb, 1)
-        self.unmatched_orders = [UnmatchedOrder(**i) for i in uo] if uo else []
+        self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
         self.handicap = hc
         self.strategy_matches = smc
 
     def update_unmatched(self, unmatched_orders):
-        order_dict = {order.bet_id: order for order in self.unmatched_orders}
         for unmatched_order in unmatched_orders:
-            if unmatched_order.get('id') in order_dict:
-                for n, order in enumerate(self.unmatched_orders):
-                    if order.bet_id == unmatched_order.get('id'):
-                        self.unmatched_orders[n] = UnmatchedOrder(**unmatched_order)
-                        break
-            else:
-                self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
+            self.unmatched_orders[unmatched_order["id"]] = UnmatchedOrder(**unmatched_order)
 
     def serialise_orders(self, market_id):
         return [
-            order.serialise(market_id, self.selection_id, self.handicap) for order in self.unmatched_orders
+            order.serialise(market_id, self.selection_id, self.handicap) for order in self.unmatched_orders.values()
         ]
 
 
