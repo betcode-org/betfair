@@ -160,13 +160,15 @@ class TestMarketBookCache(unittest.TestCase):
     #
     #         assert self.market_book_cache.total_matched == book.get('tv')
 
-    @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.serialise')
+    @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.serialise', new_callable=mock.PropertyMock,
+                return_value={})
     @mock.patch('betfairlightweight.streaming.cache.MarketDefinition')
     @mock.patch('betfairlightweight.streaming.cache.MarketBook')
     def test_create_resource(self, mock_market_book, mock_market_definition, mock_serialise):
         # lightweight
-        market_book = self.market_book_cache.create_resource(1234, {}, True)
-        assert market_book == mock_serialise
+        market_book = self.market_book_cache.create_resource(1234, {"test"}, True)
+        assert market_book == {'streaming_update': {"test"}, 'streaming_unique_id': 1234}
+        assert market_book == mock_serialise()
         # not lightweight
         market_book = self.market_book_cache.create_resource(1234, {}, False)
         assert market_book == mock_market_book()
@@ -313,11 +315,16 @@ class TestOrderBookCache(unittest.TestCase):
             self.order_book_cache.update_cache(order_book, 1234)
         self.assertTrue(self.order_book_cache.closed)
 
-    @mock.patch('betfairlightweight.streaming.cache.OrderBookCache.serialise')
+    @mock.patch('betfairlightweight.streaming.cache.OrderBookCache.serialise', new_callable=mock.PropertyMock,
+                return_value={})
     @mock.patch('betfairlightweight.streaming.cache.CurrentOrders')
     def test_create_resource(self, mock_current_orders, mock_serialise):
+        # lightweight
+        current_orders = self.order_book_cache.create_resource(123, {"test"}, True)
+        assert current_orders == mock_serialise()
+        assert current_orders == {'streaming_update': {"test"}, 'streaming_unique_id': 123}
+        # not lightweight
         current_orders = self.order_book_cache.create_resource(123, {}, False)
-
         assert current_orders == mock_current_orders()
 
     def test_runner_dict(self):

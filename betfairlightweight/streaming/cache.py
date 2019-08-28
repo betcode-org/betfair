@@ -198,15 +198,16 @@ class MarketBookCache(BaseResource):
                     self._update_runner_dict()
 
     def create_resource(self, unique_id, streaming_update, lightweight):
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_update"] = streaming_update
         if lightweight:
-            return self.serialise
+            return data
         else:
             return MarketBook(
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
-                streaming_unique_id=unique_id,
-                streaming_update=streaming_update,
                 market_definition=MarketDefinition(**self.market_definition),
-                **self.serialise
+                **data
             )
 
     def _update_runner_dict(self):
@@ -372,15 +373,16 @@ class OrderBookCache(BaseResource):
                 self.runners.append(OrderBookRunner(**order_changes))
 
     def create_resource(self, unique_id, streaming_update, lightweight):
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_update"] = streaming_update
         if lightweight:
-            return self.serialise
+            return data
         else:
             return CurrentOrders(
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
-                streaming_unique_id=unique_id,
-                streaming_update=streaming_update,
                 publish_time=self.publish_time,
-                **self.serialise
+                **data
             )
 
     @property
