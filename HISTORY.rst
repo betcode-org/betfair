@@ -3,12 +3,13 @@
 Release History
 ---------------
 
-1.10.2 (2019-08-??)
+1.10.2 (2019-08-28)
 +++++++++++++++++++
 
 **Improvements**
 
 - OrderCache / UnmatchedOrder logic improved
+- streaming_update and streaming_unique_id added to lightweight response
 
 **Bug Fixes**
 
