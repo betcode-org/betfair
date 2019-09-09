@@ -1,5 +1,6 @@
 from ..streaming import (
     BaseListener,
+    StreamListener,
     BetfairStream,
     HistoricalStream,
     HistoricalGeneratorStream
@@ -72,6 +73,6 @@ class Streaming(object):
 
         :rtype: HistoricalGeneratorStream
         """
-        listener = listener if listener else BaseListener()
+        listener = listener if listener else StreamListener()
         listener.register_stream('HISTORICAL', 'marketSubscription')
         return HistoricalGeneratorStream(directory, listener)

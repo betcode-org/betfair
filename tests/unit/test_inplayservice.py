@@ -32,7 +32,7 @@ class InPlayServiceTest(unittest.TestCase):
         self.in_play_service.get_event_timeline(event_id)
 
         mock_request.assert_called_with(
-                url='https://www.betfair.com/inplayservice/v1.1/eventTimeline', session=None, params=params)
+                url='https://ips.betfair.com/inplayservice/v1.1/eventTimeline', session=None, params=params)
         assert mock_request.call_count == 1
         assert mock_process_response.call_count == 1
 
@@ -49,7 +49,7 @@ class InPlayServiceTest(unittest.TestCase):
         self.in_play_service.get_event_timelines(event_ids)
 
         mock_request.assert_called_with(
-                url='https://www.betfair.com/inplayservice/v1.1/eventTimelines', session=None, params=params)
+                url='https://ips.betfair.com/inplayservice/v1.1/eventTimelines', session=None, params=params)
         assert mock_request.call_count == 1
         assert mock_process_response.call_count == 1
 
@@ -66,7 +66,7 @@ class InPlayServiceTest(unittest.TestCase):
         self.in_play_service.get_scores(event_ids)
 
         mock_request.assert_called_with(
-                url='https://www.betfair.com/inplayservice/v1.1/scores', session=None, params=params)
+                url='https://ips.betfair.com/inplayservice/v1.1/scores', session=None, params=params)
         assert mock_request.call_count == 1
         assert mock_process_response.call_count == 1
 
@@ -118,4 +118,4 @@ class InPlayServiceTest(unittest.TestCase):
         }
 
     def test_url(self):
-        assert self.in_play_service.url == 'https://www.betfair.com/inplayservice/v1.1/'
+        assert self.in_play_service.url == 'https://ips.betfair.com/inplayservice/v1.1/'

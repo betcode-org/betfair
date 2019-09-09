@@ -3,6 +3,32 @@
 Release History
 ---------------
 
+1.10.2 (2019-09-02)
++++++++++++++++++++
+
+**Improvements**
+
+- OrderCache / UnmatchedOrder logic improved
+- streaming_update and streaming_unique_id added to lightweight response
+
+**Bug Fixes**
+
+- handicap bugfix on OrderCache
+- Missing closed logic added to OrderCache
+
+1.10.1 (2019-08-12)
++++++++++++++++++++
+
+**Improvements**
+
+- RaceCard get_race_result function added (used by mobile app)
+- Streaming generator listener now defaults to StreamListener
+
+**Bug Fixes**
+
+- #221 inplayservice subdomain updated (ips)
+- #215 marketCatalogue no ERO data
+
 1.10.0 (2019-05-26)
 +++++++++++++++++++
 

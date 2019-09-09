@@ -161,13 +161,15 @@ class TestMarketBookCache(unittest.TestCase):
     #
     #         assert self.market_book_cache.total_matched == book.get('tv')
 
-    @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.serialise')
+    @mock.patch('betfairlightweight.streaming.cache.MarketBookCache.serialise', new_callable=mock.PropertyMock,
+                return_value={})
     @mock.patch('betfairlightweight.streaming.cache.MarketDefinition')
     @mock.patch('betfairlightweight.streaming.cache.MarketBook')
     def test_create_resource(self, mock_market_book, mock_market_definition, mock_serialise):
         # lightweight
-        market_book = self.market_book_cache.create_resource(1234, {}, True)
-        assert market_book == mock_serialise
+        market_book = self.market_book_cache.create_resource(1234, {"test"}, True)
+        assert market_book == {'streaming_update': {"test"}, 'streaming_unique_id': 1234}
+        assert market_book == mock_serialise()
         # not lightweight
         market_book = self.market_book_cache.create_resource(1234, {}, False)
         assert market_book == mock_market_book()
@@ -270,8 +272,23 @@ class TestOrderBookCache(unittest.TestCase):
         self.order_book_cache = OrderBookCache(**{})
         self.runner = mock.Mock()
         self.runner.selection_id = 10895629
+        self.runner.handicap = 0
         self.runner.serialise_orders = mock.Mock(return_value=[])
+        self.runner.unmatched_orders = [1]
         self.order_book_cache.runners = [self.runner]
+
+    def test_full_image(self):
+        mock_response = create_mock_json('tests/resources/streaming_ocm_FULL_IMAGE.json')
+        for order_book in mock_response.json().get('oc'):
+            self.order_book_cache.update_cache(order_book, 1234)
+
+        self.assertEqual(len(self.order_book_cache.runners), 5)
+        self.assertEqual(len(self.order_book_cache.runner_dict), 5)
+        for k, v in self.order_book_cache.runner_dict.items():
+            if k == (7017905, 0):
+                self.assertEqual(len(v.unmatched_orders), 2)
+            else:
+                self.assertEqual(len(v.unmatched_orders), 1)
 
     def test_update_cache(self):
         mock_response = create_mock_json('tests/resources/streaming_ocm_UPDATE.json')
@@ -293,23 +310,35 @@ class TestOrderBookCache(unittest.TestCase):
             for order_changes in order_book.get('orc'):
                 mock_order_book_runner.assert_called_with(**order_changes)
 
-    @mock.patch('betfairlightweight.streaming.cache.OrderBookCache.serialise')
+    def test_update_cache_closed(self):
+        mock_response = create_mock_json('tests/resources/streaming_ocm_SUB_IMAGE.json')
+        for order_book in mock_response.json().get('oc'):
+            self.order_book_cache.update_cache(order_book, 1234)
+        self.assertTrue(self.order_book_cache.closed)
+
+    @mock.patch('betfairlightweight.streaming.cache.OrderBookCache.serialise', new_callable=mock.PropertyMock,
+                return_value={})
     @mock.patch('betfairlightweight.streaming.cache.CurrentOrders')
     def test_create_resource(self, mock_current_orders, mock_serialise):
+        # lightweight
+        current_orders = self.order_book_cache.create_resource(123, {"test"}, True)
+        assert current_orders == mock_serialise()
+        assert current_orders == {'streaming_update': {"test"}, 'streaming_unique_id': 123}
+        # not lightweight
         current_orders = self.order_book_cache.create_resource(123, {}, False)
-
         assert current_orders == mock_current_orders()
 
     def test_runner_dict(self):
 
         class Runner:
-            def __init__(self, selection_id, name):
+            def __init__(self, selection_id, name, handicap):
                 self.selection_id = selection_id
                 self.name = name
+                self.handicap = handicap
 
-        (a, b) = (Runner(123, 'a'), Runner(456, 'b'))
+        (a, b) = (Runner(123, 'a', 0), Runner(456, 'b', 1))
         self.order_book_cache.runners = [a, b]
-        assert self.order_book_cache.runner_dict == {123: a, 456: b}
+        assert self.order_book_cache.runner_dict == {(123, 0): a, (456, 1): b}
 
     def test_serialise(self):
         serialised = self.order_book_cache.serialise
@@ -320,7 +349,29 @@ class TestOrderBookCache(unittest.TestCase):
 class TestOrderBookRunner(unittest.TestCase):
 
     def setUp(self):
-        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': []})
+        uo = [
+            {"id": 1, "p": "a", "s": "a", "side": "a", "ot": "a", "pd": "a", "sm": "a", "sr": "a", "sl": "a",
+             "sc": "a", "sv": "a", "rfo": "a", "rfs": "a", "status": "a"},
+            {"id": 2, "p": "b", "s": "a", "side": "a", "ot": "a", "pd": "a", "sm": "a", "sr": "a", "sl": "a",
+             "sc": "a", "sv": "a", "rfo": "a", "rfs": "a", "status": "b"},
+        ]
+        self.order_book_runner = OrderBookRunner(**{'id': 1, 'ml': [], 'mb': [], 'uo': uo})
+
+    def test_update_unmatched(self):
+        unmatched_orders = [
+            {"id": 2, "p": "b", "s": "a", "side": "a", "ot": "a", "pd": "a", "sm": "a", "sr": "a", "sl": "a",
+             "sc": "a", "sv": "a", "rfo": "a", "rfs": "a", "status": "c"}
+        ]
+        self.order_book_runner.update_unmatched(unmatched_orders)
+
+        self.assertEqual(
+            self.order_book_runner.unmatched_orders[1].status,
+            "a"
+        )
+        self.assertEqual(
+            self.order_book_runner.unmatched_orders[2].status,
+            "c"
+        )
 
 
 class TestUnmatchedOrder(unittest.TestCase):
@@ -328,7 +379,7 @@ class TestUnmatchedOrder(unittest.TestCase):
     def setUp(self):
         order = {
             'id': 1, 'p': 2, 's': 3, 'side': 'L', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 8, 'sm': 9, 'sr': 10,
-            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16, 'lsrc': 17, 'error': 'test'
+            'sl': 11, 'sc': 12, 'sv': 13, 'rfo': 14, 'rfs': 15, 'ld': 16, 'lsrc': 17, 'error': 'test', 'md': 4
         }
         self.unmatched_order = UnmatchedOrder(**order)
 
@@ -352,23 +403,21 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.lapse_status_reason_code == 17
 
     def test_placed_date_string(self):
-        now = datetime.datetime.now()
-        self.unmatched_order.placed_date = now
+        now = BaseResource.strip_datetime(8)
         assert self.unmatched_order.placed_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def test_matched_date_string(self):
-        now = datetime.datetime.now()
-        self.unmatched_order.matched_date = now
+        now = BaseResource.strip_datetime(4)
         assert self.unmatched_order.matched_date_string == now.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     def test_serialise(self):
         assert self.unmatched_order.serialise('1.23', 12345, 0.0) == {
             'sizeLapsed': 11, 'persistenceType': 'LAPSE', 'sizeRemaining': 10,
             'placedDate': '1970-01-01T00:00:00.008000Z', 'sizeVoided': 13, 'sizeCancelled': 12, 'betId': 1,
-            'customerOrderRef': 14, 'orderType': 'LIMIT', 'marketId': '1.23', 'matchedDate': None, 'side': 'LAY',
+            'customerOrderRef': 14, 'orderType': 'LIMIT', 'marketId': '1.23', 'side': 'LAY',
             'selectionId': 12345, 'bspLiability': None, 'sizeMatched': 9, 'handicap': 0.0, 'averagePriceMatched': 0.0,
             'status': 'EXECUTABLE', 'customerStrategyRef': 15, 'regulatorCode': None,
-            'priceSize': {'price': 2, 'size': 3}
+            'priceSize': {'price': 2, 'size': 3}, 'matchedDate': '1970-01-01T00:00:00.004000Z'
         }
 
 

@@ -199,15 +199,16 @@ class MarketBookCache(BaseResource):
                     self._update_runner_dict()
 
     def create_resource(self, unique_id, streaming_update, lightweight):
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_update"] = streaming_update
         if lightweight:
-            return self.serialise
+            return data
         else:
             return MarketBook(
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
-                streaming_unique_id=unique_id,
-                streaming_update=streaming_update,
                 market_definition=MarketDefinition(**self.market_definition),
-                **self.serialise
+                **data
             )
 
     def _update_runner_dict(self):
@@ -267,7 +268,9 @@ class UnmatchedOrder(object):
         self.persistence_type = pt
         self.order_type = ot
         self.placed_date = BaseResource.strip_datetime(pd)
+        self.placed_date_string = self.create_placed_date_string()
         self.matched_date = BaseResource.strip_datetime(md)
+        self.matched_date_string = self.create_matched_date_string()
         self.average_price_matched = avp
         self.size_matched = sm
         self.size_remaining = sr
@@ -281,13 +284,11 @@ class UnmatchedOrder(object):
         self.lapsed_date = ld
         self.lapse_status_reason_code = lsrc  # todo add to output?
 
-    @property
-    def placed_date_string(self):
+    def create_placed_date_string(self):
         if self.placed_date:
             return self.placed_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    @property
-    def matched_date_string(self):
+    def create_matched_date_string(self):
         if self.matched_date:
             return self.matched_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
@@ -327,24 +328,17 @@ class OrderBookRunner(object):
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
         self.matched_backs = Available(mb, 1)
-        self.unmatched_orders = [UnmatchedOrder(**i) for i in uo] if uo else []
+        self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
         self.handicap = hc
         self.strategy_matches = smc
 
     def update_unmatched(self, unmatched_orders):
-        order_dict = {order.bet_id: order for order in self.unmatched_orders}
         for unmatched_order in unmatched_orders:
-            if unmatched_order.get('id') in order_dict:
-                for n, order in enumerate(self.unmatched_orders):
-                    if order.bet_id == unmatched_order.get('id'):
-                        self.unmatched_orders[n] = UnmatchedOrder(**unmatched_order)
-                        break
-            else:
-                self.unmatched_orders.append(UnmatchedOrder(**unmatched_order))
+            self.unmatched_orders[unmatched_order["id"]] = UnmatchedOrder(**unmatched_order)
 
     def serialise_orders(self, market_id):
         return [
-            order.serialise(market_id, self.selection_id, self.handicap) for order in self.unmatched_orders
+            order.serialise(market_id, self.selection_id, self.handicap) for order in self.unmatched_orders.values()
         ]
 
 
@@ -360,10 +354,15 @@ class OrderBookCache(BaseResource):
     def update_cache(self, order_book, publish_time):
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
+        if "closed" in order_book:
+            self.closed = order_book["closed"]
 
         for order_changes in order_book.get('orc', []):
             selection_id = order_changes['id']
-            runner = self.runner_dict.get(selection_id)
+            handicap = order_changes.get('hc', 0)
+            runner = self.runner_dict.get(
+                (selection_id, handicap)
+            )
             if runner:
                 if 'ml' in order_changes:
                     runner.matched_lays.update(order_changes['ml'])
@@ -375,20 +374,21 @@ class OrderBookCache(BaseResource):
                 self.runners.append(OrderBookRunner(**order_changes))
 
     def create_resource(self, unique_id, streaming_update, lightweight):
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_update"] = streaming_update
         if lightweight:
-            return self.serialise
+            return data
         else:
             return CurrentOrders(
                 elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
-                streaming_unique_id=unique_id,
-                streaming_update=streaming_update,
                 publish_time=self.publish_time,
-                **self.serialise
+                **data
             )
 
     @property
     def runner_dict(self):
-        return {runner.selection_id: runner for runner in self.runners}
+        return {(runner.selection_id, runner.handicap): runner for runner in self.runners}
 
     @property
     def serialise(self):

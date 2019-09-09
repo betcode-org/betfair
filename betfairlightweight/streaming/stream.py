@@ -163,7 +163,7 @@ class OrderStream(BaseStream):
             self._updates_processed += 1
 
             output_order_book.append(
-                self._caches[market_id].create_resource(self.unique_id, order_book, self._lightweight)
+                order_book_cache.create_resource(self.unique_id, order_book, self._lightweight)
             )
         self.on_process(output_order_book)
 
