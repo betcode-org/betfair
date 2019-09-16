@@ -390,10 +390,7 @@ class TestOrderBookRunner(unittest.TestCase):
 
         mock_order_two.serialise = mock_serialise
 
-        assert self.order_book_runner.serialise_orders("1.1") == [
-            None,
-            mock_order.serialise(),
-        ]
+        assert len(self.order_book_runner.serialise_orders("1.1")), 2
 
 
 class TestUnmatchedOrder(unittest.TestCase):
