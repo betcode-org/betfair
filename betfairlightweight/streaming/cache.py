@@ -336,8 +336,9 @@ class OrderBookRunner(object):
             self.unmatched_orders[unmatched_order["id"]] = UnmatchedOrder(**unmatched_order)
 
     def serialise_orders(self, market_id):
+        orders = list(self.unmatched_orders.values())  # order may be added (#232)
         return [
-            order.serialise(market_id, self.selection_id, self.handicap) for order in self.unmatched_orders.values()
+            order.serialise(market_id, self.selection_id, self.handicap) for order in orders
         ]
 
 

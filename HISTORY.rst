@@ -3,6 +3,22 @@
 Release History
 ---------------
 
+1.10.3 (2019-09-30)
++++++++++++++++++++
+
+**Improvements**
+
+- Remove py3.4 support
+
+**Bug Fixes**
+
+- #232 RuntimeError fixed on serialize_orders
+- avgPriceRaw added to LegacyData (@d3alek)
+
+**Dependencies**
+
+- requests upgraded / unpinned from exact version
+
 1.10.2 (2019-09-02)
 +++++++++++++++++++
 
