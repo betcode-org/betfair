@@ -8,12 +8,11 @@ Release History
 
 **Improvements**
 
--
+- Remove py3.4 support
 
 **Bug Fixes**
 
 - #232 RuntimeError fixed on serialize_orders
-
 
 **Dependencies**
 

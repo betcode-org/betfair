@@ -9,7 +9,7 @@ Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG]
 
 [Join slack group](https://betfairlightweight.herokuapp.com)
 
-Currently tested on Python 2.7, 3.4, 3.5, 3.6 and 3.7.
+Currently tested on Python 2.7, 3.5, 3.6 and 3.7.
 
 # installation
 
