@@ -13,6 +13,7 @@ Release History
 **Bug Fixes**
 
 - #232 RuntimeError fixed on serialize_orders
+- avgPriceRaw added to LegacyData (@d3alek)
 
 **Dependencies**
 
