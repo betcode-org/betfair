@@ -373,6 +373,26 @@ class TestOrderBookRunner(unittest.TestCase):
             "c"
         )
 
+    def test_serialise_orders(self):
+        mock_order = mock.Mock()
+        mock_order.id = 123
+        mock_order_two = mock.Mock()
+        mock_order_two.id = 456
+
+        unmatched_orders = {
+            mock_order.id: mock_order,
+            mock_order_two.id: mock_order_two,
+        }
+        self.order_book_runner.unmatched_orders = unmatched_orders
+
+        def mock_serialise(*args, **kwargs):
+            unmatched_orders[789] = "SYM"
+            return
+
+        mock_order_two.serialise = mock_serialise
+
+        assert len(self.order_book_runner.serialise_orders("1.1")), 2
+
 
 class TestUnmatchedOrder(unittest.TestCase):
 
