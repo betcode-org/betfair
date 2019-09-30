@@ -3,6 +3,22 @@
 Release History
 ---------------
 
+1.10.3 (2019-09-30)
++++++++++++++++++++
+
+**Improvements**
+
+-
+
+**Bug Fixes**
+
+- #232 RuntimeError fixed on serialize_orders
+
+
+**Dependencies**
+
+- requests upgraded / unpinned from exact version
+
 1.10.2 (2019-09-02)
 +++++++++++++++++++
 
