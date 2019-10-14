@@ -3,10 +3,7 @@ import ssl
 import datetime
 import collections
 
-from ..exceptions import (
-    SocketError,
-    ListenerError,
-)
+from ..exceptions import SocketError, ListenerError
 from ..compat import json
 
 
@@ -16,15 +13,25 @@ class BetfairStream(object):
     """
 
     __port = 443
-    __CRLF = '\r\n'
-    __encoding = 'utf-8'
+    __CRLF = "\r\n"
+    __encoding = "utf-8"
 
     HOSTS = collections.defaultdict(
-        lambda: 'stream-api.betfair.com',
-        integration='stream-api-integration.betfair.com',
+        lambda: "stream-api.betfair.com",
+        integration="stream-api-integration.betfair.com",
     )
 
-    def __init__(self, unique_id, listener, app_key, session_token, timeout, buffer_size, description, host):
+    def __init__(
+        self,
+        unique_id,
+        listener,
+        app_key,
+        session_token,
+        timeout,
+        buffer_size,
+        description,
+        host,
+    ):
         self._unique_id = unique_id
         self.listener = listener
         self.app_key = app_key
@@ -67,10 +74,10 @@ class BetfairStream(object):
         """
         unique_id = self.new_unique_id()
         message = {
-            'op': 'authentication',
-            'id': unique_id,
-            'appKey': self.app_key,
-            'session': self.session_token,
+            "op": "authentication",
+            "id": unique_id,
+            "appKey": self.app_key,
+            "session": self.session_token,
         }
         self._send(message)
         return unique_id
@@ -79,15 +86,20 @@ class BetfairStream(object):
         """Heartbeat request to keep session alive.
         """
         unique_id = self.new_unique_id()
-        message = {
-            'op': 'heartbeat',
-            'id': unique_id,
-        }
+        message = {"op": "heartbeat", "id": unique_id}
         self._send(message)
         return unique_id
 
-    def subscribe_to_markets(self, market_filter, market_data_filter, initial_clk=None, clk=None,
-                             conflate_ms=None, heartbeat_ms=None, segmentation_enabled=True):
+    def subscribe_to_markets(
+        self,
+        market_filter,
+        market_data_filter,
+        initial_clk=None,
+        clk=None,
+        conflate_ms=None,
+        heartbeat_ms=None,
+        segmentation_enabled=True,
+    ):
         """
         Market subscription request.
 
@@ -102,26 +114,33 @@ class BetfairStream(object):
         """
         unique_id = self.new_unique_id()
         message = {
-            'op': 'marketSubscription',
-            'id': unique_id,
-            'marketFilter': market_filter,
-            'marketDataFilter': market_data_filter,
-            'initialClk': initial_clk,
-            'clk': clk,
-            'conflateMs': conflate_ms,
-            'heartbeatMs': heartbeat_ms,
-            'segmentationEnabled': segmentation_enabled,
+            "op": "marketSubscription",
+            "id": unique_id,
+            "marketFilter": market_filter,
+            "marketDataFilter": market_data_filter,
+            "initialClk": initial_clk,
+            "clk": clk,
+            "conflateMs": conflate_ms,
+            "heartbeatMs": heartbeat_ms,
+            "segmentationEnabled": segmentation_enabled,
         }
         if initial_clk and clk:
             # if resubscribe only update unique_id
             self.listener.stream_unique_id = unique_id
         else:
-            self.listener.register_stream(unique_id, 'marketSubscription')
+            self.listener.register_stream(unique_id, "marketSubscription")
         self._send(message)
         return unique_id
 
-    def subscribe_to_orders(self, order_filter=None, initial_clk=None, clk=None, conflate_ms=None,
-                            heartbeat_ms=None, segmentation_enabled=True):
+    def subscribe_to_orders(
+        self,
+        order_filter=None,
+        initial_clk=None,
+        clk=None,
+        conflate_ms=None,
+        heartbeat_ms=None,
+        segmentation_enabled=True,
+    ):
         """
         Order subscription request.
 
@@ -135,20 +154,20 @@ class BetfairStream(object):
         """
         unique_id = self.new_unique_id()
         message = {
-            'op': 'orderSubscription',
-            'id': unique_id,
-            'orderFilter': order_filter,
-            'initialClk': initial_clk,
-            'clk': clk,
-            'conflateMs': conflate_ms,
-            'heartbeatMs': heartbeat_ms,
-            'segmentationEnabled': segmentation_enabled,
+            "op": "orderSubscription",
+            "id": unique_id,
+            "orderFilter": order_filter,
+            "initialClk": initial_clk,
+            "clk": clk,
+            "conflateMs": conflate_ms,
+            "heartbeatMs": heartbeat_ms,
+            "segmentationEnabled": segmentation_enabled,
         }
         if initial_clk and clk:
             # if resubscribe only update unique_id
             self.listener.stream_unique_id = unique_id
         else:
-            self.listener.register_stream(unique_id, 'orderSubscription')
+            self.listener.register_stream(unique_id, "orderSubscription")
         self._send(message)
         return unique_id
 
@@ -190,7 +209,7 @@ class BetfairStream(object):
         """Whilst socket is running receives data from socket,
         till CRLF is detected.
         """
-        (data, part) = ('', '')
+        (data, part) = ("", "")
         crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
 
         while self._running and part[-2:] != crlf_bytes:
@@ -199,7 +218,7 @@ class BetfairStream(object):
             except (socket.timeout, socket.error) as e:
                 if self._running:
                     self.stop()
-                    raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
+                    raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
                 else:
                     return  # 133, prevents error if stop is called mid recv
 
@@ -207,7 +226,10 @@ class BetfairStream(object):
             if len(part) == 0:
                 if self._running:
                     self.stop()
-                    raise SocketError('[Connect: %s]: Connection closed by server' % (self._unique_id,))
+                    raise SocketError(
+                        "[Connect: %s]: Connection closed by server"
+                        % (self._unique_id,)
+                    )
                 else:
                     return  # 165, prevents error if stop is called mid recv
 
@@ -239,13 +261,13 @@ class BetfairStream(object):
             self._socket.send(message_dumped.encode())
         except (socket.timeout, socket.error) as e:
             self.stop()
-            raise SocketError('[Connect: %s]: Socket %s' % (self._unique_id, e))
+            raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
 
     def __str__(self):
-        return '<BetfairStream [%s]>' % ('running' if self._running else 'not running')
+        return "<BetfairStream [%s]>" % ("running" if self._running else "not running")
 
     def __repr__(self):
-        return '<BetfairStream>'
+        return "<BetfairStream>"
 
 
 class HistoricalStream(object):
@@ -270,12 +292,12 @@ class HistoricalStream(object):
         self._running = False
 
     def _read_loop(self):
-        with open(self.directory, 'r') as f:
+        with open(self.directory, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:
                     # if on_data returns an error stop the stream and raise error
                     self.stop()
-                    raise ListenerError('HISTORICAL', update)
+                    raise ListenerError("HISTORICAL", update)
                 if not self._running:
                     break
             else:

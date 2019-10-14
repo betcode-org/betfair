@@ -14,7 +14,7 @@ from betfairlightweight.filters import (
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
 
 # create trading instance (app key must be activated for streaming)
-username = os.environ.get('username')
+username = os.environ.get("username")
 trading = betfairlightweight.APIClient(username)
 trading.login()
 
@@ -22,24 +22,17 @@ trading.login()
 output_queue = queue.Queue()
 
 # create stream listener
-listener = betfairlightweight.StreamListener(
-    output_queue=output_queue,
-)
+listener = betfairlightweight.StreamListener(output_queue=output_queue)
 
 # create stream
-stream = trading.streaming.create_stream(
-    listener=listener,
-)
+stream = trading.streaming.create_stream(listener=listener)
 
 # create filters (GB WIN racing)
 market_filter = streaming_market_filter(
-    event_type_ids=['7'],
-    country_codes=['GB'],
-    market_types=['WIN'],
+    event_type_ids=["7"], country_codes=["GB"], market_types=["WIN"]
 )
 market_data_filter = streaming_market_data_filter(
-    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],
-    ladder_levels=3,
+    fields=["EX_BEST_OFFERS", "EX_MARKET_DEF"], ladder_levels=3
 )
 
 # subscribe
@@ -86,5 +79,5 @@ while True:
             market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)
             market_book.streaming_update,  # json update received
             market_book.market_definition,  # streaming definition, similar to catalogue request
-            market_book.publish_time  # betfair publish time of update
+            market_book.publish_time,  # betfair publish time of update
         )

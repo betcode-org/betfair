@@ -1,9 +1,8 @@
-
-
 class BetfairError(Exception):
     """
     Base class for Betfair Errors.
     """
+
     pass
 
 
@@ -13,7 +12,10 @@ class PasswordError(BetfairError):
     """
 
     def __init__(self, username):
-        message = 'Password not found in .bashprofile for %s, add or pass to APIClient' % username
+        message = (
+            "Password not found in .bashprofile for %s, add or pass to APIClient"
+            % username
+        )
         super(PasswordError, self).__init__(message)
 
 
@@ -23,7 +25,10 @@ class AppKeyError(BetfairError):
     """
 
     def __init__(self, username):
-        message = 'AppKey not found in .bashprofile for %s, add or pass to APIClient' % username
+        message = (
+            "AppKey not found in .bashprofile for %s, add or pass to APIClient"
+            % username
+        )
         super(AppKeyError, self).__init__(message)
 
 
@@ -32,8 +37,8 @@ class CertsError(BetfairError):
     Exception raised if certs folder is not found.
     """
 
-    def __init__(self, path='/certs/'):
-        message = 'Certificate folder not found in %s' % path
+    def __init__(self, path="/certs/"):
+        message = "Certificate folder not found in %s" % path
         super(CertsError, self).__init__(message)
 
 
@@ -43,7 +48,7 @@ class StatusCodeError(BetfairError):
     """
 
     def __init__(self, status_code):
-        message = 'Status code error: %s' % status_code
+        message = "Status code error: %s" % status_code
         super(StatusCodeError, self).__init__(message)
 
 
@@ -54,7 +59,7 @@ class InvalidResponse(BetfairError):
     """
 
     def __init__(self, response):
-        message = 'Invalid response received: %s' % response
+        message = "Invalid response received: %s" % response
         super(InvalidResponse, self).__init__(message)
 
 
@@ -64,10 +69,10 @@ class LoginError(BetfairError):
     """
 
     def __init__(self, response):
-        login_status = response.get('loginStatus')
+        login_status = response.get("loginStatus")
         if login_status is None:  # different response when interactive login requested
-            login_status = response.get('error', 'UNKNOWN')
-        message = 'API login: %s' % login_status
+            login_status = response.get("error", "UNKNOWN")
+        message = "API login: %s" % login_status
         super(LoginError, self).__init__(message)
 
 
@@ -77,9 +82,9 @@ class KeepAliveError(BetfairError):
     """
 
     def __init__(self, response):
-        keep_alive_status = response.get('status', 'UNKNOWN')
-        keep_alive_error = response.get('error')
-        message = 'API keepAlive %s: %s' % (keep_alive_status, keep_alive_error)
+        keep_alive_status = response.get("status", "UNKNOWN")
+        keep_alive_error = response.get("error")
+        message = "API keepAlive %s: %s" % (keep_alive_status, keep_alive_error)
         super(KeepAliveError, self).__init__(message)
 
 
@@ -90,14 +95,13 @@ class APIError(BetfairError):
 
     def __init__(self, response, method=None, params=None, exception=None):
         if response:
-            error_data = response.get('error')
-            message = '%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s' % (
-                method, params, exception, error_data, response
+            error_data = response.get("error")
+            message = (
+                "%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s"
+                % (method, params, exception, error_data, response)
             )
         else:
-            message = '%s \nParams: %s \nException: %s' % (
-                method, params, exception
-            )
+            message = "%s \nParams: %s \nException: %s" % (method, params, exception)
         super(APIError, self).__init__(message)
 
 
@@ -107,9 +111,9 @@ class LogoutError(BetfairError):
     """
 
     def __init__(self, response):
-        logout_status = response.get('status', 'UNKNOWN')
-        logout_error = response.get('error')
-        message = 'API logout %s: %s' % (logout_status, logout_error)
+        logout_status = response.get("status", "UNKNOWN")
+        logout_error = response.get("error")
+        message = "API logout %s: %s" % (logout_status, logout_error)
         super(LogoutError, self).__init__(message)
 
 
@@ -144,7 +148,7 @@ class ListenerError(BetfairError):
     """
 
     def __init__(self, connection_id, data):
-        message = 'connection_id: %s, data: %s' % (connection_id, data)
+        message = "connection_id: %s, data: %s" % (connection_id, data)
         super(ListenerError, self).__init__(message)
 
 

@@ -3,9 +3,16 @@ from . import endpoints
 
 
 class APIClient(BaseClient):
-
-    def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None,
-                 lightweight=False):
+    def __init__(
+        self,
+        username,
+        password=None,
+        app_key=None,
+        certs=None,
+        locale=None,
+        cert_files=None,
+        lightweight=False,
+    ):
         """
         Creates API client for API operations.
 
@@ -18,8 +25,13 @@ class APIClient(BaseClient):
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
         """
         super(APIClient, self).__init__(
-            username, password, app_key=app_key, certs=certs, locale=locale, cert_files=cert_files,
-            lightweight=lightweight
+            username,
+            password,
+            app_key=app_key,
+            certs=certs,
+            locale=locale,
+            cert_files=cert_files,
+            lightweight=lightweight,
         )
 
         self.login = endpoints.Login(self)
@@ -36,7 +48,7 @@ class APIClient(BaseClient):
         self.historic = endpoints.Historic(self)
 
     def __repr__(self):
-        return '<APIClient [%s]>' % self.username
+        return "<APIClient [%s]>" % self.username
 
     def __str__(self):
-        return 'APIClient'
+        return "APIClient"

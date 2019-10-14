@@ -1,9 +1,18 @@
 from .utils import to_camel_case
 
 
-def streaming_market_filter(market_ids=None, bsp_market=None, betting_types=None, event_type_ids=None, event_ids=None,
-                            turn_in_play_enabled=None, market_types=None, venues=None, country_codes=None,
-                            race_types=None):
+def streaming_market_filter(
+    market_ids=None,
+    bsp_market=None,
+    betting_types=None,
+    event_type_ids=None,
+    event_ids=None,
+    turn_in_play_enabled=None,
+    market_types=None,
+    venues=None,
+    country_codes=None,
+    race_types=None,
+):
     """
     :param list market_ids: filter market data to data pertaining to specific marketIds.
     :param list event_type_ids: filter market data to data pertaining to specific event_type ids.
@@ -19,9 +28,7 @@ def streaming_market_filter(market_ids=None, bsp_market=None, betting_types=None
     :return: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
 def streaming_market_data_filter(fields=None, ladder_levels=None):
@@ -33,13 +40,14 @@ def streaming_market_data_filter(fields=None, ladder_levels=None):
     :return: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def streaming_order_filter(include_overall_position=None, customer_strategy_refs=None,
-                           partition_matched_by_strategy_ref=None):
+def streaming_order_filter(
+    include_overall_position=None,
+    customer_strategy_refs=None,
+    partition_matched_by_strategy_ref=None,
+):
     """
     :param bool include_overall_position: Returns overall / net position (OrderRunnerChange.mb / OrderRunnerChange.ml)
     :param list customer_strategy_refs: Restricts to specified customerStrategyRefs; this will filter orders and
@@ -50,9 +58,7 @@ def streaming_order_filter(include_overall_position=None, customer_strategy_refs
     :return: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
 def time_range(from_=None, to=None):  # todo datetime conversion
@@ -63,15 +69,26 @@ def time_range(from_=None, to=None):  # todo datetime conversion
     :return: dict
     """
     args = locals().copy()
-    return {
-        k.replace('_', ''): v for k, v in args.items()
-    }
+    return {k.replace("_", ""): v for k, v in args.items()}
 
 
-def market_filter(text_query=None, event_type_ids=None, event_ids=None, competition_ids=None, market_ids=None,
-                  venues=None, bsp_only=None, turn_in_play_enabled=None, in_play_only=None, market_betting_types=None,
-                  market_countries=None, market_type_codes=None, market_start_time=None, with_orders=None,
-                  race_types=None):
+def market_filter(
+    text_query=None,
+    event_type_ids=None,
+    event_ids=None,
+    competition_ids=None,
+    market_ids=None,
+    venues=None,
+    bsp_only=None,
+    turn_in_play_enabled=None,
+    in_play_only=None,
+    market_betting_types=None,
+    market_countries=None,
+    market_type_codes=None,
+    market_start_time=None,
+    with_orders=None,
+    race_types=None,
+):
     """
     :param str text_query: restrict markets by text associated with it, e.g name, event, comp.
     :param list event_type_ids: filter market data to data pertaining to specific event_type ids.
@@ -92,12 +109,16 @@ def market_filter(text_query=None, event_type_ids=None, event_ids=None, competit
     :return: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def price_data(sp_available=False, sp_traded=False, ex_best_offers=False, ex_all_offers=False, ex_traded=False):
+def price_data(
+    sp_available=False,
+    sp_traded=False,
+    ex_best_offers=False,
+    ex_all_offers=False,
+    ex_traded=False,
+):
     """
     Create PriceData filter list from all args passed as True.
     :param bool sp_available: Amount available for the BSP auction.
@@ -110,13 +131,16 @@ def price_data(sp_available=False, sp_traded=False, ex_best_offers=False, ex_all
     :rtype: list
     """
     args = locals().copy()
-    return [
-        k.upper() for k, v in args.items() if v is True
-    ]
+    return [k.upper() for k, v in args.items() if v is True]
 
 
-def ex_best_offers_overrides(best_prices_depth=None, rollup_model=None, rollup_limit=None,
-                             rollup_liability_threshold=None, rollup_liability_factor=None):
+def ex_best_offers_overrides(
+    best_prices_depth=None,
+    rollup_model=None,
+    rollup_limit=None,
+    rollup_liability_threshold=None,
+    rollup_liability_factor=None,
+):
     """
     Create filter to specify whether to accumulate market volume info, how deep a book to return and rollup methods if
     accumulation is selected.
@@ -136,13 +160,15 @@ def ex_best_offers_overrides(best_prices_depth=None, rollup_model=None, rollup_l
     """
 
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def price_projection(price_data=None, ex_best_offers_overrides=None, virtualise=True,
-                     rollover_stakes=False):
+def price_projection(
+    price_data=None,
+    ex_best_offers_overrides=None,
+    virtualise=True,
+    rollover_stakes=False,
+):
     """
     Selection criteria of the returning price data.
     :param list price_data: PriceData filter to specify what market data we wish to receive.
@@ -159,13 +185,19 @@ def price_projection(price_data=None, ex_best_offers_overrides=None, virtualise=
     if ex_best_offers_overrides is None:
         ex_best_offers_overrides = {}
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def place_instruction(order_type, selection_id, side, handicap=None, limit_order=None, limit_on_close_order=None,
-                      market_on_close_order=None, customer_order_ref=None):
+def place_instruction(
+    order_type,
+    selection_id,
+    side,
+    handicap=None,
+    limit_order=None,
+    limit_on_close_order=None,
+    market_on_close_order=None,
+    customer_order_ref=None,
+):
     """
     Create order instructions to place an order at exchange.
     :param str order_type: define type of order to place.
@@ -184,13 +216,18 @@ def place_instruction(order_type, selection_id, side, handicap=None, limit_order
     """
 
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def limit_order(price, persistence_type=None, size=None, time_in_force=None, min_fill_size=None, bet_target_type=None,
-                bet_target_size=None):
+def limit_order(
+    price,
+    persistence_type=None,
+    size=None,
+    time_in_force=None,
+    min_fill_size=None,
+    bet_target_type=None,
+    bet_target_size=None,
+):
     """
     Create a limit order to send to exchange.
     :param float size: amount in account currency to be sent.
@@ -207,9 +244,7 @@ def limit_order(price, persistence_type=None, size=None, time_in_force=None, min
     :rtype: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
 def limit_on_close_order(liability, price):
@@ -245,9 +280,7 @@ def cancel_instruction(bet_id, size_reduction=None):
     :rtype: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
 def replace_instruction(bet_id, new_price):
@@ -261,9 +294,7 @@ def replace_instruction(bet_id, new_price):
     :rtype: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
 def update_instruction(bet_id, new_persistence_type):
@@ -276,6 +307,4 @@ def update_instruction(bet_id, new_persistence_type):
     :rtype: dict
     """
     args = locals().copy()
-    return {
-        to_camel_case(k): v for k, v in args.items() if v is not None
-    }
+    return {to_camel_case(k): v for k, v in args.items() if v is not None}

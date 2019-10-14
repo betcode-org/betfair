@@ -3,7 +3,7 @@ from ..streaming import (
     StreamListener,
     BetfairStream,
     HistoricalStream,
-    HistoricalGeneratorStream
+    HistoricalGeneratorStream,
 )
 
 
@@ -18,8 +18,15 @@ class Streaming(object):
         """
         self.client = parent
 
-    def create_stream(self, unique_id=0, listener=None, timeout=11, buffer_size=1024, description='BetfairSocket',
-                      host=None):
+    def create_stream(
+        self,
+        unique_id=0,
+        listener=None,
+        timeout=11,
+        buffer_size=1024,
+        description="BetfairSocket",
+        host=None,
+    ):
         """
         Creates BetfairStream.
 
@@ -57,7 +64,7 @@ class Streaming(object):
         :rtype: HistoricalStream
         """
         listener = listener if listener else BaseListener()
-        listener.register_stream('HISTORICAL', 'marketSubscription')
+        listener.register_stream("HISTORICAL", "marketSubscription")
         return HistoricalStream(directory, listener)
 
     @staticmethod
@@ -73,5 +80,5 @@ class Streaming(object):
         :rtype: HistoricalGeneratorStream
         """
         listener = listener if listener else StreamListener()
-        listener.register_stream('HISTORICAL', 'marketSubscription')
+        listener.register_stream("HISTORICAL", "marketSubscription")
         return HistoricalGeneratorStream(directory, listener)

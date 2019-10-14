@@ -1,7 +1,18 @@
 from .exceptions import StatusCodeError
 
-TICK_SIZES = {1.0: 0.01, 2.0: 0.02, 3.0: 0.05, 4.0: 0.1, 6.0: 0.2, 10.0: 0.5,
-              20.0: 1.0, 30.0: 2.0, 50.0: 5.0, 100.0: 10.0, 1000.0: 1000}
+TICK_SIZES = {
+    1.0: 0.01,
+    2.0: 0.02,
+    3.0: 0.05,
+    4.0: 0.1,
+    6.0: 0.2,
+    10.0: 0.5,
+    20.0: 1.0,
+    30.0: 2.0,
+    50.0: 5.0,
+    100.0: 10.0,
+    1000.0: 1000,
+}
 
 
 def check_status_code(response, codes=None):
@@ -25,12 +36,13 @@ def clean_locals(data):
     :param {} data: locals dicts from a function.
     :returns: dict
     """
-    if data.get('params') is not None:
-        return data.get('params')
+    if data.get("params") is not None:
+        return data.get("params")
     else:
         return {
-            to_camel_case(k): v for k, v in data.items() if v is not None and k not in
-            ['self', 'session', 'params', 'lightweight']
+            to_camel_case(k): v
+            for k, v in data.items()
+            if v is not None and k not in ["self", "session", "params", "lightweight"]
         }
 
 
@@ -41,5 +53,5 @@ def to_camel_case(snake_str):
     :param str snake_str:
     :returns: str
     """
-    components = snake_str.split('_')
+    components = snake_str.split("_")
     return components[0] + "".join(x.title() for x in components[1:])
