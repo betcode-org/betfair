@@ -8,7 +8,6 @@ from .exceptions import (
     AppKeyError,
     CertsError,
 )
-from .compat import FileNotFoundError
 
 
 class BaseClient(object):
@@ -139,8 +138,6 @@ class BaseClient(object):
         try:
             cert_path = os.listdir(ssl_path)
         except FileNotFoundError:
-            raise CertsError(certs)
-        except OSError:   # Python 2 compatability
             raise CertsError(certs)
 
         cert = None

@@ -17,6 +17,7 @@ Release History
 **Dependencies**
 
 - ciso8601 upgraded from 2.0.1 to 2.1.1
+- python 3 only
 
 1.10.3 (2019-09-30)
 +++++++++++++++++++

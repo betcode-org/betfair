@@ -8,10 +8,7 @@ from ..exceptions import (
     SocketError,
     ListenerError,
 )
-from ..compat import (
-    is_py3,
-    json,
-)
+from ..compat import json
 
 
 class BetfairStream(object):
@@ -202,10 +199,7 @@ class BetfairStream(object):
         till CRLF is detected.
         """
         (data, part) = ('', '')
-        if is_py3:
-            crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
-        else:
-            crlf_bytes = self.__CRLF
+        crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
 
         while self._running and part[-2:] != crlf_bytes:
             try:
