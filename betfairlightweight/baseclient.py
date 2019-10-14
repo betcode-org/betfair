@@ -3,11 +3,7 @@ import collections
 import datetime
 import os
 
-from .exceptions import (
-    PasswordError,
-    AppKeyError,
-    CertsError,
-)
+from .exceptions import PasswordError, AppKeyError, CertsError
 
 
 class BaseClient(object):
@@ -16,34 +12,40 @@ class BaseClient(object):
     """
 
     IDENTITY_URLS = collections.defaultdict(
-        lambda: 'https://identitysso.betfair.com/api/',
-        spain='https://identitysso.betfair.es/api/',
-        italy='https://identitysso.betfair.it/api/',
-        romania='https://identitysso.betfair.ro/api/',
-        sweden='https://identitysso.betfair.se/api/',
-        australia='https://identitysso.betfair.au/api/',
+        lambda: "https://identitysso.betfair.com/api/",
+        spain="https://identitysso.betfair.es/api/",
+        italy="https://identitysso.betfair.it/api/",
+        romania="https://identitysso.betfair.ro/api/",
+        sweden="https://identitysso.betfair.se/api/",
+        australia="https://identitysso.betfair.au/api/",
     )
 
     IDENTITY_CERT_URLS = collections.defaultdict(
-        lambda: 'https://identitysso-cert.betfair.com/api/',
-        spain='https://identitysso-cert.betfair.es/api/',
-        italy='https://identitysso-cert.betfair.it/api/',
-        romania='https://identitysso-cert.betfair.ro/api/',
-        sweden='https://identitysso-cert.betfair.se/api/',
+        lambda: "https://identitysso-cert.betfair.com/api/",
+        spain="https://identitysso-cert.betfair.es/api/",
+        italy="https://identitysso-cert.betfair.it/api/",
+        romania="https://identitysso-cert.betfair.ro/api/",
+        sweden="https://identitysso-cert.betfair.se/api/",
     )
 
-    API_URLS = collections.defaultdict(
-        lambda: 'https://api.betfair.com/exchange/'
-    )
+    API_URLS = collections.defaultdict(lambda: "https://api.betfair.com/exchange/")
 
     NAVIGATION_URLS = collections.defaultdict(
-        lambda: 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json',
-        spain='https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json',
-        italy='https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json'
+        lambda: "https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json",
+        spain="https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json",
+        italy="https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json",
     )
 
-    def __init__(self, username, password=None, app_key=None, certs=None, locale=None, cert_files=None,
-                 lightweight=False):
+    def __init__(
+        self,
+        username,
+        password=None,
+        app_key=None,
+        certs=None,
+        locale=None,
+        cert_files=None,
+        lightweight=False,
+    ):
         """
         Creates base client for API operations.
 
@@ -89,8 +91,8 @@ class BaseClient(object):
         for username+'password'.
         """
         if self.password is None:
-            if os.environ.get(self.username+'password'):
-                self.password = os.environ.get(self.username+'password')
+            if os.environ.get(self.username + "password"):
+                self.password = os.environ.get(self.username + "password")
             else:
                 raise PasswordError(self.username)
 
@@ -118,7 +120,10 @@ class BaseClient(object):
         Returns True if login_time not set or seconds since
         login time is greater than 200 mins.
         """
-        if not self._login_time or (datetime.datetime.now()-self._login_time).total_seconds() > 12000:
+        if (
+            not self._login_time
+            or (datetime.datetime.now() - self._login_time).total_seconds() > 12000
+        ):
             return True
 
     @property
@@ -133,7 +138,7 @@ class BaseClient(object):
         if self.cert_files is not None:
             return self.cert_files
 
-        certs = self.certs or '/certs/'
+        certs = self.certs or "/certs/"
         ssl_path = os.path.join(os.pardir, certs)
         try:
             cert_path = os.listdir(ssl_path)
@@ -144,9 +149,9 @@ class BaseClient(object):
         key = None
         for file in cert_path:
             ext = os.path.splitext(file)[-1]
-            if ext in ['.crt', '.cert']:
+            if ext in [".crt", ".cert"]:
                 cert = os.path.join(ssl_path, file)
-            elif ext == '.key':
+            elif ext == ".key":
                 key = os.path.join(ssl_path, file)
         if cert is None or key is None:
             raise CertsError(certs)
@@ -155,27 +160,27 @@ class BaseClient(object):
     @property
     def login_headers(self):
         return {
-            'Accept': 'application/json',
-            'X-Application': self.app_key,
-            'content-type': 'application/x-www-form-urlencoded'
+            "Accept": "application/json",
+            "X-Application": self.app_key,
+            "content-type": "application/x-www-form-urlencoded",
         }
 
     @property
     def keep_alive_headers(self):
         return {
-            'Accept': 'application/json',
-            'X-Application': self.app_key,
-            'X-Authentication': self.session_token,
-            'content-type': 'application/x-www-form-urlencoded'
+            "Accept": "application/json",
+            "X-Application": self.app_key,
+            "X-Authentication": self.session_token,
+            "content-type": "application/x-www-form-urlencoded",
         }
 
     @property
     def request_headers(self):
         return {
-            'X-Application': self.app_key,
-            'X-Authentication': self.session_token,
-            'content-type': 'application/json',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-            'User-Agent': 'betfairlightweight',
+            "X-Application": self.app_key,
+            "X-Authentication": self.session_token,
+            "content-type": "application/json",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive",
+            "User-Agent": "betfairlightweight",
         }

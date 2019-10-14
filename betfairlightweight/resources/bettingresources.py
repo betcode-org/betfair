@@ -20,8 +20,8 @@ class EventTypeResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(EventTypeResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.event_type = EventType(**kwargs.get('eventType'))
+        self.market_count = kwargs.get("marketCount")
+        self.event_type = EventType(**kwargs.get("eventType"))
 
 
 class Competition(object):
@@ -44,9 +44,9 @@ class CompetitionResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(CompetitionResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.competition_region = kwargs.get('competitionRegion')
-        self.competition = Competition(**kwargs.get('competition'))
+        self.market_count = kwargs.get("marketCount")
+        self.competition_region = kwargs.get("competitionRegion")
+        self.competition = Competition(**kwargs.get("competition"))
 
 
 class TimeRange(object):
@@ -56,8 +56,8 @@ class TimeRange(object):
     """
 
     def __init__(self, **kwargs):
-        self._from = BaseResource.strip_datetime(kwargs.get('from'))
-        self.to = BaseResource.strip_datetime(kwargs.get('to'))
+        self._from = BaseResource.strip_datetime(kwargs.get("from"))
+        self.to = BaseResource.strip_datetime(kwargs.get("to"))
 
 
 class TimeRangeResult(BaseResource):
@@ -68,8 +68,8 @@ class TimeRangeResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(TimeRangeResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.time_range = TimeRange(**kwargs.get('timeRange'))
+        self.market_count = kwargs.get("marketCount")
+        self.time_range = TimeRange(**kwargs.get("timeRange"))
 
 
 class Event(object):
@@ -99,8 +99,8 @@ class EventResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(EventResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.event = Event(**kwargs.get('event'))
+        self.market_count = kwargs.get("marketCount")
+        self.event = Event(**kwargs.get("event"))
 
 
 class MarketTypeResult(BaseResource):
@@ -111,8 +111,8 @@ class MarketTypeResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(MarketTypeResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.market_type = kwargs.get('marketType')
+        self.market_count = kwargs.get("marketCount")
+        self.market_type = kwargs.get("marketType")
 
 
 class CountryResult(BaseResource):
@@ -123,8 +123,8 @@ class CountryResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(CountryResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.country_code = kwargs.get('countryCode')
+        self.market_count = kwargs.get("marketCount")
+        self.country_code = kwargs.get("countryCode")
 
 
 class VenueResult(BaseResource):
@@ -135,8 +135,8 @@ class VenueResult(BaseResource):
 
     def __init__(self, **kwargs):
         super(VenueResult, self).__init__(**kwargs)
-        self.market_count = kwargs.get('marketCount')
-        self.venue = kwargs.get('venue')
+        self.market_count = kwargs.get("marketCount")
+        self.venue = kwargs.get("venue")
 
 
 class LineRangeInfo(object):
@@ -146,6 +146,7 @@ class LineRangeInfo(object):
     :type minUnitValue: float
     :type maxUnitValue: float
     """
+
     def __init__(self, marketUnit, interval, minUnitValue, maxUnitValue):
         self.market_unit = marketUnit
         self.interval = interval
@@ -162,7 +163,7 @@ class PriceLadderDescription(object):
         self.type = type
 
     def serialise(self):
-        return {'type': self.type}
+        return {"type": self.type}
 
 
 class MarketCatalogueDescription(object):
@@ -184,10 +185,28 @@ class MarketCatalogueDescription(object):
     :type wallet: unicode
     """
 
-    def __init__(self, bettingType, bspMarket, marketTime, marketType, suspendTime, turnInPlayEnabled,
-                 wallet=None, discountAllowed=None, marketBaseRate=None, persistenceEnabled=None, regulator=None,
-                 rules=None, rulesHasDate=None, eachWayDivisor=None, clarifications=None, priceLadderDescription=None,
-                 keyLineDefinition=None, lineRangeInfo=None, raceType=None):
+    def __init__(
+        self,
+        bettingType,
+        bspMarket,
+        marketTime,
+        marketType,
+        suspendTime,
+        turnInPlayEnabled,
+        wallet=None,
+        discountAllowed=None,
+        marketBaseRate=None,
+        persistenceEnabled=None,
+        regulator=None,
+        rules=None,
+        rulesHasDate=None,
+        eachWayDivisor=None,
+        clarifications=None,
+        priceLadderDescription=None,
+        keyLineDefinition=None,
+        lineRangeInfo=None,
+        raceType=None,
+    ):
         self.betting_type = bettingType
         self.bsp_market = bspMarket
         self.discount_allowed = discountAllowed
@@ -203,7 +222,11 @@ class MarketCatalogueDescription(object):
         self.wallet = wallet
         self.each_way_divisor = eachWayDivisor
         self.clarifications = clarifications
-        self.price_ladder_description = PriceLadderDescription(**priceLadderDescription) if priceLadderDescription else None
+        self.price_ladder_description = (
+            PriceLadderDescription(**priceLadderDescription)
+            if priceLadderDescription
+            else None
+        )
         self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
         self.race_type = raceType
 
@@ -218,17 +241,17 @@ class RunnerCatalogue(object):
     """
 
     def __init__(self, **kwargs):
-        self.selection_id = kwargs.get('selectionId')
-        self.runner_name = kwargs.get('runnerName')
-        self.sort_priority = kwargs.get('sortPriority')
-        self.handicap = kwargs.get('handicap')
-        self.metadata = kwargs.get('metadata')
+        self.selection_id = kwargs.get("selectionId")
+        self.runner_name = kwargs.get("runnerName")
+        self.sort_priority = kwargs.get("sortPriority")
+        self.handicap = kwargs.get("handicap")
+        self.metadata = kwargs.get("metadata")
 
     def __str__(self):
-        return 'RunnerCatalogue: %s' % self.selection_id
+        return "RunnerCatalogue: %s" % self.selection_id
 
     def __repr__(self):
-        return '<RunnerCatalogue>'
+        return "<RunnerCatalogue>"
 
 
 class MarketCatalogue(BaseResource):
@@ -246,16 +269,25 @@ class MarketCatalogue(BaseResource):
 
     def __init__(self, **kwargs):
         super(MarketCatalogue, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.market_name = kwargs.get('marketName')
-        self.total_matched = kwargs.get('totalMatched')
-        self.market_start_time = self.strip_datetime(kwargs.get('marketStartTime'))
-        self.competition = Competition(**kwargs.get('competition')) if kwargs.get('competition') else None
-        self.event = Event(**kwargs.get('event')) if kwargs.get('event') else None
-        self.event_type = EventType(**kwargs.get('eventType')) if kwargs.get('eventType') else None
-        self.description = MarketCatalogueDescription(**kwargs.get('description')) if \
-            kwargs.get('description') else None
-        self.runners = [RunnerCatalogue(**i) for i in kwargs.get('runners', [])]
+        self.market_id = kwargs.get("marketId")
+        self.market_name = kwargs.get("marketName")
+        self.total_matched = kwargs.get("totalMatched")
+        self.market_start_time = self.strip_datetime(kwargs.get("marketStartTime"))
+        self.competition = (
+            Competition(**kwargs.get("competition"))
+            if kwargs.get("competition")
+            else None
+        )
+        self.event = Event(**kwargs.get("event")) if kwargs.get("event") else None
+        self.event_type = (
+            EventType(**kwargs.get("eventType")) if kwargs.get("eventType") else None
+        )
+        self.description = (
+            MarketCatalogueDescription(**kwargs.get("description"))
+            if kwargs.get("description")
+            else None
+        )
+        self.runners = [RunnerCatalogue(**i) for i in kwargs.get("runners", [])]
 
 
 """
@@ -284,16 +316,14 @@ class PriceSize(Slotable):
     :type size: float
     """
 
-    __slots__ = [
-        'price', 'size'
-    ]
+    __slots__ = ["price", "size"]
 
     def __init__(self, price, size):
         self.price = price
         self.size = size
 
     def __str__(self):
-        return 'Price: %s Size: %s' % (self.price, self.size)
+        return "Price: %s Size: %s" % (self.price, self.size)
 
 
 class RunnerBookSP(object):
@@ -305,7 +335,14 @@ class RunnerBookSP(object):
     :type near_price: float
     """
 
-    def __init__(self, nearPrice=None, farPrice=None, backStakeTaken=None, layLiabilityTaken=None, actualSP=None):
+    def __init__(
+        self,
+        nearPrice=None,
+        farPrice=None,
+        backStakeTaken=None,
+        layLiabilityTaken=None,
+        actualSP=None,
+    ):
         self.near_price = nearPrice
         self.far_price = farPrice
         self.actual_sp = actualSP
@@ -345,9 +382,26 @@ class RunnerBookOrder(object):
     :type status: unicode
     """
 
-    def __init__(self, betId, avgPriceMatched, bspLiability, orderType, persistenceType, placedDate, price, side,
-                 sizeCancelled, sizeLapsed, sizeMatched, sizeRemaining, sizeVoided, status, size,
-                 customerStrategyRef=None, customerOrderRef=None):
+    def __init__(
+        self,
+        betId,
+        avgPriceMatched,
+        bspLiability,
+        orderType,
+        persistenceType,
+        placedDate,
+        price,
+        side,
+        sizeCancelled,
+        sizeLapsed,
+        sizeMatched,
+        sizeRemaining,
+        sizeVoided,
+        status,
+        size,
+        customerStrategyRef=None,
+        customerOrderRef=None,
+    ):
         self.bet_id = betId
         self.avg_price_matched = avgPriceMatched
         self.bsp_liability = bspLiability
@@ -401,8 +455,21 @@ class RunnerBook(object):
     :type total_matched: float
     """
 
-    def __init__(self, selectionId, status, handicap, adjustmentFactor=None, lastPriceTraded=None, totalMatched=None,
-                 removalDate=None, sp=None, ex=None, orders=None, matches=None, matchesByStrategy=None):
+    def __init__(
+        self,
+        selectionId,
+        status,
+        handicap,
+        adjustmentFactor=None,
+        lastPriceTraded=None,
+        totalMatched=None,
+        removalDate=None,
+        sp=None,
+        ex=None,
+        orders=None,
+        matches=None,
+        matchesByStrategy=None,
+    ):
         self.selection_id = selectionId
         self.status = status
         self.total_matched = totalMatched
@@ -417,19 +484,18 @@ class RunnerBook(object):
         self.matches_by_strategy = matchesByStrategy
 
     def __str__(self):
-        return 'RunnerBook: %s' % self.selection_id
+        return "RunnerBook: %s" % self.selection_id
 
     def __repr__(self):
-        return '<RunnerBook>'
+        return "<RunnerBook>"
 
 
 class KeyLine(object):
-
     def __init__(self, **kwargs):
-        if 'keyLine' in kwargs:
-            self.key_line = [KeyLineSelection(**i) for i in kwargs['keyLine']]
-        elif 'kl' in kwargs:
-            self.key_line = [KeyLineSelection(**i) for i in kwargs['kl']]
+        if "keyLine" in kwargs:
+            self.key_line = [KeyLineSelection(**i) for i in kwargs["keyLine"]]
+        elif "kl" in kwargs:
+            self.key_line = [KeyLineSelection(**i) for i in kwargs["kl"]]
 
 
 class KeyLineSelection(object):
@@ -439,15 +505,15 @@ class KeyLineSelection(object):
     """
 
     def __init__(self, **kwargs):
-        if 'selectionId' in kwargs:
-            self.selection_id = kwargs['selectionId']
-        elif 'id' in kwargs:
-            self.selection_id = kwargs['id']
+        if "selectionId" in kwargs:
+            self.selection_id = kwargs["selectionId"]
+        elif "id" in kwargs:
+            self.selection_id = kwargs["id"]
 
-        if 'handicap' in kwargs:
-            self.handicap = kwargs['handicap']
-        elif 'hc' in kwargs:
-            self.handicap = kwargs['hc']
+        if "handicap" in kwargs:
+            self.handicap = kwargs["handicap"]
+        elif "hc" in kwargs:
+            self.handicap = kwargs["hc"]
 
 
 class MarketBook(BaseResource):
@@ -473,33 +539,39 @@ class MarketBook(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
-        self.streaming_update = kwargs.pop('streaming_update', None)
-        self.market_definition = kwargs.pop('market_definition', None)
+        self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
+        self.streaming_update = kwargs.pop("streaming_update", None)
+        self.market_definition = kwargs.pop("market_definition", None)
         super(MarketBook, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.bet_delay = kwargs.get('betDelay')
-        self.bsp_reconciled = kwargs.get('bspReconciled')
-        self.complete = kwargs.get('complete')
-        self.cross_matching = kwargs.get('crossMatching')
-        self.inplay = kwargs.get('inplay')
-        self.is_market_data_delayed = kwargs.get('isMarketDataDelayed')
-        self.last_match_time = self.strip_datetime(kwargs.get('lastMatchTime'))
-        self.number_of_active_runners = kwargs.get('numberOfActiveRunners')
-        self.number_of_runners = kwargs.get('numberOfRunners')
-        self.number_of_winners = kwargs.get('numberOfWinners')
-        self.runners_voidable = kwargs.get('runnersVoidable')
-        self.status = kwargs.get('status')
-        self.total_available = kwargs.get('totalAvailable')
-        self.total_matched = kwargs.get('totalMatched')
-        self.version = kwargs.get('version')
-        self.runners = [RunnerBook(**i) for i in kwargs.get('runners')]
-        self.publish_time = self.strip_datetime(kwargs.get('publishTime'))
-        self.publish_time_epoch = kwargs.get('publishTime')
-        self.key_line_description = KeyLine(**kwargs.get('keyLineDescription')
-                                            ) if kwargs.get('keyLineDescription') else None
-        self.price_ladder_definition = PriceLadderDescription(**kwargs.get('priceLadderDefinition')
-                                                              ) if kwargs.get('priceLadderDefinition') else None
+        self.market_id = kwargs.get("marketId")
+        self.bet_delay = kwargs.get("betDelay")
+        self.bsp_reconciled = kwargs.get("bspReconciled")
+        self.complete = kwargs.get("complete")
+        self.cross_matching = kwargs.get("crossMatching")
+        self.inplay = kwargs.get("inplay")
+        self.is_market_data_delayed = kwargs.get("isMarketDataDelayed")
+        self.last_match_time = self.strip_datetime(kwargs.get("lastMatchTime"))
+        self.number_of_active_runners = kwargs.get("numberOfActiveRunners")
+        self.number_of_runners = kwargs.get("numberOfRunners")
+        self.number_of_winners = kwargs.get("numberOfWinners")
+        self.runners_voidable = kwargs.get("runnersVoidable")
+        self.status = kwargs.get("status")
+        self.total_available = kwargs.get("totalAvailable")
+        self.total_matched = kwargs.get("totalMatched")
+        self.version = kwargs.get("version")
+        self.runners = [RunnerBook(**i) for i in kwargs.get("runners")]
+        self.publish_time = self.strip_datetime(kwargs.get("publishTime"))
+        self.publish_time_epoch = kwargs.get("publishTime")
+        self.key_line_description = (
+            KeyLine(**kwargs.get("keyLineDescription"))
+            if kwargs.get("keyLineDescription")
+            else None
+        )
+        self.price_ladder_definition = (
+            PriceLadderDescription(**kwargs.get("priceLadderDefinition"))
+            if kwargs.get("priceLadderDefinition")
+            else None
+        )
 
 
 class CurrentOrder(object):
@@ -527,9 +599,30 @@ class CurrentOrder(object):
     :type status: unicode
     """
 
-    def __init__(self, betId, averagePriceMatched, bspLiability, handicap, marketId, orderType, persistenceType,
-                 placedDate, regulatorCode, selectionId, side, sizeCancelled, sizeLapsed, sizeMatched, sizeRemaining,
-                 sizeVoided, status, priceSize, matchedDate=None, customerStrategyRef=None, customerOrderRef=None):
+    def __init__(
+        self,
+        betId,
+        averagePriceMatched,
+        bspLiability,
+        handicap,
+        marketId,
+        orderType,
+        persistenceType,
+        placedDate,
+        regulatorCode,
+        selectionId,
+        side,
+        sizeCancelled,
+        sizeLapsed,
+        sizeMatched,
+        sizeRemaining,
+        sizeVoided,
+        status,
+        priceSize,
+        matchedDate=None,
+        customerStrategyRef=None,
+        customerOrderRef=None,
+    ):
         self.bet_id = betId
         self.average_price_matched = averagePriceMatched
         self.bsp_liability = bspLiability
@@ -560,12 +653,12 @@ class CurrentOrders(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
-        self.streaming_update = kwargs.pop('streaming_update', None)
-        self.publish_time = kwargs.pop('publish_time', None)
+        self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
+        self.streaming_update = kwargs.pop("streaming_update", None)
+        self.publish_time = kwargs.pop("publish_time", None)
         super(CurrentOrders, self).__init__(**kwargs)
-        self.more_available = kwargs.get('moreAvailable')
-        self.orders = [CurrentOrder(**i) for i in kwargs.get('currentOrders')]
+        self.more_available = kwargs.get("moreAvailable")
+        self.orders = [CurrentOrder(**i) for i in kwargs.get("currentOrders")]
 
 
 class ItemDescription(object):
@@ -580,8 +673,17 @@ class ItemDescription(object):
     :type each_way_divisor: unicode
     """
 
-    def __init__(self, eventDesc=None, eventTypeDesc=None, marketDesc=None, marketStartTime=None, marketType=None,
-                 numberOfWinners=None, runnerDesc=None, eachWayDivisor=None):
+    def __init__(
+        self,
+        eventDesc=None,
+        eventTypeDesc=None,
+        marketDesc=None,
+        marketStartTime=None,
+        marketType=None,
+        numberOfWinners=None,
+        runnerDesc=None,
+        eachWayDivisor=None,
+    ):
         self.event_desc = eventDesc
         self.event_type_desc = eventTypeDesc
         self.market_desc = marketDesc
@@ -627,7 +729,9 @@ class ClearedOrder(object):
         self.event_id = kwargs.get("eventId")
         self.event_type_id = kwargs.get("eventTypeId")
         self.handicap = kwargs.get("handicap")
-        self.last_matched_date = BaseResource.strip_datetime(kwargs.get("lastMatchedDate"))
+        self.last_matched_date = BaseResource.strip_datetime(
+            kwargs.get("lastMatchedDate")
+        )
         self.market_id = kwargs.get("marketId")
         self.order_type = kwargs.get("orderType")
         self.persistence_type = kwargs.get("persistenceType")
@@ -644,8 +748,11 @@ class ClearedOrder(object):
         self.size_cancelled = kwargs.get("sizeCancelled")
         self.customer_strategy_ref = kwargs.get("customerStrategyRef")
         self.customer_order_ref = kwargs.get("customerOrderRef")
-        self.item_description = ItemDescription(**kwargs.get("itemDescription")
-                                                ) if 'itemDescription' in kwargs else None
+        self.item_description = (
+            ItemDescription(**kwargs.get("itemDescription"))
+            if "itemDescription" in kwargs
+            else None
+        )
 
 
 class ClearedOrders(BaseResource):
@@ -656,8 +763,8 @@ class ClearedOrders(BaseResource):
 
     def __init__(self, **kwargs):
         super(ClearedOrders, self).__init__(**kwargs)
-        self.more_available = kwargs.get('moreAvailable')
-        self.orders = [ClearedOrder(**i) for i in kwargs.get('clearedOrders')]
+        self.more_available = kwargs.get("moreAvailable")
+        self.orders = [ClearedOrder(**i) for i in kwargs.get("clearedOrders")]
 
 
 class ProfitAndLosses(object):
@@ -684,9 +791,11 @@ class MarketProfitLoss(BaseResource):
 
     def __init__(self, **kwargs):
         super(MarketProfitLoss, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.commission_applied = kwargs.get('commissionApplied')
-        self.profit_and_losses = [ProfitAndLosses(**i) for i in kwargs.get('profitAndLosses')]
+        self.market_id = kwargs.get("marketId")
+        self.commission_applied = kwargs.get("commissionApplied")
+        self.profit_and_losses = [
+            ProfitAndLosses(**i) for i in kwargs.get("profitAndLosses")
+        ]
 
 
 class LimitOrder(object):
@@ -700,8 +809,16 @@ class LimitOrder(object):
     :type time_in_force: unicode
     """
 
-    def __init__(self, price, size=None, persistenceType=None, timeInForce=None, minFillSize=None, betTargetType=None,
-                 betTargetSize=None):
+    def __init__(
+        self,
+        price,
+        size=None,
+        persistenceType=None,
+        timeInForce=None,
+        minFillSize=None,
+        betTargetType=None,
+        betTargetSize=None,
+    ):
         self.persistence_type = persistenceType
         self.price = price
         self.size = size
@@ -741,16 +858,29 @@ class PlaceOrderInstruction(object):
     :type side: unicode
     """
 
-    def __init__(self, selectionId, side, orderType, limitOrder=None, limitOnCloseOrder=None, marketOnCloseOrder=None,
-                 handicap=None, customerOrderRef=None):
+    def __init__(
+        self,
+        selectionId,
+        side,
+        orderType,
+        limitOrder=None,
+        limitOnCloseOrder=None,
+        marketOnCloseOrder=None,
+        handicap=None,
+        customerOrderRef=None,
+    ):
         self.selection_id = selectionId
         self.side = side
         self.order_type = orderType
         self.handicap = handicap
         self.customer_order_ref = customerOrderRef
         self.limit_order = LimitOrder(**limitOrder) if limitOrder else None
-        self.limit_on_close_order = LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
-        self.market_on_close_order = MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
+        self.limit_on_close_order = (
+            LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
+        )
+        self.market_on_close_order = (
+            MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
+        )
 
 
 class PlaceOrderInstructionReports(object):
@@ -765,8 +895,17 @@ class PlaceOrderInstructionReports(object):
     :type status: unicode
     """
 
-    def __init__(self, status, instruction=None, orderStatus=None, betId=None, averagePriceMatched=None,
-                 sizeMatched=None, placedDate=None, errorCode=None):
+    def __init__(
+        self,
+        status,
+        instruction=None,
+        orderStatus=None,
+        betId=None,
+        averagePriceMatched=None,
+        sizeMatched=None,
+        placedDate=None,
+        errorCode=None,
+    ):
         self.status = status
         self.order_status = orderStatus
         self.bet_id = betId
@@ -788,12 +927,12 @@ class PlaceOrders(BaseResource):
 
     def __init__(self, **kwargs):
         super(PlaceOrders, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.status = kwargs.get('status')
-        self.customer_ref = kwargs.get('customerRef')
-        self.error_code = kwargs.get('errorCode')
+        self.market_id = kwargs.get("marketId")
+        self.status = kwargs.get("status")
+        self.customer_ref = kwargs.get("customerRef")
+        self.error_code = kwargs.get("errorCode")
         self.place_instruction_reports = [
-            PlaceOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+            PlaceOrderInstructionReports(**i) for i in kwargs.get("instructionReports")
         ]
 
 
@@ -817,7 +956,14 @@ class CancelOrderInstructionReports(object):
     :type status: unicode
     """
 
-    def __init__(self, status, instruction, sizeCancelled=None, cancelledDate=None, errorCode=None):
+    def __init__(
+        self,
+        status,
+        instruction,
+        sizeCancelled=None,
+        cancelledDate=None,
+        errorCode=None,
+    ):
         self.status = status
         self.size_cancelled = sizeCancelled
         self.cancelled_date = BaseResource.strip_datetime(cancelledDate)
@@ -836,12 +982,12 @@ class CancelOrders(BaseResource):
 
     def __init__(self, **kwargs):
         super(CancelOrders, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.status = kwargs.get('status')
-        self.customer_ref = kwargs.get('customerRef')
-        self.error_code = kwargs.get('errorCode')
+        self.market_id = kwargs.get("marketId")
+        self.status = kwargs.get("status")
+        self.customer_ref = kwargs.get("customerRef")
+        self.error_code = kwargs.get("errorCode")
         self.cancel_instruction_reports = [
-            CancelOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+            CancelOrderInstructionReports(**i) for i in kwargs.get("instructionReports")
         ]
 
 
@@ -880,12 +1026,12 @@ class UpdateOrders(BaseResource):
 
     def __init__(self, **kwargs):
         super(UpdateOrders, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.status = kwargs.get('status')
-        self.customer_ref = kwargs.get('customerRef')
-        self.error_code = kwargs.get('errorCode')
+        self.market_id = kwargs.get("marketId")
+        self.status = kwargs.get("status")
+        self.customer_ref = kwargs.get("customerRef")
+        self.error_code = kwargs.get("errorCode")
         self.update_instruction_reports = [
-            UpdateOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+            UpdateOrderInstructionReports(**i) for i in kwargs.get("instructionReports")
         ]
 
 
@@ -897,10 +1043,16 @@ class ReplaceOrderInstructionReports(object):
     :type status: unicode
     """
 
-    def __init__(self, status, cancelInstructionReport, placeInstructionReport, errorCode=None):
+    def __init__(
+        self, status, cancelInstructionReport, placeInstructionReport, errorCode=None
+    ):
         self.status = status
-        self.cancel_instruction_reports = CancelOrderInstructionReports(**cancelInstructionReport)
-        self.place_instruction_reports = PlaceOrderInstructionReports(**placeInstructionReport)
+        self.cancel_instruction_reports = CancelOrderInstructionReports(
+            **cancelInstructionReport
+        )
+        self.place_instruction_reports = PlaceOrderInstructionReports(
+            **placeInstructionReport
+        )
         self.error_code = errorCode
 
 
@@ -915,10 +1067,11 @@ class ReplaceOrders(BaseResource):
 
     def __init__(self, **kwargs):
         super(ReplaceOrders, self).__init__(**kwargs)
-        self.market_id = kwargs.get('marketId')
-        self.status = kwargs.get('status')
-        self.customer_ref = kwargs.get('customerRef')
-        self.error_code = kwargs.get('errorCode')
+        self.market_id = kwargs.get("marketId")
+        self.status = kwargs.get("status")
+        self.customer_ref = kwargs.get("customerRef")
+        self.error_code = kwargs.get("errorCode")
         self.replace_instruction_reports = [
-            ReplaceOrderInstructionReports(**i) for i in kwargs.get('instructionReports')
+            ReplaceOrderInstructionReports(**i)
+            for i in kwargs.get("instructionReports")
         ]

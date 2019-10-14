@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - async removed from streaming (force user to handle thread)
+- Black formatting on all files
 
 **Bug Fixes**
 

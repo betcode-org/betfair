@@ -9,7 +9,7 @@ class Account(BaseEndpoint):
     Account operations.
     """
 
-    URI = 'AccountAPING/v1.0/'
+    URI = "AccountAPING/v1.0/"
     connect_timeout = 6.05
 
     def get_account_funds(self, wallet=None, session=None, lightweight=None):
@@ -23,9 +23,11 @@ class Account(BaseEndpoint):
         :rtype: resources.AccountFunds
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'getAccountFunds')
+        method = "%s%s" % (self.URI, "getAccountFunds")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountFunds, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.AccountFunds, elapsed_time, lightweight
+        )
 
     def get_account_details(self, session=None, lightweight=None):
         """
@@ -38,12 +40,23 @@ class Account(BaseEndpoint):
         :rtype: resources.AccountDetails
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'getAccountDetails')
+        method = "%s%s" % (self.URI, "getAccountDetails")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountDetails, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.AccountDetails, elapsed_time, lightweight
+        )
 
-    def get_account_statement(self, locale=None, from_record=None, record_count=None, item_date_range=time_range(),
-                              include_item=None, wallet=None, session=None, lightweight=None):
+    def get_account_statement(
+        self,
+        locale=None,
+        from_record=None,
+        record_count=None,
+        item_date_range=time_range(),
+        include_item=None,
+        wallet=None,
+        session=None,
+        lightweight=None,
+    ):
         """
         Get account statement.
 
@@ -59,9 +72,11 @@ class Account(BaseEndpoint):
         :rtype: resources.AccountStatementResult
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'getAccountStatement')
+        method = "%s%s" % (self.URI, "getAccountStatement")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountStatementResult, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.AccountStatementResult, elapsed_time, lightweight
+        )
 
     def list_currency_rates(self, from_currency=None, session=None, lightweight=None):
         """
@@ -74,9 +89,11 @@ class Account(BaseEndpoint):
         :rtype: list[resources.CurrencyRate]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listCurrencyRates')
+        method = "%s%s" % (self.URI, "listCurrencyRates")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CurrencyRate, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.CurrencyRate, elapsed_time, lightweight
+        )
 
     def transfer_funds(self, session=None):
         """
@@ -87,9 +104,10 @@ class Account(BaseEndpoint):
         :rtype: resources.TransferFunds
         """
         raise DeprecationWarning(
-            'As of 20/09/2016 AUS wallet has been removed, function still available for when '
-            'accounts are added in 2017.')
+            "As of 20/09/2016 AUS wallet has been removed, function still available for when "
+            "accounts are added in 2017."
+        )
 
     @property
     def url(self):
-        return '%s%s' % (self.client.api_uri, 'account/json-rpc/v1')
+        return "%s%s" % (self.client.api_uri, "account/json-rpc/v1")

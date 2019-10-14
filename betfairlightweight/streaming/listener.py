@@ -1,16 +1,12 @@
 import logging
 
-from .stream import (
-    MarketStream,
-    OrderStream,
-)
+from .stream import MarketStream, OrderStream
 from ..compat import json_loads
 
 logger = logging.getLogger(__name__)
 
 
 class BaseListener(object):
-
     def __init__(self, max_latency=0.5):
         self.max_latency = max_latency
 
@@ -21,7 +17,9 @@ class BaseListener(object):
 
     def register_stream(self, unique_id, operation):
         if self.stream is not None:
-            logger.warning('[Listener: %s]: stream already registered, replacing data' % unique_id)
+            logger.warning(
+                "[Listener: %s]: stream already registered, replacing data" % unique_id
+            )
         self.stream_unique_id = unique_id
         self.stream_type = operation
         self.stream = self._add_stream(unique_id, operation)
@@ -57,13 +55,13 @@ class BaseListener(object):
             return self.stream._clk
 
     def _add_stream(self, unique_id, operation):
-        logger.info('Register: %s %s' % (operation, unique_id))
+        logger.info("Register: %s %s" % (operation, unique_id))
 
     def __str__(self):
-        return 'BaseListener'
+        return "BaseListener"
 
     def __repr__(self):
-        return '<BaseListener>'
+        return "<BaseListener>"
 
 
 class StreamListener(BaseListener):
@@ -93,24 +91,26 @@ class StreamListener(BaseListener):
         try:
             data = json_loads(raw_data)
         except ValueError:
-            logger.error('value error: %s' % raw_data)
+            logger.error("value error: %s" % raw_data)
             return
 
-        unique_id = data.get('id')
+        unique_id = data.get("id")
 
         if self._error_handler(data, unique_id):
             return False
 
-        operation = data['op']
-        if operation == 'connection':
+        operation = data["op"]
+        if operation == "connection":
             self._on_connection(data, unique_id)
-        elif operation == 'status':
+        elif operation == "status":
             self._on_status(data, unique_id)
-        elif operation in ['mcm', 'ocm']:
+        elif operation in ["mcm", "ocm"]:
             # historic data does not contain unique_id
-            if self.stream_unique_id not in [unique_id, 'HISTORICAL']:
-                logger.warning('Unwanted data received from uniqueId: %s, expecting: %s' %
-                               (unique_id, self.stream_unique_id))
+            if self.stream_unique_id not in [unique_id, "HISTORICAL"]:
+                logger.warning(
+                    "Unwanted data received from uniqueId: %s, expecting: %s"
+                    % (unique_id, self.stream_unique_id)
+                )
                 return
             self._on_change_message(data, unique_id)
 
@@ -121,8 +121,10 @@ class StreamListener(BaseListener):
         """
         if unique_id is None:
             unique_id = self.stream_unique_id
-        self.connection_id = data.get('connectionId')
-        logger.info('[Connect: %s]: connection_id: %s' % (unique_id, self.connection_id))
+        self.connection_id = data.get("connectionId")
+        logger.info(
+            "[Connect: %s]: connection_id: %s" % (unique_id, self.connection_id)
+        )
 
     @staticmethod
     def _on_status(data, unique_id):
@@ -130,27 +132,27 @@ class StreamListener(BaseListener):
 
         :param data: Received data
         """
-        status_code = data.get('statusCode')
-        logger.info('[Subscription: %s]: %s' % (unique_id, status_code))
+        status_code = data.get("statusCode")
+        logger.info("[Subscription: %s]: %s" % (unique_id, status_code))
 
     def _on_change_message(self, data, unique_id):
-        change_type = data.get('ct', 'UPDATE')
+        change_type = data.get("ct", "UPDATE")
 
-        logger.debug('[Subscription: %s]: %s: %s' % (unique_id, change_type, data))
+        logger.debug("[Subscription: %s]: %s: %s" % (unique_id, change_type, data))
 
-        if change_type == 'SUB_IMAGE':
+        if change_type == "SUB_IMAGE":
             self.stream.on_subscribe(data)
-        elif change_type == 'RESUB_DELTA':
+        elif change_type == "RESUB_DELTA":
             self.stream.on_resubscribe(data)
-        elif change_type == 'HEARTBEAT':
+        elif change_type == "HEARTBEAT":
             self.stream.on_heartbeat(data)
-        elif change_type == 'UPDATE':
+        elif change_type == "UPDATE":
             self.stream.on_update(data)
 
     def _add_stream(self, unique_id, stream_type):
-        if stream_type == 'marketSubscription':
+        if stream_type == "marketSubscription":
             return MarketStream(self)
-        elif stream_type == 'orderSubscription':
+        elif stream_type == "orderSubscription":
             return OrderStream(self)
 
     @staticmethod
@@ -161,17 +163,22 @@ class StreamListener(BaseListener):
         :param unique_id: Unique id
         :return: True if error present
         """
-        if data.get('statusCode') == 'FAILURE':
-            logger.error('[Subscription: %s] %s: %s' % (unique_id, data.get('errorCode'), data.get('errorMessage')))
-            if data.get('connectionClosed'):
+        if data.get("statusCode") == "FAILURE":
+            logger.error(
+                "[Subscription: %s] %s: %s"
+                % (unique_id, data.get("errorCode"), data.get("errorMessage"))
+            )
+            if data.get("connectionClosed"):
                 return True
-        if data.get('status'):
+        if data.get("status"):
             # Clients shouldn't disconnect if status 503 is returned; when the stream
             # recovers updates will be sent containing the latest data
-            logger.warning('[Subscription: %s] status: %s' % (unique_id, data['status']))
+            logger.warning(
+                "[Subscription: %s] status: %s" % (unique_id, data["status"])
+            )
 
     def __str__(self):
-        return 'StreamListener'
+        return "StreamListener"
 
     def __repr__(self):
-        return '<StreamListener>'
+        return "<StreamListener>"

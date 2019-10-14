@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import unittest
 
 from betfairlightweight import resources
@@ -7,9 +5,8 @@ from tests.unit.tools import create_mock_json
 
 
 class ScoreResourcesTest(unittest.TestCase):
-
     def test_racedetails(self):
-        mock_response = create_mock_json('tests/resources/racedetails.json')
+        mock_response = create_mock_json("tests/resources/racedetails.json")
         resource = resources.RaceDetails(**mock_response.json())
 
         assert isinstance(resource, resources.RaceDetails)

@@ -1,18 +1,16 @@
 import unittest
-
+from unittest import mock
 from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.navigation import Navigation
 from betfairlightweight.exceptions import APIError, InvalidResponse
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 
 class NavigationInit(unittest.TestCase):
-
     def test_base_endpoint_init(self):
-        client = APIClient('username', 'password', 'app_key')
+        client = APIClient("username", "password", "app_key")
         navigation = Navigation(client)
         assert navigation.connect_timeout == 3.05
         assert navigation.read_timeout == 16
@@ -21,32 +19,33 @@ class NavigationInit(unittest.TestCase):
 
 
 class NavigationTest(unittest.TestCase):
-
     def setUp(self):
-        client = APIClient('username', 'password', 'app_key', 'UK')
+        client = APIClient("username", "password", "app_key", "UK")
         self.navigation = Navigation(client)
 
-    @mock.patch('betfairlightweight.endpoints.navigation.Navigation.request')
+    @mock.patch("betfairlightweight.endpoints.navigation.Navigation.request")
     def test_list_navigation(self, mock_response):
         mock_response.return_value = None
         response = self.navigation.list_navigation()
         assert response == mock_response()
 
-    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
-    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
-    @mock.patch('betfairlightweight.baseclient.requests.get')
+    @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
+    @mock.patch("betfairlightweight.baseclient.BaseClient.request_headers")
+    @mock.patch("betfairlightweight.baseclient.requests.get")
     def test_request(self, mock_get, mock_request_headers, mock_cert):
-        mock_response = create_mock_json('tests/resources/login_success.json')
+        mock_response = create_mock_json("tests/resources/login_success.json")
         mock_get.return_value = mock_response
 
-        url = 'https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json'
+        url = "https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json"
         self.navigation.request()
 
-        mock_get.assert_called_once_with(url, headers=mock_request_headers, timeout=(3.05, 16))
+        mock_get.assert_called_once_with(
+            url, headers=mock_request_headers, timeout=(3.05, 16)
+        )
 
-    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
-    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
-    @mock.patch('betfairlightweight.baseclient.requests.get')
+    @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
+    @mock.patch("betfairlightweight.baseclient.BaseClient.request_headers")
+    @mock.patch("betfairlightweight.baseclient.requests.get")
     def test_request_error(self, mock_get, mock_request_headers, mock_cert):
         mock_get.side_effect = ConnectionError()
 
@@ -58,11 +57,15 @@ class NavigationTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.navigation.request()
 
-    @mock.patch('betfairlightweight.endpoints.navigation.json_loads', side_effect=ValueError)
-    @mock.patch('betfairlightweight.baseclient.BaseClient.cert')
-    @mock.patch('betfairlightweight.baseclient.BaseClient.request_headers')
-    @mock.patch('betfairlightweight.baseclient.requests.get')
-    def test_request_json_error(self, mock_get, mock_request_headers, mock_cert, mock_json_loads):
+    @mock.patch(
+        "betfairlightweight.endpoints.navigation.json_loads", side_effect=ValueError
+    )
+    @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
+    @mock.patch("betfairlightweight.baseclient.BaseClient.request_headers")
+    @mock.patch("betfairlightweight.baseclient.requests.get")
+    def test_request_json_error(
+        self, mock_get, mock_request_headers, mock_cert, mock_json_loads
+    ):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_get.return_value = mock_response

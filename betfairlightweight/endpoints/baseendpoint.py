@@ -1,10 +1,7 @@
 import datetime
 from requests import ConnectionError
 
-from ..exceptions import (
-    APIError,
-    InvalidResponse,
-)
+from ..exceptions import APIError, InvalidResponse
 from ..utils import check_status_code
 from ..compat import json, json_loads
 
@@ -35,13 +32,13 @@ class BaseEndpoint(object):
                 self.url,
                 data=request,
                 headers=self.client.request_headers,
-                timeout=(self.connect_timeout, self.read_timeout)
+                timeout=(self.connect_timeout, self.read_timeout),
             )
         except ConnectionError:
-            raise APIError(None, method, params, 'ConnectionError')
+            raise APIError(None, method, params, "ConnectionError")
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow()-date_time_sent).total_seconds()
+        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
 
         check_status_code(response)
         try:
@@ -61,12 +58,7 @@ class BaseEndpoint(object):
         :return: Json payload.
         """
         return json.dumps(
-            {
-                'jsonrpc': '2.0',
-                'method': method,
-                'params': params,
-                'id': 1
-            }
+            {"jsonrpc": "2.0", "method": method, "params": params, "id": 1}
         )
 
     def _error_handler(self, response, method=None, params=None):
@@ -76,9 +68,9 @@ class BaseEndpoint(object):
         :param method: Betfair api-ng method to be used.
         :return: None if no error or _error raised.
         """
-        if response.get('result'):
+        if response.get("result"):
             return
-        elif response.get('error'):
+        elif response.get("error"):
             raise self._error(response, method, params)
 
     def process_response(self, response_json, resource, elapsed_time, lightweight):
@@ -91,7 +83,7 @@ class BaseEndpoint(object):
         if isinstance(response_json, list):
             result = response_json
         else:
-            result = response_json.get('result', response_json)
+            result = response_json.get("result", response_json)
 
         if lightweight:
             return result
@@ -110,4 +102,4 @@ class BaseEndpoint(object):
 
     @property
     def url(self):
-        return '%s%s' % (self.client.api_uri, 'betting/json-rpc/v1')
+        return "%s%s" % (self.client.api_uri, "betting/json-rpc/v1")

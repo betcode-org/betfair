@@ -3,11 +3,7 @@ from requests import ConnectionError
 
 from .baseendpoint import BaseEndpoint
 from ..resources import LogoutResource
-from ..exceptions import (
-    LogoutError,
-    APIError,
-    InvalidResponse,
-)
+from ..exceptions import LogoutError, APIError, InvalidResponse
 from ..utils import check_status_code
 from ..compat import json_loads
 
@@ -30,7 +26,9 @@ class Logout(BaseEndpoint):
         """
         (response, elapsed_time) = self.request(session=session)
         self.client.client_logout()
-        return self.process_response(response, LogoutResource, elapsed_time, lightweight)
+        return self.process_response(
+            response, LogoutResource, elapsed_time, lightweight
+        )
 
     def request(self, payload=None, params=None, session=None):
         session = session or self.client.session
@@ -38,7 +36,7 @@ class Logout(BaseEndpoint):
         try:
             response = session.post(self.url, headers=self.client.keep_alive_headers)
         except ConnectionError:
-            raise APIError(None, exception='ConnectionError')
+            raise APIError(None, exception="ConnectionError")
         except Exception as e:
             raise APIError(None, exception=e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
@@ -54,9 +52,9 @@ class Logout(BaseEndpoint):
         return response_data, elapsed_time
 
     def _error_handler(self, response, method=None, params=None):
-        if response.get('status') != 'SUCCESS':
+        if response.get("status") != "SUCCESS":
             raise self._error(response)
 
     @property
     def url(self):
-        return '%s%s' % (self.client.identity_uri, 'logout')
+        return "%s%s" % (self.client.identity_uri, "logout")

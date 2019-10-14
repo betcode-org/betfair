@@ -8,9 +8,11 @@ class Scores(BaseEndpoint):
     Scores operations.
     """
 
-    URI = 'ScoresAPING/v1.0/'
+    URI = "ScoresAPING/v1.0/"
 
-    def list_race_details(self, meeting_ids=None, race_ids=None, session=None, lightweight=None):
+    def list_race_details(
+        self, meeting_ids=None, race_ids=None, session=None, lightweight=None
+    ):
         """
         Search for races to get their details.
 
@@ -25,14 +27,22 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.RaceDetail]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listRaceDetails')
+        method = "%s%s" % (self.URI, "listRaceDetails")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.RaceDetails, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.RaceDetails, elapsed_time, lightweight
+        )
 
     # Following requires app key to be authorised
 
-    def list_available_events(self, event_ids=None, event_type_ids=None, event_status=None, session=None,
-                              lightweight=None):
+    def list_available_events(
+        self,
+        event_ids=None,
+        event_type_ids=None,
+        event_status=None,
+        session=None,
+        lightweight=None,
+    ):
         """
         Search for events that have live score data available.
 
@@ -45,9 +55,11 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.AvailableEvent]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listAvailableEvents')
+        method = "%s%s" % (self.URI, "listAvailableEvents")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AvailableEvent, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.AvailableEvent, elapsed_time, lightweight
+        )
 
     def list_scores(self, update_keys, session=None, lightweight=None):
         """
@@ -61,9 +73,11 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.Score]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listScores')
+        method = "%s%s" % (self.URI, "listScores")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.Score, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.Score, elapsed_time, lightweight
+        )
 
     def list_incidents(self, update_keys, session=None, lightweight=None):
         """
@@ -77,10 +91,12 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.Incidents]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listIncidents')
+        method = "%s%s" % (self.URI, "listIncidents")
         (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.Incidents, elapsed_time, lightweight)
+        return self.process_response(
+            response, resources.Incidents, elapsed_time, lightweight
+        )
 
     @property
     def url(self):
-        return '%s%s' % (self.client.api_uri, 'scores/json-rpc/v1')
+        return "%s%s" % (self.client.api_uri, "scores/json-rpc/v1")
