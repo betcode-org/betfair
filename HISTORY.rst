@@ -12,11 +12,11 @@ Release History
 
 **Bug Fixes**
 
--
+- #217 correct usage of ujson (refactor)
 
 **Dependencies**
 
--
+- ciso8601 upgraded from 2.0.1 to 2.1.1
 
 1.10.3 (2019-09-30)
 +++++++++++++++++++
