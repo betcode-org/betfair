@@ -1,4 +1,3 @@
-import threading
 import socket
 import ssl
 import datetime
@@ -40,21 +39,14 @@ class BetfairStream(object):
         self._socket = None
         self._running = False
 
-    def start(self, async_=False):
-        """Starts read loop, new thread if async and
-        connects/authenticates if not already running.
-
-        :param async_: If True new thread is started
+    def start(self):
+        """Starts read loop, connects/authenticates
+        if not already running.
         """
         if not self._running:
             self._connect()
             self.authenticate()
-        if async_:
-            t = threading.Thread(name=self.description, target=self._read_loop)
-            t.daemon = False
-            t.start()
-        else:
-            self._read_loop()
+        self._read_loop()
 
     def stop(self):
         """Stops read loop and closes socket if it has been created.
@@ -270,14 +262,9 @@ class HistoricalStream(object):
         self.listener = listener
         self._running = False
 
-    def start(self, async_=False):
+    def start(self):
         self._running = True
-        if async_:
-            t = threading.Thread(name='HistoricalStream', target=self._read_loop)
-            t.daemon = False
-            t.start()
-        else:
-            self._read_loop()
+        self._read_loop()
 
     def stop(self):
         self._running = False

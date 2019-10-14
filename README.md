@@ -103,7 +103,7 @@ In development so breaking changes likely.
         market_data_filter=market_data_filter,
     )
 
->>> betfair_socket.start(async_=False)
+>>> betfair_socket.start()
 ```
 
 # historic data
@@ -131,7 +131,7 @@ In development so breaking changes likely.
         directory='horse-racing-pro-sample',
     )
 
->>> stream.start(async_=False)
+>>> stream.start()
 ```
 
 or use the  stream generator:
