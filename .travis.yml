@@ -2,34 +2,32 @@ language: python
 
 sudo: false
 
-#python:
-#  - "3.5"
-#  - "3.6"
-## Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
-#matrix:
-#  include:
-#    - python: "3.7"
-#      dist: xenial
-
 install:
   - travis_retry python setup.py install
   - pip install coveralls
 
 jobs:
   include:
-    - name: "Tests python 3.5"
+    - name: "Tests: python 3.5"
       python: 3.5
       script:
         - coverage run --source=betfairlightweight setup.py test
-    - name: "Tests python 3.6"
+    - name: "Tests: python 3.6"
       python: 3.6
       script:
         - coverage run --source=betfairlightweight setup.py test
-    - name: "Tests python 3.7"
+    - name: "Tests: python 3.7"
       python: 3.7
       dist: xenial
       script:
         - coverage run --source=betfairlightweight setup.py test
+    - name: "Lint: python 3.7"
+      python: 3.7
+      dist: xenial
+      install:
+        - pip install black
+      script:
+        - black --check --diff .
 
 after_success:
   coveralls
