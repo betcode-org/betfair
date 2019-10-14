@@ -1,7 +1,6 @@
 import os
 import requests
 import datetime
-from requests import ConnectionError
 
 from ..exceptions import APIError, InvalidResponse
 from ..compat import json, json_loads
@@ -10,7 +9,7 @@ from ..utils import clean_locals, check_status_code
 
 
 class Historic(BaseEndpoint):
-    def get_my_data(self, session=None):
+    def get_my_data(self, session: requests.Session = None) -> dict:
         """
         Returns a list of data descriptions for data which has been purchased by the signed in user.
 
@@ -25,21 +24,21 @@ class Historic(BaseEndpoint):
 
     def get_collection_options(
         self,
-        sport,
-        plan,
-        from_day,
-        from_month,
-        from_year,
-        to_day,
-        to_month,
-        to_year,
-        event_id=None,
-        event_name=None,
-        market_types_collection=None,
-        countries_collection=None,
-        file_type_collection=None,
-        session=None,
-    ):
+        sport: str,
+        plan: str,
+        from_day: str,
+        from_month: str,
+        from_year: str,
+        to_day: str,
+        to_month: str,
+        to_year: str,
+        event_id: str = None,
+        event_name: str = None,
+        market_types_collection: str = None,
+        countries_collection: str = None,
+        file_type_collection: str = None,
+        session: requests.Session = None,
+    ) -> dict:
         """
         Returns a dictionary of file counts by market_types, countries and file_types.
 
@@ -67,21 +66,21 @@ class Historic(BaseEndpoint):
 
     def get_data_size(
         self,
-        sport,
-        plan,
-        from_day,
-        from_month,
-        from_year,
-        to_day,
-        to_month,
-        to_year,
-        event_id=None,
-        event_name=None,
-        market_types_collection=None,
-        countries_collection=None,
-        file_type_collection=None,
-        session=None,
-    ):
+        sport: str,
+        plan: str,
+        from_day: str,
+        from_month: str,
+        from_year: str,
+        to_day: str,
+        to_month: str,
+        to_year: str,
+        event_id: str = None,
+        event_name: str = None,
+        market_types_collection: str = None,
+        countries_collection: str = None,
+        file_type_collection: str = None,
+        session: requests.Session = None,
+    ) -> dict:
         """
         Returns a dictionary of file count and combines size files.
 
@@ -109,21 +108,21 @@ class Historic(BaseEndpoint):
 
     def get_file_list(
         self,
-        sport,
-        plan,
-        from_day,
-        from_month,
-        from_year,
-        to_day,
-        to_month,
-        to_year,
-        event_id=None,
-        event_name=None,
-        market_types_collection=None,
-        countries_collection=None,
-        file_type_collection=None,
-        session=None,
-    ):
+        sport: str,
+        plan: str,
+        from_day: str,
+        from_month: str,
+        from_year: str,
+        to_day: str,
+        to_month: str,
+        to_year: str,
+        event_id: str = None,
+        event_name: str = None,
+        market_types_collection: str = None,
+        countries_collection: str = None,
+        file_type_collection: str = None,
+        session: requests.Session = None,
+    ) -> dict:
         """
         Returns a list of files which can then be used to download.
 
@@ -149,7 +148,7 @@ class Historic(BaseEndpoint):
         (response, elapsed_time) = self.request(method, params, session)
         return response
 
-    def download_file(self, file_path, store_directory=None):
+    def download_file(self, file_path: str, store_directory: str = None) -> str:
         """
         Download a file from betfair historical and store in given directory or current directory.
         
@@ -172,7 +171,9 @@ class Historic(BaseEndpoint):
                     f.write(chunk)
         return local_filename
 
-    def request(self, method, params, session):
+    def request(
+        self, method: str = None, params: dict = None, session: requests.Session = None
+    ) -> (dict, float):
         """
         :param str method: Betfair api-ng method to be used.
         :param dict params: Params to be used in request
@@ -187,8 +188,8 @@ class Historic(BaseEndpoint):
                 headers=self.headers,
                 timeout=(self.connect_timeout, self.read_timeout),
             )
-        except ConnectionError:
-            raise APIError(None, method, params, "ConnectionError")
+        except requests.ConnectionError as e:
+            raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
@@ -202,9 +203,9 @@ class Historic(BaseEndpoint):
         return response_data, elapsed_time
 
     @property
-    def headers(self):
+    def headers(self) -> dict:
         return {"ssoid": self.client.session_token, "Content-Type": "application/json"}
 
     @property
-    def url(self):
+    def url(self) -> str:
         return "https://historicdata.betfair.com/api/"

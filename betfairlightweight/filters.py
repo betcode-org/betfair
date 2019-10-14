@@ -33,7 +33,9 @@ def streaming_market_filter(
     return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def streaming_market_data_filter(fields: list = None, ladder_levels: int = None) -> dict:
+def streaming_market_data_filter(
+    fields: list = None, ladder_levels: int = None
+) -> dict:
     """
     :param list fields: EX_BEST_OFFERS_DISP, EX_BEST_OFFERS, EX_ALL_OFFERS, EX_TRADED,
     EX_TRADED_VOL, EX_LTP, EX_MARKET_DEF, SP_TRADED, SP_PROJECTED
