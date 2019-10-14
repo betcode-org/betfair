@@ -1,10 +1,10 @@
-import json  # ujson causes issues
 import logging
 
 from .stream import (
     MarketStream,
     OrderStream,
 )
+from ..compat import json_loads
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ class StreamListener(BaseListener):
         :return: Return False to stop stream and close connection
         """
         try:
-            data = json.loads(raw_data)
+            data = json_loads(raw_data)
         except ValueError:
             logger.error('value error: %s' % raw_data)
             return

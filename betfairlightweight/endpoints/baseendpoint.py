@@ -1,4 +1,3 @@
-import requests
 import datetime
 from requests import ConnectionError
 
@@ -7,11 +6,7 @@ from ..exceptions import (
     InvalidResponse,
 )
 from ..utils import check_status_code
-from ..compat import json
-
-# monkeypatching requests
-# https://github.com/kennethreitz/requests/issues/1595
-requests.models.json = json
+from ..compat import json, json_loads
 
 
 class BaseEndpoint(object):
@@ -50,7 +45,7 @@ class BaseEndpoint(object):
 
         check_status_code(response)
         try:
-            response_data = response.json()
+            response_data = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 

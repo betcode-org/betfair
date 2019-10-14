@@ -9,6 +9,7 @@ from ..exceptions import (
     InvalidResponse,
 )
 from ..utils import check_status_code
+from ..compat import json_loads
 
 
 class KeepAlive(BaseEndpoint):
@@ -44,7 +45,7 @@ class KeepAlive(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = response.json()
+            response_data = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 

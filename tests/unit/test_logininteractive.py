@@ -50,12 +50,12 @@ class LoginInteractiveTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.login.request()
 
+    @mock.patch('betfairlightweight.endpoints.logininteractive.json_loads', side_effect=ValueError)
     @mock.patch('betfairlightweight.baseclient.BaseClient.login_headers')
     @mock.patch('betfairlightweight.baseclient.requests.post')
-    def test_request_json_error(self, mock_post, mock_login_headers):
+    def test_request_json_error(self, mock_post, mock_login_headers, mock_json_loads):
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.json.side_effect = ValueError()
         mock_post.return_value = mock_response
 
         with self.assertRaises(InvalidResponse):

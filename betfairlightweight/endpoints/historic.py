@@ -7,14 +7,9 @@ from ..exceptions import (
     APIError,
     InvalidResponse,
 )
-from ..compat import json
-# from .. import resources
+from ..compat import json, json_loads
 from .baseendpoint import BaseEndpoint
 from ..utils import clean_locals, check_status_code
-
-# monkeypatching requests
-# https://github.com/kennethreitz/requests/issues/1595
-requests.models.json = json
 
 
 class Historic(BaseEndpoint):
@@ -162,7 +157,7 @@ class Historic(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = response.json()
+            response_data = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 

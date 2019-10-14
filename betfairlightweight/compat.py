@@ -1,7 +1,6 @@
 import sys
 import datetime
 
-
 _ver = sys.version_info
 
 #: Python 2.x?
@@ -31,8 +30,14 @@ elif is_py3:
 
 try:
     import ujson as json
+
+    def json_loads(s, **kwargs):
+        return json.loads(s, precise_float=True, **kwargs)
 except ImportError:
     import json
+
+    def json_loads(s, **kwargs):
+        return json.loads(s, **kwargs)
 
 try:
     import ciso8601
