@@ -139,8 +139,6 @@ class BaseClient(object):
             cert_path = os.listdir(ssl_path)
         except FileNotFoundError:
             raise CertsError(certs)
-        except OSError:   # Python 2 compatability
-            raise CertsError(certs)
 
         cert = None
         key = None
