@@ -51,18 +51,14 @@ class BetfairStreamTest(unittest.TestCase):
 
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream.authenticate')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._connect')
-    @mock.patch('betfairlightweight.streaming.betfairstream.threading')
     @mock.patch('betfairlightweight.streaming.betfairstream.BetfairStream._read_loop')
-    def test_start(self, mock_read_loop, mock_threading, mock_connect, mock_authenticate):
+    def test_start(self, mock_read_loop, mock_connect, mock_authenticate):
         self.betfair_stream._running = True
         self.betfair_stream.start()
         mock_read_loop.assert_called_with()
 
-        self.betfair_stream.start(async_=True)
-        mock_threading.Thread.assert_called_with(name=self.description, target=mock_read_loop)
-
         self.betfair_stream._running = False
-        self.betfair_stream.start(async_=False)
+        self.betfair_stream.start()
         mock_connect.assert_called_with()
         mock_authenticate.assert_called_with()
 
@@ -295,13 +291,6 @@ class HistoricalStreamTest(unittest.TestCase):
     def test_start(self, mock_read_loop):
         self.stream.start()
         mock_read_loop.assert_called_with()
-        assert self.stream._running is True
-
-    @mock.patch('betfairlightweight.streaming.betfairstream.HistoricalStream._read_loop')
-    @mock.patch('betfairlightweight.streaming.betfairstream.threading')
-    def test_start_thread(self, mock_threading, mock_read_loop):
-        self.stream.start(async_=True)
-        mock_threading.Thread.assert_called_with(name='HistoricalStream', target=mock_read_loop)
         assert self.stream._running is True
 
     def test_stop(self):

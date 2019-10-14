@@ -8,7 +8,7 @@ Release History
 
 **Improvements**
 
--
+- async removed from streaming (force user to handle thread)
 
 **Bug Fixes**
 

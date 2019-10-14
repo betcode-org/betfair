@@ -12,7 +12,7 @@ class HistoricalStreamTest(unittest.TestCase):
             directory='tests/resources/historicaldata/BASIC-1.132153978',
             listener=StreamListener()
         )
-        stream.start(async_=False)
+        stream.start()
 
         assert stream.listener.stream_type == 'marketSubscription'
         assert stream.listener.stream_unique_id == 'HISTORICAL'

@@ -1,6 +1,7 @@
 import os
 import logging
 import queue
+import threading
 
 import betfairlightweight
 from betfairlightweight.filters import (
@@ -48,8 +49,9 @@ streaming_unique_id = stream.subscribe_to_markets(
     conflate_ms=1000,  # send update every 1000ms
 )
 
-# start stream
-stream.start(async_=True)
+# start stream in a new thread (in production would need err handling)
+t = threading.Thread(target=stream.start, daemon=True)
+t.start()
 
 """
 Data can also be accessed by using the snap function in the listener, e.g:
