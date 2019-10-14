@@ -34,8 +34,8 @@ class BaseEndpoint(object):
                 headers=self.client.request_headers,
                 timeout=(self.connect_timeout, self.read_timeout),
             )
-        except ConnectionError:
-            raise APIError(None, method, params, "ConnectionError")
+        except ConnectionError as e:
+            raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
