@@ -8,7 +8,6 @@ from .exceptions import (
     AppKeyError,
     CertsError,
 )
-from .compat import FileNotFoundError
 
 
 class BaseClient(object):
