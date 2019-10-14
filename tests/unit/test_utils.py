@@ -1,5 +1,5 @@
 import unittest
-from mock import Mock
+from unittest import mock
 
 from betfairlightweight.utils import check_status_code, clean_locals, to_camel_case
 from betfairlightweight.exceptions import StatusCodeError
@@ -7,13 +7,13 @@ from betfairlightweight.exceptions import StatusCodeError
 
 class UtilsTest(unittest.TestCase):
     def test_check_status_code_ok(self):
-        resp = Mock()
+        resp = mock.Mock()
         resp.status_code = 200
 
         assert check_status_code(resp) is None
 
     def test_check_status_code_fail(self):
-        resp = Mock()
+        resp = mock.Mock()
         resp.status_code = 400
 
         with self.assertRaises(StatusCodeError):

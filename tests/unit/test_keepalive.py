@@ -1,12 +1,11 @@
 import unittest
-
+from unittest import mock
 from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.keepalive import KeepAlive, APIError
 from betfairlightweight.exceptions import KeepAliveError, InvalidResponse
 from betfairlightweight.resources.authresources import KeepAliveResource
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 

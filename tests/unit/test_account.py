@@ -1,5 +1,5 @@
 import unittest
-from tests import mock
+from unittest import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.account import Account

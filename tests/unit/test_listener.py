@@ -1,9 +1,7 @@
-from __future__ import print_function
-
 import unittest
+from unittest import mock
 
 from betfairlightweight.streaming.listener import BaseListener, StreamListener
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 

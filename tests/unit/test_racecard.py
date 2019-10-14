@@ -1,5 +1,5 @@
 import unittest
-from tests import mock
+from unittest import mock
 from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient

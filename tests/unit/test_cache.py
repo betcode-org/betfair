@@ -1,5 +1,5 @@
-import datetime
 import unittest
+from unittest import mock
 
 from betfairlightweight.resources.baseresource import BaseResource
 from betfairlightweight.streaming.cache import (
@@ -11,7 +11,6 @@ from betfairlightweight.streaming.cache import (
     Available,
 )
 from betfairlightweight.exceptions import CacheError
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 

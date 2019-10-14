@@ -1,12 +1,11 @@
 import unittest
-
+from unittest import mock
 from requests.exceptions import ConnectionError
 
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.logout import Logout
 from betfairlightweight.exceptions import LogoutError, APIError, InvalidResponse
 from betfairlightweight.resources import LogoutResource
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 

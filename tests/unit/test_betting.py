@@ -1,10 +1,10 @@
 import unittest
+from unittest import mock
 
 from betfairlightweight import APIClient
 from betfairlightweight import resources
 from betfairlightweight.endpoints.betting import Betting
 from betfairlightweight.exceptions import APIError
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 

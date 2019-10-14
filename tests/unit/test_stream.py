@@ -1,7 +1,7 @@
 import unittest
+from unittest import mock
 
 from betfairlightweight.streaming.stream import BaseStream, MarketStream, OrderStream
-from tests import mock
 from tests.unit.tools import create_mock_json
 
 
