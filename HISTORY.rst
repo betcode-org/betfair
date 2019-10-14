@@ -10,6 +10,7 @@ Release History
 
 - async removed from streaming (force user to handle thread)
 - Black formatting on all files
+- python 'Typing' added
 
 **Bug Fixes**
 

@@ -106,21 +106,28 @@ class BaseClientTest(unittest.TestCase):
         assert self.client._login_time is not None
 
     def test_get_password(self):
+        self.client.password = "test"
+        assert self.client.get_password() == "test"
+
+    def test_get_password_error(self):
         self.client.password = None
         with self.assertRaises(PasswordError):
             self.client.get_password()
 
     def test_get_app_key(self):
+        self.client.app_key = "app_key"
+        assert self.client.get_app_key() == "app_key"
+
+    def test_get_app_key_error(self):
         self.client.app_key = None
         with self.assertRaises(AppKeyError):
             self.client.get_app_key()
-        self.client.app_key = "app_key"
 
     @mock.patch("betfairlightweight.baseclient.os.environ")
     def test_get_app_key_mocked(self, mocked_environ):
         self.client.app_key = None
         mocked_environ.__get__ = mock.Mock(return_value="app_key")
-        assert self.client.get_app_key() is None
+        assert self.client.get_app_key() == mocked_environ.get()
 
     def test_client_headers(self):
         assert self.client.login_headers == {
@@ -146,7 +153,7 @@ class BaseClientTest(unittest.TestCase):
     def test_client_logged_in_session(self):
         self.client.set_session_token("session_token")
 
-        assert self.client.session_expired is None
+        assert self.client.session_expired is False
         self.client._login_time = datetime.datetime(2003, 8, 4, 12, 30, 45)
         assert self.client.session_expired is True
 

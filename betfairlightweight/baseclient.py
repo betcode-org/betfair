@@ -6,7 +6,7 @@ import os
 from .exceptions import PasswordError, AppKeyError, CertsError
 
 
-class BaseClient(object):
+class BaseClient:
     """
     Base API client
     """
@@ -38,13 +38,13 @@ class BaseClient(object):
 
     def __init__(
         self,
-        username,
-        password=None,
-        app_key=None,
-        certs=None,
-        locale=None,
-        cert_files=None,
-        lightweight=False,
+        username: str,
+        password: str = None,
+        app_key: str = None,
+        certs: str = None,
+        locale: str = None,
+        cert_files: list = None,
+        lightweight: bool = False,
     ):
         """
         Creates base client for API operations.
@@ -76,7 +76,7 @@ class BaseClient(object):
         self.get_password()
         self.get_app_key()
 
-    def set_session_token(self, session_token):
+    def set_session_token(self, session_token: str) -> None:
         """
         Sets session token and new login time.
 
@@ -85,7 +85,7 @@ class BaseClient(object):
         self.session_token = session_token
         self._login_time = datetime.datetime.now()
 
-    def get_password(self):
+    def get_password(self) -> str:
         """
         If password is not provided will look in environment variables
         for username+'password'.
@@ -95,8 +95,9 @@ class BaseClient(object):
                 self.password = os.environ.get(self.username + "password")
             else:
                 raise PasswordError(self.username)
+        return self.password
 
-    def get_app_key(self):
+    def get_app_key(self) -> str:
         """
         If app_key is not provided will look in environment
         variables for username.
@@ -106,8 +107,9 @@ class BaseClient(object):
                 self.app_key = os.environ.get(self.username)
             else:
                 raise AppKeyError(self.username)
+        return self.app_key
 
-    def client_logout(self):
+    def client_logout(self) -> None:
         """
         Resets session token and login time.
         """
@@ -115,7 +117,7 @@ class BaseClient(object):
         self._login_time = None
 
     @property
-    def session_expired(self):
+    def session_expired(self) -> bool:
         """
         Returns True if login_time not set or seconds since
         login time is greater than 200 mins.
@@ -125,9 +127,11 @@ class BaseClient(object):
             or (datetime.datetime.now() - self._login_time).total_seconds() > 12000
         ):
             return True
+        else:
+            return False
 
     @property
-    def cert(self):
+    def cert(self) -> list:
         """
         The betfair certificates, by default it looks for the
         certificates in /certs/.
@@ -158,7 +162,7 @@ class BaseClient(object):
         return [cert, key]
 
     @property
-    def login_headers(self):
+    def login_headers(self) -> dict:
         return {
             "Accept": "application/json",
             "X-Application": self.app_key,
@@ -166,7 +170,7 @@ class BaseClient(object):
         }
 
     @property
-    def keep_alive_headers(self):
+    def keep_alive_headers(self) -> dict:
         return {
             "Accept": "application/json",
             "X-Application": self.app_key,
@@ -175,7 +179,7 @@ class BaseClient(object):
         }
 
     @property
-    def request_headers(self):
+    def request_headers(self) -> dict:
         return {
             "X-Application": self.app_key,
             "X-Authentication": self.session_token,
