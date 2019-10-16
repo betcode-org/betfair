@@ -10,7 +10,7 @@ from ..enums import (
 from ..exceptions import CacheError
 
 
-class Available(object):
+class Available:
     """
     Data structure to hold prices/traded amount,
     designed to be as quick as possible.
@@ -60,7 +60,7 @@ class Available(object):
         self.sort()
 
 
-class RunnerBook(object):
+class RunnerBook:
     def __init__(
         self,
         id,
@@ -277,7 +277,7 @@ class MarketBookCache(BaseResource):
         }
 
 
-class UnmatchedOrder(object):
+class UnmatchedOrder:
     def __init__(
         self,
         id,
@@ -365,7 +365,7 @@ class UnmatchedOrder(object):
         }
 
 
-class OrderBookRunner(object):
+class OrderBookRunner:
     def __init__(self, id, fullImage=None, ml=None, mb=None, uo=None, hc=0, smc=None):
         self.selection_id = id
         self.full_image = fullImage

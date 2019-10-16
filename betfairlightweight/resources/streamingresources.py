@@ -1,10 +1,8 @@
-import datetime
-
 from .baseresource import BaseResource
 from .bettingresources import PriceLadderDescription
 
 
-class MarketDefinitionRunner(object):
+class MarketDefinitionRunner:
     """
     :type adjustment_factor: float
     :type id: int
@@ -40,7 +38,7 @@ class MarketDefinitionRunner(object):
         return "<MarketDefinitionRunner>"
 
 
-class MarketDefinitionKeyLineSelection(object):
+class MarketDefinitionKeyLineSelection:
     """
     :type selectionId: int
     :type handicap: float
@@ -51,12 +49,12 @@ class MarketDefinitionKeyLineSelection(object):
         self.handicap = kwargs.get("hc")
 
 
-class MarketDefinitionKeyLine(object):
+class MarketDefinitionKeyLine:
     def __init__(self, kl):
         self.key_line = [MarketDefinitionKeyLineSelection(**i) for i in kl]
 
 
-class MarketDefinition(object):
+class MarketDefinition:
     """
     :type bet_delay: int
     :type betting_type: unicode

@@ -7,7 +7,7 @@ from .cache import MarketBookCache, OrderBookCache
 logger = logging.getLogger(__name__)
 
 
-class BaseStream(object):
+class BaseStream:
     """Separate stream class to hold market/order caches
     """
 

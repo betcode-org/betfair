@@ -137,7 +137,7 @@ class BaseEndPointTest(unittest.TestCase):
         assert response[0] == mock_resource()
 
     def test_base_endpoint_process_response_no_error(self):
-        class MockResource(object):
+        class MockResource:
             def __init__(self, elapsed_time, hello):
                 self.elapsed_time = elapsed_time
                 self.hello = hello
@@ -155,7 +155,7 @@ class BaseEndPointTest(unittest.TestCase):
         )
 
     def test_base_endpoint_process_response_error(self):
-        class MockResource(object):
+        class MockResource:
             def __init__(self, elapsed_time, hello):
                 self.elapsed_time = elapsed_time
                 self.hello = hello

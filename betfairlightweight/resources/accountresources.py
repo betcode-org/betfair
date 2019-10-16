@@ -27,7 +27,7 @@ class AccountDetails(BaseResource):
         self.timezone = kwargs.get("timezone")
 
 
-class LegacyData(object):
+class LegacyData:
     def __init__(
         self,
         avgPrice,
@@ -71,7 +71,7 @@ class LegacyData(object):
         self.commission_rate = commissionRate
 
 
-class AccountStatement(object):
+class AccountStatement:
     def __init__(
         self, amount, balance, itemClass, itemClassData, itemDate, refId, legacyData
     ):

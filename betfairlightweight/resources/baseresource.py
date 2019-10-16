@@ -1,9 +1,10 @@
 import datetime
+from typing import Union, Optional
 
 from ..compat import basestring, integer_types, json, parse_datetime
 
 
-class BaseResource(object):
+class BaseResource:
     """Lightweight data structure for resources.
     """
 
@@ -14,11 +15,11 @@ class BaseResource(object):
         self._datetime_updated = now
         self._data = kwargs
 
-    def json(self):
+    def json(self) -> str:
         return json.dumps(self._data)
 
     @staticmethod
-    def strip_datetime(value):
+    def strip_datetime(value: Union[str, int]) -> Optional[datetime.datetime]:
         """
         Converts value to datetime if string or int.
         """
@@ -33,8 +34,8 @@ class BaseResource(object):
             except (ValueError, OverflowError, OSError):
                 return
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<%s>" % self.__class__.__name__
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__class__.__name__

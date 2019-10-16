@@ -1,7 +1,7 @@
 from .baseresource import BaseResource
 
 
-class EventType(object):
+class EventType:
     """
     :type id: unicode
     :type name: unicode
@@ -24,7 +24,7 @@ class EventTypeResult(BaseResource):
         self.event_type = EventType(**kwargs.get("eventType"))
 
 
-class Competition(object):
+class Competition:
     """
     :type id: unicode
     :type name: unicode
@@ -49,7 +49,7 @@ class CompetitionResult(BaseResource):
         self.competition = Competition(**kwargs.get("competition"))
 
 
-class TimeRange(object):
+class TimeRange:
     """
     :type _from: datetime.datetime
     :type to: datetime.datetime
@@ -72,7 +72,7 @@ class TimeRangeResult(BaseResource):
         self.time_range = TimeRange(**kwargs.get("timeRange"))
 
 
-class Event(object):
+class Event:
     """
     :type country_code: unicode
     :type id: unicode
@@ -139,7 +139,7 @@ class VenueResult(BaseResource):
         self.venue = kwargs.get("venue")
 
 
-class LineRangeInfo(object):
+class LineRangeInfo:
     """
     :type marketUnit: unicode
     :type interval: float
@@ -154,7 +154,7 @@ class LineRangeInfo(object):
         self.max_unit_value = maxUnitValue
 
 
-class PriceLadderDescription(object):
+class PriceLadderDescription:
     """
     :type type: unicode
     """
@@ -166,7 +166,7 @@ class PriceLadderDescription(object):
         return {"type": self.type}
 
 
-class MarketCatalogueDescription(object):
+class MarketCatalogueDescription:
     """
     :type betting_type: unicode
     :type bsp_market: bool
@@ -231,7 +231,7 @@ class MarketCatalogueDescription(object):
         self.race_type = raceType
 
 
-class RunnerCatalogue(object):
+class RunnerCatalogue:
     """
     :type handicap: float
     :type metadata: dict
@@ -299,7 +299,7 @@ better than to use this magic incantation casually.
 """
 
 
-class Slotable(object):
+class Slotable:
     __slots__ = []
 
     def __getstate__(self):
@@ -326,7 +326,7 @@ class PriceSize(Slotable):
         return "Price: %s Size: %s" % (self.price, self.size)
 
 
-class RunnerBookSP(object):
+class RunnerBookSP:
     """
     :type actual_sp: float
     :type back_stake_taken: list[PriceSize]
@@ -350,7 +350,7 @@ class RunnerBookSP(object):
         self.lay_liability_taken = [PriceSize(**i) for i in layLiabilityTaken]
 
 
-class RunnerBookEX(object):
+class RunnerBookEX:
     """
     :type available_to_back: list[PriceSize]
     :type available_to_lay: list[PriceSize]
@@ -363,7 +363,7 @@ class RunnerBookEX(object):
         self.traded_volume = [PriceSize(**i) for i in tradedVolume]
 
 
-class RunnerBookOrder(object):
+class RunnerBookOrder:
     """
     :type avg_price_matched: float
     :type bet_id: unicode
@@ -421,7 +421,7 @@ class RunnerBookOrder(object):
         self.customer_order_ref = customerOrderRef
 
 
-class RunnerBookMatch(object):
+class RunnerBookMatch:
     """
     :type bet_id: unicode
     :type match_date: datetime.datetime
@@ -440,7 +440,7 @@ class RunnerBookMatch(object):
         self.match_date = BaseResource.strip_datetime(matchDate)
 
 
-class RunnerBook(object):
+class RunnerBook:
     """
     :type adjustment_factor: float
     :type ex: RunnerBookEX
@@ -490,7 +490,7 @@ class RunnerBook(object):
         return "<RunnerBook>"
 
 
-class KeyLine(object):
+class KeyLine:
     def __init__(self, **kwargs):
         if "keyLine" in kwargs:
             self.key_line = [KeyLineSelection(**i) for i in kwargs["keyLine"]]
@@ -498,7 +498,7 @@ class KeyLine(object):
             self.key_line = [KeyLineSelection(**i) for i in kwargs["kl"]]
 
 
-class KeyLineSelection(object):
+class KeyLineSelection:
     """
     :type selectionId: int
     :type handicap: float
@@ -574,7 +574,7 @@ class MarketBook(BaseResource):
         )
 
 
-class CurrentOrder(object):
+class CurrentOrder:
     """
     :type average_price_matched: float
     :type bet_id: unicode
@@ -661,7 +661,7 @@ class CurrentOrders(BaseResource):
         self.orders = [CurrentOrder(**i) for i in kwargs.get("currentOrders")]
 
 
-class ItemDescription(object):
+class ItemDescription:
     """
     :type event_desc: unicode
     :type event_type_desc: unicode
@@ -694,7 +694,7 @@ class ItemDescription(object):
         self.each_way_divisor = eachWayDivisor
 
 
-class ClearedOrder(object):
+class ClearedOrder:
     """
     :type bet_count: int
     :type bet_id: unicode
@@ -767,7 +767,7 @@ class ClearedOrders(BaseResource):
         self.orders = [ClearedOrder(**i) for i in kwargs.get("clearedOrders")]
 
 
-class ProfitAndLosses(object):
+class ProfitAndLosses:
     """
     :type if_lose: float
     :type if_place: float
@@ -798,7 +798,7 @@ class MarketProfitLoss(BaseResource):
         ]
 
 
-class LimitOrder(object):
+class LimitOrder:
     """
     :type bet_target_size: float
     :type bet_target_type: unicode
@@ -828,7 +828,7 @@ class LimitOrder(object):
         self.bet_target_size = betTargetSize
 
 
-class LimitOnCloseOrder(object):
+class LimitOnCloseOrder:
     """
     :type liability: float
     :type price: float
@@ -839,7 +839,7 @@ class LimitOnCloseOrder(object):
         self.price = price
 
 
-class MarketOnCloseOrder(object):
+class MarketOnCloseOrder:
     """
     :type liability: float
     """
@@ -848,7 +848,7 @@ class MarketOnCloseOrder(object):
         self.liability = liability
 
 
-class PlaceOrderInstruction(object):
+class PlaceOrderInstruction:
     """
     :type customer_order_ref: unicode
     :type handicap: float
@@ -883,7 +883,7 @@ class PlaceOrderInstruction(object):
         )
 
 
-class PlaceOrderInstructionReports(object):
+class PlaceOrderInstructionReports:
     """
     :type average_price_matched: float
     :type bet_id: unicode
@@ -936,7 +936,7 @@ class PlaceOrders(BaseResource):
         ]
 
 
-class CancelOrderInstruction(object):
+class CancelOrderInstruction:
     """
     :type bet_id: unicode
     :type size_reduction: float
@@ -947,7 +947,7 @@ class CancelOrderInstruction(object):
         self.size_reduction = sizeReduction
 
 
-class CancelOrderInstructionReports(object):
+class CancelOrderInstructionReports:
     """
     :type cancelled_date: datetime.datetime
     :type error_code: str
@@ -991,7 +991,7 @@ class CancelOrders(BaseResource):
         ]
 
 
-class UpdateOrderInstruction(object):
+class UpdateOrderInstruction:
     """
     :type bet_id: unicode
     :type new_persistence_type: unicode
@@ -1002,7 +1002,7 @@ class UpdateOrderInstruction(object):
         self.new_persistence_type = newPersistenceType
 
 
-class UpdateOrderInstructionReports(object):
+class UpdateOrderInstructionReports:
     """
     :type error_code: str
     :type instruction: UpdateOrderInstruction
@@ -1035,7 +1035,7 @@ class UpdateOrders(BaseResource):
         ]
 
 
-class ReplaceOrderInstructionReports(object):
+class ReplaceOrderInstructionReports:
     """
     :type cancel_instruction_reports: CancelOrderInstructionReports
     :type error_code: str

@@ -7,7 +7,7 @@ from ..exceptions import SocketError, ListenerError
 from ..compat import json
 
 
-class BetfairStream(object):
+class BetfairStream:
     """Socket holder, connects to betfair and
     pushes any received data to listener
     """
@@ -270,7 +270,7 @@ class BetfairStream(object):
         return "<BetfairStream>"
 
 
-class HistoricalStream(object):
+class HistoricalStream:
     """Copy of 'Betfair Stream' for parsing
     historical data.
     """

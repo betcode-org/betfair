@@ -6,7 +6,7 @@ from ..compat import json_loads
 logger = logging.getLogger(__name__)
 
 
-class BaseListener(object):
+class BaseListener:
     def __init__(self, max_latency=0.5):
         self.max_latency = max_latency
 

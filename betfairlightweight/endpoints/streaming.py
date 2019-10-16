@@ -8,7 +8,7 @@ from ..streaming import (
 )
 
 
-class Streaming(object):
+class Streaming:
     """
     Streaming operations.
     """
