@@ -3,7 +3,6 @@ import logging
 import time
 import queue
 
-from .listener import BaseListener
 from .cache import MarketBookCache, OrderBookCache
 
 logger = logging.getLogger(__name__)
@@ -15,7 +14,7 @@ class BaseStream:
 
     _lookup = "mc"
 
-    def __init__(self, listener: BaseListener):
+    def __init__(self, listener: object):
         self._listener = listener
 
         self._initial_clk = None

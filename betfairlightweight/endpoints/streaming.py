@@ -67,7 +67,7 @@ class Streaming:
         :rtype: HistoricalStream
         """
         listener = listener if listener else BaseListener()
-        listener.register_stream("HISTORICAL", "marketSubscription")
+        listener.register_stream(0, "marketSubscription")
         return HistoricalStream(directory, listener)
 
     @staticmethod
@@ -85,5 +85,5 @@ class Streaming:
         :rtype: HistoricalGeneratorStream
         """
         listener = listener if listener else StreamListener()
-        listener.register_stream("HISTORICAL", "marketSubscription")
+        listener.register_stream(0, "marketSubscription")
         return HistoricalGeneratorStream(directory, listener)
