@@ -283,13 +283,13 @@ class MarketBookCache(BaseResource):
 class UnmatchedOrder:
     def __init__(
         self,
-        id: int,
+        id: str,
         p: float,
         s: float,
         side: str,
         status: str,
         ot: str,
-        pd: str,
+        pd: int,
         sm: float,
         sr: float,
         sl: float,
@@ -301,7 +301,7 @@ class UnmatchedOrder:
         md: str = None,
         avp: float = None,
         bsp: float = None,
-        ld: str = None,
+        ld: int = None,
         rac: str = None,
         rc: str = None,
         lsrc: str = None,
@@ -329,7 +329,7 @@ class UnmatchedOrder:
         self.regulator_code = rc
         self.reference_order = rfo
         self.reference_strategy = rfs
-        self.lapsed_date = ld
+        self.lapsed_date = BaseResource.strip_datetime(ld)
         self.lapse_status_reason_code = lsrc  # todo add to output?
 
     def create_placed_date_string(self) -> str:

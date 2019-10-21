@@ -515,7 +515,7 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.size_voided == 13
         assert self.unmatched_order.reference_order == 14
         assert self.unmatched_order.reference_strategy == 15
-        assert self.unmatched_order.lapsed_date == 16
+        assert self.unmatched_order.lapsed_date == BaseResource.strip_datetime(16)
         assert self.unmatched_order.lapse_status_reason_code == 17
 
     def test_placed_date_string(self):
