@@ -43,6 +43,8 @@ class BaseClient:
         italy=NAVIGATION.format(tld=".it", locale="it"),
     )
 
+    SESSION_TIMEOUT = collections.defaultdict(lambda: 8 * 60 * 60, italy=20 * 60)
+
     def __init__(
         self,
         username: str,
@@ -79,6 +81,7 @@ class BaseClient:
         self.identity_cert_uri = self.IDENTITY_CERT_URLS[locale]
         self.api_uri = self.API_URLS[locale]
         self.navigation_uri = self.NAVIGATION_URLS[locale]
+        self.session_timeout = self.SESSION_TIMEOUT[locale]
 
         self.get_password()
         self.get_app_key()
@@ -127,12 +130,11 @@ class BaseClient:
     def session_expired(self) -> bool:
         """
         Returns True if login_time not set or seconds since
-        login time is greater than 200 mins.
+        login time is greater half session timeout.
         """
-        if (
-            not self._login_time
-            or (datetime.datetime.now() - self._login_time).total_seconds() > 12000
-        ):
+        if not self._login_time or (
+            datetime.datetime.now() - self._login_time
+        ).total_seconds() > (self.session_timeout / 2):
             return True
         else:
             return False

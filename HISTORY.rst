@@ -18,6 +18,7 @@ Release History
 
 - #217 correct usage of ujson (refactor)
 - Australia login interactive domain fixed
+- Correct session timeout added for int and italy exchange
 
 **Dependencies**
 

@@ -90,6 +90,13 @@ class BaseClientInit(unittest.TestCase):
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.se/api/"
 
+    def test_session_timeout(self):
+        client = APIClient("bf_username", "password", "app_key")
+        assert client.session_timeout == 28800
+
+        client = APIClient("bf_username", "password", "app_key", locale="italy")
+        assert client.session_timeout == 1200
+
 
 class BaseClientTest(unittest.TestCase):
     def setUp(self):
@@ -161,10 +168,10 @@ class BaseClientTest(unittest.TestCase):
         }
 
     def test_client_logged_in_session(self):
+        assert self.client.session_expired is True
         self.client.set_session_token("session_token")
-
         assert self.client.session_expired is False
-        self.client._login_time = datetime.datetime(2003, 8, 4, 12, 30, 45)
+        self.client._login_time = datetime.datetime(2000, 6, 1, 0, 0, 0)
         assert self.client.session_expired is True
 
     def test_client_logout(self):
