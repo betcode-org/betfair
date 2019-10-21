@@ -17,11 +17,11 @@ class APIClient(BaseClient):
         Creates API client for API operations.
 
         :param str username: Betfair username
-        :param str password: Password for supplied username, if None will look in .bashprofile
+        :param str password: Betfair password for supplied username, if None will look in .bashprofile
         :param str app_key: App Key for account, if None will look in .bashprofile
-        :param str certs: Directory for certificates, if None will look in /certs/
-        :param str locale: Exchange to be used, defaults to UK for login and global for api
-        :param list cert_files: Certificate and key files. If None will look in `certs`
+        :param str certs: Directory for certificates, if None will look in /certs
+        :param str locale: Exchange to be used, defaults to international (.com) exchange
+        :param list cert_files: Certificate and key files. If None will use `self.certs`
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
         """
         super(APIClient, self).__init__(

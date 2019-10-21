@@ -8,13 +8,19 @@ Release History
 
 **Improvements**
 
-- async removed from streaming (force user to handle thread)
+- *Breaking* async removed from streaming (force user to handle thread)
 - Black formatting on all files
 - python 'Typing' added
+- *Breaking* Description removed from 'create_stream'
+- locale added to Navigation
+- Certificate error messages improved
+- Logging added to socket send
 
 **Bug Fixes**
 
 - #217 correct usage of ujson (refactor)
+- Australia login interactive domain fixed
+- Correct session timeout added for int and italy exchange
 
 **Dependencies**
 

@@ -39,7 +39,7 @@ class MetadataTest(unittest.TestCase):
         assert metadata.currency_parameters == {
             "GBP": {"min_bet_size": 2, "min_bet_payout": 10, "min_bsp_liability": 10},
             "EUR": {"min_bet_size": 2, "min_bet_payout": 20, "min_bsp_liability": 20},
-            "USD": {"min_bet_size": 4, "min_bet_payout": 20, "min_bsp_liability": 20},
+            "USD": {"min_bet_size": 3, "min_bet_payout": 20, "min_bsp_liability": 20},
             "HKD": {
                 "min_bet_size": 25,
                 "min_bet_payout": 125,
@@ -63,9 +63,6 @@ class MetadataTest(unittest.TestCase):
                 "min_bsp_liability": 150,
             },
             "SGD": {"min_bet_size": 6, "min_bet_payout": 30, "min_bsp_liability": 30},
-            "RON": {
-                "min_bet_size": 10,
-                "min_bet_payout": 50,
-                "min_bsp_liability": (10, 50),  # (back, lay)
-            },
+            "RON": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
+            "BRL": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
         }

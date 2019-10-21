@@ -37,11 +37,10 @@ class AppKeyError(BetfairError):
 
 class CertsError(BetfairError):
     """
-    Exception raised if certs folder is not found.
+    Exception raised if certs not found.
     """
 
-    def __init__(self, path: str = "/certs/"):
-        message = "Certificate folder not found in %s" % path
+    def __init__(self, message: str = None):
         super(CertsError, self).__init__(message)
 
 
@@ -124,22 +123,6 @@ class LogoutError(BetfairError):
         logout_error = response.get("error")
         message = "API logout %s: %s" % (logout_status, logout_error)
         super(LogoutError, self).__init__(message)
-
-
-# class ParameterError(BetfairError):
-#     """Exception raised if parameter is incorrect"""
-#
-#     def __init__(self, api_method):
-#         message = 'API method %s must have parameters' % api_method
-#         super(ParameterError, self).__init__(message)
-#
-#
-# class SessionTokenError(BetfairError):
-#     """Exception raised if session_token is None"""
-#
-#     def __init__(self):
-#         message = 'APIClient must have session_token'
-#         super(SessionTokenError, self).__init__(message)
 
 
 class SocketError(BetfairError):

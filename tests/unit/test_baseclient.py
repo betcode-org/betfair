@@ -3,6 +3,7 @@ import os
 import unittest
 from unittest import mock
 
+from betfairlightweight.baseclient import IDENTITY, IDENTITY_CERT, API, NAVIGATION
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 
@@ -19,6 +20,15 @@ class BaseClientInit(unittest.TestCase):
         assert client._login_time is None
         assert client.session_token is None
 
+    def test_vars(self):
+        assert IDENTITY == "https://identitysso.betfair{tld}/api/"
+        assert IDENTITY_CERT == "https://identitysso-cert.betfair{tld}/api/"
+        assert API == "https://api.betfair.com/exchange/"
+        assert (
+            NAVIGATION
+            == "https://api.betfair{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
+        )
+
     def test_uri(self):
         client = APIClient("bf_username", "password", "app_key")
         assert client.locale is None
@@ -32,7 +42,7 @@ class BaseClientInit(unittest.TestCase):
 
         client = APIClient("bf_username", "password", "app_key", locale="australia")
         assert client.locale == "australia"
-        assert client.identity_uri == "https://identitysso.betfair.au/api/"
+        assert client.identity_uri == "https://identitysso.betfair.com.au/api/"
         assert client.api_uri == "https://api.betfair.com/exchange/"
         assert (
             client.navigation_uri
@@ -46,7 +56,7 @@ class BaseClientInit(unittest.TestCase):
         assert client.api_uri == "https://api.betfair.com/exchange/"
         assert (
             client.navigation_uri
-            == "https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json"
+            == "https://api.betfair.es/exchange/betting/rest/v1/es/navigation/menu.json"
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.es/api/"
 
@@ -56,7 +66,7 @@ class BaseClientInit(unittest.TestCase):
         assert client.api_uri == "https://api.betfair.com/exchange/"
         assert (
             client.navigation_uri
-            == "https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json"
+            == "https://api.betfair.it/exchange/betting/rest/v1/it/navigation/menu.json"
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.it/api/"
 
@@ -79,6 +89,13 @@ class BaseClientInit(unittest.TestCase):
             == "https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json"
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.se/api/"
+
+    def test_session_timeout(self):
+        client = APIClient("bf_username", "password", "app_key")
+        assert client.session_timeout == 28800
+
+        client = APIClient("bf_username", "password", "app_key", locale="italy")
+        assert client.session_timeout == 1200
 
 
 class BaseClientTest(unittest.TestCase):
@@ -127,19 +144,21 @@ class BaseClientTest(unittest.TestCase):
     def test_get_app_key_mocked(self, mocked_environ):
         self.client.app_key = None
         mocked_environ.__get__ = mock.Mock(return_value="app_key")
-        assert self.client.get_app_key() == mocked_environ.get()
+        self.assertEqual(self.client.get_app_key(), mocked_environ.get())
 
     def test_client_headers(self):
         assert self.client.login_headers == {
             "Accept": "application/json",
             "X-Application": self.client.app_key,
             "content-type": "application/x-www-form-urlencoded",
+            "User-Agent": "betfairlightweight",
         }
         assert self.client.keep_alive_headers == {
             "Accept": "application/json",
             "X-Application": self.client.app_key,
             "X-Authentication": self.client.session_token,
             "content-type": "application/x-www-form-urlencoded",
+            "User-Agent": "betfairlightweight",
         }
         assert self.client.request_headers == {
             "X-Application": self.client.app_key,
@@ -151,10 +170,10 @@ class BaseClientTest(unittest.TestCase):
         }
 
     def test_client_logged_in_session(self):
+        assert self.client.session_expired is True
         self.client.set_session_token("session_token")
-
         assert self.client.session_expired is False
-        self.client._login_time = datetime.datetime(2003, 8, 4, 12, 30, 45)
+        self.client._login_time = 959814000
         assert self.client.session_expired is True
 
     def test_client_logout(self):

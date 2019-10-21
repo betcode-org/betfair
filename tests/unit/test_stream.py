@@ -135,7 +135,7 @@ class BaseStreamTest(unittest.TestCase):
         assert str(self.stream) == "BaseStream"
 
     def test_repr(self):
-        assert repr(self.stream) == "<BaseStream>"
+        assert repr(self.stream) == "<BaseStream [0]>"
 
 
 class MarketStreamTest(unittest.TestCase):
