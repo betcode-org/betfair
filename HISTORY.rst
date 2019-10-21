@@ -14,6 +14,7 @@ Release History
 - *Breaking* Description removed from 'create_stream'
 - locale added to Navigation
 - Certificate error messages improved
+- Logging added to socket send
 
 **Bug Fixes**
 

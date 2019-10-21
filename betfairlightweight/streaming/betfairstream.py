@@ -1,5 +1,6 @@
 import socket
 import ssl
+import logging
 import datetime
 import collections
 from typing import Optional
@@ -7,6 +8,8 @@ from typing import Optional
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
 from .listener import BaseListener
+
+logger = logging.getLogger(__name__)
 
 
 class BetfairStream:
@@ -257,6 +260,9 @@ class BetfairStream:
             self._connect()
             self.authenticate()
         message_dumped = json.dumps(message) + self.__CRLF
+        logger.debug(
+            "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
+        )
         try:
             self._socket.send(message_dumped.encode())
         except (socket.timeout, socket.error) as e:

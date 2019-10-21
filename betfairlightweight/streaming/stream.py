@@ -75,7 +75,7 @@ class BaseStream:
     def _on_creation(self) -> None:
         logger.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
 
-    def _process(self, book_data: dict, publish_time: int) -> None:
+    def _process(self, data: dict, publish_time: int) -> None:
         pass
 
     def _update_clk(self, data: dict) -> None:
@@ -110,19 +110,19 @@ class BaseStream:
         return len(self._caches)
 
     def __str__(self) -> str:
-        return "BaseStream"
+        return "{0}".format(self.__class__.__name__)
 
     def __repr__(self) -> str:
-        return "<BaseStream>"
+        return "<{0} [{1}]>".format(self.__class__.__name__, len(self))
 
 
 class MarketStream(BaseStream):
 
     _lookup = "mc"
 
-    def _process(self, market_books: list, publish_time: int) -> None:
+    def _process(self, data: list, publish_time: int) -> None:
         output_market_book = []
-        for market_book in market_books:
+        for market_book in data:
             market_id = market_book["id"]
             market_book_cache = self._caches.get(market_id)
 
@@ -148,20 +148,14 @@ class MarketStream(BaseStream):
             )
         self.on_process(output_market_book)
 
-    def __str__(self) -> str:
-        return "MarketStream"
-
-    def __repr__(self) -> str:
-        return "<MarketStream [%s]>" % len(self)
-
 
 class OrderStream(BaseStream):
 
     _lookup = "oc"
 
-    def _process(self, order_books: list, publish_time: int) -> None:
+    def _process(self, data: list, publish_time: int) -> None:
         output_order_book = []
-        for order_book in order_books:
+        for order_book in data:
             market_id = order_book["id"]
             order_book_cache = self._caches.get(market_id)
 
@@ -184,9 +178,3 @@ class OrderStream(BaseStream):
                 )
             )
         self.on_process(output_order_book)
-
-    def __str__(self) -> str:
-        return "OrderStream"
-
-    def __repr__(self) -> str:
-        return "<OrderStream [%s]>" % len(self)

@@ -1,7 +1,7 @@
-import requests
-import collections
 import os
 import time
+import requests
+import collections
 
 from .exceptions import PasswordError, AppKeyError, CertsError
 

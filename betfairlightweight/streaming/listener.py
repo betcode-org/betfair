@@ -60,10 +60,10 @@ class BaseListener:
         logger.info("Register: %s %s" % (operation, unique_id))
 
     def __str__(self) -> str:
-        return "BaseListener"
+        return "{0}".format(self.__class__.__name__)
 
     def __repr__(self) -> str:
-        return "<BaseListener>"
+        return "<{0}>".format(self.__class__.__name__)
 
 
 class StreamListener(BaseListener):
@@ -183,9 +183,3 @@ class StreamListener(BaseListener):
             logger.warning(
                 "[Subscription: %s] status: %s" % (unique_id, data["status"])
             )
-
-    def __str__(self) -> str:
-        return "StreamListener"
-
-    def __repr__(self) -> str:
-        return "<StreamListener>"
