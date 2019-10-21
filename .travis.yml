@@ -21,6 +21,11 @@ jobs:
       dist: xenial
       script:
         - coverage run --source=betfairlightweight setup.py test
+    - name: "Tests: python 3.8"
+      python: 3.8
+      dist: xenial
+      script:
+        - coverage run --source=betfairlightweight setup.py test
     - name: "Lint: python 3.7"
       python: 3.7
       dist: xenial
