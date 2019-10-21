@@ -3,6 +3,7 @@ import os
 import unittest
 from unittest import mock
 
+from betfairlightweight.baseclient import IDENTITY, IDENTITY_CERT, NAVIGATION
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 
@@ -19,6 +20,14 @@ class BaseClientInit(unittest.TestCase):
         assert client._login_time is None
         assert client.session_token is None
 
+    def test_vars(self):
+        assert IDENTITY == "https://identitysso.betfair.{tld}/api/"
+        assert IDENTITY_CERT == "https://identitysso-cert.betfair.{tld}/api/"
+        assert (
+            NAVIGATION
+            == "https://api.betfair.{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
+        )
+
     def test_uri(self):
         client = APIClient("bf_username", "password", "app_key")
         assert client.locale is None
@@ -32,7 +41,7 @@ class BaseClientInit(unittest.TestCase):
 
         client = APIClient("bf_username", "password", "app_key", locale="australia")
         assert client.locale == "australia"
-        assert client.identity_uri == "https://identitysso.betfair.au/api/"
+        assert client.identity_uri == "https://identitysso.betfair.com.au/api/"
         assert client.api_uri == "https://api.betfair.com/exchange/"
         assert (
             client.navigation_uri
@@ -46,7 +55,7 @@ class BaseClientInit(unittest.TestCase):
         assert client.api_uri == "https://api.betfair.com/exchange/"
         assert (
             client.navigation_uri
-            == "https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json"
+            == "https://api.betfair.es/exchange/betting/rest/v1/es/navigation/menu.json"
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.es/api/"
 
@@ -56,7 +65,7 @@ class BaseClientInit(unittest.TestCase):
         assert client.api_uri == "https://api.betfair.com/exchange/"
         assert (
             client.navigation_uri
-            == "https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json"
+            == "https://api.betfair.it/exchange/betting/rest/v1/it/navigation/menu.json"
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.it/api/"
 

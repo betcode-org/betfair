@@ -12,10 +12,12 @@ Release History
 - Black formatting on all files
 - python 'Typing' added
 - *Breaking* Description removed from 'create_stream'
+- locale added to Navigation
 
 **Bug Fixes**
 
 - #217 correct usage of ujson (refactor)
+- Australia login interactive domain fixed
 
 **Dependencies**
 

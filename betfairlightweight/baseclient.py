@@ -5,6 +5,12 @@ import os
 
 from .exceptions import PasswordError, AppKeyError, CertsError
 
+IDENTITY = "https://identitysso.betfair.{tld}/api/"
+IDENTITY_CERT = "https://identitysso-cert.betfair.{tld}/api/"
+NAVIGATION = (
+    "https://api.betfair.{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
+)
+
 
 class BaseClient:
     """
@@ -12,28 +18,28 @@ class BaseClient:
     """
 
     IDENTITY_URLS = collections.defaultdict(
-        lambda: "https://identitysso.betfair.com/api/",
-        spain="https://identitysso.betfair.es/api/",
-        italy="https://identitysso.betfair.it/api/",
-        romania="https://identitysso.betfair.ro/api/",
-        sweden="https://identitysso.betfair.se/api/",
-        australia="https://identitysso.betfair.au/api/",
+        lambda: IDENTITY.format(tld="com"),
+        spain=IDENTITY.format(tld="es"),
+        italy=IDENTITY.format(tld="it"),
+        romania=IDENTITY.format(tld="ro"),
+        sweden=IDENTITY.format(tld="se"),
+        australia=IDENTITY.format(tld="com.au"),
     )
 
     IDENTITY_CERT_URLS = collections.defaultdict(
-        lambda: "https://identitysso-cert.betfair.com/api/",
-        spain="https://identitysso-cert.betfair.es/api/",
-        italy="https://identitysso-cert.betfair.it/api/",
-        romania="https://identitysso-cert.betfair.ro/api/",
-        sweden="https://identitysso-cert.betfair.se/api/",
+        lambda: IDENTITY_CERT.format(tld="com"),
+        spain=IDENTITY_CERT.format(tld="es"),
+        italy=IDENTITY_CERT.format(tld="it"),
+        romania=IDENTITY_CERT.format(tld="ro"),
+        sweden=IDENTITY_CERT.format(tld="se"),
     )
 
     API_URLS = collections.defaultdict(lambda: "https://api.betfair.com/exchange/")
 
     NAVIGATION_URLS = collections.defaultdict(
-        lambda: "https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json",
-        spain="https://api.betfair.es/exchange/betting/rest/v1/en/navigation/menu.json",
-        italy="https://api.betfair.it/exchange/betting/rest/v1/en/navigation/menu.json",
+        lambda: NAVIGATION.format(tld="com", locale="en"),
+        spain=NAVIGATION.format(tld="es", locale="es"),
+        italy=NAVIGATION.format(tld="it", locale="it"),
     )
 
     def __init__(
