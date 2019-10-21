@@ -3,7 +3,7 @@ import os
 import unittest
 from unittest import mock
 
-from betfairlightweight.baseclient import IDENTITY, IDENTITY_CERT, NAVIGATION
+from betfairlightweight.baseclient import IDENTITY, IDENTITY_CERT, API, NAVIGATION
 from betfairlightweight import APIClient
 from betfairlightweight.exceptions import PasswordError, AppKeyError, CertsError
 
@@ -21,11 +21,12 @@ class BaseClientInit(unittest.TestCase):
         assert client.session_token is None
 
     def test_vars(self):
-        assert IDENTITY == "https://identitysso.betfair.{tld}/api/"
-        assert IDENTITY_CERT == "https://identitysso-cert.betfair.{tld}/api/"
+        assert IDENTITY == "https://identitysso.betfair{tld}/api/"
+        assert IDENTITY_CERT == "https://identitysso-cert.betfair{tld}/api/"
+        assert API == "https://api.betfair.com/exchange/"
         assert (
             NAVIGATION
-            == "https://api.betfair.{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
+            == "https://api.betfair{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
         )
 
     def test_uri(self):
