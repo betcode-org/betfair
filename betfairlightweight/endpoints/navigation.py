@@ -1,4 +1,4 @@
-from requests import ConnectionError
+import requests
 
 from ..exceptions import APIError, InvalidResponse
 from ..utils import check_status_code
@@ -11,7 +11,7 @@ class Navigation(BaseEndpoint):
     Navigation operations.
     """
 
-    def list_navigation(self, session=None):
+    def list_navigation(self, session: requests.Session = None) -> dict:
         """
         This Navigation Data for Applications service allows the retrieval of the
         full Betfair market navigation menu from a compressed file.
@@ -22,7 +22,9 @@ class Navigation(BaseEndpoint):
         """
         return self.request(session=session)
 
-    def request(self, method=None, params=None, session=None):
+    def request(
+        self, method: str = None, params: dict = None, session: requests.Session = None
+    ) -> (dict, float):
         session = session or self.client.session
         try:
             response = session.get(
@@ -30,8 +32,8 @@ class Navigation(BaseEndpoint):
                 headers=self.client.request_headers,
                 timeout=(self.connect_timeout, self.read_timeout),
             )
-        except ConnectionError:
-            raise APIError(None, method, params, "ConnectionError")
+        except requests.ConnectionError as e:
+            raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
 
@@ -44,5 +46,5 @@ class Navigation(BaseEndpoint):
         return response_data
 
     @property
-    def url(self):
+    def url(self) -> str:
         return self.client.navigation_uri

@@ -1,3 +1,6 @@
+import requests
+from typing import Union, List
+
 from .baseendpoint import BaseEndpoint
 from .. import resources
 from ..utils import clean_locals
@@ -11,8 +14,12 @@ class Scores(BaseEndpoint):
     URI = "ScoresAPING/v1.0/"
 
     def list_race_details(
-        self, meeting_ids=None, race_ids=None, session=None, lightweight=None
-    ):
+        self,
+        meeting_ids: dict = None,
+        race_ids: str = None,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.RaceDetails]]:
         """
         Search for races to get their details.
 
@@ -24,7 +31,7 @@ class Scores(BaseEndpoint):
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
 
-        :rtype: list[resources.RaceDetail]
+        :rtype: list[resources.RaceDetails]
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "listRaceDetails")
@@ -37,12 +44,12 @@ class Scores(BaseEndpoint):
 
     def list_available_events(
         self,
-        event_ids=None,
-        event_type_ids=None,
-        event_status=None,
-        session=None,
-        lightweight=None,
-    ):
+        event_ids: list = None,
+        event_type_ids: list = None,
+        event_status: list = None,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.AvailableEvent]]:
         """
         Search for events that have live score data available.
 
@@ -61,7 +68,12 @@ class Scores(BaseEndpoint):
             response, resources.AvailableEvent, elapsed_time, lightweight
         )
 
-    def list_scores(self, update_keys, session=None, lightweight=None):
+    def list_scores(
+        self,
+        update_keys: list,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.Score]]:
         """
         Returns a list of current scores for the given events.
 
@@ -79,7 +91,12 @@ class Scores(BaseEndpoint):
             response, resources.Score, elapsed_time, lightweight
         )
 
-    def list_incidents(self, update_keys, session=None, lightweight=None):
+    def list_incidents(
+        self,
+        update_keys: dict,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.Incidents]]:
         """
         Returns a list of incidents for the given events.
 
@@ -98,5 +115,5 @@ class Scores(BaseEndpoint):
         )
 
     @property
-    def url(self):
+    def url(self) -> str:
         return "%s%s" % (self.client.api_uri, "scores/json-rpc/v1")

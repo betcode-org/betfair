@@ -1,5 +1,6 @@
 import datetime
-from requests import ConnectionError
+import requests
+from typing import Union
 
 from .baseendpoint import BaseEndpoint
 from ..resources import LogoutResource
@@ -15,7 +16,9 @@ class Logout(BaseEndpoint):
 
     _error = LogoutError
 
-    def __call__(self, session=None, lightweight=None):
+    def __call__(
+        self, session: requests.Session = None, lightweight: bool = None
+    ) -> Union[dict, LogoutResource]:
         """
         Makes logout request.
 
@@ -30,13 +33,15 @@ class Logout(BaseEndpoint):
             response, LogoutResource, elapsed_time, lightweight
         )
 
-    def request(self, payload=None, params=None, session=None):
+    def request(
+        self, method: str = None, params: dict = None, session: requests.Session = None
+    ) -> (dict, float):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
         try:
             response = session.post(self.url, headers=self.client.keep_alive_headers)
-        except ConnectionError:
-            raise APIError(None, exception="ConnectionError")
+        except requests.ConnectionError as e:
+            raise APIError(None, exception=e)
         except Exception as e:
             raise APIError(None, exception=e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
@@ -51,10 +56,12 @@ class Logout(BaseEndpoint):
             self._error_handler(response_data)
         return response_data, elapsed_time
 
-    def _error_handler(self, response, method=None, params=None):
+    def _error_handler(
+        self, response: dict, method: str = None, params: dict = None
+    ) -> None:
         if response.get("status") != "SUCCESS":
             raise self._error(response)
 
     @property
-    def url(self):
+    def url(self) -> str:
         return "%s%s" % (self.client.identity_uri, "logout")

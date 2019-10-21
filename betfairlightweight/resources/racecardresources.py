@@ -1,7 +1,7 @@
 from .baseresource import BaseResource
 
 
-class RaceType(object):
+class RaceType:
     """
     :type abbr: unicode
     :type full: unicode
@@ -14,7 +14,7 @@ class RaceType(object):
         self.key = key
 
 
-class RaceClassification(object):
+class RaceClassification:
     """
     :type classification: unicode
     :type classification_abbr: unicode
@@ -38,7 +38,7 @@ class RaceClassification(object):
         self.display_name_abbr = displayNameAbbr
 
 
-class Market(object):
+class Market:
     """
     :type market_id: unicode
     :type market_type: unicode
@@ -51,7 +51,7 @@ class Market(object):
         self.number_of_winners = numberOfWinners
 
 
-class Going(object):
+class Going:
     """
     :type abbr: unicode
     :type full: unicode
@@ -64,7 +64,7 @@ class Going(object):
         self.key = key
 
 
-class Course(object):
+class Course:
     """
     :type country: unicode
     :type country_code: unicode
@@ -148,7 +148,7 @@ class Race(BaseResource):
         )
 
 
-class InPlayHint(object):
+class InPlayHint:
     """
     :type hint_name: unicode
     :type hint_value: unicode
@@ -159,7 +159,7 @@ class InPlayHint(object):
         self.hint_value = hintValue
 
 
-class DaysSinceLastRun(object):
+class DaysSinceLastRun:
     """
     :type days: int
     :type type: unicode
@@ -170,7 +170,7 @@ class DaysSinceLastRun(object):
         self.type = type
 
 
-class Jockey(object):
+class Jockey:
     """
     :type jockey_id: unicode
     :type name: unicode
@@ -182,7 +182,7 @@ class Jockey(object):
         self.allowance = allowance
 
 
-class Selection(object):
+class Selection:
     """
     :type market_id: unicode
     :type market_type: unicode
@@ -196,7 +196,7 @@ class Selection(object):
         self.bsp = bsp
 
 
-class Trainer(object):
+class Trainer:
     """
     :type location: unicode
     :type name: unicode
@@ -209,7 +209,7 @@ class Trainer(object):
         self.trainer_id = trainerId
 
 
-class Wearing(object):
+class Wearing:
     """
     :type abbr: unicode
     :type full: unicode
@@ -222,18 +222,18 @@ class Wearing(object):
         self.key = key
 
 
-class PreRaceMasterRating(object):
+class PreRaceMasterRating:
     def __init__(self, ratingSymbol=None, ratingValue=None, **kwargs):
         self.rating_symbol = ratingSymbol
         self.rating_value = ratingValue
 
 
-class PreRaceWeightAdjustedMasterRating(object):
+class PreRaceWeightAdjustedMasterRating:
     def __init__(self, ratingValue=None, **kwargs):
         self.rating_value = ratingValue
 
 
-class SeasonMasterRating(object):
+class SeasonMasterRating:
     def __init__(
         self,
         racingType=None,
@@ -248,7 +248,7 @@ class SeasonMasterRating(object):
         self.rating_value = ratingvalue
 
 
-class Runner(object):
+class Runner:
     """
     :type age: int
     :type comment: unicode

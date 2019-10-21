@@ -1,6 +1,7 @@
 import re
 import datetime
-from requests import ConnectionError
+import requests
+from typing import Union, List
 
 from ..exceptions import APIError, RaceCardError, InvalidResponse
 from ..utils import check_status_code
@@ -16,7 +17,7 @@ class RaceCard(BaseEndpoint):
 
     app_key = None
 
-    def login(self, session=None):
+    def login(self, session: requests.Session = None) -> None:
         """
         Parses app key from betfair exchange site.
 
@@ -25,8 +26,8 @@ class RaceCard(BaseEndpoint):
         session = session or self.client.session
         try:
             response = session.get(self.login_url)
-        except ConnectionError:
-            raise APIError(None, self.login_url, None, "ConnectionError")
+        except requests.ConnectionError as e:
+            raise APIError(None, self.login_url, None, e)
         except Exception as e:
             raise APIError(None, self.login_url, None, e)
         app_key = re.findall(r'''"appKey":\s"(.*?)"''', response.text)
@@ -36,8 +37,12 @@ class RaceCard(BaseEndpoint):
             raise RaceCardError("Unable to find appKey")
 
     def get_race_card(
-        self, market_ids, data_entries=None, session=None, lightweight=None
-    ):
+        self,
+        market_ids: list,
+        data_entries: str = None,
+        session: requests.Session = None,
+        lightweight: bool = True,
+    ) -> Union[list, List[resources.RaceCard]]:
         """
         Returns a list of race cards based on market ids provided.
 
@@ -62,8 +67,12 @@ class RaceCard(BaseEndpoint):
         )
 
     def get_race_result(
-        self, market_ids, data_entries=None, session=None, lightweight=True
-    ):
+        self,
+        market_ids: list,
+        data_entries: str = None,
+        session: requests.Session = None,
+        lightweight: bool = True,
+    ) -> list:
         """
         Returns a list of race results based on event ids provided.
 
@@ -83,16 +92,18 @@ class RaceCard(BaseEndpoint):
         (response, elapsed_time) = self.request(
             "raceResults", params=params, session=session
         )
-        return self.process_response(response, resources, elapsed_time, lightweight)
+        return self.process_response(response, None, elapsed_time, lightweight)
 
-    def request(self, method=None, params=None, session=None):
+    def request(
+        self, method: str = None, params: dict = None, session: requests.Session = None
+    ) -> (dict, float):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
         url = "%s%s" % (self.url, method)
         try:
             response = session.get(url, params=params, headers=self.headers)
-        except ConnectionError:
-            raise APIError(None, method, params, "ConnectionError")
+        except requests.ConnectionError as e:
+            raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
@@ -106,13 +117,13 @@ class RaceCard(BaseEndpoint):
         return response_data, elapsed_time
 
     @staticmethod
-    def create_race_card_req(market_ids, data_entries):
+    def create_race_card_req(market_ids: list, data_entries: str) -> dict:
         if not data_entries:
             data_entries = "RACE, TIMEFORM_DATA, RUNNERS, RUNNER_DETAILS"
         return {"dataEntries": data_entries, "marketId": ",".join(market_ids)}
 
     @staticmethod
-    def create_race_result_req(market_ids, data_entries):
+    def create_race_result_req(market_ids: list, data_entries: str) -> dict:
         if not data_entries:
             data_entries = "RUNNERS, MARKETS, PRICES, RACE, COURSE"
         return {
@@ -122,7 +133,7 @@ class RaceCard(BaseEndpoint):
         }
 
     @property
-    def headers(self):
+    def headers(self) -> dict:
         return {
             "Connection": "keep-alive",
             "Content-Type": "application/json",
@@ -130,9 +141,9 @@ class RaceCard(BaseEndpoint):
         }
 
     @property
-    def login_url(self):
+    def login_url(self) -> str:
         return "https://www.betfair.com/exchange/plus/"
 
     @property
-    def url(self):
+    def url(self) -> str:
         return "https://www.betfair.com/rest/v2/"

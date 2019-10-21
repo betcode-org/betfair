@@ -1,3 +1,4 @@
+import requests
 from .exceptions import StatusCodeError
 
 TICK_SIZES = {
@@ -15,7 +16,7 @@ TICK_SIZES = {
 }
 
 
-def check_status_code(response, codes=None):
+def check_status_code(response: requests.Response, codes: list = None) -> None:
     """
     Checks response.status_code is in codes.
 
@@ -28,7 +29,7 @@ def check_status_code(response, codes=None):
         raise StatusCodeError(response.status_code)
 
 
-def clean_locals(data):
+def clean_locals(data: dict) -> dict:
     """
     Clean up locals dict, remove empty and self/session/params params
     and convert to camelCase.
@@ -46,7 +47,7 @@ def clean_locals(data):
         }
 
 
-def to_camel_case(snake_str):
+def to_camel_case(snake_str: str) -> str:
     """
     Converts snake_string to camelCase
 

@@ -1,19 +1,20 @@
 import datetime
 import logging
 import time
+import queue
 
 from .cache import MarketBookCache, OrderBookCache
 
 logger = logging.getLogger(__name__)
 
 
-class BaseStream(object):
+class BaseStream:
     """Separate stream class to hold market/order caches
     """
 
     _lookup = "mc"
 
-    def __init__(self, listener):
+    def __init__(self, listener: object):
         self._listener = listener
 
         self._initial_clk = None
@@ -25,7 +26,7 @@ class BaseStream(object):
         self.time_created = datetime.datetime.utcnow()
         self.time_updated = datetime.datetime.utcnow()
 
-    def on_subscribe(self, data):
+    def on_subscribe(self, data: dict) -> None:
         self._update_clk(data)
         publish_time = data.get("pt")
 
@@ -36,17 +37,17 @@ class BaseStream(object):
             % (self.unique_id, len(self._caches), self._lookup)
         )
 
-    def on_heartbeat(self, data):
+    def on_heartbeat(self, data: dict) -> None:
         self._update_clk(data)
 
-    def on_resubscribe(self, data):
+    def on_resubscribe(self, data: dict) -> None:
         self.on_update(data)
         logger.info(
             "[Stream: %s]: %s %s resubscribed"
             % (self.unique_id, len(self._caches), self._lookup)
         )
 
-    def on_update(self, data):
+    def on_update(self, data: dict) -> None:
         self._update_clk(data)
 
         publish_time = data["pt"]
@@ -57,27 +58,27 @@ class BaseStream(object):
         if self._lookup in data:
             self._process(data[self._lookup], publish_time)
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         self._caches.clear()
 
-    def snap(self, market_ids=None):
+    def snap(self, market_ids: list = None) -> list:
         return [
             cache.create_resource(self.unique_id, None, self._lightweight)
             for cache in list(self._caches.values())
             if market_ids is None or cache.market_id in market_ids
         ]
 
-    def on_process(self, output):
+    def on_process(self, output: list) -> None:
         if self.output_queue:
             self.output_queue.put(output)
 
-    def _on_creation(self):
+    def _on_creation(self) -> None:
         logger.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
 
-    def _process(self, book_data, publish_time):
+    def _process(self, book_data: dict, publish_time: int) -> None:
         pass
 
-    def _update_clk(self, data):
+    def _update_clk(self, data: dict) -> None:
         (initial_clk, clk) = (data.get("initialClk"), data.get("clk"))
         if initial_clk:
             self._initial_clk = initial_clk
@@ -86,32 +87,32 @@ class BaseStream(object):
         self.time_updated = datetime.datetime.utcnow()
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> int:
         return self._listener.stream_unique_id
 
     @property
-    def output_queue(self):
+    def output_queue(self) -> queue.Queue:
         return self._listener.output_queue
 
     @property
-    def _max_latency(self):
+    def _max_latency(self) -> float:
         return self._listener.max_latency
 
     @property
-    def _lightweight(self):
+    def _lightweight(self) -> bool:
         return self._listener.lightweight
 
     @staticmethod
-    def _calc_latency(publish_time):
+    def _calc_latency(publish_time: int) -> float:
         return time.time() - publish_time / 1e3
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._caches)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "BaseStream"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<BaseStream>"
 
 
@@ -119,7 +120,7 @@ class MarketStream(BaseStream):
 
     _lookup = "mc"
 
-    def _process(self, market_books, publish_time):
+    def _process(self, market_books: list, publish_time: int) -> None:
         output_market_book = []
         for market_book in market_books:
             market_id = market_book["id"]
@@ -147,10 +148,10 @@ class MarketStream(BaseStream):
             )
         self.on_process(output_market_book)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "MarketStream"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<MarketStream [%s]>" % len(self)
 
 
@@ -158,7 +159,7 @@ class OrderStream(BaseStream):
 
     _lookup = "oc"
 
-    def _process(self, order_books, publish_time):
+    def _process(self, order_books: list, publish_time: int) -> None:
         output_order_book = []
         for order_book in order_books:
             market_id = order_book["id"]
@@ -184,8 +185,8 @@ class OrderStream(BaseStream):
             )
         self.on_process(output_order_book)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "OrderStream"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<OrderStream [%s]>" % len(self)

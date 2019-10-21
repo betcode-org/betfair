@@ -11,7 +11,7 @@ class RaceDetails(BaseResource):
         self.last_updated = self.strip_datetime(kwargs.get("lastUpdated"))
 
 
-class UpdateContext(object):
+class UpdateContext:
     def __init__(self, lastUpdated, updateSequence, updateType, eventTime=None):
         self.last_updated = BaseResource.strip_datetime(lastUpdated)
         self.update_sequence = updateSequence
@@ -34,7 +34,7 @@ class Score(BaseResource):
         self.values = kwargs.get("values")
 
 
-# class Incident(object):
+# class Incident:
 #
 #     def __int__(self, updateContext, values):
 #         self.update_context = updateContext

@@ -1,5 +1,6 @@
 import datetime
-from requests import ConnectionError
+import requests
+from typing import Union, List
 
 from ..exceptions import APIError, InvalidResponse
 from ..utils import check_status_code
@@ -13,7 +14,9 @@ class InPlayService(BaseEndpoint):
     In play service operations.
     """
 
-    def get_event_timeline(self, event_id, session=None, lightweight=None):
+    def get_event_timeline(
+        self, event_id: int, session: requests.Session = None, lightweight: bool = None
+    ) -> Union[list, resources.EventTimeline]:
         """
         Returns event timeline for event id provided.
 
@@ -35,7 +38,12 @@ class InPlayService(BaseEndpoint):
             response, resources.EventTimeline, elapsed_time, lightweight
         )
 
-    def get_event_timelines(self, event_ids, session=None, lightweight=None):
+    def get_event_timelines(
+        self,
+        event_ids: list,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.EventTimeline]]:
         """
         Returns a list of event timelines based on event id's
         supplied.
@@ -58,7 +66,12 @@ class InPlayService(BaseEndpoint):
             response, resources.EventTimeline, elapsed_time, lightweight
         )
 
-    def get_scores(self, event_ids, session=None, lightweight=None):
+    def get_scores(
+        self,
+        event_ids: list,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.Scores]]:
         """
         Returns a list of scores based on event id's
         supplied.
@@ -81,13 +94,19 @@ class InPlayService(BaseEndpoint):
             response, resources.Scores, elapsed_time, lightweight
         )
 
-    def request(self, method=None, params=None, session=None, url=None):
+    def request(
+        self,
+        method: str = None,
+        params: dict = None,
+        session: requests.Session = None,
+        url: str = None,
+    ) -> (dict, float):
         session = session or self.client.session
         date_time_sent = datetime.datetime.utcnow()
         try:
             response = session.get(url, params=params, headers=self.headers)
-        except ConnectionError:
-            raise APIError(None, method, params, "ConnectionError")
+        except requests.ConnectionError as e:
+            raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
         elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
@@ -101,9 +120,9 @@ class InPlayService(BaseEndpoint):
         return response_data, elapsed_time
 
     @property
-    def headers(self):
+    def headers(self) -> dict:
         return {"Connection": "keep-alive", "Content-Type": "application/json"}
 
     @property
-    def url(self):
+    def url(self) -> str:
         return "https://ips.betfair.com/inplayservice/v1.1/"

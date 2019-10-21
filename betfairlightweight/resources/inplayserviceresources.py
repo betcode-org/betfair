@@ -1,14 +1,14 @@
 from .baseresource import BaseResource
 
 
-class Innings(object):
+class Innings:
     def __init__(self, overs, runs, wickets):
         self.overs = overs
         self.runs = runs
         self.wickets = wickets
 
 
-class HomeAwayBase(object):
+class HomeAwayBase:
     def __init__(
         self,
         penaltiesScore,
@@ -64,7 +64,7 @@ class HomeAwayBase(object):
         self.quarter_by_quarter = quarterByQuarter
 
 
-class Score(object):
+class Score:
     def __init__(
         self,
         home,
@@ -88,7 +88,7 @@ class Score(object):
         self.away = HomeAwayBase(**away)
 
 
-class UpdateDetail(object):
+class UpdateDetail:
     def __init__(
         self,
         matchTime,
@@ -131,14 +131,14 @@ class EventTimeline(BaseResource):
         )
 
 
-class FullTimeElapsed(object):
+class FullTimeElapsed:
     def __init__(self, hour, min, sec):
         self.hour = hour
         self.min = min
         self.sec = sec
 
 
-class StateOfBall(object):
+class StateOfBall:
     def __init__(
         self,
         appealId,

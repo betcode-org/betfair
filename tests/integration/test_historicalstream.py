@@ -14,7 +14,7 @@ class HistoricalStreamTest(unittest.TestCase):
         stream.start()
 
         assert stream.listener.stream_type == "marketSubscription"
-        assert stream.listener.stream_unique_id == "HISTORICAL"
+        assert stream.listener.stream_unique_id == 0
         assert stream.listener.clk == "3522512789"
 
         assert stream.listener.stream._updates_processed == 480
