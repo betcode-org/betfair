@@ -8,9 +8,10 @@ Release History
 
 **Improvements**
 
-- async removed from streaming (force user to handle thread)
+- *Breaking* async removed from streaming (force user to handle thread)
 - Black formatting on all files
 - python 'Typing' added
+- *Breaking* Description removed from 'create_stream'
 
 **Bug Fixes**
 

@@ -21,7 +21,6 @@ class BetfairStreamTest(unittest.TestCase):
         self.session_token = "session_token"
         self.timeout = 6
         self.buffer_size = 1024
-        self.description = "test_stream"
         self.betfair_stream = BetfairStream(
             self.unique_id,
             self.mock_listener,
@@ -29,7 +28,6 @@ class BetfairStreamTest(unittest.TestCase):
             self.session_token,
             self.timeout,
             self.buffer_size,
-            self.description,
             None,
         )
 
@@ -40,7 +38,6 @@ class BetfairStreamTest(unittest.TestCase):
         assert self.betfair_stream.session_token == self.session_token
         assert self.betfair_stream.timeout == self.timeout
         assert self.betfair_stream.buffer_size == self.buffer_size
-        assert self.betfair_stream.description == self.description
         assert self.betfair_stream.host == "stream-api.betfair.com"
         assert self.betfair_stream.receive_count == 0
         assert self.betfair_stream.datetime_last_received is None
@@ -56,7 +53,6 @@ class BetfairStreamTest(unittest.TestCase):
             self.session_token,
             self.timeout,
             self.buffer_size,
-            self.description,
             "integration",
         )
         assert betfair_stream.host == "stream-api-integration.betfair.com"
