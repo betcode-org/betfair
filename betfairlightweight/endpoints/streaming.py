@@ -53,7 +53,9 @@ class Streaming:
         )
 
     @staticmethod
-    def create_historical_stream(directory: str, listener: BaseListener = None) -> HistoricalStream:
+    def create_historical_stream(
+        directory: str, listener: BaseListener = None
+    ) -> HistoricalStream:
         """
         Uses streaming listener/cache to parse betfair
         historical data:
@@ -69,7 +71,9 @@ class Streaming:
         return HistoricalStream(directory, listener)
 
     @staticmethod
-    def create_historical_generator_stream(directory: str, listener: BaseListener = None) -> HistoricalGeneratorStream:
+    def create_historical_generator_stream(
+        directory: str, listener: BaseListener = None
+    ) -> HistoricalGeneratorStream:
         """
         Uses generator listener/cache to parse betfair
         historical data:
