@@ -98,7 +98,7 @@ class BaseClient:
     def get_password(self) -> str:
         """
         If password is not provided will look in environment variables
-        for username+'password'.
+        for self.username+'password'.
         """
         if self.password is None:
             if os.environ.get(self.username + "password"):
@@ -155,8 +155,8 @@ class BaseClient:
         ssl_path = os.path.join(os.pardir, certs)
         try:
             cert_path = os.listdir(ssl_path)
-        except FileNotFoundError:
-            raise CertsError(certs)
+        except FileNotFoundError as e:
+            raise CertsError(str(e))
 
         cert = None
         key = None
@@ -167,7 +167,7 @@ class BaseClient:
             elif ext == ".key":
                 key = os.path.join(ssl_path, file)
         if cert is None or key is None:
-            raise CertsError(certs)
+            raise CertsError("Certificates not found in directory: '%s'" % ssl_path)
         return [cert, key]
 
     @property
@@ -176,6 +176,7 @@ class BaseClient:
             "Accept": "application/json",
             "X-Application": self.app_key,
             "content-type": "application/x-www-form-urlencoded",
+            "User-Agent": "betfairlightweight",
         }
 
     @property
@@ -185,6 +186,7 @@ class BaseClient:
             "X-Application": self.app_key,
             "X-Authentication": self.session_token,
             "content-type": "application/x-www-form-urlencoded",
+            "User-Agent": "betfairlightweight",
         }
 
     @property

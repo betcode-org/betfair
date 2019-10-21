@@ -144,19 +144,21 @@ class BaseClientTest(unittest.TestCase):
     def test_get_app_key_mocked(self, mocked_environ):
         self.client.app_key = None
         mocked_environ.__get__ = mock.Mock(return_value="app_key")
-        assert self.client.get_app_key() == mocked_environ.get()
+        self.assertEqual(self.client.get_app_key(), mocked_environ.get())
 
     def test_client_headers(self):
         assert self.client.login_headers == {
             "Accept": "application/json",
             "X-Application": self.client.app_key,
             "content-type": "application/x-www-form-urlencoded",
+            "User-Agent": "betfairlightweight",
         }
         assert self.client.keep_alive_headers == {
             "Accept": "application/json",
             "X-Application": self.client.app_key,
             "X-Authentication": self.client.session_token,
             "content-type": "application/x-www-form-urlencoded",
+            "User-Agent": "betfairlightweight",
         }
         assert self.client.request_headers == {
             "X-Application": self.client.app_key,
