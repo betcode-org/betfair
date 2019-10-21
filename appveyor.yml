@@ -11,12 +11,14 @@ environment:
     - PYTHON: "C:\\Python37"
       PYTHON_VERSION: "3.7.x"
 
+    - PYTHON: "C:\\Python38"
+      PYTHON_VERSION: "3.8.x"
+
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "pip install setuptools==39.2.0"
   - "python setup.py install"
 
 test_script:
