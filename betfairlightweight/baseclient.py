@@ -1,7 +1,7 @@
 import requests
 import collections
-import datetime
 import os
+import time
 
 from .exceptions import PasswordError, AppKeyError, CertsError
 
@@ -59,11 +59,11 @@ class BaseClient:
         Creates base client for API operations.
 
         :param str username: Betfair username
-        :param str password: Password for supplied username, if None will look in .bashprofile
+        :param str password: Betfair password for supplied username, if None will look in .bashprofile
         :param str app_key: App Key for account, if None will look in .bashprofile
-        :param str certs: Directory for certificates, if None will look in /certs/
-        :param str locale: Exchange to be used, defaults to UK for login and global for api
-        :param list cert_files: Certificate and key files. If None will look in `certs`
+        :param str certs: Directory for certificates, if None will look in /certs
+        :param str locale: Exchange to be used, defaults to international (.com) exchange
+        :param list cert_files: Certificate and key files. If None will use `self.certs`
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
         """
         self.username = username
@@ -93,7 +93,7 @@ class BaseClient:
         :param str session_token: Session token from request.
         """
         self.session_token = session_token
-        self._login_time = datetime.datetime.now()
+        self._login_time = time.time()
 
     def get_password(self) -> str:
         """
@@ -132,9 +132,9 @@ class BaseClient:
         Returns True if login_time not set or seconds since
         login time is greater half session timeout.
         """
-        if not self._login_time or (
-            datetime.datetime.now() - self._login_time
-        ).total_seconds() > (self.session_timeout / 2):
+        if not self._login_time or time.time() - self._login_time > (
+            self.session_timeout / 2
+        ):
             return True
         else:
             return False

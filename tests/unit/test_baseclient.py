@@ -171,7 +171,7 @@ class BaseClientTest(unittest.TestCase):
         assert self.client.session_expired is True
         self.client.set_session_token("session_token")
         assert self.client.session_expired is False
-        self.client._login_time = datetime.datetime(2000, 6, 1, 0, 0, 0)
+        self.client._login_time = 959814000
         assert self.client.session_expired is True
 
     def test_client_logout(self):
