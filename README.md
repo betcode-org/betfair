@@ -3,9 +3,7 @@
 
 [![Build Status](https://travis-ci.org/liampauling/betfair.svg?branch=master)](https://travis-ci.org/liampauling/betfair) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight)
 
-Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and most account operations, see [examples](https://github.com/liampauling/betfair/tree/master/examples).
-
-[Documentation](https://github.com/liampauling/betfair/wiki)
+Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and account operations, see [examples](https://github.com/liampauling/betfair/tree/master/examples).
 
 [Join slack group](https://betfairlightweight.herokuapp.com)
 
@@ -80,18 +78,13 @@ Currently two listeners available, below will run the base listener which prints
 
 [Exchange Stream API](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
 
-In development so breaking changes likely.
-
 ```python
 from betfairlightweight.filters import (
     streaming_market_filter,
     streaming_market_data_filter,
 )
 
-betfair_socket = trading.streaming.create_stream(
-    unique_id=0,
-    description='Test Market Socket',
-)
+betfair_socket = trading.streaming.create_stream()
 
 market_filter = streaming_market_filter(
     event_type_ids=['7'],
@@ -108,7 +101,7 @@ betfair_socket.subscribe_to_markets(
     market_data_filter=market_data_filter,
 )
 
-betfair_socket.start()
+betfair_socket.start()  # blocking
 ```
 
 # historic data
@@ -127,8 +120,6 @@ trading.historic.get_my_data()
 Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see [examples](https://github.com/liampauling/betfair/tree/master/examples)).
 
 [Historic Data](https://historicdata.betfair.com/#/home)
-
-In development so breaking changes likely.
 
 ```python
 
