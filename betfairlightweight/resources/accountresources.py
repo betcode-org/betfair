@@ -33,7 +33,7 @@ class LegacyData(object):
 
     def __init__(self, avgPrice, betCategoryType, betSize, betType, eventId, eventTypeId, fullMarketName, marketName,
                  grossBetAmount, transactionId, marketType, placedDate, selectionId, startDate, transactionType,
-                 winLose, selectionName=None, commissionRate=None, avgPriceRaw=None):
+                 winLose, selectionName=None, commissionRate=None, avgPriceRaw=None, handicap=None):
         self.avg_price = avgPrice
         self.avg_price_raw = avgPriceRaw
         self.bet_category_type = betCategoryType
@@ -53,6 +53,7 @@ class LegacyData(object):
         self.win_lose = winLose
         self.selection_name = selectionName
         self.commission_rate = commissionRate
+        self.handicap = handicap
 
 
 class AccountStatement(object):
