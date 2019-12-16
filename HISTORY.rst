@@ -28,6 +28,13 @@ Release History
 - python 3 only
 - python 3.8 testing added
 
+1.10.4 (2019-10-28)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- handicap added to LegacyData
+
 1.10.3 (2019-09-30)
 +++++++++++++++++++
 

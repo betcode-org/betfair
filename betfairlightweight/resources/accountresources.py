@@ -49,6 +49,7 @@ class LegacyData:
         selectionName=None,
         commissionRate=None,
         avgPriceRaw=None,
+        handicap=None,
     ):
         self.avg_price = avgPrice
         self.avg_price_raw = avgPriceRaw
@@ -69,6 +70,7 @@ class LegacyData:
         self.win_lose = winLose
         self.selection_name = selectionName
         self.commission_rate = commissionRate
+        self.handicap = handicap
 
 
 class AccountStatement:
