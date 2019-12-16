@@ -1,20 +1,18 @@
-import re
 import os
-
 from setuptools import setup
 
+here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(os.path.dirname(__file__), "requirements.txt")) as f:
+with open(os.path.join(here, "requirements.txt")) as f:
     INSTALL_REQUIRES = f.read().splitlines()
 
-with open("betfairlightweight/__init__.py", "r") as f:
-    version = re.search(
-        r"^__version__ = ['\"]([^'\"]*)['\"]", f.read(), re.MULTILINE
-    ).group(1)
+about = {}
+with open(os.path.join(here, "betfairlightweight", "__version__.py"), "r") as f:
+    exec(f.read(), about)
 
 setup(
-    name="betfairlightweight",
-    version=version,
+    name=about["__title__"],
+    version=about["__version__"],
     packages=[
         "betfairlightweight",
         "betfairlightweight.endpoints",
@@ -23,11 +21,11 @@ setup(
     ],
     package_dir={"betfairlightweight": "betfairlightweight"},
     install_requires=INSTALL_REQUIRES,
-    url="https://github.com/liampauling/betfair",
-    license="MIT",
-    author="liampauling",
+    url=about["__url__"],
+    license=about["__license__"],
+    author=about["__author__"],
     author_email="",
-    description="Lightweight python wrapper for Betfair API-NG",
+    description=about["__description__"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",

@@ -15,6 +15,8 @@ Release History
 - locale added to Navigation
 - Certificate error messages improved
 - Logging added to socket send
+- __version__ file added and refactor to setup.py
+- __version__ added to user agent
 
 **Bug Fixes**
 

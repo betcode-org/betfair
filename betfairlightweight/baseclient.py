@@ -4,6 +4,7 @@ import requests
 import collections
 
 from .exceptions import PasswordError, AppKeyError, CertsError
+from .utils import default_user_agent
 
 IDENTITY = "https://identitysso.betfair{tld}/api/"
 IDENTITY_CERT = "https://identitysso-cert.betfair{tld}/api/"
@@ -11,6 +12,7 @@ API = "https://api.betfair.com/exchange/"
 NAVIGATION = (
     "https://api.betfair{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
 )
+USER_AGENT = default_user_agent()
 
 
 class BaseClient:
@@ -176,7 +178,7 @@ class BaseClient:
             "Accept": "application/json",
             "X-Application": self.app_key,
             "content-type": "application/x-www-form-urlencoded",
-            "User-Agent": "betfairlightweight",
+            "User-Agent": USER_AGENT,
         }
 
     @property
@@ -186,7 +188,7 @@ class BaseClient:
             "X-Application": self.app_key,
             "X-Authentication": self.session_token,
             "content-type": "application/x-www-form-urlencoded",
-            "User-Agent": "betfairlightweight",
+            "User-Agent": USER_AGENT,
         }
 
     @property
@@ -197,5 +199,5 @@ class BaseClient:
             "content-type": "application/json",
             "Accept-Encoding": "gzip, deflate",
             "Connection": "keep-alive",
-            "User-Agent": "betfairlightweight",
+            "User-Agent": USER_AGENT,
         }

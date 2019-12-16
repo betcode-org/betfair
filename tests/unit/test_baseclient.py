@@ -146,19 +146,20 @@ class BaseClientTest(unittest.TestCase):
         mocked_environ.__get__ = mock.Mock(return_value="app_key")
         self.assertEqual(self.client.get_app_key(), mocked_environ.get())
 
-    def test_client_headers(self):
+    @mock.patch("betfairlightweight.baseclient.USER_AGENT")
+    def test_client_headers(self, mock_user_agent):
         assert self.client.login_headers == {
             "Accept": "application/json",
             "X-Application": self.client.app_key,
             "content-type": "application/x-www-form-urlencoded",
-            "User-Agent": "betfairlightweight",
+            "User-Agent": mock_user_agent,
         }
         assert self.client.keep_alive_headers == {
             "Accept": "application/json",
             "X-Application": self.client.app_key,
             "X-Authentication": self.client.session_token,
             "content-type": "application/x-www-form-urlencoded",
-            "User-Agent": "betfairlightweight",
+            "User-Agent": mock_user_agent,
         }
         assert self.client.request_headers == {
             "X-Application": self.client.app_key,
@@ -166,7 +167,7 @@ class BaseClientTest(unittest.TestCase):
             "content-type": "application/json",
             "Accept-Encoding": "gzip, deflate",
             "Connection": "keep-alive",
-            "User-Agent": "betfairlightweight",
+            "User-Agent": mock_user_agent,
         }
 
     def test_client_logged_in_session(self):
