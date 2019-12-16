@@ -20,10 +20,10 @@ $ pip install betfairlightweight
 In order to connect to the Betfair API you will need an App Key, SSL Certificates and a username/password.
 
 ### App Key
-Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Application+Keys) instructions to get your app key. You can either go for a delayed or a live key.
+Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Application+Keys) instructions to get your app key, you can either use a delayed or live key.
 
 ### SSL certificates
-Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Non-Interactive+%28bot%29+login) instructions to set up your SSL certificates. Save your .ctr and .key files to a local directory. The default directory where the library is looking for the keys if '/certs' but you can specify any other directory.
+Follow [these](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Non-Interactive+%28bot%29+login) instructions to set up your SSL certificates. Save your .ctr and .key files to a local directory. The default directory where the library is looking for the keys is '/certs' but you can specify any other directory.
 
 ### Using the library
 
@@ -37,7 +37,7 @@ trading = betfairlightweight.APIClient('username', 'password', app_key='app_key'
 trading.login()
 ```
 
-or the following for interactive login (no certs)
+or the following for interactive login with no certs (not as secure)
 
 ```python
 import betfairlightweight
