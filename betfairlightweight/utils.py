@@ -1,5 +1,7 @@
 import requests
+
 from .exceptions import StatusCodeError
+from .__version__ import __title__, __version__
 
 TICK_SIZES = {
     1.0: 0.01,
@@ -56,3 +58,7 @@ def to_camel_case(snake_str: str) -> str:
     """
     components = snake_str.split("_")
     return components[0] + "".join(x.title() for x in components[1:])
+
+
+def default_user_agent():
+    return "{0}/{1}".format(__title__, __version__)
