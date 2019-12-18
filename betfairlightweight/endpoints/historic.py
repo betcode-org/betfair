@@ -19,8 +19,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "GetMyData"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def get_collection_options(
         self,
@@ -61,8 +61,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "GetCollectionOptions"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def get_data_size(
         self,
@@ -103,8 +103,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "GetAdvBasketDataSize"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def get_file_list(
         self,
@@ -145,8 +145,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "DownloadListOfFiles"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def download_file(self, file_path: str, store_directory: str = None) -> str:
         """
@@ -196,11 +196,11 @@ class Historic(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
-        return response_data, elapsed_time
+        return response, response_json, elapsed_time
 
     @property
     def headers(self) -> dict:

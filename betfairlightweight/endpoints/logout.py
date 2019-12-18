@@ -27,10 +27,10 @@ class Logout(BaseEndpoint):
 
         :rtype: LogoutResource
         """
-        (response, elapsed_time) = self.request(session=session)
+        (response, response_json, elapsed_time) = self.request(session=session)
         self.client.client_logout()
         return self.process_response(
-            response, LogoutResource, elapsed_time, lightweight
+            response, response_json, LogoutResource, elapsed_time, lightweight
         )
 
     def request(
@@ -48,13 +48,13 @@ class Logout(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
         if self._error_handler:
-            self._error_handler(response_data)
-        return response_data, elapsed_time
+            self._error_handler(response_json)
+        return response, response_json, elapsed_time
 
     def _error_handler(
         self, response: dict, method: str = None, params: dict = None

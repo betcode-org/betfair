@@ -17,6 +17,7 @@ Release History
 - Logging added to socket send
 - __version__ file added and refactor to setup.py
 - __version__ added to user agent
+- raw requests Response added to objects
 
 **Bug Fixes**
 

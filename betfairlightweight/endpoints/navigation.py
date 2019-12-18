@@ -39,11 +39,11 @@ class Navigation(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
-        return response_data
+        return response_json
 
     @property
     def url(self) -> str:

@@ -17,7 +17,7 @@ class LogoutTest(unittest.TestCase):
     @mock.patch("betfairlightweight.endpoints.logout.Logout.request")
     def test_call(self, mock_response):
         mock = create_mock_json("tests/resources/logout_success.json")
-        mock_response.return_value = (mock.json(), 1.3)
+        mock_response.return_value = (mock.Mock(), mock.json(), 1.3)
         response = self.logout()
 
         assert isinstance(response, LogoutResource)
@@ -33,7 +33,7 @@ class LogoutTest(unittest.TestCase):
         response = self.logout.request()
 
         mock_post.assert_called_once_with(url, headers=mock_logout_headers)
-        assert response[0] == mock_response.json()
+        assert response[1] == mock_response.json()
 
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
     @mock.patch("betfairlightweight.baseclient.BaseClient.keep_alive_headers")

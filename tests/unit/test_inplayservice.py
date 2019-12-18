@@ -23,7 +23,7 @@ class InPlayServiceTest(unittest.TestCase):
     )
     @mock.patch(
         "betfairlightweight.endpoints.inplayservice.InPlayService.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_event_timeline(self, mock_request, mock_process_response):
         event_id = 12345
@@ -48,7 +48,7 @@ class InPlayServiceTest(unittest.TestCase):
     )
     @mock.patch(
         "betfairlightweight.endpoints.inplayservice.InPlayService.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_event_timelines(self, mock_request, mock_process_response):
         event_ids = [12345, 54321]
@@ -73,7 +73,7 @@ class InPlayServiceTest(unittest.TestCase):
     )
     @mock.patch(
         "betfairlightweight.endpoints.inplayservice.InPlayService.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_scores(self, mock_request, mock_process_response):
         event_ids = [12345]

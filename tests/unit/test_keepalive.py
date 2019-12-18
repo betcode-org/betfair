@@ -17,7 +17,7 @@ class KeepAliveTest(unittest.TestCase):
     @mock.patch("betfairlightweight.endpoints.keepalive.KeepAlive.request")
     def test_call(self, mock_response):
         mock = create_mock_json("tests/resources/keep_alive_success.json")
-        mock_response.return_value = (mock.json(), 1.3)
+        mock_response.return_value = (mock.Mock(), mock.json(), 1.3)
         response = self.keep_alive()
 
         assert isinstance(response, KeepAliveResource)
@@ -33,7 +33,7 @@ class KeepAliveTest(unittest.TestCase):
         response = self.keep_alive.request()
 
         mock_post.assert_called_once_with(url, headers=mock_keep_alive_headers)
-        assert response[0] == mock_response.json()
+        assert response[1] == mock_response.json()
 
     @mock.patch("betfairlightweight.baseclient.BaseClient.keep_alive_headers")
     @mock.patch("betfairlightweight.baseclient.requests.post")

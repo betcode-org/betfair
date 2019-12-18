@@ -33,9 +33,11 @@ class InPlayService(BaseEndpoint):
             "regionCode": "UK",
             "locale": "en_GB",
         }
-        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
         return self.process_response(
-            response, resources.EventTimeline, elapsed_time, lightweight
+            response, response_json, resources.EventTimeline, elapsed_time, lightweight
         )
 
     def get_event_timelines(
@@ -61,9 +63,11 @@ class InPlayService(BaseEndpoint):
             "regionCode": "UK",
             "locale": "en_GB",
         }
-        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
         return self.process_response(
-            response, resources.EventTimeline, elapsed_time, lightweight
+            response, response_json, resources.EventTimeline, elapsed_time, lightweight
         )
 
     def get_scores(
@@ -89,9 +93,11 @@ class InPlayService(BaseEndpoint):
             "regionCode": "UK",
             "locale": "en_GB",
         }
-        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
         return self.process_response(
-            response, resources.Scores, elapsed_time, lightweight
+            response, response_json, resources.Scores, elapsed_time, lightweight
         )
 
     def request(
@@ -113,11 +119,11 @@ class InPlayService(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
-        return response_data, elapsed_time
+        return response, response_json, elapsed_time
 
     @property
     def headers(self) -> dict:

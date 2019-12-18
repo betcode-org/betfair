@@ -17,7 +17,7 @@ class LoginTest(unittest.TestCase):
     @mock.patch("betfairlightweight.endpoints.login.Login.request")
     def test_call(self, mock_response):
         mock_json = create_mock_json("tests/resources/login_success.json")
-        mock_response.return_value = (mock_json.json(), 1.3)
+        mock_response.return_value = (mock.Mock(), mock_json.json(), 1.3)
         response = self.login()
 
         assert isinstance(response, LoginResource)
@@ -39,7 +39,7 @@ class LoginTest(unittest.TestCase):
             headers=mock_login_headers,
             cert=mock_cert,
         )
-        assert response[0] == mock_response.json()
+        assert response[1] == mock_response.json()
 
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
     @mock.patch("betfairlightweight.baseclient.BaseClient.login_headers")

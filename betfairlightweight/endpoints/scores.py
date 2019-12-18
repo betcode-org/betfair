@@ -35,9 +35,9 @@ class Scores(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "listRaceDetails")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.RaceDetails, elapsed_time, lightweight
+            response, response_json, resources.RaceDetails, elapsed_time, lightweight
         )
 
     # Following requires app key to be authorised
@@ -63,9 +63,9 @@ class Scores(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "listAvailableEvents")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.AvailableEvent, elapsed_time, lightweight
+            response, response_json, resources.AvailableEvent, elapsed_time, lightweight
         )
 
     def list_scores(
@@ -86,9 +86,9 @@ class Scores(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "listScores")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.Score, elapsed_time, lightweight
+            response, response_json, resources.Score, elapsed_time, lightweight
         )
 
     def list_incidents(
@@ -109,9 +109,9 @@ class Scores(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "listIncidents")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.Incidents, elapsed_time, lightweight
+            response, response_json, resources.Incidents, elapsed_time, lightweight
         )
 
     @property
