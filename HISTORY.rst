@@ -18,6 +18,7 @@ Release History
 - __version__ file added and refactor to setup.py
 - __version__ added to user agent
 - raw requests Response added to objects
+- elapsed_time now uses time() rather than datetime
 
 **Bug Fixes**
 

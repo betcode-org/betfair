@@ -1,4 +1,4 @@
-import datetime
+import time
 import requests
 from typing import Union, Type
 
@@ -31,7 +31,7 @@ class BaseEndpoint:
         """
         session = session or self.client.session
         request = self.create_req(method, params)
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         try:
             response = session.post(
                 self.url,
@@ -43,7 +43,7 @@ class BaseEndpoint:
             raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:

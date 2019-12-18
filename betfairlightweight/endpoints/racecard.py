@@ -1,5 +1,5 @@
 import re
-import datetime
+import time
 import requests
 from typing import Union, List
 
@@ -100,7 +100,7 @@ class RaceCard(BaseEndpoint):
         self, method: str = None, params: dict = None, session: requests.Session = None
     ) -> (dict, float):
         session = session or self.client.session
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         url = "%s%s" % (self.url, method)
         try:
             response = session.get(url, params=params, headers=self.headers)
@@ -108,7 +108,7 @@ class RaceCard(BaseEndpoint):
             raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:

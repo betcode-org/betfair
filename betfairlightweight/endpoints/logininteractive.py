@@ -1,4 +1,4 @@
-import datetime
+import time
 import requests
 from typing import Union
 
@@ -39,7 +39,7 @@ class LoginInteractive(BaseEndpoint):
         self, method: str = None, params: dict = None, session: requests.Session = None
     ) -> (dict, float):
         session = session or self.client.session
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         try:
             response = session.post(
                 self.url, data=self.data, headers=self.client.login_headers
@@ -48,7 +48,7 @@ class LoginInteractive(BaseEndpoint):
             raise APIError(None, exception=e)
         except Exception as e:
             raise APIError(None, exception=e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:

@@ -1,6 +1,6 @@
 import os
+import time
 import requests
-import datetime
 
 from ..exceptions import APIError, InvalidResponse
 from ..compat import json, json_loads
@@ -180,7 +180,7 @@ class Historic(BaseEndpoint):
         :param Session session: Requests session to be used, reduces latency.
         """
         session = session or self.client.session
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         try:
             response = session.post(
                 "%s%s" % (self.url, method),
@@ -192,7 +192,7 @@ class Historic(BaseEndpoint):
             raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:
