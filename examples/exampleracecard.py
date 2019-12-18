@@ -6,14 +6,14 @@ import betfairlightweight
 # setup logging
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
 
-# create trading instance
+# create trading instance (don't need username/password)
 trading = betfairlightweight.APIClient("username", "password")
-
-# update
-market_id = "1.133559518"
 
 # race card login
 trading.race_card.login()
+
+# update
+market_id = "1.133559518"
 
 # race card request (provide list / returns list)
 race_cards = trading.race_card.get_race_card(market_ids=[market_id])

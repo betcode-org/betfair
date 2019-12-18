@@ -56,6 +56,7 @@ class BaseClient:
         locale: str = None,
         cert_files: list = None,
         lightweight: bool = False,
+        session: requests.Session = None,
     ):
         """
         Creates base client for API operations.
@@ -67,6 +68,7 @@ class BaseClient:
         :param str locale: Exchange to be used, defaults to international (.com) exchange
         :param list cert_files: Certificate and key files. If None will use `self.certs`
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
+        :param requests.Session session: Pass requests session object, defaults to a new request each request
         """
         self.username = username
         self.password = password
@@ -76,7 +78,7 @@ class BaseClient:
         self.cert_files = cert_files
         self.lightweight = lightweight
 
-        self.session = requests
+        self.session = session if session else requests
         self._login_time = None
         self.session_token = None
         self.identity_uri = self.IDENTITY_URLS[locale]

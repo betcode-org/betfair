@@ -1,4 +1,3 @@
-import os
 import logging
 import queue
 import threading
@@ -14,8 +13,9 @@ from betfairlightweight.filters import (
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
 
 # create trading instance (app key must be activated for streaming)
-username = os.environ.get("username")
-trading = betfairlightweight.APIClient(username)
+trading = betfairlightweight.APIClient("username", "password", app_key="appKey")
+
+# login
 trading.login()
 
 # create queue

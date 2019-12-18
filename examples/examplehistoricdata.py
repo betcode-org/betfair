@@ -1,4 +1,3 @@
-import os
 import logging
 
 import betfairlightweight
@@ -14,8 +13,9 @@ https://historicdata.betfair.com/#/apidocs
 logging.basicConfig(level=logging.INFO)  # change to DEBUG to see log all updates
 
 # create trading instance
-username = os.environ.get("username")
-trading = betfairlightweight.APIClient(username)
+trading = betfairlightweight.APIClient("username", "password", app_key="appKey")
+
+# login
 trading.login()
 
 # get my data
