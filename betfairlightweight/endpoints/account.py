@@ -32,9 +32,9 @@ class Account(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "getAccountFunds")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.AccountFunds, elapsed_time, lightweight
+            response, response_json, resources.AccountFunds, elapsed_time, lightweight
         )
 
     def get_account_details(
@@ -51,9 +51,9 @@ class Account(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "getAccountDetails")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.AccountDetails, elapsed_time, lightweight
+            response, response_json, resources.AccountDetails, elapsed_time, lightweight
         )
 
     def get_account_statement(
@@ -83,9 +83,13 @@ class Account(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "getAccountStatement")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.AccountStatementResult, elapsed_time, lightweight
+            response,
+            response_json,
+            resources.AccountStatementResult,
+            elapsed_time,
+            lightweight,
         )
 
     def list_currency_rates(
@@ -105,9 +109,9 @@ class Account(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "%s%s" % (self.URI, "listCurrencyRates")
-        (response, elapsed_time) = self.request(method, params, session)
+        (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, resources.CurrencyRate, elapsed_time, lightweight
+            response, response_json, resources.CurrencyRate, elapsed_time, lightweight
         )
 
     def transfer_funds(self, session: requests.Session = None) -> None:

@@ -1,6 +1,7 @@
 import datetime
 import ujson as json
 import unittest
+from unittest import mock
 
 from betfairlightweight.resources.baseresource import BaseResource
 from tests.unit.tools import create_mock_json
@@ -12,6 +13,7 @@ class BaseResourceInit(unittest.TestCase):
         assert base_resource._datetime_created is not None
         assert base_resource._datetime_updated is not None
         assert base_resource.elapsed_time is None
+        assert base_resource._response is None
         assert base_resource._data == {}
 
     def test_data(self):
@@ -20,6 +22,11 @@ class BaseResourceInit(unittest.TestCase):
 
         assert base_resource.elapsed_time == 1.2
         assert base_resource._data == mock_response.json()
+
+    def test_response(self):
+        mock_response = mock.Mock()
+        base_resource = BaseResource(_response=mock_response)
+        assert base_resource._response == mock_response
 
     def test_data_json(self):
         mock_response = create_mock_json("tests/resources/base_resource.json")

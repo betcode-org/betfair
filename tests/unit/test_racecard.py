@@ -59,7 +59,7 @@ class RaceCardTest(unittest.TestCase):
     @mock.patch("betfairlightweight.endpoints.racecard.RaceCard.process_response")
     @mock.patch(
         "betfairlightweight.endpoints.racecard.RaceCard.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_race_card(self, mock_request, mock_process_response):
         market_ids = ["1", "2"]
@@ -78,7 +78,7 @@ class RaceCardTest(unittest.TestCase):
     @mock.patch("betfairlightweight.endpoints.racecard.RaceCard.process_response")
     @mock.patch(
         "betfairlightweight.endpoints.racecard.RaceCard.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_race_result(self, mock_request, mock_process_response):
         market_ids = ["1", "2"]

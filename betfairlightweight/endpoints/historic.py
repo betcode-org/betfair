@@ -1,6 +1,6 @@
 import os
+import time
 import requests
-import datetime
 
 from ..exceptions import APIError, InvalidResponse
 from ..compat import json, json_loads
@@ -19,8 +19,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "GetMyData"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def get_collection_options(
         self,
@@ -61,8 +61,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "GetCollectionOptions"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def get_data_size(
         self,
@@ -103,8 +103,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "GetAdvBasketDataSize"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def get_file_list(
         self,
@@ -145,8 +145,8 @@ class Historic(BaseEndpoint):
         """
         params = clean_locals(locals())
         method = "DownloadListOfFiles"
-        (response, elapsed_time) = self.request(method, params, session)
-        return response
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return response_json
 
     def download_file(self, file_path: str, store_directory: str = None) -> str:
         """
@@ -180,7 +180,7 @@ class Historic(BaseEndpoint):
         :param Session session: Requests session to be used, reduces latency.
         """
         session = session or self.client.session
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         try:
             response = session.post(
                 "%s%s" % (self.url, method),
@@ -192,15 +192,15 @@ class Historic(BaseEndpoint):
             raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
-        return response_data, elapsed_time
+        return response, response_json, elapsed_time
 
     @property
     def headers(self) -> dict:

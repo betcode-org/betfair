@@ -1,4 +1,4 @@
-import datetime
+import time
 import requests
 from typing import Union, Type
 
@@ -31,7 +31,7 @@ class BaseEndpoint:
         """
         session = session or self.client.session
         request = self.create_req(method, params)
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         try:
             response = session.post(
                 self.url,
@@ -43,17 +43,17 @@ class BaseEndpoint:
             raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
         if self._error_handler:
-            self._error_handler(response_data, method, params)
-        return response_data, elapsed_time
+            self._error_handler(response_json, method, params)
+        return response, response_json, elapsed_time
 
     @staticmethod
     def create_req(method: str, params: dict) -> str:
@@ -82,12 +82,14 @@ class BaseEndpoint:
 
     def process_response(
         self,
+        response: requests.Response,
         response_json: Union[dict, list],
         resource: Type[BaseResource],
         elapsed_time: float,
         lightweight: bool,
     ) -> Union[BaseResource, dict, list]:
         """
+        :param requests.Response response: requests Response object
         :param dict/list response_json: Response in dict format
         :param BaseResource resource: Resource data structure
         :param float elapsed_time: Elapsed time of request
@@ -104,12 +106,15 @@ class BaseEndpoint:
             return result
         elif isinstance(result, list):
             try:
-                return [resource(elapsed_time=elapsed_time, **x) for x in result]
+                return [
+                    resource(elapsed_time=elapsed_time, _response=response, **x)
+                    for x in result
+                ]
             except TypeError:
                 raise InvalidResponse(response=result)
         else:
             try:
-                return resource(elapsed_time=elapsed_time, **result)
+                return resource(elapsed_time=elapsed_time, _response=response, **result)
             except TypeError:
                 raise InvalidResponse(response=result)
 

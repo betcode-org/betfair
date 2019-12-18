@@ -18,7 +18,7 @@ class HistoricalTest(unittest.TestCase):
 
     @mock.patch(
         "betfairlightweight.endpoints.historic.Historic.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_my_data(self, mock_request):
         self.historic.get_my_data()
@@ -28,7 +28,7 @@ class HistoricalTest(unittest.TestCase):
 
     @mock.patch(
         "betfairlightweight.endpoints.historic.Historic.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_collection_options(self, mock_request):
         params = {
@@ -48,7 +48,7 @@ class HistoricalTest(unittest.TestCase):
 
     @mock.patch(
         "betfairlightweight.endpoints.historic.Historic.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_data_size(self, mock_request):
         params = {
@@ -68,7 +68,7 @@ class HistoricalTest(unittest.TestCase):
 
     @mock.patch(
         "betfairlightweight.endpoints.historic.Historic.request",
-        return_value=(mock.Mock(), 1.3),
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
     )
     def test_get_file_list(self, mock_request):
         params = {

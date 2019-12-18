@@ -1,4 +1,4 @@
-import datetime
+import time
 import requests
 from typing import Union, List
 
@@ -33,9 +33,11 @@ class InPlayService(BaseEndpoint):
             "regionCode": "UK",
             "locale": "en_GB",
         }
-        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
         return self.process_response(
-            response, resources.EventTimeline, elapsed_time, lightweight
+            response, response_json, resources.EventTimeline, elapsed_time, lightweight
         )
 
     def get_event_timelines(
@@ -61,9 +63,11 @@ class InPlayService(BaseEndpoint):
             "regionCode": "UK",
             "locale": "en_GB",
         }
-        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
         return self.process_response(
-            response, resources.EventTimeline, elapsed_time, lightweight
+            response, response_json, resources.EventTimeline, elapsed_time, lightweight
         )
 
     def get_scores(
@@ -89,9 +93,11 @@ class InPlayService(BaseEndpoint):
             "regionCode": "UK",
             "locale": "en_GB",
         }
-        (response, elapsed_time) = self.request(params=params, session=session, url=url)
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
         return self.process_response(
-            response, resources.Scores, elapsed_time, lightweight
+            response, response_json, resources.Scores, elapsed_time, lightweight
         )
 
     def request(
@@ -102,22 +108,22 @@ class InPlayService(BaseEndpoint):
         url: str = None,
     ) -> (dict, float):
         session = session or self.client.session
-        date_time_sent = datetime.datetime.utcnow()
+        time_sent = time.time()
         try:
             response = session.get(url, params=params, headers=self.headers)
         except requests.ConnectionError as e:
             raise APIError(None, method, params, e)
         except Exception as e:
             raise APIError(None, method, params, e)
-        elapsed_time = (datetime.datetime.utcnow() - date_time_sent).total_seconds()
+        elapsed_time = time.time() - time_sent
 
         check_status_code(response)
         try:
-            response_data = json_loads(response.text)
+            response_json = json_loads(response.text)
         except ValueError:
             raise InvalidResponse(response.text)
 
-        return response_data, elapsed_time
+        return response, response_json, elapsed_time
 
     @property
     def headers(self) -> dict:
