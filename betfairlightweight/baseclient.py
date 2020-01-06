@@ -171,7 +171,10 @@ class BaseClient:
             elif ext == ".key":
                 key = os.path.join(ssl_path, file)
         if cert is None or key is None:
-            raise CertsError("Certificates not found in directory: '%s'" % ssl_path)
+            raise CertsError(
+                "Certificates not found in directory: '%s' (make sure .crt and .key file is present)"
+                % ssl_path
+            )
         return [cert, key]
 
     @property
