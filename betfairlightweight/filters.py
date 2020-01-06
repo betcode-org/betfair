@@ -197,9 +197,9 @@ def place_instruction(
     selection_id: int,
     side: str,
     handicap: float = None,
-    limit_order: bettingresources.LimitOrder = None,
-    limit_on_close_order: bettingresources.LimitOnCloseOrder = None,
-    market_on_close_order: bettingresources.MarketOnCloseOrder = None,
+    limit_order: dict = None,
+    limit_on_close_order: dict = None,
+    market_on_close_order: dict = None,
     customer_order_ref: str = None,
 ) -> dict:
     """
@@ -208,11 +208,9 @@ def place_instruction(
     :param int selection_id: selection on which to place order
     :param float handicap: handicap if placing order on asianhandicap type market
     :param str side: side of order
-    :param resources.LimitOrder limit_order: if orderType is a limitOrder structure details of the order.
-    :param resources.LimitOnCloseOrder limit_on_close_order: if orderType is a
-    limitOnCloseOrder structure details of the order.
-    :param resources.MarketOnCloseOrder market_on_close_order: if orderType is
-    a marketOnCloseOrder structure details of the order.
+    :param dict limit_order: if orderType is a limitOrder structure details of the order.
+    :param dict limit_on_close_order: if orderType is a limitOnCloseOrder structure details of the order.
+    :param dict market_on_close_order: if orderType is a marketOnCloseOrder structure details of the order.
     :param str customer_order_ref: an optional reference customers can set to identify instructions..
 
     :return: orders to place.

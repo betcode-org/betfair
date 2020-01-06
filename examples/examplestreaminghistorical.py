@@ -12,7 +12,7 @@ Data needs to be downloaded from:
 # setup logging
 logging.basicConfig(level=logging.INFO)
 
-# create trading instance (no need to put in correct details)
+# create trading instance (don't need username/password)
 trading = betfairlightweight.APIClient("username", "password")
 
 

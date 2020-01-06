@@ -1,3 +1,5 @@
+import requests
+
 from .baseclient import BaseClient
 from . import endpoints
 
@@ -12,6 +14,7 @@ class APIClient(BaseClient):
         locale: str = None,
         cert_files: list = None,
         lightweight: bool = False,
+        session: requests.Session = None,
     ):
         """
         Creates API client for API operations.
@@ -23,6 +26,7 @@ class APIClient(BaseClient):
         :param str locale: Exchange to be used, defaults to international (.com) exchange
         :param list cert_files: Certificate and key files. If None will use `self.certs`
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
+        :param requests.Session session: Pass requests session object, defaults to a new request each request
         """
         super(APIClient, self).__init__(
             username,
@@ -32,6 +36,7 @@ class APIClient(BaseClient):
             locale=locale,
             cert_files=cert_files,
             lightweight=lightweight,
+            session=session,
         )
 
         self.login = endpoints.Login(self)
