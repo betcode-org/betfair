@@ -28,7 +28,7 @@ Market Data Request Limits
         EX_BEST_OFFERS + EX_TRADED	20
         EX_ALL_OFFERS + EX_TRADED   32
 
-    If exBestOffersOverrides is used the weight is is calculated by weight * (requestedDepth/3).
+    If exBestOffersOverrides is used the weight is calculated by weight * (requestedDepth/3).
 """
 
 list_market_catalogue = {
@@ -55,7 +55,7 @@ list_market_profit_and_loss = {"": 4}
 
 """
 Currency Parameters
-    http://docs.developer.betfair.com/docs/pages/viewpage.action?pageId=4391789
+    https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Additional+Information#AdditionalInformation-CurrencyParameters
 """
 
 currency_parameters = {

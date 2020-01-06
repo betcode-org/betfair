@@ -56,7 +56,8 @@ class Available:
                         break
             else:
                 if book[self.deletion_select] != 0:
-                    # handles betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
+                    # handles betfair bug,
+                    # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
                     self.prices.append(book)
         self.sort()
 

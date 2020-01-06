@@ -9,9 +9,9 @@ Release History
 **Improvements**
 
 - *Breaking* async removed from streaming (force user to handle thread)
+- *Breaking* Description removed from 'create_stream'
 - Black formatting on all files
 - python 'Typing' added
-- *Breaking* Description removed from 'create_stream'
 - locale added to Navigation
 - Certificate error messages improved
 - Logging added to socket send
