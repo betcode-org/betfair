@@ -20,6 +20,7 @@ Release History
 - raw requests Response added to objects
 - elapsed_time now uses time() rather than datetime
 - session can be passed to client
+- streaming example with error handling and retry added
 
 **Bug Fixes**
 
