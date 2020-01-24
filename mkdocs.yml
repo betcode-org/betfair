@@ -19,7 +19,6 @@ nav:
     - Endpoints: 'endpoints.md'
     - Streaming: 'streaming.md'
     - Advanced Usage: 'advanced.md'
-    - Examples: 'examples.md'
     - Help: 'help.md'
 
 markdown_extensions:

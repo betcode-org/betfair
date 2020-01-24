@@ -25,20 +25,18 @@ Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG]
 Get started...
 
 ```python
-import betfairlightweight
-
-trading = betfairlightweight.APIClient(
-    "username", "password", app_key="app_key", certs="/certs"
-)
-
-trading.login()
+>>> import betfairlightweight
+>>> trading = betfairlightweight.APIClient(
+        "username", "password", app_key="app_key", certs="/certs"
+    )
+>>> trading.login()
 ```
 
 Request all event types..
 
 ```python
-event_types = trading.betting.list_event_types()
-
+>>> event_types = trading.betting.list_event_types()
+>>> event_types
 [<EventTypeResult>, <EventTypeResult>, ..]
 ```
 
@@ -64,7 +62,7 @@ event_types = trading.betting.list_event_types()
 
 ## Dependencies
 
-Betfairlightweight relies on these libraries:
+betfairlightweight relies on these libraries:
 
 * `requests` - HTTP support.
 * `ciso8601` - C based datetime parsing.
