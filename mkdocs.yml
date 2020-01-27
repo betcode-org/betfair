@@ -1,6 +1,5 @@
 site_name: betfairlightweight
 site_description: Lightweight, super fast (uses c libraries) pythonic wrapper for Betfair API-NG.
-site_url: https://www.betfairlightweight.org/
 
 theme:
     name: 'material'
