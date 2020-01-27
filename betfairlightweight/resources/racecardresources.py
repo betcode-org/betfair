@@ -1,7 +1,7 @@
 from .baseresource import BaseResource
 
 
-class RaceType(object):
+class RaceType:
     """
     :type abbr: unicode
     :type full: unicode
@@ -14,7 +14,7 @@ class RaceType(object):
         self.key = key
 
 
-class RaceClassification(object):
+class RaceClassification:
     """
     :type classification: unicode
     :type classification_abbr: unicode
@@ -23,7 +23,14 @@ class RaceClassification(object):
     :type display_name_abbr: unicode
     """
 
-    def __init__(self, code=None, displayName=None, displayNameAbbr=None, classification=None, classificationAbbr=None):
+    def __init__(
+        self,
+        code=None,
+        displayName=None,
+        displayNameAbbr=None,
+        classification=None,
+        classificationAbbr=None,
+    ):
         self.classification = classification
         self.classification_abbr = classificationAbbr
         self.code = code
@@ -31,7 +38,7 @@ class RaceClassification(object):
         self.display_name_abbr = displayNameAbbr
 
 
-class Market(object):
+class Market:
     """
     :type market_id: unicode
     :type market_type: unicode
@@ -44,7 +51,7 @@ class Market(object):
         self.number_of_winners = numberOfWinners
 
 
-class Going(object):
+class Going:
     """
     :type abbr: unicode
     :type full: unicode
@@ -57,7 +64,7 @@ class Going(object):
         self.key = key
 
 
-class Course(object):
+class Course:
     """
     :type country: unicode
     :type country_code: unicode
@@ -69,8 +76,17 @@ class Course(object):
     :type timezone: unicode
     """
 
-    def __init__(self, country, countryCode, courseId, name, surfaceType=None, timeformCourseCode=None, timezone=None,
-                 courseType=None):
+    def __init__(
+        self,
+        country,
+        countryCode,
+        courseId,
+        name,
+        surfaceType=None,
+        timeformCourseCode=None,
+        timezone=None,
+        courseType=None,
+    ):
         self.country = country
         self.country_code = countryCode
         self.course_id = courseId
@@ -103,27 +119,36 @@ class Race(BaseResource):
 
     def __init__(self, **kwargs):
         super(Race, self).__init__(**kwargs)
-        self.betfair_meeting_id = kwargs.get('betfairMeetingId')
-        self.distance = kwargs.get('distance')
-        self.eligibility = kwargs.get('eligibility')
-        self.is_result_available = kwargs.get('isResultAvailable')
-        self.meeting_going = kwargs.get('meetingGoing')
-        self.meeting_id = kwargs.get('meetingId')
-        self.number_of_runners = kwargs.get('numberOfRunners')
-        self.race_class = kwargs.get('raceClass')
-        self.race_id = kwargs.get('raceId')
-        self.race_id_exchange = kwargs.get('raceIdExchange')
-        self.race_title = kwargs.get('raceTitle')
-        self.start_date = self.strip_datetime(kwargs.get('startDate')) if 'startDate' in kwargs else None
-        self.course = Course(**kwargs.get('course')) if 'course' in kwargs else None
-        self.going = Going(**kwargs.get('going')) if 'going' in kwargs else None
-        self.markets = [Market(**i) for i in kwargs.get('markets') or []]
-        self.race_classification = RaceClassification(**kwargs.get('raceClassification')
-                                                      ) if 'raceClassification' in kwargs else None
-        self.race_type = RaceType(**kwargs.get('raceType')) if 'raceType' in kwargs else None
+        self.betfair_meeting_id = kwargs.get("betfairMeetingId")
+        self.distance = kwargs.get("distance")
+        self.eligibility = kwargs.get("eligibility")
+        self.is_result_available = kwargs.get("isResultAvailable")
+        self.meeting_going = kwargs.get("meetingGoing")
+        self.meeting_id = kwargs.get("meetingId")
+        self.number_of_runners = kwargs.get("numberOfRunners")
+        self.race_class = kwargs.get("raceClass")
+        self.race_id = kwargs.get("raceId")
+        self.race_id_exchange = kwargs.get("raceIdExchange")
+        self.race_title = kwargs.get("raceTitle")
+        self.start_date = (
+            self.strip_datetime(kwargs.get("startDate"))
+            if "startDate" in kwargs
+            else None
+        )
+        self.course = Course(**kwargs.get("course")) if "course" in kwargs else None
+        self.going = Going(**kwargs.get("going")) if "going" in kwargs else None
+        self.markets = [Market(**i) for i in kwargs.get("markets") or []]
+        self.race_classification = (
+            RaceClassification(**kwargs.get("raceClassification"))
+            if "raceClassification" in kwargs
+            else None
+        )
+        self.race_type = (
+            RaceType(**kwargs.get("raceType")) if "raceType" in kwargs else None
+        )
 
 
-class InPlayHint(object):
+class InPlayHint:
     """
     :type hint_name: unicode
     :type hint_value: unicode
@@ -134,7 +159,7 @@ class InPlayHint(object):
         self.hint_value = hintValue
 
 
-class DaysSinceLastRun(object):
+class DaysSinceLastRun:
     """
     :type days: int
     :type type: unicode
@@ -145,7 +170,7 @@ class DaysSinceLastRun(object):
         self.type = type
 
 
-class Jockey(object):
+class Jockey:
     """
     :type jockey_id: unicode
     :type name: unicode
@@ -157,7 +182,7 @@ class Jockey(object):
         self.allowance = allowance
 
 
-class Selection(object):
+class Selection:
     """
     :type market_id: unicode
     :type market_type: unicode
@@ -171,7 +196,7 @@ class Selection(object):
         self.bsp = bsp
 
 
-class Trainer(object):
+class Trainer:
     """
     :type location: unicode
     :type name: unicode
@@ -184,7 +209,7 @@ class Trainer(object):
         self.trainer_id = trainerId
 
 
-class Wearing(object):
+class Wearing:
     """
     :type abbr: unicode
     :type full: unicode
@@ -197,29 +222,33 @@ class Wearing(object):
         self.key = key
 
 
-class PreRaceMasterRating(object):
-
+class PreRaceMasterRating:
     def __init__(self, ratingSymbol=None, ratingValue=None, **kwargs):
         self.rating_symbol = ratingSymbol
         self.rating_value = ratingValue
 
 
-class PreRaceWeightAdjustedMasterRating(object):
-
+class PreRaceWeightAdjustedMasterRating:
     def __init__(self, ratingValue=None, **kwargs):
         self.rating_value = ratingValue
 
 
-class SeasonMasterRating(object):
-
-    def __init__(self, racingType=None, surface=None, ratingSymbol=None, ratingvalue=None, **kwargs):
+class SeasonMasterRating:
+    def __init__(
+        self,
+        racingType=None,
+        surface=None,
+        ratingSymbol=None,
+        ratingvalue=None,
+        **kwargs
+    ):
         self.racing_type = racingType
         self.surface = surface
         self.rating_symbol = ratingSymbol
         self.rating_value = ratingvalue
 
 
-class Runner(object):
+class Runner:
     """
     :type age: int
     :type comment: unicode
@@ -246,11 +275,36 @@ class Runner(object):
     :type wins_at_distance: int
     """
 
-    def __init__(self, age=None, draw=None, gender=None, horseId=None, longHandicap=None, name=None, ownerColours=None, saddleCloth=None,
-                 weight=None, selections=None, trainer=None, jockey=None, starRating=None, comment=None, isNonRunner=False,
-                 winsAtCourse=None, winsAtCourseAndDistance=None, winsAtDistance=None, daysSinceLastRun=None,
-                 timeform123Place=None, officialRating=None, recentForm=None, wearing=None, preRaceMasterRating=None,
-                 preRaceWeightAdjustedMasterRating=None, seasonMasterRating=None, **kwargs):
+    def __init__(
+        self,
+        age=None,
+        draw=None,
+        gender=None,
+        horseId=None,
+        longHandicap=None,
+        name=None,
+        ownerColours=None,
+        saddleCloth=None,
+        weight=None,
+        selections=None,
+        trainer=None,
+        jockey=None,
+        starRating=None,
+        comment=None,
+        isNonRunner=False,
+        winsAtCourse=None,
+        winsAtCourseAndDistance=None,
+        winsAtDistance=None,
+        daysSinceLastRun=None,
+        timeform123Place=None,
+        officialRating=None,
+        recentForm=None,
+        wearing=None,
+        preRaceMasterRating=None,
+        preRaceWeightAdjustedMasterRating=None,
+        seasonMasterRating=None,
+        **kwargs
+    ):
         self.age = age
         self.comment = comment
         self.draw = draw
@@ -269,15 +323,26 @@ class Runner(object):
         self.wins_at_course = winsAtCourse
         self.wins_at_course_and_distance = winsAtCourseAndDistance
         self.wins_at_distance = winsAtDistance
-        self.days_since_last_run = [DaysSinceLastRun(**i) for i in daysSinceLastRun] if daysSinceLastRun else []
+        self.days_since_last_run = (
+            [DaysSinceLastRun(**i) for i in daysSinceLastRun]
+            if daysSinceLastRun
+            else []
+        )
         self.jockey = Jockey(**jockey) if jockey else None
         self.selections = [Selection(**i) for i in selections] if selections else []
         self.trainer = Trainer(**trainer) if trainer else None
         self.wearing = Wearing(**wearing) if wearing else None
-        self.pre_race_master_rating = PreRaceMasterRating(**preRaceMasterRating) if preRaceMasterRating else None
-        self.pre_race_weight_adjusted_master_rating = PreRaceWeightAdjustedMasterRating(
-            **preRaceWeightAdjustedMasterRating) if preRaceWeightAdjustedMasterRating else None
-        self.season_master_rating = SeasonMasterRating(**seasonMasterRating) if seasonMasterRating else None
+        self.pre_race_master_rating = (
+            PreRaceMasterRating(**preRaceMasterRating) if preRaceMasterRating else None
+        )
+        self.pre_race_weight_adjusted_master_rating = (
+            PreRaceWeightAdjustedMasterRating(**preRaceWeightAdjustedMasterRating)
+            if preRaceWeightAdjustedMasterRating
+            else None
+        )
+        self.season_master_rating = (
+            SeasonMasterRating(**seasonMasterRating) if seasonMasterRating else None
+        )
 
 
 class RaceCard(BaseResource):
@@ -296,14 +361,14 @@ class RaceCard(BaseResource):
 
     def __init__(self, **kwargs):
         super(RaceCard, self).__init__(**kwargs)
-        self.betting_forecast_text = kwargs.get('bettingForecastText')
-        self.comment = kwargs.get('comment')
-        self.minimum_weight = kwargs.get('minimumWeight')
-        self.number_of_non_runners = kwargs.get('numberOfNonRunners')
-        self.number_of_runners = kwargs.get('numberOfRunners')
-        self.prize = kwargs.get('prize')
-        self.timeform_123_text = kwargs.get('timeform123Text')
-        self.in_play_hints = [InPlayHint(**i) for i in kwargs.get('inPlayHints') or []]
-        self.race = Race(**kwargs.get('race'))
-        self.race_id_exchange = kwargs.get('raceIdExchange')
-        self.runners = [Runner(**i) for i in kwargs.get('runners')]
+        self.betting_forecast_text = kwargs.get("bettingForecastText")
+        self.comment = kwargs.get("comment")
+        self.minimum_weight = kwargs.get("minimumWeight")
+        self.number_of_non_runners = kwargs.get("numberOfNonRunners")
+        self.number_of_runners = kwargs.get("numberOfRunners")
+        self.prize = kwargs.get("prize")
+        self.timeform_123_text = kwargs.get("timeform123Text")
+        self.in_play_hints = [InPlayHint(**i) for i in kwargs.get("inPlayHints") or []]
+        self.race = Race(**kwargs.get("race"))
+        self.race_id_exchange = kwargs.get("raceIdExchange")
+        self.runners = [Runner(**i) for i in kwargs.get("runners")]

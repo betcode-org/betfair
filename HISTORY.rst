@@ -3,6 +3,37 @@
 Release History
 ---------------
 
+2.0.0 (2020-??-??)
++++++++++++++++++++
+
+**Improvements**
+
+- *Breaking* async removed from streaming (force user to handle thread)
+- *Breaking* Description removed from 'create_stream'
+- Black formatting on all files
+- python 'Typing' added
+- locale added to Navigation
+- Certificate error messages improved
+- Logging added to socket send
+- __version__ file added and refactor to setup.py
+- __version__ added to user agent
+- raw requests Response added to objects
+- elapsed_time now uses time() rather than datetime
+- session can be passed to client
+- streaming example with error handling and retry added
+
+**Bug Fixes**
+
+- #217 correct usage of ujson (refactor)
+- Australia login interactive domain fixed
+- Correct session timeout added for int and italy exchange
+
+**Dependencies**
+
+- ciso8601 upgraded from 2.0.1 to 2.1.2
+- python 3 only
+- python 3.8 testing added
+
 1.10.4 (2019-10-28)
 +++++++++++++++++++
 

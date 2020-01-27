@@ -4,17 +4,7 @@ from .apiclient import APIClient
 from .exceptions import BetfairError
 from .streaming import StreamListener
 from . import filters
-
-__title__ = 'betfairlightweight'
-__version__ = '1.10.4'
-__author__ = 'Liam Pauling'
+from .__version__ import __title__, __version__, __author__
 
 # Set default logging handler to avoid "No handler found" warnings.
-try:  # Python 2.7+
-    from logging import NullHandler
-except ImportError:
-    class NullHandler(logging.Handler):
-        def emit(self, record):
-            pass
-
-logging.getLogger(__name__).addHandler(NullHandler())
+logging.getLogger(__name__).addHandler(logging.NullHandler())
