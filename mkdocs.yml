@@ -1,0 +1,25 @@
+site_name: betfairlightweight
+site_description: Lightweight, super fast (uses c libraries) pythonic wrapper for Betfair API-NG.
+
+theme:
+    name: 'material'
+
+    palette:
+      primary: 'blue grey'
+      accent: 'amber'
+
+repo_name: liampauling/betfair
+repo_url: https://github.com/liampauling/betfair
+edit_uri: ""
+
+nav:
+    - Introduction: 'index.md'
+    - QuickStart: 'quickstart.md'
+    - Endpoints: 'endpoints.md'
+    - Streaming: 'streaming.md'
+    - Advanced Usage: 'advanced.md'
+    - Help: 'help.md'
+
+markdown_extensions:
+  - admonition
+  - codehilite
