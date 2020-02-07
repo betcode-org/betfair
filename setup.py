@@ -21,6 +21,7 @@ setup(
     ],
     package_dir={"betfairlightweight": "betfairlightweight"},
     install_requires=INSTALL_REQUIRES,
+    extras_require={"speed": ["ciso8601==2.1.2", "ujson==1.35"]},
     url=about["__url__"],
     license=about["__license__"],
     author=about["__author__"],

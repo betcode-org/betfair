@@ -11,8 +11,14 @@ Currently tested on Python 3.5, 3.6, 3.7 and 3.8.
 
 # installation
 
-```
+```shell
 $ pip install betfairlightweight
+```
+
+include c based libraries (may cause issues with Windows):
+
+```shell
+$ pip install betfairlightweight[speed]
 ```
 
 # setup

@@ -5,7 +5,11 @@ basestring = (str, bytes)
 numeric_types = (int, float)
 integer_types = (int,)
 
-# will attempt to use c libraries if installed
+"""
+will attempt to use c libraries if installed
+install as the following if you want mad speed:
+$ pip install betfairlightweight[speed]
+"""
 
 try:
     import ujson as json

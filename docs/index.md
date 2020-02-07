@@ -65,6 +65,9 @@ Request all event types..
 betfairlightweight relies on these libraries:
 
 * `requests` - HTTP support.
+
+Following used when installed with __[speed]__
+
 * `ciso8601` - C based datetime parsing.
 * `ujson` - C based json parsing.
 
@@ -74,6 +77,12 @@ Install with pip:
 
 ```shell
 $ pip install betfairlightweight
+```
+
+include c based libraries (may cause issues with Windows):
+
+```shell
+$ pip install betfairlightweight[speed]
 ```
 
 betfairlightweight requires Python 3.5+
