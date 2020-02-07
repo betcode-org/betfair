@@ -1,5 +1,8 @@
+try:
+    import ujson as json
+except ImportError:
+    import json
 import datetime
-import ujson as json
 import unittest
 from unittest import mock
 

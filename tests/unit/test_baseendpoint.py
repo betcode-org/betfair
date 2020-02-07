@@ -1,4 +1,7 @@
-import ujson as json
+try:
+    import ujson as json
+except ImportError:
+    import json
 import unittest
 from unittest import mock
 from requests.exceptions import ConnectionError
