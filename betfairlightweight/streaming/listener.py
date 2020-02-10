@@ -24,7 +24,7 @@ class BaseListener:
             )
         self.stream_unique_id = unique_id
         self.stream_type = operation
-        self.stream = self._add_stream(unique_id, operation)
+        self._add_stream(unique_id, operation)
 
     def on_data(self, raw_data: str) -> None:
         logger.info(raw_data)
