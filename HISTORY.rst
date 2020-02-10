@@ -3,7 +3,7 @@
 Release History
 ---------------
 
-2.0.0 (2020-??-??)
+2.0.0 (2020-02-10)
 +++++++++++++++++++
 
 **Improvements**
@@ -21,6 +21,7 @@ Release History
 - elapsed_time now uses time() rather than datetime
 - session can be passed to client
 - streaming example with error handling and retry added
+- mkdocs used for documentation
 
 **Bug Fixes**
 

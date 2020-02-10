@@ -13,14 +13,14 @@ class MarketDefinitionRunner:
 
     def __init__(
         self,
-        id,
-        sortPriority,
-        status,
-        hc=0,
-        bsp=None,
-        adjustmentFactor=None,
-        removalDate=None,
-        name=None,
+        id: int,
+        sortPriority: int,
+        status: str,
+        hc: float = 0,
+        bsp: float = None,
+        adjustmentFactor: float = None,
+        removalDate: str = None,
+        name: str = None,
     ):
         self.selection_id = id
         self.sort_priority = sortPriority
@@ -67,14 +67,14 @@ class MarketDefinition:
     :type event_id: unicode
     :type event_type_id: unicode
     :type in_play: bool
-    :type market_base_rate: int
+    :type market_base_rate: float
     :type market_time: datetime.datetime
     :type market_type: unicode
     :type number_of_active_runners: int
     :type number_of_winners: int
     :type open_date: datetime.datetime
     :type persistence_enabled: bool
-    :type regulators: list[unicode]
+    :type regulators: unicode
     :type runners: list[MarketDefinitionRunner]
     :type runners_voidable: bool
     :type settled_time: datetime.datetime
@@ -88,43 +88,43 @@ class MarketDefinition:
 
     def __init__(
         self,
-        betDelay,
-        bettingType,
-        bspMarket,
-        bspReconciled,
-        complete,
-        crossMatching,
-        discountAllowed,
-        eventId,
-        eventTypeId,
-        inPlay,
-        marketBaseRate,
-        marketTime,
-        numberOfActiveRunners,
-        numberOfWinners,
-        persistenceEnabled,
-        regulators,
-        runnersVoidable,
-        status,
-        timezone,
-        turnInPlayEnabled,
-        version,
-        runners,
-        openDate=None,
-        countryCode=None,
-        eachWayDivisor=None,
-        venue=None,
-        settledTime=None,
-        suspendTime=None,
-        marketType=None,
-        lineMaxUnit=None,
-        lineMinUnit=None,
-        lineInterval=None,
-        name=None,
-        eventName=None,
-        priceLadderDefinition=None,
-        keyLineDefinition=None,
-        raceType=None,
+        betDelay: int,
+        bettingType: str,
+        bspMarket: bool,
+        bspReconciled: bool,
+        complete: bool,
+        crossMatching: bool,
+        discountAllowed: bool,
+        eventId: str,
+        eventTypeId: str,
+        inPlay: bool,
+        marketBaseRate: float,
+        marketTime: str,
+        numberOfActiveRunners: int,
+        numberOfWinners: int,
+        persistenceEnabled: bool,
+        regulators: str,
+        runnersVoidable: bool,
+        status: str,
+        timezone: str,
+        turnInPlayEnabled: bool,
+        version: int,
+        runners: list,
+        openDate: str = None,
+        countryCode: str = None,
+        eachWayDivisor: float = None,
+        venue: str = None,
+        settledTime: str = None,
+        suspendTime: str = None,
+        marketType: str = None,
+        lineMaxUnit: float = None,
+        lineMinUnit: float = None,
+        lineInterval: float = None,
+        name: str = None,
+        eventName: str = None,
+        priceLadderDefinition: dict = None,
+        keyLineDefinition: dict = None,
+        raceType: str = None,
     ):
         self.bet_delay = betDelay
         self.betting_type = bettingType
