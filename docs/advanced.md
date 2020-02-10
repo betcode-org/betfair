@@ -2,7 +2,7 @@
 
 ### Session
 
-The client assumes requests is used for the http requests but other clients can be used if required. A session object can be passed to the client:
+The client assumes requests is used for the http requests but other clients can be used if required, a session object can be passed to the client:
 
 ```python
 >>> session = requests.session()

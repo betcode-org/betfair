@@ -122,6 +122,28 @@ while True:
     print(current_orders)
 ```
 
+### Historical
+
+Betfairlightweight can also handle historical streaming data that has been purchased from [Betfair](https://historicdata.betfair.com/#/home) or collected yourself. 
+
+```python
+>>> trading = betfairlightweight.APIClient("username", "password")
+
+    # create listener
+>>> listener = HistoricalListener(max_latency=1e100)
+
+    # create historical stream, update directory to file location
+>>> stream = trading.streaming.create_historical_stream(
+        directory="/tmp/BASIC-1.132153978",
+        listener=listener,
+    )
+
+    # start stream
+>>> stream.start()
+```
+
+The historical stream can be used in the same way as the market/order stream allowing backtesting / market processing.
+
 ### Snap
 
 Instead of waiting for an update you can snap the listener to get an up to date version of the data.
@@ -134,6 +156,10 @@ Instead of waiting for an update you can snap the listener to get an up to date 
 
 !!! tip
     The streaming unique id is returned in the marketBook / orderBook which allows multiple streams to be differentiated if multiple streams feed into the same queue.
+    
+    ```
+    market_book.streaming_unique_id
+    ```
 
 ### Resubscribe
 
@@ -153,7 +179,7 @@ If you have lost connection and need to resubscribe (prevents a full image being
 
 When used in production it is recommended not to start the stream in a new thread and forgot about it, it will break, errors need to be caught. 
 
-Please see the examples; 'examplestreamingerrhandling.py'
+Please see the example [examplestreamingerrhandling.py](https://github.com/liampauling/betfair/blob/master/examples/examplestreamingerrhandling.py)
 
 ### Listener
 

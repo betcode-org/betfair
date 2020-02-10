@@ -48,6 +48,7 @@ class Streaming(threading.Thread):
     @retry(wait=wait_exponential(multiplier=1, min=2, max=20))
     def run(self) -> None:
         logger.info("Starting MarketStreaming")
+        self.client.login()
         self.stream = self.client.streaming.create_stream(
             unique_id=self.streaming_unique_id, listener=self.listener
         )
@@ -77,7 +78,7 @@ class Streaming(threading.Thread):
 trading = betfairlightweight.APIClient("username", "password", app_key="appKey")
 
 # login
-trading.login_interactive()
+trading.login()
 
 # create filters (GB WIN racing)
 market_filter = streaming_market_filter(
