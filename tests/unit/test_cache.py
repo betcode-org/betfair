@@ -558,9 +558,8 @@ class TestUnmatchedOrder(unittest.TestCase):
 
 
 class TestRaceCache(unittest.TestCase):
-
     def setUp(self):
-        update = {'mid': "1.12", "id": "12.12"}
+        update = {"mid": "1.12", "id": "12.12"}
         self.race_cache = RaceCache(**update)
 
     def test_init(self):
@@ -569,7 +568,7 @@ class TestRaceCache(unittest.TestCase):
         assert self.race_cache.rrc == []
 
     def test_update_rpm(self):
-        update = {'rpc': 1234}
+        update = {"rpc": 1234}
         publish_time = 1518626764
         self.race_cache.update_cache(update, publish_time)
 
@@ -578,7 +577,7 @@ class TestRaceCache(unittest.TestCase):
         assert self.race_cache.rpc == 1234
 
     def test_update_rrc(self):
-        update = {'rrc': [{'id': 1}]}
+        update = {"rrc": [{"id": 1}]}
         publish_time = 1518626764
         self.race_cache.update_cache(update, publish_time)
 
@@ -586,7 +585,7 @@ class TestRaceCache(unittest.TestCase):
         assert self.race_cache.publish_time == publish_time
         assert len(self.race_cache.rrc) == 1
 
-    @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')
+    @mock.patch("betfairlightweight.streaming.cache.RaceCache.serialise")
     def test_create_resource_lightweight(self, mock_serialise):
         assert self.race_cache.create_resource(12, {}, True) == mock_serialise
 
@@ -597,15 +596,15 @@ class TestRaceCache(unittest.TestCase):
     #     self.assertIsInstance(self.race_cache.create_resource(12, {}, False), mock_race)
 
     def test_serialise(self):
-        self.race_cache.rpc = {'test': 123}
+        self.race_cache.rpc = {"test": 123}
         mock_runner = mock.Mock()
-        mock_runner.change = {'test': 'me'}
+        mock_runner.change = {"test": "me"}
         self.race_cache.rrc = [mock_runner]
         self.race_cache.publish_time = 12
         assert self.race_cache.serialise == {
-            'pt': 12,
-            'mid': '1.12',
-            'id': '12.12',
-            'rpc': {'test': 123},
-            'rrc': [{'test': 'me'}]
+            "pt": 12,
+            "mid": "1.12",
+            "id": "12.12",
+            "rpc": {"test": 123},
+            "rrc": [{"test": "me"}],
         }

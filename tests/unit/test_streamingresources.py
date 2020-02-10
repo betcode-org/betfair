@@ -54,23 +54,26 @@ class TestMarketDefinitionRunner(unittest.TestCase):
 
 
 class TestRace(unittest.TestCase):
-
     def setUp(self):
-        self.mock_response = {'mid': '1.123', 'id': '1234.56', 'rpc': {'hi': 'world'}, 'rrc': [{'test': 'me'}]}
+        self.mock_response = {
+            "mid": "1.123",
+            "id": "1234.56",
+            "rpc": {"hi": "world"},
+            "rrc": [{"test": "me"}],
+        }
         self.race = Race(**self.mock_response)
 
     def test_init(self):
-        assert self.race.market_id == '1.123'
-        assert self.race.race_id == '1234.56'
+        assert self.race.market_id == "1.123"
+        assert self.race.race_id == "1234.56"
         self.assertIsInstance(self.race.race_progress, RaceProgress)
         self.assertIsInstance(self.race.race_runners[0], RaceChange)
 
 
 class TestRaceProgress(unittest.TestCase):
-
     def setUp(self):
-        self.mock_response = create_mock_json('tests/resources/streaming_rcm.json')
-        self.race_progress = RaceProgress(**self.mock_response.json()['rc'][0]['rpc'])
+        self.mock_response = create_mock_json("tests/resources/streaming_rcm.json")
+        self.race_progress = RaceProgress(**self.mock_response.json()["rc"][0]["rpc"])
 
     def test_init(self):
         assert self.race_progress.feed_time_epoch == 1518626674
@@ -79,14 +82,19 @@ class TestRaceProgress(unittest.TestCase):
         assert self.race_progress.running_time == 46.7
         assert self.race_progress.speed == 17.8
         assert self.race_progress.progress == 87.5
-        assert self.race_progress.order == [7390417, 5600338, 11527189, 6395118, 8706072]
+        assert self.race_progress.order == [
+            7390417,
+            5600338,
+            11527189,
+            6395118,
+            8706072,
+        ]
 
 
 class TestRaceChange(unittest.TestCase):
-
     def setUp(self):
-        self.mock_response = create_mock_json('tests/resources/streaming_rcm.json')
-        self.race_change = RaceChange(**self.mock_response.json()['rc'][0]['rrc'][0])
+        self.mock_response = create_mock_json("tests/resources/streaming_rcm.json")
+        self.race_change = RaceChange(**self.mock_response.json()["rc"][0]["rrc"][0])
 
     def test_init(self):
         assert self.race_change.feed_time_epoch == 1518626674

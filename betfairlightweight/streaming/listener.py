@@ -2,12 +2,7 @@ import logging
 import queue
 from typing import Optional
 
-from .stream import (
-    BaseStream,
-    MarketStream,
-    OrderStream,
-    RaceStream,
-)
+from .stream import BaseStream, MarketStream, OrderStream, RaceStream
 from ..compat import json_loads
 
 logger = logging.getLogger(__name__)
@@ -166,7 +161,7 @@ class StreamListener(BaseListener):
             return MarketStream(self)
         elif stream_type == "orderSubscription":
             return OrderStream(self)
-        elif stream_type == 'raceSubscription':
+        elif stream_type == "raceSubscription":
             return RaceStream(self)
 
     @staticmethod

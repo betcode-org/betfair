@@ -1,13 +1,7 @@
 import datetime
 from typing import Union
 
-from ..resources import (
-    BaseResource,
-    MarketBook,
-    CurrentOrders,
-    MarketDefinition,
-    Race,
-)
+from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, Race
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -468,57 +462,57 @@ class OrderBookCache(BaseResource):
 
 
 class RunnerChange:
-
-    def __init__(self, change):
+    def __init__(self, change: dict):
         self.change = change
 
 
 class RaceCache(BaseResource):
-
     def __init__(self, **kwargs):
         super(RaceCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get('publish_time')
-        self.market_id = kwargs.get('mid')
-        self.race_id = kwargs.get('id')
-        self.rpc = kwargs.get('rpc')                                 # RaceProgressChange
-        self.rrc = [RunnerChange(i) for i in kwargs.get('rrc', [])]  # RaceRunnerChange
+        self.publish_time = kwargs.get("publish_time")
+        self.market_id = kwargs.get("mid")
+        self.race_id = kwargs.get("id")
+        self.rpc = kwargs.get("rpc")  # RaceProgressChange
+        self.rrc = [RunnerChange(i) for i in kwargs.get("rrc", [])]  # RaceRunnerChange
 
-    def update_cache(self, update, publish_time):
+    def update_cache(self, update: dict, publish_time: int) -> None:
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
 
-        if 'rpc' in update:
-            self.rpc = update['rpc']
+        if "rpc" in update:
+            self.rpc = update["rpc"]
 
-        if 'rrc' in update:
-            runner_dict = {runner.change['id']: runner for runner in self.rrc}
+        if "rrc" in update:
+            runner_dict = {runner.change["id"]: runner for runner in self.rrc}
 
-            for runner_update in update['rrc']:
-                runner = runner_dict.get(runner_update['id'])
+            for runner_update in update["rrc"]:
+                runner = runner_dict.get(runner_update["id"])
                 if runner:
                     runner.change = runner_update
                 else:
-                    self.rrc.append(
-                        RunnerChange(runner_update)
-                    )
+                    self.rrc.append(RunnerChange(runner_update))
 
-    def create_resource(self, unique_id, streaming_update, lightweight):
+    def create_resource(
+        self, unique_id: int, streaming_update: dict, lightweight: bool
+    ) -> Union[dict, Race]:
         if lightweight:
             return self.serialise
         else:
             return Race(
-                elapsed_time=(datetime.datetime.utcnow()-self._datetime_updated).total_seconds(),
+                elapsed_time=(
+                    datetime.datetime.utcnow() - self._datetime_updated
+                ).total_seconds(),
                 streaming_unique_id=unique_id,
                 streaming_update=streaming_update,
                 **self.serialise
             )
 
     @property
-    def serialise(self):
+    def serialise(self) -> dict:
         return {
-            'pt': self.publish_time,
-            'mid': self.market_id,
-            'id': self.race_id,
-            'rpc': self.rpc,
-            'rrc': [runner.change for runner in self.rrc]
+            "pt": self.publish_time,
+            "mid": self.market_id,
+            "id": self.race_id,
+            "rpc": self.rpc,
+            "rrc": [runner.change for runner in self.rrc],
         }

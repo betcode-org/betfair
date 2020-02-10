@@ -205,24 +205,25 @@ class OrderStreamTest(unittest.TestCase):
 
 
 class RaceStreamTest(unittest.TestCase):
-
     def setUp(self):
         self.listener = mock.Mock()
         self.stream = RaceStream(self.listener)
 
-    @mock.patch('betfairlightweight.streaming.stream.RaceCache')
-    @mock.patch('betfairlightweight.streaming.stream.RaceStream.on_process')
+    @mock.patch("betfairlightweight.streaming.stream.RaceCache")
+    @mock.patch("betfairlightweight.streaming.stream.RaceStream.on_process")
     def test_process(self, mock_on_process, mock_race_cache):
-        update = [{'mid': '1.234567', 'yad': 'a'}]
+        update = [{"mid": "1.234567", "yad": "a"}]
         publish_time = 1234
 
         self.stream._process(update, publish_time)
-        assert self.stream._caches['1.234567'] == mock_race_cache()
+        assert self.stream._caches["1.234567"] == mock_race_cache()
         mock_race_cache().update_cache.assert_called_with(update[0], publish_time)
-        mock_race_cache().create_resource.assert_called_with(self.stream.unique_id, update[0], self.stream._lightweight)
+        mock_race_cache().create_resource.assert_called_with(
+            self.stream.unique_id, update[0], self.stream._lightweight
+        )
 
     def test_str(self):
-        assert str(self.stream) == 'RaceStream'
+        assert str(self.stream) == "RaceStream"
 
     def test_repr(self):
-        assert repr(self.stream) == '<RaceStream [0]>'
+        assert repr(self.stream) == "<RaceStream [0]>"
