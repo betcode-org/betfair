@@ -51,7 +51,9 @@ class Streaming:
 
     @staticmethod
     def create_historical_stream(
-        directory: str, listener: BaseListener = None, operation: str = "marketSubscription"
+        directory: str,
+        listener: BaseListener = None,
+        operation: str = "marketSubscription",
     ) -> HistoricalStream:
         """
         Uses streaming listener/cache to parse betfair

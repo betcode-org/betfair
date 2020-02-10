@@ -3,11 +3,7 @@ import logging
 import time
 import queue
 
-from .cache import (
-    MarketBookCache,
-    OrderBookCache,
-    RaceCache,
-)
+from .cache import MarketBookCache, OrderBookCache, RaceCache
 
 logger = logging.getLogger(__name__)
 
@@ -184,10 +180,10 @@ class OrderStream(BaseStream):
         self.on_process(output_order_book)
 
     def __str__(self):
-        return 'OrderStream'
+        return "OrderStream"
 
     def __repr__(self):
-        return '<OrderStream [%s]>' % len(self)
+        return "<OrderStream [%s]>" % len(self)
 
 
 class RaceStream(BaseStream):
@@ -197,7 +193,7 @@ class RaceStream(BaseStream):
         marketId: RaceCache
     """
 
-    _lookup = 'rc'
+    _lookup = "rc"
 
     def on_subscribe(self, data):
         """The initial message returned after
@@ -209,13 +205,13 @@ class RaceStream(BaseStream):
     def _process(self, race_updates, publish_time):
         output = []
         for update in race_updates:
-            market_id = update['mid']
+            market_id = update["mid"]
 
             race_cache = self._caches.get(market_id)
             if race_cache is None:
                 race_cache = RaceCache(publish_time=publish_time, **update)
                 self._caches[market_id] = race_cache
-                logger.info('[RaceStream: %s] %s added' % (self.unique_id, market_id))
+                logger.info("[RaceStream: %s] %s added" % (self.unique_id, market_id))
             race_cache.update_cache(update, publish_time)
             self._updates_processed += 1
 
@@ -225,7 +221,7 @@ class RaceStream(BaseStream):
         self.on_process(output)
 
     def __str__(self):
-        return 'RaceStream'
+        return "RaceStream"
 
     def __repr__(self):
-        return '<RaceStream [%s]>' % len(self)
+        return "<RaceStream [%s]>" % len(self)

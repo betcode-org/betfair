@@ -181,17 +181,17 @@ class Race(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        self.streaming_unique_id = kwargs.pop('streaming_unique_id', None)
-        self.streaming_update = kwargs.pop('streaming_update', None)
-        self.publish_time_epoch = kwargs.get('pt')
-        self.publish_time = self.strip_datetime(kwargs.get('pt'))
+        self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
+        self.streaming_update = kwargs.pop("streaming_update", None)
+        self.publish_time_epoch = kwargs.get("pt")
+        self.publish_time = self.strip_datetime(kwargs.get("pt"))
         super(Race, self).__init__(**kwargs)
-        self.market_id = kwargs.get('mid')
-        self.race_id = kwargs.get('id')
-        self.race_progress = RaceProgress(**kwargs['rpc']) if kwargs.get('rpc') else None
-        self.race_runners = [
-            RaceChange(**runner) for runner in kwargs.get('rrc') or []
-        ]
+        self.market_id = kwargs.get("mid")
+        self.race_id = kwargs.get("id")
+        self.race_progress = (
+            RaceProgress(**kwargs["rpc"]) if kwargs.get("rpc") else None
+        )
+        self.race_runners = [RaceChange(**runner) for runner in kwargs.get("rrc") or []]
 
 
 class RaceProgress(BaseResource):
@@ -209,14 +209,14 @@ class RaceProgress(BaseResource):
 
     def __init__(self, **kwargs):
         super(RaceProgress, self).__init__(**kwargs)
-        self.feed_time_epoch = kwargs.get('ft')
-        self.feed_time = self.strip_datetime(kwargs.get('ft'))
-        self.gate_name = kwargs.get('g')
-        self.sectional_time = kwargs.get('st')
-        self.running_time = kwargs.get('rt')
-        self.speed = kwargs.get('spd')
-        self.progress = kwargs.get('prg')
-        self.order = kwargs.get('ord')
+        self.feed_time_epoch = kwargs.get("ft")
+        self.feed_time = self.strip_datetime(kwargs.get("ft"))
+        self.gate_name = kwargs.get("g")
+        self.sectional_time = kwargs.get("st")
+        self.running_time = kwargs.get("rt")
+        self.speed = kwargs.get("spd")
+        self.progress = kwargs.get("prg")
+        self.order = kwargs.get("ord")
 
 
 class RaceChange(BaseResource):
@@ -234,11 +234,11 @@ class RaceChange(BaseResource):
 
     def __init__(self, **kwargs):
         super(RaceChange, self).__init__(**kwargs)
-        self.feed_time_epoch = kwargs.get('ft')
-        self.feed_time = self.strip_datetime(kwargs.get('ft'))
-        self.selection_id = kwargs.get('id')
-        self.lat = kwargs.get('lat')
-        self.long = kwargs.get('long')
-        self.speed = kwargs.get('spd')
-        self.progress = kwargs.get('prg')
-        self.stride_frequency = kwargs.get('sfq')  # in Hz
+        self.feed_time_epoch = kwargs.get("ft")
+        self.feed_time = self.strip_datetime(kwargs.get("ft"))
+        self.selection_id = kwargs.get("id")
+        self.lat = kwargs.get("lat")
+        self.long = kwargs.get("long")
+        self.speed = kwargs.get("spd")
+        self.progress = kwargs.get("prg")
+        self.stride_frequency = kwargs.get("sfq")  # in Hz

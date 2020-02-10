@@ -41,12 +41,12 @@ class BaseListenerTest(unittest.TestCase):
         mock_add_stream.assert_called_with(3, "orderSubscription")
         assert self.base_listener.stream == 123
 
-        self.base_listener.register_stream(2, 'raceSubscription')
-        mock_add_stream.assert_called_with(2, 'raceSubscription')
+        self.base_listener.register_stream(2, "raceSubscription")
+        mock_add_stream.assert_called_with(2, "raceSubscription")
         assert self.base_listener.stream == 123
 
-        self.base_listener.register_stream(2, 'raceSubscription')
-        mock_add_stream.assert_called_with(2, 'raceSubscription')
+        self.base_listener.register_stream(2, "raceSubscription")
+        mock_add_stream.assert_called_with(2, "raceSubscription")
         assert self.base_listener.stream == 123
 
     def test_on_data(self):
@@ -143,15 +143,23 @@ class StreamListenerTest(unittest.TestCase):
             mock_response.json(), mock_response.json().get("id")
         )
 
-        mock_response = create_mock_json('tests/resources/streaming_rcm.json')
+        mock_response = create_mock_json("tests/resources/streaming_rcm.json")
         self.stream_listener.on_data(mock_response.content)
-        mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
-        mock_on_change_message.assert_called_with(mock_response.json(), mock_response.json().get('id'))
+        mock_error_handler.assert_called_with(
+            mock_response.json(), mock_response.json().get("id")
+        )
+        mock_on_change_message.assert_called_with(
+            mock_response.json(), mock_response.json().get("id")
+        )
 
-        mock_response = create_mock_json('tests/resources/streaming_rcm.json')
+        mock_response = create_mock_json("tests/resources/streaming_rcm.json")
         self.stream_listener.on_data(mock_response.content)
-        mock_error_handler.assert_called_with(mock_response.json(), mock_response.json().get('id'))
-        mock_on_change_message.assert_called_with(mock_response.json(), mock_response.json().get('id'))
+        mock_error_handler.assert_called_with(
+            mock_response.json(), mock_response.json().get("id")
+        )
+        mock_on_change_message.assert_called_with(
+            mock_response.json(), mock_response.json().get("id")
+        )
 
         on_data = self.stream_listener.on_data("some content")
         assert on_data is None
@@ -194,7 +202,7 @@ class StreamListenerTest(unittest.TestCase):
         stream.on_subscribe.assert_called_with(mock_response.json())
 
         # race
-        mock_response = create_mock_json('tests/resources/streaming_rcm.json')
+        mock_response = create_mock_json("tests/resources/streaming_rcm.json")
         self.stream_listener._on_change_message(mock_response.json(), 1)
         stream.on_update.assert_called_with(mock_response.json())
 
@@ -210,7 +218,7 @@ class StreamListenerTest(unittest.TestCase):
         assert new_stream == 456
         mock_order_stream.assert_called_with(self.stream_listener)
 
-        new_stream = self.stream_listener._add_stream(1, 'raceSubscription')
+        new_stream = self.stream_listener._add_stream(1, "raceSubscription")
         assert new_stream == 789
         mock_race_stream.assert_called_with(self.stream_listener)
 
