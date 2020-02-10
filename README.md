@@ -5,6 +5,8 @@
 
 Lightweight, super fast (uses c libraries) pythonic wrapper for [Betfair API-NG](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and account operations, see [examples](https://github.com/liampauling/betfair/tree/master/examples).
 
+[docs](https://liampauling.github.io/betfair/)
+
 [Join slack group](https://betfairlightweight.herokuapp.com)
 
 Currently tested on Python 3.5, 3.6, 3.7 and 3.8.
