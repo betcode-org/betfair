@@ -1,3 +1,6 @@
+import requests
+from typing import Union, List
+
 from .baseendpoint import BaseEndpoint
 from .. import resources
 from ..utils import clean_locals
@@ -9,10 +12,15 @@ class Account(BaseEndpoint):
     Account operations.
     """
 
-    URI = 'AccountAPING/v1.0/'
+    URI = "AccountAPING/v1.0/"
     connect_timeout = 6.05
 
-    def get_account_funds(self, wallet=None, session=None, lightweight=None):
+    def get_account_funds(
+        self,
+        wallet: str = None,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[dict, resources.AccountFunds]:
         """
         Get available to bet amount.
 
@@ -23,11 +31,15 @@ class Account(BaseEndpoint):
         :rtype: resources.AccountFunds
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'getAccountFunds')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountFunds, elapsed_time, lightweight)
+        method = "%s%s" % (self.URI, "getAccountFunds")
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return self.process_response(
+            response, response_json, resources.AccountFunds, elapsed_time, lightweight
+        )
 
-    def get_account_details(self, session=None, lightweight=None):
+    def get_account_details(
+        self, session: requests.Session = None, lightweight: bool = None
+    ) -> Union[dict, resources.AccountDetails]:
         """
         Returns the details relating your account, including your discount
         rate and Betfair point balance.
@@ -38,12 +50,23 @@ class Account(BaseEndpoint):
         :rtype: resources.AccountDetails
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'getAccountDetails')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountDetails, elapsed_time, lightweight)
+        method = "%s%s" % (self.URI, "getAccountDetails")
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return self.process_response(
+            response, response_json, resources.AccountDetails, elapsed_time, lightweight
+        )
 
-    def get_account_statement(self, locale=None, from_record=None, record_count=None, item_date_range=time_range(),
-                              include_item=None, wallet=None, session=None, lightweight=None):
+    def get_account_statement(
+        self,
+        locale: str = None,
+        from_record: int = None,
+        record_count: int = None,
+        item_date_range: dict = time_range(),
+        include_item: str = None,
+        wallet: str = None,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[dict, resources.AccountStatementResult]:
         """
         Get account statement.
 
@@ -59,11 +82,22 @@ class Account(BaseEndpoint):
         :rtype: resources.AccountStatementResult
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'getAccountStatement')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.AccountStatementResult, elapsed_time, lightweight)
+        method = "%s%s" % (self.URI, "getAccountStatement")
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return self.process_response(
+            response,
+            response_json,
+            resources.AccountStatementResult,
+            elapsed_time,
+            lightweight,
+        )
 
-    def list_currency_rates(self, from_currency=None, session=None, lightweight=None):
+    def list_currency_rates(
+        self,
+        from_currency: str = None,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[dict, List[resources.CurrencyRate]]:
         """
         Returns a list of currency rates based on given currency
 
@@ -74,11 +108,13 @@ class Account(BaseEndpoint):
         :rtype: list[resources.CurrencyRate]
         """
         params = clean_locals(locals())
-        method = '%s%s' % (self.URI, 'listCurrencyRates')
-        (response, elapsed_time) = self.request(method, params, session)
-        return self.process_response(response, resources.CurrencyRate, elapsed_time, lightweight)
+        method = "%s%s" % (self.URI, "listCurrencyRates")
+        (response, response_json, elapsed_time) = self.request(method, params, session)
+        return self.process_response(
+            response, response_json, resources.CurrencyRate, elapsed_time, lightweight
+        )
 
-    def transfer_funds(self, session=None):
+    def transfer_funds(self, session: requests.Session = None) -> None:
         """
         Transfer funds between the UK Exchange and other wallets
 
@@ -87,9 +123,10 @@ class Account(BaseEndpoint):
         :rtype: resources.TransferFunds
         """
         raise DeprecationWarning(
-            'As of 20/09/2016 AUS wallet has been removed, function still available for when '
-            'accounts are added in 2017.')
+            "As of 20/09/2016 AUS wallet has been removed, function still available for when "
+            "accounts are added in 2017."
+        )
 
     @property
-    def url(self):
-        return '%s%s' % (self.client.api_uri, 'account/json-rpc/v1')
+    def url(self) -> str:
+        return "%s%s" % (self.client.api_uri, "account/json-rpc/v1")
