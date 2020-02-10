@@ -1,10 +1,6 @@
 from .baseresource import BaseResource
 
-from .authresources import (
-    LoginResource,
-    KeepAliveResource,
-    LogoutResource,
-)
+from .authresources import LoginResource, KeepAliveResource, LogoutResource
 
 from .bettingresources import (
     EventTypeResult,
@@ -22,7 +18,7 @@ from .bettingresources import (
     PlaceOrders,
     CancelOrders,
     UpdateOrders,
-    ReplaceOrders
+    ReplaceOrders,
 )
 
 from .accountresources import (
@@ -30,26 +26,13 @@ from .accountresources import (
     AccountDetails,
     AccountStatementResult,
     CurrencyRate,
-    TransferFunds
+    TransferFunds,
 )
 
-from .scoresresources import (
-    RaceDetails,
-    Score,
-    Incidents,
-    AvailableEvent,
-)
+from .scoresresources import RaceDetails, Score, Incidents, AvailableEvent
 
-from .racecardresources import (
-    RaceCard
-)
+from .racecardresources import RaceCard
 
-from .inplayserviceresources import (
-    EventTimeline,
-    Scores
-)
+from .inplayserviceresources import EventTimeline, Scores
 
-from .streamingresources import (
-    MarketDefinition,
-    MarketDefinitionRunner
-)
+from .streamingresources import MarketDefinition, MarketDefinitionRunner

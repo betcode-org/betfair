@@ -1,10 +1,8 @@
-import datetime
-
 from .baseresource import BaseResource
 from .bettingresources import PriceLadderDescription
 
 
-class MarketDefinitionRunner(object):
+class MarketDefinitionRunner:
     """
     :type adjustment_factor: float
     :type id: int
@@ -13,7 +11,17 @@ class MarketDefinitionRunner(object):
     :type status: unicode
     """
 
-    def __init__(self, id, sortPriority, status, hc=0, bsp=None, adjustmentFactor=None, removalDate=None, name=None):
+    def __init__(
+        self,
+        id: int,
+        sortPriority: int,
+        status: str,
+        hc: float = 0,
+        bsp: float = None,
+        adjustmentFactor: float = None,
+        removalDate: str = None,
+        name: str = None,
+    ):
         self.selection_id = id
         self.sort_priority = sortPriority
         self.status = status
@@ -24,30 +32,29 @@ class MarketDefinitionRunner(object):
         self.name = name  # historic data only
 
     def __str__(self):
-        return 'MarketDefinitionRunner: %s' % self.selection_id
+        return "MarketDefinitionRunner: %s" % self.selection_id
 
     def __repr__(self):
-        return '<MarketDefinitionRunner>'
+        return "<MarketDefinitionRunner>"
 
 
-class MarketDefinitionKeyLineSelection(object):
+class MarketDefinitionKeyLineSelection:
     """
     :type selectionId: int
     :type handicap: float
     """
 
     def __init__(self, **kwargs):
-        self.selection_id = kwargs.get('id')
-        self.handicap = kwargs.get('hc')
+        self.selection_id = kwargs.get("id")
+        self.handicap = kwargs.get("hc")
 
 
-class MarketDefinitionKeyLine(object):
-
+class MarketDefinitionKeyLine:
     def __init__(self, kl):
         self.key_line = [MarketDefinitionKeyLineSelection(**i) for i in kl]
 
 
-class MarketDefinition(object):
+class MarketDefinition:
     """
     :type bet_delay: int
     :type betting_type: unicode
@@ -60,14 +67,14 @@ class MarketDefinition(object):
     :type event_id: unicode
     :type event_type_id: unicode
     :type in_play: bool
-    :type market_base_rate: int
+    :type market_base_rate: float
     :type market_time: datetime.datetime
     :type market_type: unicode
     :type number_of_active_runners: int
     :type number_of_winners: int
     :type open_date: datetime.datetime
     :type persistence_enabled: bool
-    :type regulators: list[unicode]
+    :type regulators: unicode
     :type runners: list[MarketDefinitionRunner]
     :type runners_voidable: bool
     :type settled_time: datetime.datetime
@@ -79,12 +86,46 @@ class MarketDefinition(object):
     :type version: int
     """
 
-    def __init__(self, betDelay, bettingType, bspMarket, bspReconciled, complete, crossMatching, discountAllowed,
-                 eventId, eventTypeId, inPlay, marketBaseRate, marketTime, numberOfActiveRunners, numberOfWinners,
-                 persistenceEnabled, regulators, runnersVoidable, status, timezone, turnInPlayEnabled,
-                 version, runners, openDate=None, countryCode=None, eachWayDivisor=None, venue=None, settledTime=None,
-                 suspendTime=None, marketType=None, lineMaxUnit=None, lineMinUnit=None, lineInterval=None, name=None,
-                 eventName=None, priceLadderDefinition=None, keyLineDefinition=None, raceType=None):
+    def __init__(
+        self,
+        betDelay: int,
+        bettingType: str,
+        bspMarket: bool,
+        bspReconciled: bool,
+        complete: bool,
+        crossMatching: bool,
+        discountAllowed: bool,
+        eventId: str,
+        eventTypeId: str,
+        inPlay: bool,
+        marketBaseRate: float,
+        marketTime: str,
+        numberOfActiveRunners: int,
+        numberOfWinners: int,
+        persistenceEnabled: bool,
+        regulators: str,
+        runnersVoidable: bool,
+        status: str,
+        timezone: str,
+        turnInPlayEnabled: bool,
+        version: int,
+        runners: list,
+        openDate: str = None,
+        countryCode: str = None,
+        eachWayDivisor: float = None,
+        venue: str = None,
+        settledTime: str = None,
+        suspendTime: str = None,
+        marketType: str = None,
+        lineMaxUnit: float = None,
+        lineMinUnit: float = None,
+        lineInterval: float = None,
+        name: str = None,
+        eventName: str = None,
+        priceLadderDefinition: dict = None,
+        keyLineDefinition: dict = None,
+        raceType: str = None,
+    ):
         self.bet_delay = betDelay
         self.betting_type = bettingType
         self.bsp_market = bspMarket
@@ -116,13 +157,15 @@ class MarketDefinition(object):
         self.line_max_unit = lineMaxUnit
         self.line_min_unit = lineMinUnit
         self.line_interval = lineInterval
-        self.runners = [
-            MarketDefinitionRunner(**i) for i in runners
-        ]
-        self.price_ladder_definition = PriceLadderDescription(
-            **priceLadderDefinition
-        ) if priceLadderDefinition else None
-        self.key_line_definitions = MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
+        self.runners = [MarketDefinitionRunner(**i) for i in runners]
+        self.price_ladder_definition = (
+            PriceLadderDescription(**priceLadderDefinition)
+            if priceLadderDefinition
+            else None
+        )
+        self.key_line_definitions = (
+            MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
+        )
         self.race_type = raceType
 
         self.name = name  # historic data only
