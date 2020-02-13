@@ -142,6 +142,6 @@ stream = trading.streaming.create_historical_generator_stream(
 
 g = stream.get_generator()
 
-for i in g:
-    print(i)
+for market_books in g():
+    print(market_books)
 ```
