@@ -100,7 +100,7 @@ class InPlayServiceTest(unittest.TestCase):
         params = [1, 2, 3]
         url = "123"
         mock_response = mock.Mock()
-        mock_response.text = "{}"
+        mock_response.content = "{}".encode("utf-8")
         mock_get.return_value = mock_response
 
         self.in_play_service.request(params=params, url=url)
