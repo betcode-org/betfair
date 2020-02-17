@@ -21,7 +21,7 @@ class RaceCardTest(unittest.TestCase):
     def test_login(self):
         mock_session = mock.Mock()
         mock_response = mock.Mock()
-        mock_response.text = '"appKey": "1234",'
+        mock_response.content = '"appKey": "1234",'.encode("utf-8")
         mock_session.get.return_value = mock_response
         self.race_card.login(mock_session)
 
@@ -32,7 +32,7 @@ class RaceCardTest(unittest.TestCase):
     def test_login_error(self):
         mock_session = mock.Mock()
         mock_response = mock.Mock()
-        mock_response.text = '"applesKey": "1234",'
+        mock_response.content = '"applesKey": "1234",'.encode("utf-8")
         mock_session.get.return_value = mock_response
 
         with self.assertRaises(RaceCardError):
@@ -106,7 +106,7 @@ class RaceCardTest(unittest.TestCase):
         mock_login_headers.return_value = {}
         _url = "https://www.betfair.com/rest/v2/test"
         mock_response = mock.Mock()
-        mock_response.text = "{}"
+        mock_response.content = "{}".encode("utf-8")
         mock_get.return_value = mock_response
         self.race_card.request(method="test")
 
