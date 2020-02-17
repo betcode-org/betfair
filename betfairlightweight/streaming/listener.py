@@ -18,6 +18,7 @@ class BaseListener:
         self.stream_unique_id = None
 
     def register_stream(self, unique_id: int, operation: str) -> None:
+        logger.info("Register: %s %s" % (operation, unique_id))
         if self.stream is not None:
             logger.warning(
                 "[Listener: %s]: stream already registered, replacing data" % unique_id
@@ -56,8 +57,11 @@ class BaseListener:
         if self.stream is not None:
             return self.stream._clk
 
-    def _add_stream(self, unique_id: int, operation: str) -> None:
-        logger.info("Register: %s %s" % (operation, unique_id))
+    def _add_stream(self, unique_id: int, operation: str) -> BaseStream:
+        if operation == "marketSubscription":
+            return MarketStream(self)
+        elif operation == "orderSubscription":
+            return OrderStream(self)
 
     def __str__(self) -> str:
         return "{0}".format(self.__class__.__name__)
@@ -155,12 +159,6 @@ class StreamListener(BaseListener):
             self.stream.on_heartbeat(data)
         elif change_type == "UPDATE":
             self.stream.on_update(data)
-
-    def _add_stream(self, unique_id: int, stream_type: str) -> BaseStream:
-        if stream_type == "marketSubscription":
-            return MarketStream(self)
-        elif stream_type == "orderSubscription":
-            return OrderStream(self)
 
     @staticmethod
     def _error_handler(data: dict, unique_id: int) -> Optional[bool]:
