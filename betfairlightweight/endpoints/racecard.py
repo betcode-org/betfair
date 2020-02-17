@@ -30,7 +30,9 @@ class RaceCard(BaseEndpoint):
             raise APIError(None, self.login_url, None, e)
         except Exception as e:
             raise APIError(None, self.login_url, None, e)
-        app_key = re.findall(r'''"appKey":\s"(.*?)"''', response.text)
+        app_key = re.findall(
+            r'''"appKey":\s"(.*?)"''', response.content.decode("utf-8")
+        )
         if app_key:
             self.app_key = app_key[0]
         else:
@@ -112,7 +114,7 @@ class RaceCard(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.text)
+            response_json = json_loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 
