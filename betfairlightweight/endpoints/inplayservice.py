@@ -119,7 +119,7 @@ class InPlayService(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.text)
+            response_json = json_loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 

@@ -16,6 +16,8 @@ Streaming is more efficient because:
 - There are no data overheads as you would have with polling / HTTP.
 - This results in faster data and less CPU from your machine (and Betfair's)
 
+The full docs can be found [here](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API)
+
 ### Market
 
 A market stream can be created like so:
@@ -144,6 +146,25 @@ Betfairlightweight can also handle historical streaming data that has been purch
 
 The historical stream can be used in the same way as the market/order stream allowing backtesting / market processing.
 
+It is also possible to return a generator instead which can be easier to use (no threads) and uses less ram:
+
+```python
+    # create historical generator stream, update directory to file location
+>>> stream = trading.streaming.create_historical_generator_stream(
+        directory="/tmp/BASIC-1.132153978",
+        listener=listener,
+    )
+
+    # create genertaor
+>>> g = stream.get_generator()
+
+>>> for market_books in g():
+        print(market_books)
+        
+[<MarketBook>]
+..
+```
+
 ### Snap
 
 Instead of waiting for an update you can snap the listener to get an up to date version of the data.
@@ -195,4 +216,14 @@ class MyListener(betfairlightweight.StreamListener):
 
 
 custom_listener = MyListener()
+```
+
+### Logging
+
+In order to debug the stream update the logging level to DEBUG:
+
+```python
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 ```

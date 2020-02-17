@@ -52,8 +52,21 @@ class BaseListenerTest(unittest.TestCase):
     def test_on_data(self):
         self.base_listener.on_data({})
 
-    def test_add_stream(self):
-        self.base_listener._add_stream(1, "operation")
+    @mock.patch("betfairlightweight.streaming.listener.RaceStream", return_value=789)
+    @mock.patch("betfairlightweight.streaming.listener.OrderStream", return_value=456)
+    @mock.patch("betfairlightweight.streaming.listener.MarketStream", return_value=123)
+    def test_add_stream(self, mock_market_stream, mock_order_stream, mock_race_stream):
+        new_stream = self.base_listener._add_stream(1, "marketSubscription")
+        assert new_stream == 123
+        mock_market_stream.assert_called_with(self.base_listener)
+
+        new_stream = self.base_listener._add_stream(1, "orderSubscription")
+        assert new_stream == 456
+        mock_order_stream.assert_called_with(self.base_listener)
+
+        new_stream = self.base_listener._add_stream(1, "raceSubscription")
+        assert new_stream == 789
+        mock_race_stream.assert_called_with(self.base_listener)
 
     def test_snap(self):
         mock_stream = mock.Mock()
@@ -205,22 +218,6 @@ class StreamListenerTest(unittest.TestCase):
         mock_response = create_mock_json("tests/resources/streaming_rcm.json")
         self.stream_listener._on_change_message(mock_response.json(), 1)
         stream.on_update.assert_called_with(mock_response.json())
-
-    @mock.patch("betfairlightweight.streaming.listener.RaceStream", return_value=789)
-    @mock.patch("betfairlightweight.streaming.listener.OrderStream", return_value=456)
-    @mock.patch("betfairlightweight.streaming.listener.MarketStream", return_value=123)
-    def test_add_stream(self, mock_market_stream, mock_order_stream, mock_race_stream):
-        new_stream = self.stream_listener._add_stream(1, "marketSubscription")
-        assert new_stream == 123
-        mock_market_stream.assert_called_with(self.stream_listener)
-
-        new_stream = self.stream_listener._add_stream(1, "orderSubscription")
-        assert new_stream == 456
-        mock_order_stream.assert_called_with(self.stream_listener)
-
-        new_stream = self.stream_listener._add_stream(1, "raceSubscription")
-        assert new_stream == 789
-        mock_race_stream.assert_called_with(self.stream_listener)
 
     def test_error_handler(self):
         mock_response = create_mock_json("tests/resources/streaming_connection.json")
