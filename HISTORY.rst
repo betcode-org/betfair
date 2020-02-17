@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.0.1 (2020-02-17)
++++++++++++++++++++
+
+**Improvements**
+
+- Listener.add_stream cleanup
+
+**Bug Fixes**
+
+- #268 CPU bug when using response.text
+
 2.0.0 (2020-02-10)
 +++++++++++++++++++
 

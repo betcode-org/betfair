@@ -1,5 +1,25 @@
 # Advanced
 
+
+### Locale
+
+Betfair uses slightly different endpoints depending on your country of residence, these can be used by changing the locale on client initialisation:
+
+```python
+>>> trading = betfairlightweight.APIClient(
+        "username", 
+        "password", 
+        app_key="app_key", 
+        locale="italy"
+    )
+```
+
+- spain
+- italy
+- romania
+- sweden
+- australia
+
 ### Session
 
 The client assumes requests is used for the http requests but other clients can be used if required, a session object can be passed to the client:
@@ -10,7 +30,6 @@ The client assumes requests is used for the http requests but other clients can 
         "username", 
         "password", 
         app_key="app_key", 
-        certs="/certs", 
         session=session,
     )
 ```
