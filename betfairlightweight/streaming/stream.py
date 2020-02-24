@@ -129,6 +129,13 @@ class MarketStream(BaseStream):
             if (
                 market_book.get("img") or market_book_cache is None
             ):  # historic data does not contain img
+                if "marketDefinition" not in market_book:
+                    logger.error(
+                        "[MarketStream: %s] Unable to add %s to cache due to marketDefinition "
+                        "not being present (make sure EX_MARKET_DEF is requested)"
+                        % (self.unique_id, market_id)
+                    )
+                    continue
                 market_book_cache = MarketBookCache(
                     publish_time=publish_time, **market_book
                 )
