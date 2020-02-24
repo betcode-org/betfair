@@ -164,18 +164,20 @@ class MarketStreamTest(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
     def test_process(self, mock_on_process, mock_cache):
-        data = [{"id": "1.234", "img": True, "marketDefinition": {"runners": []}}]
+        sub_image = create_mock_json(
+            "tests/resources/streaming_mcm_SUB_IMAGE.json"
+        )
+        data = sub_image.json()["mc"]
         self.stream._process(data, 123)
 
-        new_cache = self.stream._caches["1.234"]
-        mock_on_process.assert_called_with([new_cache.create_resource()])
+        mock_on_process.assert_called()
         self.assertEqual(len(self.stream), len(data))
 
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
     def test_process_no_market_definition(self, mock_on_process, mock_cache):
         sub_image_error = create_mock_json(
-            "tests/resources/streaming_ocm_SUB_IMAGE_no_market_def.json"
+            "tests/resources/streaming_mcm_SUB_IMAGE_no_market_def.json"
         )
         data = sub_image_error.json()["mc"]
         self.stream._process(data, 123)
@@ -204,8 +206,17 @@ class OrderStreamTest(unittest.TestCase):
         self.stream.on_subscribe({"oc": {123}})
         mock_process.assert_called_once_with({123}, None)
 
-    # def test_process(self):
-    #     pass
+    @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
+    def test_process(self, mock_on_process, mock_cache):
+        sub_image = create_mock_json(
+            "tests/resources/streaming_ocm_FULL_IMAGE.json"
+        )
+        data = sub_image.json()["oc"]
+        self.stream._process(data, 123)
+
+        mock_on_process.assert_called()
+        self.assertEqual(len(self.stream), len(data))
 
     def test_str(self):
         assert str(self.stream) == "OrderStream"
