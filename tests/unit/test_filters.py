@@ -46,11 +46,18 @@ class FilterTest(unittest.TestCase):
         dt1 = datetime.datetime.now()
         dt2 = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        with self.assertRaises(TypeError):
-            time_range(from_=dt1.date(), to=dt2.date())
+        cases = (
+            (dt1.date(), None),
+            (None, dt1.date()),
+            (123, None),
+            (None, 456),
+        )
 
-        with self.assertRaises(TypeError):
-            time_range(from_=123, to=456)
+        for case in cases:
+            from_ = case[0]
+            to = case[1]
+            with self.assertRaises(TypeError):
+                time_range(from_=from_, to=to)
 
         response = time_range()
         assert response == {"from": None, "to": None}
