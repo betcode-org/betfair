@@ -1,3 +1,5 @@
+import datetime
+from typing import Union
 from .utils import to_camel_case
 
 from .resources import bettingresources
@@ -65,13 +67,31 @@ def streaming_order_filter(
     return {to_camel_case(k): v for k, v in args.items() if v is not None}
 
 
-def time_range(from_: str = None, to: str = None) -> dict:  # todo datetime conversion
+def time_range(
+    from_: Union[str, datetime.datetime] = None,
+    to: Union[str, datetime.datetime] = None,
+) -> dict:
     """
-    :param str from_:
-    :param str to:
+    :param Union[str, datetime.datetime] from_:
+    :param Union[str, datetime.datetime] to:
 
     :return: dict
     """
+
+    if isinstance(from_, datetime.datetime):
+        from_ = from_.isoformat()
+    elif isinstance(from_, datetime.date):
+        from_ = None
+    else:
+        pass
+
+    if isinstance(to, datetime.datetime):
+        to = to.isoformat()
+    elif isinstance(to, datetime.date):
+        to = None
+    else:
+        pass
+
     args = locals().copy()
     return {k.replace("_", ""): v for k, v in args.items()}
 
