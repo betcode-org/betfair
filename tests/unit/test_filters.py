@@ -46,10 +46,13 @@ class FilterTest(unittest.TestCase):
         dt1 = datetime.datetime.now()
         dt2 = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        response = time_range()
-        assert response == {"from": None, "to": None}
+        with self.assertRaises(TypeError):
+            time_range(from_=dt1.date(), to=dt2.date())
 
-        response = time_range(from_=dt1.date(), to=dt2.date())
+        with self.assertRaises(TypeError):
+            time_range(from_=123, to=456)
+
+        response = time_range()
         assert response == {"from": None, "to": None}
 
         response = time_range(from_=dt1, to=dt2)

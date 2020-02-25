@@ -78,19 +78,17 @@ def time_range(
     :return: dict
     """
 
-    if isinstance(from_, datetime.datetime):
-        from_ = from_.isoformat()
-    elif isinstance(from_, datetime.date):
-        from_ = None
-    else:
-        pass
+    if from_ != None:
+        if isinstance(from_, datetime.datetime):
+            from_ = from_.isoformat()
+        elif not isinstance(from_, str):
+            raise TypeError("from_ must be str or datetime (not date)")
 
-    if isinstance(to, datetime.datetime):
-        to = to.isoformat()
-    elif isinstance(to, datetime.date):
-        to = None
-    else:
-        pass
+    if to != None:
+        if isinstance(to, datetime.datetime):
+            to = to.isoformat()
+        elif not isinstance(from_, str):
+            raise TypeError("to must be str or datetime (not date)")
 
     args = locals().copy()
     return {k.replace("_", ""): v for k, v in args.items()}
