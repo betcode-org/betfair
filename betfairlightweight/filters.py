@@ -82,13 +82,13 @@ def time_range(
         if isinstance(from_, datetime.datetime):
             from_ = from_.isoformat()
         elif not isinstance(from_, str):
-            raise TypeError("from_ must be str or datetime (not date)")
+            raise TypeError("The 'from_' value must be string or datetime (not date)")
 
     if to != None:
         if isinstance(to, datetime.datetime):
             to = to.isoformat()
-        elif not isinstance(from_, str):
-            raise TypeError("to must be str or datetime (not date)")
+        elif not isinstance(to, str):
+            raise TypeError("The 'to' value must be string or datetime (not date)")
 
     args = locals().copy()
     return {k.replace("_", ""): v for k, v in args.items()}
