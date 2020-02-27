@@ -170,7 +170,6 @@ class MarketStreamTest(unittest.TestCase):
         data = sub_image.json()["mc"]
         self.stream._process(data, 123)
 
-        mock_on_process.assert_called()
         self.assertEqual(len(self.stream), len(data))
 
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
@@ -215,7 +214,6 @@ class OrderStreamTest(unittest.TestCase):
         data = sub_image.json()["oc"]
         self.stream._process(data, 123)
 
-        mock_on_process.assert_called()
         self.assertEqual(len(self.stream), len(data))
 
     def test_str(self):
