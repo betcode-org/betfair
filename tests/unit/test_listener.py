@@ -15,6 +15,7 @@ class BaseListenerTest(unittest.TestCase):
         assert self.base_listener.stream_unique_id is None
         assert self.base_listener.stream_type is None
         assert self.base_listener.max_latency == 0.5
+        assert self.base_listener.connections_available is None
 
     @mock.patch(
         "betfairlightweight.streaming.listener.BaseListener._add_stream",
@@ -156,6 +157,9 @@ class StreamListenerTest(unittest.TestCase):
 
     def test_on_status(self):
         self.stream_listener._on_status({}, 1)
+        self.assertIsNone(self.stream_listener.connections_available)
+        self.stream_listener._on_status({"connectionsAvailable": 69}, 1)
+        self.assertEqual(self.stream_listener.connections_available, 69)
 
     def test_on_change_message(self):
         stream = mock.Mock()
