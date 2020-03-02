@@ -46,12 +46,7 @@ class FilterTest(unittest.TestCase):
         dt1 = datetime.datetime.now()
         dt2 = datetime.datetime.now() + datetime.timedelta(days=1)
 
-        cases = (
-            (dt1.date(), None),
-            (None, dt1.date()),
-            (123, None),
-            (None, 456),
-        )
+        cases = ((dt1.date(), None), (None, dt1.date()), (123, None), (None, 456))
 
         for case in cases:
             from_ = case[0]

@@ -164,9 +164,7 @@ class MarketStreamTest(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
     def test_process(self, mock_on_process, mock_cache):
-        sub_image = create_mock_json(
-            "tests/resources/streaming_mcm_SUB_IMAGE.json"
-        )
+        sub_image = create_mock_json("tests/resources/streaming_mcm_SUB_IMAGE.json")
         data = sub_image.json()["mc"]
         self.stream._process(data, 123)
 
@@ -208,9 +206,7 @@ class OrderStreamTest(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
     @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
     def test_process(self, mock_on_process, mock_cache):
-        sub_image = create_mock_json(
-            "tests/resources/streaming_ocm_FULL_IMAGE.json"
-        )
+        sub_image = create_mock_json("tests/resources/streaming_ocm_FULL_IMAGE.json")
         data = sub_image.json()["oc"]
         self.stream._process(data, 123)
 
