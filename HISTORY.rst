@@ -14,6 +14,7 @@ Release History
 **Bug Fixes**
 
 - #273 error handling added for markets without marketDefinition
+- #233 sendall used instead of send so that all data is sent (bug present since 2016!)
 
 2.0.1 (2020-02-17)
 +++++++++++++++++++
