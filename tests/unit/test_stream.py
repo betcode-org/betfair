@@ -161,12 +161,28 @@ class MarketStreamTest(unittest.TestCase):
         self.stream.on_subscribe({"mc": {123}})
         mock_process.assert_called_once_with({123}, None)
 
-    # @mock.patch('betfairlightweight.streaming.stream.MarketBookCache')
-    # def test_process(self, mock_market_book_cache):
-    #     now = mock.Mock()
-    #     market_books = [mock.Mock()]
-    #     self.stream._caches = mock.Mock()
-    #     # self.stream._process(market_books, now)
+    @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
+    def test_process(self, mock_on_process, mock_cache):
+        sub_image = create_mock_json(
+            "tests/resources/streaming_mcm_SUB_IMAGE.json"
+        )
+        data = sub_image.json()["mc"]
+        self.stream._process(data, 123)
+
+        self.assertEqual(len(self.stream), len(data))
+
+    @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
+    def test_process_no_market_definition(self, mock_on_process, mock_cache):
+        sub_image_error = create_mock_json(
+            "tests/resources/streaming_mcm_SUB_IMAGE_no_market_def.json"
+        )
+        data = sub_image_error.json()["mc"]
+        self.stream._process(data, 123)
+
+        self.assertEqual(len(data), 137)
+        self.assertEqual(len(self.stream), 135)  # two markets missing marketDef
 
     def test_str(self):
         assert str(self.stream) == "MarketStream"
@@ -189,8 +205,16 @@ class OrderStreamTest(unittest.TestCase):
         self.stream.on_subscribe({"oc": {123}})
         mock_process.assert_called_once_with({123}, None)
 
-    # def test_process(self):
-    #     pass
+    @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
+    def test_process(self, mock_on_process, mock_cache):
+        sub_image = create_mock_json(
+            "tests/resources/streaming_ocm_FULL_IMAGE.json"
+        )
+        data = sub_image.json()["oc"]
+        self.stream._process(data, 123)
+
+        self.assertEqual(len(self.stream), len(data))
 
     def test_str(self):
         assert str(self.stream) == "OrderStream"
