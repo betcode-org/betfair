@@ -307,14 +307,14 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream._send(message)
         assert mock_connect.call_count == 1
         assert mock_authenticate.call_count == 1
-        assert mock_socket.send.call_count == 1
+        assert mock_socket.sendall.call_count == 1
 
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream.stop")
     def test_send_timeout(self, mock_stop):
         self.betfair_stream._running = True
         mock_socket = mock.Mock()
         self.betfair_stream._socket = mock_socket
-        mock_socket.send.side_effect = socket.timeout()
+        mock_socket.sendall.side_effect = socket.timeout()
         message = {"message": 1}
 
         with self.assertRaises(SocketError):
@@ -326,7 +326,7 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream._running = True
         mock_socket = mock.Mock()
         self.betfair_stream._socket = mock_socket
-        mock_socket.send.side_effect = socket.error()
+        mock_socket.sendall.side_effect = socket.error()
         message = {"message": 1}
 
         with self.assertRaises(SocketError):

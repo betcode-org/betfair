@@ -1,3 +1,4 @@
+import datetime
 import unittest
 
 from betfairlightweight.filters import (
@@ -42,8 +43,22 @@ class FilterTest(unittest.TestCase):
         assert response == {"includeOverallPosition": True}
 
     def test_time_range(self):
+        dt1 = datetime.datetime.now()
+        dt2 = datetime.datetime.now() + datetime.timedelta(days=1)
+
+        cases = ((dt1.date(), None), (None, dt1.date()), (123, None), (None, 456))
+
+        for case in cases:
+            from_ = case[0]
+            to = case[1]
+            with self.assertRaises(TypeError):
+                time_range(from_=from_, to=to)
+
         response = time_range()
         assert response == {"from": None, "to": None}
+
+        response = time_range(from_=dt1, to=dt2)
+        assert response == {"from": dt1.isoformat(), "to": dt2.isoformat()}
 
         response = time_range(from_="123", to="456")
         assert response == {"from": "123", "to": "456"}
