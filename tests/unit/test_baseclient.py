@@ -199,7 +199,7 @@ class BaseClientRelativePathTest(unittest.TestCase):
             [".DS_Store", "client-2048.crt", "client-2048.key"]
         )
         assert self.client.cert == normpaths(
-            ["../fail/client-2048.crt", "../fail/client-2048.key"]
+            ["fail/client-2048.crt", "fail/client-2048.key"]
         )
 
 
