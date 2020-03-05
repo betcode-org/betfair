@@ -156,9 +156,8 @@ class BaseClient:
             return self.cert_files
 
         certs = self.certs or "/certs/"
-        ssl_path = os.path.join(os.pardir, certs)
         try:
-            cert_path = os.listdir(ssl_path)
+            cert_path = os.listdir(certs)
         except FileNotFoundError as e:
             raise CertsError(str(e))
 
