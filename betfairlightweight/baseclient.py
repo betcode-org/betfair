@@ -166,13 +166,13 @@ class BaseClient:
         for file in cert_path:
             ext = os.path.splitext(file)[-1]
             if ext in [".crt", ".cert"]:
-                cert = os.path.join(cert_path, file)
+                cert = os.path.join(certs, file)
             elif ext == ".key":
-                key = os.path.join(cert_path, file)
+                key = os.path.join(certs, file)
         if cert is None or key is None:
             raise CertsError(
                 "Certificates not found in directory: '%s' (make sure .crt and .key file is present)"
-                % cert_path
+                % certs
             )
         return [cert, key]
 
