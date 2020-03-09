@@ -3,7 +3,7 @@ import requests
 from ..exceptions import APIError, InvalidResponse
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
-from ..compat import json_loads
+from ..compat import json
 
 
 class Navigation(BaseEndpoint):
@@ -39,7 +39,7 @@ class Navigation(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.content.decode("utf-8"))
+            response_json = json.loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 

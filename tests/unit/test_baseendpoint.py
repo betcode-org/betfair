@@ -68,7 +68,7 @@ class BaseEndPointTest(unittest.TestCase):
             self.base_endpoint.request(None, None, None)
 
     @mock.patch(
-        "betfairlightweight.endpoints.baseendpoint.json_loads", side_effect=ValueError
+        "betfairlightweight.endpoints.baseendpoint.json.loads", side_effect=ValueError
     )
     @mock.patch("betfairlightweight.endpoints.baseendpoint.BaseEndpoint.create_req")
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")

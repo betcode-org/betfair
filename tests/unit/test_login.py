@@ -54,7 +54,7 @@ class LoginTest(unittest.TestCase):
         with self.assertRaises(APIError):
             self.login.request()
 
-    @mock.patch("betfairlightweight.endpoints.login.json_loads", side_effect=ValueError)
+    @mock.patch("betfairlightweight.endpoints.login.json.loads", side_effect=ValueError)
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
     @mock.patch("betfairlightweight.baseclient.BaseClient.login_headers")
     @mock.patch("betfairlightweight.baseclient.requests.post")

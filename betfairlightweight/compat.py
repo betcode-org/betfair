@@ -9,16 +9,8 @@ integer_types = (int,)
 
 try:
     import ujson as json
-
-    def json_loads(s: str, **kwargs) -> dict:
-        return json.loads(s, precise_float=True, **kwargs)
-
-
 except ImportError:
     import json
-
-    def json_loads(s: str, **kwargs) -> dict:
-        return json.loads(s, **kwargs)
 
 
 try:

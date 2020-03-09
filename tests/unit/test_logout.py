@@ -49,7 +49,7 @@ class LogoutTest(unittest.TestCase):
             self.logout.request()
 
     @mock.patch(
-        "betfairlightweight.endpoints.logout.json_loads", side_effect=ValueError
+        "betfairlightweight.endpoints.logout.json.loads", side_effect=ValueError
     )
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
     @mock.patch("betfairlightweight.baseclient.BaseClient.keep_alive_headers")

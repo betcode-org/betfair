@@ -49,7 +49,7 @@ class KeepAliveTest(unittest.TestCase):
             self.keep_alive.request()
 
     @mock.patch(
-        "betfairlightweight.endpoints.keepalive.json_loads", side_effect=ValueError
+        "betfairlightweight.endpoints.keepalive.json.loads", side_effect=ValueError
     )
     @mock.patch("betfairlightweight.baseclient.BaseClient.keep_alive_headers")
     @mock.patch("betfairlightweight.baseclient.requests.post")
