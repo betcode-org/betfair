@@ -3,7 +3,7 @@
 Release History
 ---------------
 
-2.1.1 (2020-03-09)
+2.2.0 (2020-03-09)
 +++++++++++++++++++
 
 **Improvements**
@@ -13,6 +13,7 @@ Release History
 **Dependencies**
 
 - requests upgraded from 2.22.0 to 2.23.0
+- ujson upgraded from 1.35 to 2.0.1 (updates to compat.py)
 
 2.1.0 (2020-03-02)
 +++++++++++++++++++
