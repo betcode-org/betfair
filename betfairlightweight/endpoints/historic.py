@@ -3,7 +3,7 @@ import time
 import requests
 
 from ..exceptions import APIError, InvalidResponse
-from ..compat import json, json_loads
+from ..compat import json
 from .baseendpoint import BaseEndpoint
 from ..utils import clean_locals, check_status_code
 
@@ -196,7 +196,7 @@ class Historic(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.content.decode("utf-8"))
+            response_json = json.loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 

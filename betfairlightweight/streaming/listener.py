@@ -3,7 +3,7 @@ import queue
 from typing import Optional
 
 from .stream import BaseStream, MarketStream, OrderStream
-from ..compat import json_loads
+from ..compat import json
 
 logger = logging.getLogger(__name__)
 
@@ -101,7 +101,7 @@ class StreamListener(BaseListener):
         :return: Return False to stop stream and close connection
         """
         try:
-            data = json_loads(raw_data)
+            data = json.loads(raw_data)
         except ValueError:
             logger.error("value error: %s" % raw_data)
             return

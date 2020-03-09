@@ -6,7 +6,7 @@ from .baseendpoint import BaseEndpoint
 from ..resources import KeepAliveResource
 from ..exceptions import KeepAliveError, APIError, InvalidResponse
 from ..utils import check_status_code
-from ..compat import json_loads
+from ..compat import json
 
 
 class KeepAlive(BaseEndpoint):
@@ -48,7 +48,7 @@ class KeepAlive(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.content.decode("utf-8"))
+            response_json = json.loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 

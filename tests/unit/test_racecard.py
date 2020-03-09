@@ -126,7 +126,7 @@ class RaceCardTest(unittest.TestCase):
             self.race_card.request()
 
     @mock.patch(
-        "betfairlightweight.endpoints.racecard.json_loads", side_effect=ValueError
+        "betfairlightweight.endpoints.racecard.json.loads", side_effect=ValueError
     )
     @mock.patch("betfairlightweight.endpoints.racecard.check_status_code")
     @mock.patch("betfairlightweight.endpoints.racecard.RaceCard.create_req")

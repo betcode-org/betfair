@@ -5,7 +5,7 @@ from typing import Union, Type
 from ..baseclient import BaseClient
 from ..exceptions import APIError, InvalidResponse
 from ..utils import check_status_code
-from ..compat import json, json_loads
+from ..compat import json
 from ..resources import BaseResource
 
 
@@ -47,7 +47,7 @@ class BaseEndpoint:
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.content.decode("utf-8"))
+            response_json = json.loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 
