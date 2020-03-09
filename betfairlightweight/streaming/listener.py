@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseListener:
-    def __init__(self, max_latency: float = 0.5):
+    def __init__(self, max_latency: Optional[float] = 0.5):
         self.max_latency = max_latency
 
         self.connection_id = None
@@ -80,7 +80,7 @@ class StreamListener(BaseListener):
     def __init__(
         self,
         output_queue: queue.Queue = None,
-        max_latency: float = 0.5,
+        max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
     ):
         """

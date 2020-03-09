@@ -52,7 +52,7 @@ class BaseStream:
 
         publish_time = data["pt"]
         latency = self._calc_latency(publish_time)
-        if latency > self._max_latency:
+        if self._max_latency and latency > self._max_latency:
             logger.warning("[Stream: %s]: Latency high: %s" % (self.unique_id, latency))
 
         if self._lookup in data:
