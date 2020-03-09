@@ -58,6 +58,22 @@ class BaseStreamTest(unittest.TestCase):
         mock_calc_latency.return_value = 10
         self.stream.on_update(mock_response.json())
 
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
+    @mock.patch(
+        "betfairlightweight.streaming.stream.BaseStream._calc_latency", return_value=0.1
+    )
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")
+    def test_on_update_no_latency(
+        self, mock_update_clk, mock_calc_latency, mock_process
+    ):
+        data = {"pt": 12345, "mc": "trainer"}
+        self.listener.max_latency = None
+        self.stream.on_update(data)
+
+        mock_update_clk.assert_called_with(data)
+        mock_calc_latency.assert_called_with(data.get("pt"))
+        mock_process.assert_called_with(data.get("mc"), data.get("pt"))
+
     def test_clear_cache(self):
         self.stream._caches = {1: "abc"}
         self.stream.clear_cache()

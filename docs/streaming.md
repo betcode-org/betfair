@@ -227,3 +227,6 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 ```
+
+!!! tip
+    By default `max_latency` is set to 0.5, this means a warning will be logged if the latency between the publishTime and your machines time is greater than this number. Often you will need to check that your clock is up to date, however this can be removed by setting `max_latency=None` when initializing the listener.
