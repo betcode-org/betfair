@@ -56,7 +56,7 @@ class LoginInteractiveTest(unittest.TestCase):
             self.login.request()
 
     @mock.patch(
-        "betfairlightweight.endpoints.logininteractive.json_loads",
+        "betfairlightweight.endpoints.logininteractive.json.loads",
         side_effect=ValueError,
     )
     @mock.patch("betfairlightweight.baseclient.BaseClient.login_headers")

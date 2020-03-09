@@ -6,7 +6,7 @@ from ..exceptions import APIError, InvalidResponse
 from ..utils import check_status_code
 from .baseendpoint import BaseEndpoint
 from .. import resources
-from ..compat import json_loads
+from ..compat import json
 
 
 class InPlayService(BaseEndpoint):
@@ -119,7 +119,7 @@ class InPlayService(BaseEndpoint):
 
         check_status_code(response)
         try:
-            response_json = json_loads(response.content.decode("utf-8"))
+            response_json = json.loads(response.content.decode("utf-8"))
         except ValueError:
             raise InvalidResponse(response.text)
 

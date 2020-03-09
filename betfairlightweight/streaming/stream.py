@@ -52,7 +52,7 @@ class BaseStream:
 
         publish_time = data["pt"]
         latency = self._calc_latency(publish_time)
-        if latency > self._max_latency:
+        if self._max_latency and latency > self._max_latency:
             logger.warning("[Stream: %s]: Latency high: %s" % (self.unique_id, latency))
 
         if self._lookup in data:
@@ -129,6 +129,13 @@ class MarketStream(BaseStream):
             if (
                 market_book.get("img") or market_book_cache is None
             ):  # historic data does not contain img
+                if "marketDefinition" not in market_book:
+                    logger.error(
+                        "[MarketStream: %s] Unable to add %s to cache due to marketDefinition "
+                        "not being present (make sure EX_MARKET_DEF is requested)"
+                        % (self.unique_id, market_id)
+                    )
+                    continue
                 market_book_cache = MarketBookCache(
                     publish_time=publish_time, **market_book
                 )

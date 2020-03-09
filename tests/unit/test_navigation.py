@@ -58,7 +58,7 @@ class NavigationTest(unittest.TestCase):
             self.navigation.request()
 
     @mock.patch(
-        "betfairlightweight.endpoints.navigation.json_loads", side_effect=ValueError
+        "betfairlightweight.endpoints.navigation.json.loads", side_effect=ValueError
     )
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
     @mock.patch("betfairlightweight.baseclient.BaseClient.request_headers")

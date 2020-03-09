@@ -3,19 +3,20 @@ import queue
 from typing import Optional
 
 from .stream import BaseStream, MarketStream, OrderStream, RaceStream
-from ..compat import json_loads
+from ..compat import json
 
 logger = logging.getLogger(__name__)
 
 
 class BaseListener:
-    def __init__(self, max_latency: float = 0.5):
+    def __init__(self, max_latency: Optional[float] = 0.5):
         self.max_latency = max_latency
 
         self.connection_id = None
         self.stream = None
         self.stream_type = None  # marketSubscription/orderSubscription/raceSubscription
         self.stream_unique_id = None
+        self.connections_available = None  # connection throttling
 
     def register_stream(self, unique_id: int, operation: str) -> None:
         logger.info("Register: %s %s" % (operation, unique_id))
@@ -81,7 +82,7 @@ class StreamListener(BaseListener):
     def __init__(
         self,
         output_queue: queue.Queue = None,
-        max_latency: float = 0.5,
+        max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
     ):
         """
@@ -102,7 +103,7 @@ class StreamListener(BaseListener):
         :return: Return False to stop stream and close connection
         """
         try:
-            data = json_loads(raw_data)
+            data = json.loads(raw_data)
         except ValueError:
             logger.error("value error: %s" % raw_data)
             return
@@ -139,14 +140,19 @@ class StreamListener(BaseListener):
             "[Connect: %s]: connection_id: %s" % (unique_id, self.connection_id)
         )
 
-    @staticmethod
-    def _on_status(data: dict, unique_id: int) -> None:
+    def _on_status(self, data: dict, unique_id: int) -> None:
         """Called on status operation
 
         :param data: Received data
         """
         status_code = data.get("statusCode")
-        logger.info("[Subscription: %s]: %s" % (unique_id, status_code))
+        connections_available = data.get("connectionsAvailable")
+        if connections_available:
+            self.connections_available = data.get("connectionsAvailable")
+        logger.info(
+            "[Subscription: %s]: %s (%s connections available)"
+            % (unique_id, status_code, self.connections_available)
+        )
 
     def _on_change_message(self, data: dict, unique_id: int) -> None:
         change_type = data.get("ct", "UPDATE")

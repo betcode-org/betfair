@@ -272,7 +272,7 @@ class BetfairStream:
             "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
         )
         try:
-            self._socket.send(message_dumped.encode())
+            self._socket.sendall(message_dumped.encode())
         except (socket.timeout, socket.error) as e:
             self.stop()
             raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
