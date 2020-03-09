@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.1.1 (2020-03-09)
++++++++++++++++++++
+
+**Improvements**
+
+- #283 max_latency can now be set to None
+
+**Dependencies**
+
+- requests upgraded from 2.22.0 to 2.23.0
+
 2.1.0 (2020-03-02)
 +++++++++++++++++++
 
