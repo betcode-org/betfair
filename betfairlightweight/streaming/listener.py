@@ -3,13 +3,13 @@ import queue
 from typing import Optional
 
 from .stream import BaseStream, MarketStream, OrderStream
-from ..compat import json_loads
+from ..compat import json
 
 logger = logging.getLogger(__name__)
 
 
 class BaseListener:
-    def __init__(self, max_latency: float = 0.5):
+    def __init__(self, max_latency: Optional[float] = 0.5):
         self.max_latency = max_latency
 
         self.connection_id = None
@@ -80,7 +80,7 @@ class StreamListener(BaseListener):
     def __init__(
         self,
         output_queue: queue.Queue = None,
-        max_latency: float = 0.5,
+        max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
     ):
         """
@@ -101,7 +101,7 @@ class StreamListener(BaseListener):
         :return: Return False to stop stream and close connection
         """
         try:
-            data = json_loads(raw_data)
+            data = json.loads(raw_data)
         except ValueError:
             logger.error("value error: %s" % raw_data)
             return

@@ -7,7 +7,7 @@ from betfairlightweight import compat
 class CompatTest(unittest.TestCase):
     def test_json_loads(self):
         self.assertEqual(
-            compat.json_loads('{"lastTradedPrice": 1000}'), {"lastTradedPrice": 1000}
+            compat.json.loads('{"lastTradedPrice": 1000}'), {"lastTradedPrice": 1000}
         )
 
     def test_parse_datetime(self):

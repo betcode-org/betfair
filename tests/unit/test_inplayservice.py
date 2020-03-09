@@ -123,7 +123,7 @@ class InPlayServiceTest(unittest.TestCase):
             self.in_play_service.request(params=params, url=url)
 
     @mock.patch(
-        "betfairlightweight.endpoints.inplayservice.json_loads", side_effect=ValueError
+        "betfairlightweight.endpoints.inplayservice.json.loads", side_effect=ValueError
     )
     @mock.patch("betfairlightweight.endpoints.inplayservice.check_status_code")
     @mock.patch("betfairlightweight.endpoints.inplayservice.InPlayService.headers")

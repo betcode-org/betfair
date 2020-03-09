@@ -59,7 +59,7 @@ class HistoricalListener(StreamListener):
 
 
 # create listener
-listener = HistoricalListener(max_latency=1e100)
+listener = HistoricalListener(max_latency=None)
 
 # create historical stream, update directory to file location
 stream = trading.streaming.create_historical_stream(
