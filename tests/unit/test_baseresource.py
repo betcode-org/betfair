@@ -1,8 +1,8 @@
 import datetime
-import ujson as json
 import unittest
 from unittest import mock
 
+from betfairlightweight.compat import json
 from betfairlightweight.resources.baseresource import BaseResource
 from tests.unit.tools import create_mock_json
 

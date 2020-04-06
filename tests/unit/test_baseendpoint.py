@@ -1,8 +1,8 @@
-import ujson as json
 import unittest
 from unittest import mock
 from requests.exceptions import ConnectionError
 
+from betfairlightweight.compat import json
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.baseendpoint import BaseEndpoint
 from betfairlightweight.exceptions import APIError, InvalidResponse
