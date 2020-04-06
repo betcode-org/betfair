@@ -3,6 +3,14 @@
 Release History
 ---------------
 
+2.3.0 (2020-03-06)
++++++++++++++++++++
+
+**Dependencies**
+
+- ujson upgraded to 2.0.3
+- c based libraries restricted to darwin and linux platforms only
+
 2.2.0 (2020-03-09)
 +++++++++++++++++++
 
