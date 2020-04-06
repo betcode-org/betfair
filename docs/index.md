@@ -64,9 +64,12 @@ Request all event types..
 
 betfairlightweight relies on these libraries:
 
-* `requests` - HTTP support.
-* `ciso8601` - C based datetime parsing.
-* `ujson` - C based json parsing.
+* `requests` - HTTP support
+
+Linux and darwin platforms only:
+
+* `ciso8601` - C based datetime parsing
+* `ujson` - C based json parsing
 
 ## Installation
 

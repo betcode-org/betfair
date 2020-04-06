@@ -113,3 +113,17 @@ or on a per request basis:
 
 !!! hint
     Because lightweight means python doesn't need to create objects it can be considerably faster but harder to work with.
+
+### Dependencies
+
+By default betfairlightweight will install c based libraries if your os is either linux or darwin (Mac), due to difficulties in installation Windows users can install them seperatly:
+
+```bash
+pip install ciso8601=={version}
+``` 
+```bash
+pip install ujson=={version}
+``` 
+
+!!! hint
+    It is likely that visual studio will need to be installed as well. 
