@@ -118,7 +118,7 @@ class StreamListenerTest(unittest.TestCase):
         self.stream_listener.stream_unique_id = 2
 
         mock_response = create_mock_json("tests/resources/streaming_connection.json")
-        self.stream_listener.on_data(mock_response.content)
+        self.stream_listener.on_data(mock_response.text)
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
