@@ -19,8 +19,7 @@ listener = StreamListener(max_latency=None)
 
 # create historical stream (update directory to your file location)
 stream = trading.streaming.create_historical_generator_stream(
-    directory="/tmp/BASIC-1.132153978",
-    listener=listener,
+    directory="/tmp/BASIC-1.132153978", listener=listener,
 )
 
 # create generator
@@ -30,6 +29,25 @@ gen = stream.get_generator()
 for market_books in gen():
     for market_book in market_books:
         print(market_book)
+
+# print based on seconds to start
+for market_books in gen():
+    for market_book in market_books:
+        seconds_to_start = (
+            market_book.market_definition.market_time - market_book.publish_time
+        ).total_seconds()
+        if seconds_to_start < 100:
+            print(market_book.market_id, seconds_to_start, market_book.total_matched)
+
+        # print winner details once market is closed
+        if market_book.status == "CLOSED":
+            for runner in market_book.runners:
+                if runner.status == "WINNER":
+                    print(
+                        "{0}: {1} with sp of {2}".format(
+                            runner.status, runner.selection_id, runner.sp.actual_sp
+                        )
+                    )
 
 # record prices to a file
 with open("output.txt", "w") as output:
@@ -45,9 +63,7 @@ for market_books in gen():
                     (runner.selection_id, runner.handicap): runner
                     for runner in market_def.runners
                 }
-                runner_def = runners_dict.get(
-                    (runner.selection_id, runner.handicap)
-                )
+                runner_def = runners_dict.get((runner.selection_id, runner.handicap))
 
                 output.write(
                     "%s,%s,%s,%s,%s,%s\n"
