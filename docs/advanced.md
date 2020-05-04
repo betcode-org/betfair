@@ -20,6 +20,35 @@ Betfair uses slightly different endpoints depending on your country of residence
 - sweden
 - australia
 
+### NEMID Login
+
+Danish residents are restricted in how they login due to NemID requirements, this can be handled by replicating the login flow:
+
+```python
+import re
+import betfairlightweight
+
+trading = betfairlightweight.APIClient("username", "password", app_key="app_key")
+
+resp = trading.session.post(
+    url=trading.login_interactive.url,
+    data={
+        "username": trading.username,
+        "password": trading.password,
+        "redirectMethod": "POST",
+        "product": trading.app_key,
+        "url": "https://www.betfair.com",
+        "submitForm": True,
+    }
+)
+session_token = re.findall(
+    "ssoid=(.*?);", resp.headers["Set-Cookie"]
+)
+trading.set_session_token(session_token[0])
+
+print(trading.betting.list_event_types())
+```
+
 ### Session
 
 The client assumes requests is used for the http requests but other clients can be used if required, a session object can be passed to the client:
@@ -81,6 +110,13 @@ Elapsed, created and updated time:
 
 >>> response[0]._datetime_updated
 2020-01-27 09:56:32.984387
+```
+
+Raw requests response object:
+
+```python
+>>> response[0]._response
+<Response [200]>
 ```
 
 ### Lightweight
