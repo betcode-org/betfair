@@ -3,6 +3,14 @@
 Release History
 ---------------
 
+2.3.1 (2020-05-12)
++++++++++++++++++++
+
+**Improvements**
+
+- LRUCache added to strip datetime
+- NemID docs added
+
 2.3.0 (2020-04-06)
 +++++++++++++++++++
 

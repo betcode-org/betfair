@@ -1,3 +1,4 @@
+import functools
 import datetime
 from typing import Union, Optional
 
@@ -20,6 +21,7 @@ class BaseResource:
         return json.dumps(self._data)
 
     @staticmethod
+    @functools.lru_cache()
     def strip_datetime(value: Union[str, int]) -> Optional[datetime.datetime]:
         """
         Converts value to datetime if string or int.
