@@ -62,3 +62,13 @@ def to_camel_case(snake_str: str) -> str:
 
 def default_user_agent():
     return "{0}/{1}".format(__title__, __version__)
+
+
+def create_file_reading_generator(filename):
+    with open(filename, 'r') as f:
+        while True:
+            line = f.readline()
+            if line:
+                yield line
+            else:
+                break

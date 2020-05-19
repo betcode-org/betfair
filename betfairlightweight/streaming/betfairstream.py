@@ -3,8 +3,9 @@ import ssl
 import logging
 import datetime
 import collections
-from typing import Optional, Generator
+from typing import Optional, Generator, Union
 
+from betfairlightweight.utils import create_file_reading_generator
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
 from .listener import BaseListener
@@ -281,12 +282,17 @@ class HistoricalStream:
     historical data.
     """
 
-    def __init__(self, update_generator: Generator, listener: BaseListener):
+    def __init__(self, update_generator: Union[Generator, str], listener: BaseListener):
         """
-        :param Generator[str] update_generator: Python generator that yields streaming updates
+        :param Union[Generator[str], str] update_generator: If this is a generator then it should yield streaming updates.
+                                                            If it is a string, then it should be the filename of a streaming
+                                                            data file.
         :param BaseListener listener: Listener object
         """
-        self.update_generator = update_generator
+        if isinstance(update_generator, str):
+            self.update_generator = create_file_reading_generator(update_generator)
+        else:
+            self.update_generator = update_generator
         self.listener = listener
         self._running = False
 

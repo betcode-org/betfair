@@ -4,7 +4,7 @@ import time
 import threading
 from unittest import mock
 
-from betfairlightweight.endpoints.streaming import create_file_reading_generator
+from betfairlightweight.utils import create_file_reading_generator
 from betfairlightweight.streaming.betfairstream import (
     BetfairStream,
     HistoricalStream,

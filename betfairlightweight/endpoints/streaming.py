@@ -1,3 +1,4 @@
+from betfairlightweight.utils import create_file_reading_generator
 from ..baseclient import BaseClient
 from ..streaming import (
     BaseListener,
@@ -88,11 +89,3 @@ class Streaming:
         return HistoricalGeneratorStream(frg, listener)
 
 
-def create_file_reading_generator(filename):
-    with open(filename, 'r') as f:
-        while True:
-            line = f.readline()
-            if line:
-                yield line
-            else:
-                break
