@@ -4,6 +4,7 @@ import time
 import threading
 from unittest import mock
 
+from betfairlightweight.endpoints.streaming import create_file_reading_generator
 from betfairlightweight.streaming.betfairstream import (
     BetfairStream,
     HistoricalStream,
@@ -345,11 +346,12 @@ class BetfairStreamTest(unittest.TestCase):
 class HistoricalStreamTest(unittest.TestCase):
     def setUp(self):
         self.directory = "tests/resources/historicaldata/BASIC-1.132153978"
+        self.file_reading_generator = create_file_reading_generator(self.directory)
         self.listener = mock.Mock()
-        self.stream = HistoricalStream(self.directory, self.listener)
+        self.stream = HistoricalStream(self.file_reading_generator, self.listener)
 
     def test_init(self):
-        assert self.stream.directory == self.directory
+        assert self.stream.update_generator == self.file_reading_generator
         assert self.stream.listener == self.listener
         assert self.stream._running is False
 
@@ -377,11 +379,12 @@ class HistoricalStreamTest(unittest.TestCase):
 class HistoricalGeneratorStreamTest(unittest.TestCase):
     def setUp(self):
         self.directory = "tests/resources/historicaldata/BASIC-1.132153978"
+        self.file_reading_generator = create_file_reading_generator(self.directory)
         self.listener = mock.Mock()
-        self.stream = HistoricalGeneratorStream(self.directory, self.listener)
+        self.stream = HistoricalGeneratorStream(self.file_reading_generator, self.listener)
 
     def test_init(self):
-        assert self.stream.directory == self.directory
+        assert self.stream.update_generator == self.file_reading_generator
         assert self.stream.listener == self.listener
         assert self.stream._running is False
 

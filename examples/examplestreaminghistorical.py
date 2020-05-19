@@ -19,7 +19,7 @@ listener = StreamListener(max_latency=None)
 
 # create historical stream (update directory to your file location)
 stream = trading.streaming.create_historical_generator_stream(
-    directory="/tmp/BASIC-1.132153978", listener=listener,
+    directory="tests/resources/historicaldata/BASIC-1.132153978", listener=listener,
 )
 
 # create generator
@@ -29,6 +29,13 @@ gen = stream.get_generator()
 for market_books in gen():
     for market_book in market_books:
         print(market_book)
+
+
+# We need to recreate the stream and gen here, as it uses a generator which will have finished at this point
+stream = trading.streaming.create_historical_generator_stream(
+    directory="tests/resources/historicaldata/BASIC-1.132153978", listener=listener,
+)
+gen = stream.get_generator()
 
 # print based on seconds to start
 for market_books in gen():

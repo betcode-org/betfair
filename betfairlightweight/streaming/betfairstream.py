@@ -3,7 +3,7 @@ import ssl
 import logging
 import datetime
 import collections
-from typing import Optional
+from typing import Optional, Generator
 
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
@@ -281,12 +281,12 @@ class HistoricalStream:
     historical data.
     """
 
-    def __init__(self, directory: str, listener: BaseListener):
+    def __init__(self, update_generator: Generator, listener: BaseListener):
         """
-        :param str directory: Directory of betfair data
+        :param Generator[str] update_generator: Python generator that yields streaming updates
         :param BaseListener listener: Listener object
         """
-        self.directory = directory
+        self.update_generator = update_generator
         self.listener = listener
         self._running = False
 
@@ -298,17 +298,17 @@ class HistoricalStream:
         self._running = False
 
     def _read_loop(self) -> None:
-        with open(self.directory, "r") as f:
-            for update in f:
-                if self.listener.on_data(update) is False:
-                    # if on_data returns an error stop the stream and raise error
-                    self.stop()
-                    raise ListenerError("HISTORICAL", update)
-                if not self._running:
-                    break
-            else:
-                # if f has finished, also stop the stream
+
+        for update in self.update_generator:
+            if self.listener.on_data(update) is False:
+                # if on_data returns an error stop the stream and raise error
                 self.stop()
+                raise ListenerError("HISTORICAL", update)
+            if not self._running:
+                break
+        else:
+            # if f has finished, also stop the stream
+            self.stop()
 
 
 class HistoricalGeneratorStream(HistoricalStream):
@@ -321,16 +321,16 @@ class HistoricalGeneratorStream(HistoricalStream):
 
     def _read_loop(self):
         self._running = True
-        with open(self.directory, "r") as f:
-            for update in f:
-                if self.listener.on_data(update) is False:
-                    # if on_data returns an error stop the stream and raise error
-                    self.stop()
-                    raise ListenerError("HISTORICAL", update)
-                if not self._running:
-                    break
-                else:
-                    yield self.listener.snap()
-            else:
-                # if f has finished, also stop the stream
+
+        for update in self.update_generator:
+            if self.listener.on_data(update) is False:
+                # if on_data returns an error stop the stream and raise error
                 self.stop()
+                raise ListenerError("HISTORICAL", update)
+            if not self._running:
+                break
+            else:
+                yield self.listener.snap()
+        else:
+            # if f has finished, also stop the stream
+            self.stop()

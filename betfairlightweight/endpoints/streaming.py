@@ -65,7 +65,8 @@ class Streaming:
         """
         listener = listener if listener else BaseListener()
         listener.register_stream(0, "marketSubscription")
-        return HistoricalStream(directory, listener)
+        frg = create_file_reading_generator(directory)
+        return HistoricalStream(frg, listener)
 
     @staticmethod
     def create_historical_generator_stream(
@@ -83,4 +84,15 @@ class Streaming:
         """
         listener = listener if listener else StreamListener()
         listener.register_stream(0, "marketSubscription")
-        return HistoricalGeneratorStream(directory, listener)
+        frg = create_file_reading_generator(directory)
+        return HistoricalGeneratorStream(frg, listener)
+
+
+def create_file_reading_generator(filename):
+    with open(filename, 'r') as f:
+        while True:
+            line = f.readline()
+            if line:
+                yield line
+            else:
+                break
