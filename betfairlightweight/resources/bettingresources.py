@@ -646,7 +646,7 @@ class CurrentOrder:
         matchedDate: str = None,
         customerStrategyRef: str = None,
         customerOrderRef: str = None,
-        regulatorAuthCode: str = None
+        regulatorAuthCode: str = None,
     ):
         self.bet_id = betId
         self.average_price_matched = averagePriceMatched
