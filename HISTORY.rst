@@ -3,6 +3,21 @@
 Release History
 ---------------
 
+2.4.0 (2020-06-09)
++++++++++++++++++++
+
+**Improvements**
+
+- Github actions added
+
+**Bug Fixes**
+
+- #304 missing regulator auth code
+
+**Dependencies**
+
+- ujson upgraded from 2.0.3 to 3.0.0
+
 2.3.1 (2020-05-12)
 +++++++++++++++++++
 

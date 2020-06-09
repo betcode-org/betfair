@@ -1,0 +1,11 @@
+# Tests & Linting
+black==19.10b0
+coverage
+
+# Documentation
+mkdocs
+mkdocs-material
+
+# Packaging
+twine
+wheel
