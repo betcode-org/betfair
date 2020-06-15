@@ -3,6 +3,37 @@
 Release History
 ---------------
 
+2.4.0 (2020-06-09)
++++++++++++++++++++
+
+**Improvements**
+
+- Github actions added
+
+**Bug Fixes**
+
+- #304 missing regulator auth code
+
+**Dependencies**
+
+- ujson upgraded from 2.0.3 to 3.0.0
+
+2.3.1 (2020-05-12)
++++++++++++++++++++
+
+**Improvements**
+
+- LRUCache added to strip datetime
+- NemID docs added
+
+2.3.0 (2020-04-06)
++++++++++++++++++++
+
+**Dependencies**
+
+- ujson upgraded to 2.0.3
+- c based libraries restricted to darwin and linux platforms only
+
 2.2.0 (2020-03-09)
 +++++++++++++++++++
 

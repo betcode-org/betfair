@@ -611,6 +611,7 @@ class CurrentOrder:
     :type persistence_type: unicode
     :type placed_date: datetime.datetime
     :type price_size: PriceSize
+    :type regulator_auth_code: unicode
     :type regulator_code: unicode
     :type selection_id: int
     :type side: unicode
@@ -645,6 +646,7 @@ class CurrentOrder:
         matchedDate: str = None,
         customerStrategyRef: str = None,
         customerOrderRef: str = None,
+        regulatorAuthCode: str = None,
     ):
         self.bet_id = betId
         self.average_price_matched = averagePriceMatched
@@ -655,6 +657,7 @@ class CurrentOrder:
         self.order_type = orderType
         self.persistence_type = persistenceType
         self.placed_date = BaseResource.strip_datetime(placedDate)
+        self.regulator_auth_code = regulatorAuthCode
         self.regulator_code = regulatorCode
         self.selection_id = selectionId
         self.side = side

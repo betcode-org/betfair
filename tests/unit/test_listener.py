@@ -131,7 +131,7 @@ class StreamListenerTest(unittest.TestCase):
         self.stream_listener.stream_unique_id = 2
 
         mock_response = create_mock_json("tests/resources/streaming_connection.json")
-        self.stream_listener.on_data(mock_response.content)
+        self.stream_listener.on_data(mock_response.text)
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
@@ -140,7 +140,7 @@ class StreamListenerTest(unittest.TestCase):
         )
 
         mock_response = create_mock_json("tests/resources/streaming_status.json")
-        self.stream_listener.on_data(mock_response.content)
+        self.stream_listener.on_data(mock_response.text)
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
@@ -149,7 +149,7 @@ class StreamListenerTest(unittest.TestCase):
         )
 
         mock_response = create_mock_json("tests/resources/streaming_mcm_update.json")
-        self.stream_listener.on_data(mock_response.content)
+        self.stream_listener.on_data(mock_response.text)
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
@@ -179,7 +179,7 @@ class StreamListenerTest(unittest.TestCase):
         assert on_data is None
 
         mock_error_handler.return_value = True
-        on_data = self.stream_listener.on_data(mock_response.content)
+        on_data = self.stream_listener.on_data(mock_response.text)
         assert on_data is False
 
     def test_on_connection(self):
