@@ -1,4 +1,3 @@
-import logging
 import warnings
 
 from ..baseclient import BaseClient
@@ -9,8 +8,6 @@ from ..streaming import (
     HistoricalStream,
     HistoricalGeneratorStream,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class Streaming:
