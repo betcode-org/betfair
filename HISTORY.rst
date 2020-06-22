@@ -14,6 +14,10 @@ Release History
 
 - #301 uncaught Error in list_market_book
 
+**Dependencies**
+
+- requests bumped to < 2.25.0
+
 2.4.0 (2020-06-09)
 +++++++++++++++++++
 
