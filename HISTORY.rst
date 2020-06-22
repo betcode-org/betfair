@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.5.0 (2020-06-22)
++++++++++++++++++++
+
+**Improvements**
+
+- #308 rename directory to file_path
+
+**Bug Fixes**
+
+- #301 uncaught Error in list_market_book
+
 2.4.0 (2020-06-09)
 +++++++++++++++++++
 
