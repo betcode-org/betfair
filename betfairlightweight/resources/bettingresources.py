@@ -404,7 +404,6 @@ class RunnerBookOrder:
         bspLiability: float,
         orderType: str,
         persistenceType: str,
-        placedDate: str,
         price: float,
         side: str,
         sizeCancelled: float,
@@ -416,6 +415,7 @@ class RunnerBookOrder:
         size: float,
         customerStrategyRef: str = None,
         customerOrderRef: str = None,
+        placedDate: str = None,
     ):
         self.bet_id = betId
         self.avg_price_matched = avgPriceMatched

@@ -134,9 +134,9 @@ Betfairlightweight can also handle historical streaming data that has been purch
     # create listener
 >>> listener = HistoricalListener(max_latency=1e100)
 
-    # create historical stream, update directory to file location
+    # create historical stream, update file_path to file location
 >>> stream = trading.streaming.create_historical_stream(
-        directory="/tmp/BASIC-1.132153978",
+        file_path="/tmp/BASIC-1.132153978",
         listener=listener,
     )
 
@@ -151,7 +151,7 @@ It is also possible to return a generator instead which can be easier to use (no
 ```python
     # create historical generator stream, update directory to file location
 >>> stream = trading.streaming.create_historical_generator_stream(
-        directory="/tmp/BASIC-1.132153978",
+        file_path="/tmp/BASIC-1.132153978",
         listener=listener,
     )
 
