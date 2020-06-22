@@ -31,18 +31,46 @@ class StreamingTest(unittest.TestCase):
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalStream")
     def test_create_historical_stream(self, mock_stream):
-        dir = "test"
+        file_path = "test"
         listener = mock.Mock()
-        self.streaming.create_historical_stream(dir, listener)
+        self.streaming.create_historical_stream(file_path=file_path, listener=listener)
 
         listener.register_stream.assert_called_with(0, "marketSubscription")
-        mock_stream.assert_called_with(dir, listener)
+        mock_stream.assert_called_with(file_path, listener)
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalGeneratorStream")
     def test_create_historical_generator_stream(self, mock_stream):
-        dir = "test"
+        file_path = "test"
         listener = mock.Mock()
-        self.streaming.create_historical_generator_stream(dir, listener)
+        self.streaming.create_historical_generator_stream(
+            file_path=file_path, listener=listener
+        )
 
         listener.register_stream.assert_called_with(0, "marketSubscription")
-        mock_stream.assert_called_with(dir, listener)
+        mock_stream.assert_called_with(file_path, listener)
+
+    @mock.patch("betfairlightweight.endpoints.streaming.HistoricalStream")
+    def test_create_historical_stream_with_directory(self, mock_stream):
+        file_path = "test"
+        listener = mock.Mock()
+
+        with self.assertWarns(DeprecationWarning):
+            self.streaming.create_historical_stream(
+                directory=file_path, listener=listener
+            )
+
+            listener.register_stream.assert_called_with(0, "marketSubscription")
+            mock_stream.assert_called_with(file_path, listener)
+
+    @mock.patch("betfairlightweight.endpoints.streaming.HistoricalGeneratorStream")
+    def test_create_historical_generator_stream_with_directory(self, mock_stream):
+        file_path = "test"
+        listener = mock.Mock()
+
+        with self.assertWarns(DeprecationWarning):
+            self.streaming.create_historical_generator_stream(
+                directory=file_path, listener=listener
+            )
+
+            listener.register_stream.assert_called_with(0, "marketSubscription")
+            mock_stream.assert_called_with(file_path, listener)

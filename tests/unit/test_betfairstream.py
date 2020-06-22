@@ -344,12 +344,12 @@ class BetfairStreamTest(unittest.TestCase):
 
 class HistoricalStreamTest(unittest.TestCase):
     def setUp(self):
-        self.directory = "tests/resources/historicaldata/BASIC-1.132153978"
+        self.file_path = "tests/resources/historicaldata/BASIC-1.132153978"
         self.listener = mock.Mock()
-        self.stream = HistoricalStream(self.directory, self.listener)
+        self.stream = HistoricalStream(self.file_path, self.listener)
 
     def test_init(self):
-        assert self.stream.directory == self.directory
+        assert self.stream.file_path == self.file_path
         assert self.stream.listener == self.listener
         assert self.stream._running is False
 
@@ -376,12 +376,12 @@ class HistoricalStreamTest(unittest.TestCase):
 
 class HistoricalGeneratorStreamTest(unittest.TestCase):
     def setUp(self):
-        self.directory = "tests/resources/historicaldata/BASIC-1.132153978"
+        self.file_path = "tests/resources/historicaldata/BASIC-1.132153978"
         self.listener = mock.Mock()
-        self.stream = HistoricalGeneratorStream(self.directory, self.listener)
+        self.stream = HistoricalGeneratorStream(self.file_path, self.listener)
 
     def test_init(self):
-        assert self.stream.directory == self.directory
+        assert self.stream.file_path == self.file_path
         assert self.stream.listener == self.listener
         assert self.stream._running is False
 

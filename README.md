@@ -126,7 +126,7 @@ Taking advantage of the streaming code lightweight can parse/output historical d
 ```python
 
 stream = trading.streaming.create_historical_stream(
-    directory='horse-racing-pro-sample',
+    file_path='horse-racing-pro-sample',
 )
 
 stream.start()
@@ -137,7 +137,7 @@ or use the  stream generator:
 ```python
 
 stream = trading.streaming.create_historical_generator_stream(
-    directory='horse-racing-pro-sample',
+    file_path='horse-racing-pro-sample',
 )
 
 g = stream.get_generator()
