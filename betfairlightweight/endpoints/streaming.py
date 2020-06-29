@@ -1,3 +1,5 @@
+import warnings
+
 from ..baseclient import BaseClient
 from ..streaming import (
     BaseListener,
@@ -51,39 +53,56 @@ class Streaming:
 
     @staticmethod
     def create_historical_stream(
-        directory: str,
+        file_path: str = None,
         listener: BaseListener = None,
         operation: str = "marketSubscription",
+        **kwargs
     ) -> HistoricalStream:
         """
         Uses streaming listener/cache to parse betfair
         historical data:
             https://historicdata.betfair.com/#/home
 
-        :param str directory: Directory of betfair data
+        :param str file_path: Path to historic betfair file
         :param BaseListener listener: Listener object
         :param str operation: Operation type
 
         :rtype: HistoricalStream
         """
+        if file_path is None and kwargs.get("directory"):
+            warnings.warn(
+                "directory is deprecated; use file_path", DeprecationWarning,
+            )
+            file_path = kwargs.get("directory")
+
         listener = listener if listener else BaseListener()
         listener.register_stream(0, operation)
-        return HistoricalStream(directory, listener)
+        return HistoricalStream(file_path, listener)
 
     @staticmethod
     def create_historical_generator_stream(
-        directory: str, listener: BaseListener = None
+        file_path: str = None,
+        listener: BaseListener = None,
+        operation: str = "marketSubscription",
+        **kwargs
     ) -> HistoricalGeneratorStream:
         """
         Uses generator listener/cache to parse betfair
         historical data:
             https://historicdata.betfair.com/#/home
 
-        :param str directory: Directory of betfair data
+        :param str file_path: Path to historic betfair file
         :param BaseListener listener: Listener object
+        :param str operation: Operation type
 
         :rtype: HistoricalGeneratorStream
         """
+        if file_path is None and kwargs.get("directory"):
+            warnings.warn(
+                "directory is deprecated; use file_path", DeprecationWarning,
+            )
+            file_path = kwargs.get("directory")
+
         listener = listener if listener else StreamListener()
-        listener.register_stream(0, "marketSubscription")
-        return HistoricalGeneratorStream(directory, listener)
+        listener.register_stream(0, operation)
+        return HistoricalGeneratorStream(file_path, listener)

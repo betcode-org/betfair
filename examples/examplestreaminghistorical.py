@@ -17,9 +17,9 @@ trading = betfairlightweight.APIClient("username", "password")
 # create listener
 listener = StreamListener(max_latency=None)
 
-# create historical stream (update directory to your file location)
+# create historical stream (update file_path to your file location)
 stream = trading.streaming.create_historical_generator_stream(
-    directory="/tmp/BASIC-1.132153978", listener=listener,
+    file_path="/tmp/BASIC-1.132153978", listener=listener,
 )
 
 # create generator

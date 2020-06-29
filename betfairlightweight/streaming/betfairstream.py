@@ -289,12 +289,12 @@ class HistoricalStream:
     historical data.
     """
 
-    def __init__(self, directory: str, listener: BaseListener):
+    def __init__(self, file_path: str, listener: BaseListener):
         """
-        :param str directory: Directory of betfair data
+        :param str file_path: Directory of betfair data
         :param BaseListener listener: Listener object
         """
-        self.directory = directory
+        self.file_path = file_path
         self.listener = listener
         self._running = False
 
@@ -306,7 +306,7 @@ class HistoricalStream:
         self._running = False
 
     def _read_loop(self) -> None:
-        with open(self.directory, "r") as f:
+        with open(self.file_path, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:
                     # if on_data returns an error stop the stream and raise error
@@ -329,7 +329,7 @@ class HistoricalGeneratorStream(HistoricalStream):
 
     def _read_loop(self):
         self._running = True
-        with open(self.directory, "r") as f:
+        with open(self.file_path, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:
                     # if on_data returns an error stop the stream and raise error
