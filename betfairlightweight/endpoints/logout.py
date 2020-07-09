@@ -30,7 +30,7 @@ class Logout(BaseEndpoint):
         (response, response_json, elapsed_time) = self.request(session=session)
         self.client.client_logout()
         return self.process_response(
-            response, response_json, LogoutResource, elapsed_time, lightweight
+            response_json, LogoutResource, elapsed_time, lightweight
         )
 
     def request(

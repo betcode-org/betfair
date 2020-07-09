@@ -98,33 +98,32 @@ class BaseEndPointTest(unittest.TestCase):
             self.base_endpoint._error_handler(mock_response.json())
 
     def test_base_endpoint_process_response(self):
-        mock_response = mock.Mock()
         mock_resource = mock.Mock()
 
         response_list = [{}, {}]
         response = self.base_endpoint.process_response(
-            mock_response, response_list, mock_resource, None, False
+            response_list, mock_resource, None, False
         )
         assert type(response) == list
         assert response[0] == mock_resource()
 
         response_result_list = {"result": [{}, {}]}
         response = self.base_endpoint.process_response(
-            mock_response, response_result_list, mock_resource, None, False
+            response_result_list, mock_resource, None, False
         )
         assert type(response) == list
         assert response[0] == mock_resource()
 
         response_result = {"result": {}}
         response = self.base_endpoint.process_response(
-            mock_response, response_result, mock_resource, None, False
+            response_result, mock_resource, None, False
         )
         assert response == mock_resource()
 
         # lightweight tests
         response_list = [{}, {}]
         response = self.base_endpoint.process_response(
-            mock_response, response_list, mock_resource, None, True
+            response_list, mock_resource, None, True
         )
         assert response == response_list
 
@@ -132,7 +131,7 @@ class BaseEndPointTest(unittest.TestCase):
         base_endpoint = BaseEndpoint(client)
         response_list = [{}, {}]
         response = base_endpoint.process_response(
-            mock_response, response_list, mock_resource, None, False
+            response_list, mock_resource, None, False
         )
         assert type(response) == list
         assert response[0] == mock_resource()
@@ -143,12 +142,11 @@ class BaseEndPointTest(unittest.TestCase):
                 self.elapsed_time = elapsed_time
                 self.hello = hello
 
-        mock_response = mock.Mock()
         mock_resource = MockResource
         response_list = [{"hello": "world"}]
 
         response = self.base_endpoint.process_response(
-            mock_response, response_list, mock_resource, 0, False
+            response_list, mock_resource, 0, False
         )
         assert type(response) == list
         assert (
@@ -162,14 +160,11 @@ class BaseEndPointTest(unittest.TestCase):
                 self.elapsed_time = elapsed_time
                 self.hello = hello
 
-        mock_response = mock.Mock()
         mock_resource = MockResource
         response_list = [{}]  # missing 'hello'
 
         with self.assertRaises(InvalidResponse):
-            self.base_endpoint.process_response(
-                mock_response, response_list, mock_resource, 0, False
-            )
+            self.base_endpoint.process_response(response_list, mock_resource, 0, False)
 
     def test_base_endpoint_url(self):
         assert self.base_endpoint.url == "%s%s" % (

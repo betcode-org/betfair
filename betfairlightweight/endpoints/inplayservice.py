@@ -37,7 +37,7 @@ class InPlayService(BaseEndpoint):
             params=params, session=session, url=url
         )
         return self.process_response(
-            response, response_json, resources.EventTimeline, elapsed_time, lightweight
+            response_json, resources.EventTimeline, elapsed_time, lightweight
         )
 
     def get_event_timelines(
@@ -67,7 +67,7 @@ class InPlayService(BaseEndpoint):
             params=params, session=session, url=url
         )
         return self.process_response(
-            response, response_json, resources.EventTimeline, elapsed_time, lightweight
+            response_json, resources.EventTimeline, elapsed_time, lightweight
         )
 
     def get_scores(
@@ -97,7 +97,7 @@ class InPlayService(BaseEndpoint):
             params=params, session=session, url=url
         )
         return self.process_response(
-            response, response_json, resources.Scores, elapsed_time, lightweight
+            response_json, resources.Scores, elapsed_time, lightweight
         )
 
     def request(

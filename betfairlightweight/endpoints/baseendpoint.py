@@ -82,7 +82,6 @@ class BaseEndpoint:
 
     def process_response(
         self,
-        response: requests.Response,
         response_json: Union[dict, list],
         resource: Type[BaseResource],
         elapsed_time: float,
@@ -106,15 +105,12 @@ class BaseEndpoint:
             return result
         elif isinstance(result, list):
             try:
-                return [
-                    resource(elapsed_time=elapsed_time, _response=response, **x)
-                    for x in result
-                ]
+                return [resource(elapsed_time=elapsed_time, **x) for x in result]
             except TypeError:
                 raise InvalidResponse(response=result)
         else:
             try:
-                return resource(elapsed_time=elapsed_time, _response=response, **result)
+                return resource(elapsed_time=elapsed_time, **result)
             except TypeError:
                 raise InvalidResponse(response=result)
 

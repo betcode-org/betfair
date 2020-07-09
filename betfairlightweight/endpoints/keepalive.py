@@ -30,7 +30,7 @@ class KeepAlive(BaseEndpoint):
         (response, response_json, elapsed_time) = self.request(session=session)
         self.client.set_session_token(response_json.get("token"))
         return self.process_response(
-            response, response_json, KeepAliveResource, elapsed_time, lightweight
+            response_json, KeepAliveResource, elapsed_time, lightweight
         )
 
     def request(

@@ -11,7 +11,6 @@ class BaseResource:
 
     def __init__(self, **kwargs):
         self.elapsed_time = kwargs.pop("elapsed_time", None)
-        self._response = kwargs.pop("_response", None)  # requests.Response
         now = datetime.datetime.utcnow()
         self._datetime_created = now
         self._datetime_updated = now
