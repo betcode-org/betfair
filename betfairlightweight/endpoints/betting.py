@@ -36,11 +36,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listEventTypes")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
-            response_json,
-            resources.EventTypeResult,
-            elapsed_time,
-            lightweight,
+            response_json, resources.EventTypeResult, elapsed_time, lightweight,
         )
 
     def list_competitions(
@@ -65,11 +61,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listCompetitions")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
-            response_json,
-            resources.CompetitionResult,
-            elapsed_time,
-            lightweight,
+            response_json, resources.CompetitionResult, elapsed_time, lightweight,
         )
 
     def list_time_ranges(
@@ -96,11 +88,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listTimeRanges")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
-            response_json,
-            resources.TimeRangeResult,
-            elapsed_time,
-            lightweight,
+            response_json, resources.TimeRangeResult, elapsed_time, lightweight,
         )
 
     def list_events(
@@ -125,7 +113,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listEvents")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.EventResult, elapsed_time, lightweight
+            response_json, resources.EventResult, elapsed_time, lightweight
         )
 
     def list_market_types(
@@ -150,11 +138,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketTypes")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
-            response_json,
-            resources.MarketTypeResult,
-            elapsed_time,
-            lightweight,
+            response_json, resources.MarketTypeResult, elapsed_time, lightweight,
         )
 
     def list_countries(
@@ -179,7 +163,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listCountries")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.CountryResult, elapsed_time, lightweight
+            response_json, resources.CountryResult, elapsed_time, lightweight
         )
 
     def list_venues(
@@ -204,7 +188,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listVenues")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.VenueResult, elapsed_time, lightweight
+            response_json, resources.VenueResult, elapsed_time, lightweight
         )
 
     def list_market_catalogue(
@@ -236,11 +220,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketCatalogue")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
-            response_json,
-            resources.MarketCatalogue,
-            elapsed_time,
-            lightweight,
+            response_json, resources.MarketCatalogue, elapsed_time, lightweight,
         )
 
     def list_market_book(
@@ -287,7 +267,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketBook")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.MarketBook, elapsed_time, lightweight
+            response_json, resources.MarketBook, elapsed_time, lightweight
         )
 
     def list_runner_book(
@@ -338,7 +318,6 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listRunnerBook")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
             response_json,
             resources.MarketBook,
             elapsed_time,
@@ -385,7 +364,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listCurrentOrders")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.CurrentOrders, elapsed_time, lightweight
+            response_json, resources.CurrentOrders, elapsed_time, lightweight
         )
 
     def list_cleared_orders(
@@ -437,7 +416,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listClearedOrders")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.ClearedOrders, elapsed_time, lightweight
+            response_json, resources.ClearedOrders, elapsed_time, lightweight
         )
 
     def list_market_profit_and_loss(
@@ -466,11 +445,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketProfitAndLoss")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response,
-            response_json,
-            resources.MarketProfitLoss,
-            elapsed_time,
-            lightweight,
+            response_json, resources.MarketProfitLoss, elapsed_time, lightweight,
         )
 
     def place_orders(
@@ -506,7 +481,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "placeOrders")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.PlaceOrders, elapsed_time, lightweight
+            response_json, resources.PlaceOrders, elapsed_time, lightweight
         )
 
     def cancel_orders(
@@ -534,7 +509,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "cancelOrders")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.CancelOrders, elapsed_time, lightweight
+            response_json, resources.CancelOrders, elapsed_time, lightweight
         )
 
     def update_orders(
@@ -561,7 +536,7 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "updateOrders")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.UpdateOrders, elapsed_time, lightweight
+            response_json, resources.UpdateOrders, elapsed_time, lightweight
         )
 
     def replace_orders(
@@ -596,5 +571,5 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "replaceOrders")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.ReplaceOrders, elapsed_time, lightweight
+            response_json, resources.ReplaceOrders, elapsed_time, lightweight
         )
