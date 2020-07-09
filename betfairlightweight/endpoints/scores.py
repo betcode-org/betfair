@@ -37,7 +37,7 @@ class Scores(BaseEndpoint):
         method = "%s%s" % (self.URI, "listRaceDetails")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.RaceDetails, elapsed_time, lightweight
+            response_json, resources.RaceDetails, elapsed_time, lightweight
         )
 
     # Following requires app key to be authorised
@@ -65,7 +65,7 @@ class Scores(BaseEndpoint):
         method = "%s%s" % (self.URI, "listAvailableEvents")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.AvailableEvent, elapsed_time, lightweight
+            response_json, resources.AvailableEvent, elapsed_time, lightweight
         )
 
     def list_scores(
@@ -88,7 +88,7 @@ class Scores(BaseEndpoint):
         method = "%s%s" % (self.URI, "listScores")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.Score, elapsed_time, lightweight
+            response_json, resources.Score, elapsed_time, lightweight
         )
 
     def list_incidents(
@@ -111,7 +111,7 @@ class Scores(BaseEndpoint):
         method = "%s%s" % (self.URI, "listIncidents")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response, response_json, resources.Incidents, elapsed_time, lightweight
+            response_json, resources.Incidents, elapsed_time, lightweight
         )
 
     @property

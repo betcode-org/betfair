@@ -32,7 +32,7 @@ class LoginInteractive(BaseEndpoint):
         )
         self.client.set_session_token(response_json.get("token"))
         return self.process_response(
-            response, response_json, LoginResource, elapsed_time, lightweight
+            response_json, LoginResource, elapsed_time, lightweight
         )
 
     def request(

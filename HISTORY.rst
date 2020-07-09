@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.6.0 (2020-07-09)
++++++++++++++++++++
+
+**Improvements**
+
+- Response (_response) removed from BaseResources due to potential memory leaks
+
+**Bug Fixes**
+
+- marketType bug fix (politics markets)
+
 2.5.0 (2020-06-22)
 +++++++++++++++++++
 

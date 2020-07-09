@@ -65,7 +65,7 @@ class RaceCard(BaseEndpoint):
             "raceCard", params=params, session=session
         )
         return self.process_response(
-            response, response_json, resources.RaceCard, elapsed_time, lightweight
+            response_json, resources.RaceCard, elapsed_time, lightweight
         )
 
     def get_race_result(
@@ -94,9 +94,7 @@ class RaceCard(BaseEndpoint):
         (response, response_json, elapsed_time) = self.request(
             "raceResults", params=params, session=session
         )
-        return self.process_response(
-            response, response_json, None, elapsed_time, lightweight
-        )
+        return self.process_response(response_json, None, elapsed_time, lightweight)
 
     def request(
         self, method: str = None, params: dict = None, session: requests.Session = None

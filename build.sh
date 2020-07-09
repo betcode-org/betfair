@@ -6,4 +6,4 @@ python3 setup.py sdist bdist_wheel
 
 twine upload dist/*
 
-mkdocs gh-deploy
+# mkdocs gh-deploy
