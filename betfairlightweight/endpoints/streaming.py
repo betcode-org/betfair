@@ -53,7 +53,7 @@ class Streaming:
 
     @staticmethod
     def create_historical_stream(
-        file_path: str = None, listener: BaseListener = None, **kwargs
+        file_path: str = None, listener: BaseListener = None
     ) -> HistoricalStream:
         """
         Uses streaming listener/cache to parse betfair
@@ -65,19 +65,12 @@ class Streaming:
 
         :rtype: HistoricalStream
         """
-        if file_path is None and kwargs.get("directory"):
-            warnings.warn(
-                "directory is deprecated; use file_path", DeprecationWarning,
-            )
-            file_path = kwargs.get("directory")
-
         listener = listener if listener else BaseListener()
-        listener.register_stream(0, "marketSubscription")
         return HistoricalStream(file_path, listener)
 
     @staticmethod
     def create_historical_generator_stream(
-        file_path: str = None, listener: BaseListener = None, **kwargs
+        file_path: str = None, listener: BaseListener = None
     ) -> HistoricalGeneratorStream:
         """
         Uses generator listener/cache to parse betfair
@@ -89,12 +82,5 @@ class Streaming:
 
         :rtype: HistoricalGeneratorStream
         """
-        if file_path is None and kwargs.get("directory"):
-            warnings.warn(
-                "directory is deprecated; use file_path", DeprecationWarning,
-            )
-            file_path = kwargs.get("directory")
-
         listener = listener if listener else StreamListener()
-        listener.register_stream(0, "marketSubscription")
         return HistoricalGeneratorStream(file_path, listener)
