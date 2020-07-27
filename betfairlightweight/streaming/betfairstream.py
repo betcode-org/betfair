@@ -298,6 +298,7 @@ class HistoricalStream:
         self._running = False
 
     def _read_loop(self) -> None:
+        self.listener.register_stream(0, "marketSubscription")
         with open(self.file_path, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:
@@ -321,6 +322,7 @@ class HistoricalGeneratorStream(HistoricalStream):
 
     def _read_loop(self):
         self._running = True
+        self.listener.register_stream(0, "marketSubscription")
         with open(self.file_path, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:

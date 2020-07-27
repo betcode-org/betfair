@@ -372,6 +372,7 @@ class HistoricalStreamTest(unittest.TestCase):
         self.listener.on_data.snap()
         mock_stop.assert_called_with()
         self.assertTrue(self.stream._running)
+        self.listener.register_stream.assert_called_with(0, "marketSubscription")
 
 
 class HistoricalGeneratorStreamTest(unittest.TestCase):
@@ -401,3 +402,4 @@ class HistoricalGeneratorStreamTest(unittest.TestCase):
         self.listener.on_data.snap()
         mock_stop.assert_called_with()
         self.assertTrue(self.stream._running)
+        self.listener.register_stream.assert_called_with(0, "marketSubscription")

@@ -34,8 +34,6 @@ class StreamingTest(unittest.TestCase):
         file_path = "test"
         listener = mock.Mock()
         self.streaming.create_historical_stream(file_path=file_path, listener=listener)
-
-        listener.register_stream.assert_called_with(0, "marketSubscription")
         mock_stream.assert_called_with(file_path, listener)
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalGeneratorStream")
@@ -45,8 +43,6 @@ class StreamingTest(unittest.TestCase):
         self.streaming.create_historical_generator_stream(
             file_path=file_path, listener=listener
         )
-
-        listener.register_stream.assert_called_with(0, "marketSubscription")
         mock_stream.assert_called_with(file_path, listener)
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalStream")
@@ -58,8 +54,6 @@ class StreamingTest(unittest.TestCase):
             self.streaming.create_historical_stream(
                 directory=file_path, listener=listener
             )
-
-            listener.register_stream.assert_called_with(0, "marketSubscription")
             mock_stream.assert_called_with(file_path, listener)
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalGeneratorStream")
@@ -71,6 +65,4 @@ class StreamingTest(unittest.TestCase):
             self.streaming.create_historical_generator_stream(
                 directory=file_path, listener=listener
             )
-
-            listener.register_stream.assert_called_with(0, "marketSubscription")
             mock_stream.assert_called_with(file_path, listener)
