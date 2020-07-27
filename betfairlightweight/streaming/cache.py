@@ -159,6 +159,7 @@ class MarketBookCache(BaseResource):
             raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
         self.market_definition = kwargs["marketDefinition"]
 
+        self.streaming_update = None
         self.runners = []
         self.runner_dict = {}
         self.market_definition_runner_dict = {}
@@ -170,6 +171,7 @@ class MarketBookCache(BaseResource):
             self.strip_datetime(publish_time) or self._datetime_updated
         )
         self.publish_time = publish_time
+        self.streaming_update = market_change
 
         if "marketDefinition" in market_change:
             self.market_definition = market_change["marketDefinition"]
@@ -213,11 +215,11 @@ class MarketBookCache(BaseResource):
                     self._update_runner_dict()
 
     def create_resource(
-        self, unique_id: int, streaming_update: dict, lightweight: bool
+        self, unique_id: int, lightweight: bool
     ) -> Union[dict, MarketBook]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = streaming_update
+        data["streaming_update"] = self.streaming_update
         if lightweight:
             return data
         else:
@@ -408,11 +410,13 @@ class OrderBookCache(BaseResource):
         self.publish_time = kwargs.get("publish_time")
         self.market_id = kwargs.get("id")
         self.closed = kwargs.get("closed")
+        self.streaming_update = None
         self.runners = []
 
     def update_cache(self, order_book: dict, publish_time: int) -> None:
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
+        self.streaming_update = order_book
         if "closed" in order_book:
             self.closed = order_book["closed"]
 
@@ -431,11 +435,11 @@ class OrderBookCache(BaseResource):
                 self.runners.append(OrderBookRunner(**order_changes))
 
     def create_resource(
-        self, unique_id: int, streaming_update: dict, lightweight: bool
+        self, unique_id: int, lightweight: bool
     ) -> Union[dict, CurrentOrders]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = streaming_update
+        data["streaming_update"] = self.streaming_update
         if lightweight:
             return data
         else:

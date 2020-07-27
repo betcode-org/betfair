@@ -63,7 +63,7 @@ class BaseStream:
 
     def snap(self, market_ids: list = None) -> list:
         return [
-            cache.create_resource(self.unique_id, None, self._lightweight)
+            cache.create_resource(self.unique_id, self._lightweight)
             for cache in list(self._caches.values())
             if market_ids is None or cache.market_id in market_ids
         ]
@@ -149,9 +149,7 @@ class MarketStream(BaseStream):
             self._updates_processed += 1
 
             output_market_book.append(
-                market_book_cache.create_resource(
-                    self.unique_id, market_book, self._lightweight
-                )
+                market_book_cache.create_resource(self.unique_id, self._lightweight)
             )
         self.on_process(output_market_book)
 
@@ -180,8 +178,6 @@ class OrderStream(BaseStream):
             self._updates_processed += 1
 
             output_order_book.append(
-                order_book_cache.create_resource(
-                    self.unique_id, order_book, self._lightweight
-                )
+                order_book_cache.create_resource(self.unique_id, self._lightweight)
             )
         self.on_process(output_order_book)
