@@ -165,7 +165,7 @@ class StreamListenerTest(unittest.TestCase):
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
-        self.assertEqual(self.stream_listener.status, "503")
+        self.assertEqual(self.stream_listener.status, 503)
 
     def test_on_connection(self):
         self.stream_listener._on_connection({"connectionId": 1234}, 1)
