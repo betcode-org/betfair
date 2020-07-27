@@ -8,6 +8,7 @@ Release History
 
 **Improvements**
 
+- #308 remove directory warnings / handling (breaking change)
 - #318 include streaming_update in generator
 
 **Bug Fixes**

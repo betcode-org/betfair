@@ -44,25 +44,3 @@ class StreamingTest(unittest.TestCase):
             file_path=file_path, listener=listener
         )
         mock_stream.assert_called_with(file_path, listener)
-
-    @mock.patch("betfairlightweight.endpoints.streaming.HistoricalStream")
-    def test_create_historical_stream_with_directory(self, mock_stream):
-        file_path = "test"
-        listener = mock.Mock()
-
-        with self.assertWarns(DeprecationWarning):
-            self.streaming.create_historical_stream(
-                directory=file_path, listener=listener
-            )
-            mock_stream.assert_called_with(file_path, listener)
-
-    @mock.patch("betfairlightweight.endpoints.streaming.HistoricalGeneratorStream")
-    def test_create_historical_generator_stream_with_directory(self, mock_stream):
-        file_path = "test"
-        listener = mock.Mock()
-
-        with self.assertWarns(DeprecationWarning):
-            self.streaming.create_historical_generator_stream(
-                directory=file_path, listener=listener
-            )
-            mock_stream.assert_called_with(file_path, listener)
