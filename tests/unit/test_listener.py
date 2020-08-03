@@ -11,6 +11,7 @@ class BaseListenerTest(unittest.TestCase):
 
     def test_init(self):
         assert self.base_listener.connection_id is None
+        assert self.base_listener.status is None
         assert self.base_listener.stream is None
         assert self.base_listener.stream_unique_id is None
         assert self.base_listener.stream_type is None
@@ -182,6 +183,21 @@ class StreamListenerTest(unittest.TestCase):
         on_data = self.stream_listener.on_data(mock_response.text)
         assert on_data is False
 
+    @mock.patch(
+        "betfairlightweight.streaming.listener.StreamListener._error_handler",
+        return_value=True,
+    )
+    def test_on_data_status_error(
+        self, mock_error_handler,
+    ):
+        self.stream_listener.stream_unique_id = 2
+        mock_response = create_mock_json("tests/resources/streaming_503.json")
+        self.assertFalse(self.stream_listener.on_data(mock_response.text))
+        mock_error_handler.assert_called_with(
+            mock_response.json(), mock_response.json().get("id")
+        )
+        self.assertEqual(self.stream_listener.status, 503)
+
     def test_on_connection(self):
         self.stream_listener._on_connection({"connectionId": 1234}, 1)
         assert self.stream_listener.connection_id == 1234
@@ -250,6 +266,11 @@ class StreamListenerTest(unittest.TestCase):
         }
         return_value = self.stream_listener._error_handler(error_data, 1)
         assert return_value is None
+
+    def test_error_handler_503(self):
+        self.stream_listener.status = "503"
+        mock_response = create_mock_json("tests/resources/streaming_connection.json")
+        self.stream_listener._error_handler(mock_response.json(), 1)
 
     def test_str(self):
         assert str(self.stream_listener) == "StreamListener"

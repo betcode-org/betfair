@@ -3,6 +3,29 @@
 Release History
 ---------------
 
+2.7.1 (2020-08-03)
++++++++++++++++++++
+
+**Improvements**
+
+- #325 listener.status property added
+
+**Dependencies**
+
+- ujson bumped to 3.1.0
+
+2.7.0 (2020-07-27)
++++++++++++++++++++
+
+**Improvements**
+
+- #308 remove directory warnings / handling (breaking change)
+- #318 include streaming_update in generator
+
+**Bug Fixes**
+
+- #320 generator reuse fix
+
 2.6.0 (2020-07-09)
 +++++++++++++++++++
 

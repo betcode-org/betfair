@@ -143,6 +143,7 @@ class TestMarketBookCache(unittest.TestCase):
             assert self.market_book_cache.market_definition == book.get(
                 "marketDefinition"
             )
+            self.assertEqual(self.market_book_cache.streaming_update, book)
 
     @mock.patch("betfairlightweight.streaming.cache.MarketBookCache.strip_datetime")
     def test_update_cache_tv(self, mock_strip_datetime):
@@ -154,6 +155,7 @@ class TestMarketBookCache(unittest.TestCase):
             self.market_book_cache.update_cache(book, publish_time)
             mock_strip_datetime.assert_called_with(publish_time)
             assert self.market_book_cache.total_matched == book.get("tv")
+            self.assertEqual(self.market_book_cache.streaming_update, book)
 
     # @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
     # def test_update_cache_rc(self, mock_strip_datetime):
@@ -178,14 +180,14 @@ class TestMarketBookCache(unittest.TestCase):
         self, mock_market_book, mock_market_definition, mock_serialise
     ):
         # lightweight
-        market_book = self.market_book_cache.create_resource(1234, {"test"}, True)
+        market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == {
-            "streaming_update": {"test"},
+            "streaming_update": self.market_book_cache.streaming_update,
             "streaming_unique_id": 1234,
         }
         assert market_book == mock_serialise()
         # not lightweight
-        market_book = self.market_book_cache.create_resource(1234, {}, False)
+        market_book = self.market_book_cache.create_resource(1234, False)
         assert market_book == mock_market_book()
 
     def test_update_runner_dict(self):
@@ -318,6 +320,7 @@ class TestOrderBookCache(unittest.TestCase):
         )
         for order_book in mock_response.json().get("oc"):
             self.order_book_cache.update_cache(order_book, 1234)
+            self.assertEqual(self.order_book_cache.streaming_update, order_book)
 
         self.assertEqual(len(self.order_book_cache.runners), 5)
         self.assertEqual(len(self.order_book_cache.runner_dict), 5)
@@ -331,6 +334,7 @@ class TestOrderBookCache(unittest.TestCase):
         mock_response = create_mock_json("tests/resources/streaming_ocm_UPDATE.json")
         for order_book in mock_response.json().get("oc"):
             self.order_book_cache.update_cache(order_book, 1234)
+            self.assertEqual(self.order_book_cache.streaming_update, order_book)
 
             for order_changes in order_book.get("orc"):
                 # self.runner.matched_lays.update.assert_called_with(order_changes.get('ml', []))
@@ -345,6 +349,7 @@ class TestOrderBookCache(unittest.TestCase):
         mock_response = create_mock_json("tests/resources/streaming_ocm_UPDATE.json")
         for order_book in mock_response.json().get("oc"):
             self.order_book_cache.update_cache(order_book, 1234)
+            self.assertEqual(self.order_book_cache.streaming_update, order_book)
 
             for order_changes in order_book.get("orc"):
                 mock_order_book_runner.assert_called_with(**order_changes)
@@ -353,6 +358,7 @@ class TestOrderBookCache(unittest.TestCase):
         mock_response = create_mock_json("tests/resources/streaming_ocm_SUB_IMAGE.json")
         for order_book in mock_response.json().get("oc"):
             self.order_book_cache.update_cache(order_book, 1234)
+            self.assertEqual(self.order_book_cache.streaming_update, order_book)
         self.assertTrue(self.order_book_cache.closed)
 
     @mock.patch(
@@ -363,14 +369,14 @@ class TestOrderBookCache(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.cache.CurrentOrders")
     def test_create_resource(self, mock_current_orders, mock_serialise):
         # lightweight
-        current_orders = self.order_book_cache.create_resource(123, {"test"}, True)
+        current_orders = self.order_book_cache.create_resource(123, True)
         assert current_orders == mock_serialise()
         assert current_orders == {
-            "streaming_update": {"test"},
+            "streaming_update": self.order_book_cache.streaming_update,
             "streaming_unique_id": 123,
         }
         # not lightweight
-        current_orders = self.order_book_cache.create_resource(123, {}, False)
+        current_orders = self.order_book_cache.create_resource(123, False)
         assert current_orders == mock_current_orders()
 
     def test_runner_dict(self):

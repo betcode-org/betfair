@@ -29,7 +29,7 @@ class HistoricalRaceStreamTest(unittest.TestCase):
     def test_historical_stream(self):
         trading = betfairlightweight.APIClient("username", "password", app_key="appKey")
         stream = trading.streaming.create_historical_stream(
-            directory="tests/resources/historicaldata/RACE-1.140075353",
+            file_path="tests/resources/historicaldata/RACE-1.140075353",
             listener=StreamListener(),
             operation="raceSubscription",
         )

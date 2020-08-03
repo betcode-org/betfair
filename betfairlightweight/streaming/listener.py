@@ -13,6 +13,7 @@ class BaseListener:
         self.max_latency = max_latency
 
         self.connection_id = None
+        self.status = None
         self.stream = None
         self.stream_type = None  # marketSubscription/orderSubscription/raceSubscription
         self.stream_unique_id = None
@@ -108,6 +109,7 @@ class StreamListener(BaseListener):
             logger.error("value error: %s" % raw_data)
             return
 
+        self.status = data.get("status")
         unique_id = data.get("id")
 
         if self._error_handler(data, unique_id):
@@ -168,8 +170,7 @@ class StreamListener(BaseListener):
         elif change_type == "UPDATE":
             self.stream.on_update(data)
 
-    @staticmethod
-    def _error_handler(data: dict, unique_id: int) -> Optional[bool]:
+    def _error_handler(self, data: dict, unique_id: int) -> Optional[bool]:
         """Called when data first received
 
         :param data: Received data
@@ -183,9 +184,7 @@ class StreamListener(BaseListener):
             )
             if data.get("connectionClosed"):
                 return True
-        if data.get("status"):
+        if self.status:
             # Clients shouldn't disconnect if status 503 is returned; when the stream
             # recovers updates will be sent containing the latest data
-            logger.warning(
-                "[Subscription: %s] status: %s" % (unique_id, data["status"])
-            )
+            logger.warning("[Subscription: %s] status: %s" % (unique_id, self.status))
