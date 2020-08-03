@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.7.2 (2020-08-03)
++++++++++++++++++++
+
+**Improvements**
+
+- Historical streaming cleanup (operation)
+
 2.7.1 (2020-08-03)
 +++++++++++++++++++
 

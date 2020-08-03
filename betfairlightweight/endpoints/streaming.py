@@ -1,5 +1,3 @@
-import warnings
-
 from ..baseclient import BaseClient
 from ..streaming import (
     BaseListener,
@@ -53,7 +51,9 @@ class Streaming:
 
     @staticmethod
     def create_historical_stream(
-        file_path: str = None, listener: BaseListener = None
+        file_path: str = None,
+        listener: BaseListener = None,
+        operation: str = "marketSubscription",
     ) -> HistoricalStream:
         """
         Uses streaming listener/cache to parse betfair
@@ -62,15 +62,18 @@ class Streaming:
 
         :param str file_path: Path to historic betfair file
         :param BaseListener listener: Listener object
+        :param str operation: Operation type
 
         :rtype: HistoricalStream
         """
         listener = listener if listener else BaseListener()
-        return HistoricalStream(file_path, listener)
+        return HistoricalStream(file_path, listener, operation)
 
     @staticmethod
     def create_historical_generator_stream(
-        file_path: str = None, listener: BaseListener = None
+        file_path: str = None,
+        listener: BaseListener = None,
+        operation: str = "marketSubscription",
     ) -> HistoricalGeneratorStream:
         """
         Uses generator listener/cache to parse betfair
@@ -79,8 +82,9 @@ class Streaming:
 
         :param str file_path: Path to historic betfair file
         :param BaseListener listener: Listener object
+        :param str operation: Operation type
 
         :rtype: HistoricalGeneratorStream
         """
         listener = listener if listener else StreamListener()
-        return HistoricalGeneratorStream(file_path, listener)
+        return HistoricalGeneratorStream(file_path, listener, operation)
