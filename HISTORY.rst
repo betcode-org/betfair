@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.7.1 (2020-08-03)
++++++++++++++++++++
+
+**Improvements**
+
+- #325 listener.status property added
+
+**Dependencies**
+
+- ujson bumped to 3.1.0
+
 2.7.0 (2020-07-27)
 +++++++++++++++++++
 
