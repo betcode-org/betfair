@@ -15,12 +15,13 @@ class StreamingTest(unittest.TestCase):
 
     @mock.patch("betfairlightweight.endpoints.streaming.BetfairStream")
     def test_create_stream(self, mock_betfair_stream):
-        response = self.streaming.create_stream(1, 2, 6, 1024)
+        mock_listener = mock.Mock()
+        response = self.streaming.create_stream(1, mock_listener, 6, 1024)
 
         assert mock_betfair_stream.call_count == 1
         mock_betfair_stream.assert_called_with(
             1,
-            2,
+            mock_listener,
             app_key=self.streaming.client.app_key,
             session_token=self.streaming.client.session_token,
             timeout=6,

@@ -1,5 +1,3 @@
-import warnings
-
 from ..baseclient import BaseClient
 from ..streaming import (
     BaseListener,

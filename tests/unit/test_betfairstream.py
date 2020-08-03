@@ -357,14 +357,14 @@ class HistoricalStreamTest(unittest.TestCase):
     def setUp(self):
         self.file_path = "tests/resources/historicaldata/BASIC-1.132153978"
         self.listener = mock.Mock()
-        self.stream = HistoricalStream(
-            self.file_path, self.listener, "marketSubscription"
-        )
+        self.operation = "marketSubscription"
+        self.stream = HistoricalStream(self.file_path, self.listener, self.operation)
 
     def test_init(self):
         assert self.stream.file_path == self.file_path
         assert self.stream.listener == self.listener
         assert self.stream._running is False
+        assert self.stream.operation == self.operation
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalStream._read_loop")
     def test_start(self, mock_read_loop):
@@ -385,21 +385,23 @@ class HistoricalStreamTest(unittest.TestCase):
         self.listener.on_data.snap()
         mock_stop.assert_called_with()
         self.assertTrue(self.stream._running)
-        self.listener.register_stream.assert_called_with(0, "marketSubscription")
+        self.listener.register_stream.assert_called_with(0, self.operation)
 
 
 class HistoricalGeneratorStreamTest(unittest.TestCase):
     def setUp(self):
         self.file_path = "tests/resources/historicaldata/BASIC-1.132153978"
         self.listener = mock.Mock()
+        self.operation = "marketSubscription"
         self.stream = HistoricalGeneratorStream(
-            self.file_path, self.listener, "marketSubscription"
+            self.file_path, self.listener, self.operation
         )
 
     def test_init(self):
         assert self.stream.file_path == self.file_path
         assert self.stream.listener == self.listener
         assert self.stream._running is False
+        assert self.stream.operation == self.operation
 
     @mock.patch(
         "betfairlightweight.streaming.betfairstream.HistoricalGeneratorStream._read_loop"
@@ -417,4 +419,4 @@ class HistoricalGeneratorStreamTest(unittest.TestCase):
         self.listener.on_data.snap()
         mock_stop.assert_called_with()
         self.assertTrue(self.stream._running)
-        self.listener.register_stream.assert_called_with(0, "marketSubscription")
+        self.listener.register_stream.assert_called_with(0, self.operation)

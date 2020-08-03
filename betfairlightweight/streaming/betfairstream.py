@@ -293,6 +293,7 @@ class HistoricalStream:
         """
         :param str file_path: Directory of betfair data
         :param BaseListener listener: Listener object
+        :param str operation: Operation type
         """
         self.file_path = file_path
         self.listener = listener
@@ -329,7 +330,7 @@ class HistoricalGeneratorStream(HistoricalStream):
     def get_generator(self):
         return self._read_loop
 
-    def _read_loop(self):
+    def _read_loop(self) -> dict:
         self._running = True
         self.listener.register_stream(0, self.operation)
         with open(self.file_path, "r") as f:
