@@ -218,9 +218,7 @@ class RaceStream(BaseStream):
             race_cache.update_cache(update, publish_time)
             self._updates_processed += 1
 
-            output.append(
-                race_cache.create_resource(self.unique_id, update, self._lightweight)
-            )
+            output.append(race_cache.create_resource(self.unique_id, self._lightweight))
         self.on_process(output)
 
     def __str__(self):

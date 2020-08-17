@@ -593,7 +593,7 @@ class TestRaceCache(unittest.TestCase):
 
     @mock.patch("betfairlightweight.streaming.cache.RaceCache.serialise")
     def test_create_resource_lightweight(self, mock_serialise):
-        assert self.race_cache.create_resource(12, {}, True) == mock_serialise
+        assert self.race_cache.create_resource(12, True) == mock_serialise
 
     # @mock.patch('betfairlightweight.streaming.cache.Race')
     # @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')

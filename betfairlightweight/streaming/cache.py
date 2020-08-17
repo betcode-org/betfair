@@ -478,10 +478,12 @@ class RaceCache(BaseResource):
         self.race_id = kwargs.get("id")
         self.rpc = kwargs.get("rpc")  # RaceProgressChange
         self.rrc = [RunnerChange(i) for i in kwargs.get("rrc", [])]  # RaceRunnerChange
+        self.streaming_update = None
 
     def update_cache(self, update: dict, publish_time: int) -> None:
         self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
+        self.streaming_update = update
 
         if "rpc" in update:
             self.rpc = update["rpc"]
@@ -496,9 +498,7 @@ class RaceCache(BaseResource):
                 else:
                     self.rrc.append(RunnerChange(runner_update))
 
-    def create_resource(
-        self, unique_id: int, streaming_update: dict, lightweight: bool
-    ) -> Union[dict, Race]:
+    def create_resource(self, unique_id: int, lightweight: bool) -> Union[dict, Race]:
         if lightweight:
             return self.serialise
         else:
@@ -507,7 +507,7 @@ class RaceCache(BaseResource):
                     datetime.datetime.utcnow() - self._datetime_updated
                 ).total_seconds(),
                 streaming_unique_id=unique_id,
-                streaming_update=streaming_update,
+                streaming_update=self.streaming_update,
                 **self.serialise
             )
 
