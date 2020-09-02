@@ -255,12 +255,13 @@ class BetfairStream:
         if not self._running:
             self._connect()
             self.authenticate()
-        message_dumped = json.dumps(message) + self.__CRLF
+        crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
+        message_dumped = json.dumps(message) + crlf_bytes
         logger.debug(
             "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
         )
         try:
-            self._socket.sendall(message_dumped.encode())
+            self._socket.sendall(message_dumped)
         except (socket.timeout, socket.error) as e:
             self.stop()
             raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))

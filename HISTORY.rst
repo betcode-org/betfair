@@ -13,6 +13,7 @@ Release History
 
 **Dependencies**
 
+- #328 ujson migrated to orjson
 - black updated to 20.8b1
 
 2.7.2 (2020-08-03)
