@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.8.0 (2020-09-02)
++++++++++++++++++++
+
+**Improvements**
+
+- Transaction count updated to 5000
+
+**Dependencies**
+
+-
+
 2.7.2 (2020-08-03)
 +++++++++++++++++++
 
