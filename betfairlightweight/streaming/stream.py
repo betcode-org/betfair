@@ -9,8 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseStream:
-    """Separate stream class to hold market/order caches
-    """
+    """Separate stream class to hold market/order caches"""
 
     _lookup = "mc"
 
