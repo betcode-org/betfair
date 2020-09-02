@@ -255,8 +255,14 @@ class BetfairStream:
         if not self._running:
             self._connect()
             self.authenticate()
-        crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
-        message_dumped = json.dumps(message) + crlf_bytes
+
+        message_dumped = json.dumps(message)
+        if isinstance(message_dumped, bytes):  # handles orjson as `orjson.dumps -> bytes`
+            crlf = bytes(self.__CRLF, encoding=self.__encoding)
+        else:
+            crlf = self.__CRLF
+        message_dumped += crlf
+
         logger.debug(
             "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
         )
