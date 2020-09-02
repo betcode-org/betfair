@@ -1,6 +1,5 @@
 import datetime
 import unittest
-from unittest import mock
 
 from betfairlightweight.compat import json
 from betfairlightweight.resources.baseresource import BaseResource

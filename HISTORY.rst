@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - Transaction count updated to 5000
+- Minor codebase cleanup
 
 **Dependencies**
 

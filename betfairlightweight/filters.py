@@ -2,8 +2,6 @@ import datetime
 from typing import Union
 from .utils import to_camel_case
 
-from .resources import bettingresources
-
 
 def streaming_market_filter(
     market_ids: list = None,
