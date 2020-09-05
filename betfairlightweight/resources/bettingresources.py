@@ -237,7 +237,8 @@ class MarketCatalogueDescription:
             if priceLadderDescription
             else None
         )
-        self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
+        self.line_range_info = LineRangeInfo(
+            **lineRangeInfo) if lineRangeInfo else None
         self.race_type = raceType
 
 
@@ -282,22 +283,26 @@ class MarketCatalogue(BaseResource):
         self.market_id = kwargs.get("marketId")
         self.market_name = kwargs.get("marketName")
         self.total_matched = kwargs.get("totalMatched")
-        self.market_start_time = self.strip_datetime(kwargs.get("marketStartTime"))
+        self.market_start_time = self.strip_datetime(
+            kwargs.get("marketStartTime"))
         self.competition = (
             Competition(**kwargs.get("competition"))
             if kwargs.get("competition")
             else None
         )
-        self.event = Event(**kwargs.get("event")) if kwargs.get("event") else None
+        self.event = Event(**kwargs.get("event")
+                           ) if kwargs.get("event") else None
         self.event_type = (
-            EventType(**kwargs.get("eventType")) if kwargs.get("eventType") else None
+            EventType(**kwargs.get("eventType")
+                      ) if kwargs.get("eventType") else None
         )
         self.description = (
             MarketCatalogueDescription(**kwargs.get("description"))
             if kwargs.get("description")
             else None
         )
-        self.runners = [RunnerCatalogue(**i) for i in kwargs.get("runners", [])]
+        self.runners = [RunnerCatalogue(**i)
+                        for i in kwargs.get("runners", [])]
 
 
 """
@@ -503,7 +508,8 @@ class RunnerBook:
         self.sp = RunnerBookSP(**sp) if sp else None
         self.ex = RunnerBookEX(**ex) if ex else None
         self.orders = [RunnerBookOrder(**i) for i in orders] if orders else []
-        self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
+        self.matches = [RunnerBookMatch(**i)
+                        for i in matches] if matches else []
         self.matches_by_strategy = matchesByStrategy
 
     def __str__(self):
@@ -585,16 +591,23 @@ class MarketBook(BaseResource):
         self.runners = [RunnerBook(**i) for i in kwargs.get("runners")]
         self.publish_time = self.strip_datetime(kwargs.get("publishTime"))
         self.publish_time_epoch = kwargs.get("publishTime")
-        self.key_line_description = (
-            KeyLine(**kwargs.get("keyLineDescription"))
-            if kwargs.get("keyLineDescription")
-            else None
-        )
-        self.price_ladder_definition = (
-            PriceLadderDescription(**kwargs.get("priceLadderDefinition"))
-            if kwargs.get("priceLadderDefinition")
-            else None
-        )
+
+        key_line_description = kwargs.get("keyLineDescription")
+        if key_line_description is None:
+            self.key_line_description = None
+        elif isinstance(key_line_description, KeyLine):
+            self.key_line_description = key_line_description
+        else:
+            self.key_line_description = KeyLine(**key_line_description)
+
+        price_ladder_definition = kwargs.get("priceLadderDefinition")
+        if price_ladder_definition is None:
+            self.price_ladder_definition = None
+        elif isinstance(price_ladder_definition, PriceLadderDescription):
+            self.price_ladder_definition = price_ladder_definition
+        else:
+            self.price_ladder_definition = PriceLadderDescription(
+                **price_ladder_definition)
 
 
 class CurrentOrder:
@@ -761,14 +774,16 @@ class ClearedOrder:
         self.market_id = kwargs.get("marketId")
         self.order_type = kwargs.get("orderType")
         self.persistence_type = kwargs.get("persistenceType")
-        self.placed_date = BaseResource.strip_datetime(kwargs.get("placedDate"))
+        self.placed_date = BaseResource.strip_datetime(
+            kwargs.get("placedDate"))
         self.price_matched = kwargs.get("priceMatched")
         self.price_reduced = kwargs.get("priceReduced")
         self.price_requested = kwargs.get("priceRequested")
         self.profit = kwargs.get("profit")
         self.commission = kwargs.get("commission")
         self.selection_id = kwargs.get("selectionId")
-        self.settled_date = BaseResource.strip_datetime(kwargs.get("settledDate"))
+        self.settled_date = BaseResource.strip_datetime(
+            kwargs.get("settledDate"))
         self.side = kwargs.get("side")
         self.size_settled = kwargs.get("sizeSettled")
         self.size_cancelled = kwargs.get("sizeCancelled")
@@ -908,10 +923,12 @@ class PlaceOrderInstruction:
         self.customer_order_ref = customerOrderRef
         self.limit_order = LimitOrder(**limitOrder) if limitOrder else None
         self.limit_on_close_order = (
-            LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
+            LimitOnCloseOrder(
+                **limitOnCloseOrder) if limitOnCloseOrder else None
         )
         self.market_on_close_order = (
-            MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
+            MarketOnCloseOrder(
+                **marketOnCloseOrder) if marketOnCloseOrder else None
         )
 
 
@@ -944,7 +961,8 @@ class PlaceOrderInstructionReports:
         self.average_price_matched = averagePriceMatched
         self.size_matched = sizeMatched
         self.placed_date = BaseResource.strip_datetime(placedDate)
-        self.instruction = PlaceOrderInstruction(**instruction) if instruction else None
+        self.instruction = PlaceOrderInstruction(
+            **instruction) if instruction else None
         self.error_code = errorCode
 
 

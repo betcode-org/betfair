@@ -21,7 +21,7 @@ class BaseResource:
 
     @staticmethod
     @functools.lru_cache()
-    def strip_datetime(value: Union[str, int]) -> Optional[datetime.datetime]:
+    def strip_datetime(value: Union[str, int, datetime.datetime]) -> Optional[datetime.datetime]:
         """
         Converts value to datetime if string or int.
         """
@@ -35,6 +35,8 @@ class BaseResource:
                 return datetime.datetime.utcfromtimestamp(value / 1e3)
             except (ValueError, OverflowError, OSError):
                 return
+        elif isinstance(value, datetime.datetime):
+            return value
 
     def __repr__(self) -> str:
         return "<%s>" % self.__class__.__name__

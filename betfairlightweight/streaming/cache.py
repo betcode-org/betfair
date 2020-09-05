@@ -1,7 +1,7 @@
 import datetime
 from typing import Union
 
-from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition
+from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, MarketDefinitionRunner
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -124,9 +124,9 @@ class RunnerBook:
             return self.best_available_to_lay.serialise
         return []
 
-    def serialise(self, runner_definition: dict) -> dict:
+    def serialise(self, runner_definition: MarketDefinitionRunner) -> dict:
         return {
-            "status": runner_definition.get("status"),
+            "status": runner_definition.status,
             "ex": {
                 "tradedVolume": self.traded.serialise,
                 "availableToBack": self.serialise_available_to_back(),
@@ -137,10 +137,10 @@ class RunnerBook:
                 "farPrice": self.starting_price_far,
                 "backStakeTaken": self.starting_price_back.serialise,
                 "layLiabilityTaken": self.starting_price_lay.serialise,
-                "actualSP": runner_definition.get("bsp"),
+                "actualSP": runner_definition.bsp,
             },
-            "adjustmentFactor": runner_definition.get("adjustmentFactor"),
-            "removalDate": runner_definition.get("removalDate"),
+            "adjustmentFactor": runner_definition.adjustment_factor,
+            "removalDate": runner_definition.removal_date,
             "lastPriceTraded": self.last_price_traded,
             "handicap": self.handicap,
             "totalMatched": self.total_matched,
@@ -155,9 +155,12 @@ class MarketBookCache(BaseResource):
         self.market_id = kwargs.get("id")
         self.image = kwargs.get("img")
         self.total_matched = kwargs.get("tv")
+
         if "marketDefinition" not in kwargs:
             raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
         self.market_definition = kwargs["marketDefinition"]
+        self.parsed_market_definition = MarketDefinition(
+            **self.market_definition)
 
         self.streaming_update = None
         self.runners = []
@@ -175,6 +178,8 @@ class MarketBookCache(BaseResource):
 
         if "marketDefinition" in market_change:
             self.market_definition = market_change["marketDefinition"]
+            self.parsed_market_definition = MarketDefinition(
+                **self.market_definition)
             self._update_market_definition_runner_dict()
 
         if "tv" in market_change:
@@ -182,7 +187,8 @@ class MarketBookCache(BaseResource):
 
         if "rc" in market_change:
             for new_data in market_change["rc"]:
-                runner = self.runner_dict.get((new_data["id"], new_data.get("hc", 0)))
+                runner = self.runner_dict.get(
+                    (new_data["id"], new_data.get("hc", 0)))
                 if runner:
                     if "ltp" in new_data:
                         runner.last_price_traded = new_data["ltp"]
@@ -203,9 +209,11 @@ class MarketBookCache(BaseResource):
                     if "batl" in new_data:
                         runner.best_available_to_lay.update(new_data["batl"])
                     if "bdatb" in new_data:
-                        runner.best_display_available_to_back.update(new_data["bdatb"])
+                        runner.best_display_available_to_back.update(
+                            new_data["bdatb"])
                     if "bdatl" in new_data:
-                        runner.best_display_available_to_lay.update(new_data["bdatl"])
+                        runner.best_display_available_to_lay.update(
+                            new_data["bdatl"])
                     if "spb" in new_data:
                         runner.starting_price_back.update(new_data["spb"])
                     if "spl" in new_data:
@@ -227,7 +235,7 @@ class MarketBookCache(BaseResource):
                 elapsed_time=(
                     datetime.datetime.utcnow() - self._datetime_updated
                 ).total_seconds(),
-                market_definition=MarketDefinition(**self.market_definition),
+                market_definition=self.parsed_market_definition,
                 **data
             )
 
@@ -238,8 +246,8 @@ class MarketBookCache(BaseResource):
 
     def _update_market_definition_runner_dict(self) -> None:
         self.market_definition_runner_dict = {
-            (runner["id"], runner.get("hc", 0)): runner
-            for runner in self.market_definition["runners"]
+            (runner.selection_id, runner.handicap): runner
+            for runner in self.parsed_market_definition.runners
         }
 
     @property
@@ -252,20 +260,18 @@ class MarketBookCache(BaseResource):
             "totalAvailable": None,
             "isMarketDataDelayed": None,
             "lastMatchTime": None,
-            "betDelay": self.market_definition.get("betDelay"),
-            "version": self.market_definition.get("version"),
-            "complete": self.market_definition.get("complete"),
-            "runnersVoidable": self.market_definition.get("runnersVoidable"),
+            "betDelay": self.parsed_market_definition.bet_delay,
+            "version": self.parsed_market_definition.version,
+            "complete": self.parsed_market_definition.complete,
+            "runnersVoidable": self.parsed_market_definition.runners_voidable,
             "totalMatched": self.total_matched,
-            "status": self.market_definition.get("status"),
-            "bspReconciled": self.market_definition.get("bspReconciled"),
-            "crossMatching": self.market_definition.get("crossMatching"),
-            "inplay": self.market_definition.get("inPlay"),
-            "numberOfWinners": self.market_definition.get("numberOfWinners"),
-            "numberOfRunners": len(self.market_definition.get("runners")),
-            "numberOfActiveRunners": self.market_definition.get(
-                "numberOfActiveRunners"
-            ),
+            "status": self.parsed_market_definition.status,
+            "bspReconciled": self.parsed_market_definition.bsp_reconciled,
+            "crossMatching": self.parsed_market_definition.cross_matching,
+            "inplay": self.parsed_market_definition.in_play,
+            "numberOfWinners": self.parsed_market_definition.number_of_winners,
+            "numberOfRunners": len(self.parsed_market_definition.runners),
+            "numberOfActiveRunners": self.parsed_market_definition.number_of_active_runners,
             "runners": [
                 runner.serialise(
                     self.market_definition_runner_dict[
@@ -275,10 +281,8 @@ class MarketBookCache(BaseResource):
                 for runner in self.runners
             ],
             "publishTime": self.publish_time,
-            "priceLadderDefinition": self.market_definition.get(
-                "priceLadderDefinition"
-            ),
-            "keyLineDescription": self.market_definition.get("keyLineDefinition"),
+            "priceLadderDefinition": self.parsed_market_definition.price_ladder_definition,
+            "keyLineDescription": self.parsed_market_definition.key_line_definitions,
             "marketDefinition": self.market_definition,  # used in lightweight
         }
 
@@ -386,7 +390,8 @@ class OrderBookRunner:
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
         self.matched_backs = Available(mb, 1)
-        self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
+        self.unmatched_orders = {
+            i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
         self.handicap = hc
         self.strategy_matches = smc
 
@@ -397,7 +402,8 @@ class OrderBookRunner:
             )
 
     def serialise_orders(self, market_id: str) -> list:
-        orders = list(self.unmatched_orders.values())  # order may be added (#232)
+        # order may be added (#232)
+        orders = list(self.unmatched_orders.values())
         return [
             order.serialise(market_id, self.selection_id, self.handicap)
             for order in orders

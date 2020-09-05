@@ -1,5 +1,7 @@
+from dataclasses import dataclass
+
 from .baseresource import BaseResource
-from .bettingresources import PriceLadderDescription
+from .bettingresources import PriceLadderDescription, KeyLine, KeyLineSelection
 
 
 class MarketDefinitionRunner:
@@ -38,22 +40,7 @@ class MarketDefinitionRunner:
         return "<MarketDefinitionRunner>"
 
 
-class MarketDefinitionKeyLineSelection:
-    """
-    :type selectionId: int
-    :type handicap: float
-    """
-
-    def __init__(self, **kwargs):
-        self.selection_id = kwargs.get("id")
-        self.handicap = kwargs.get("hc")
-
-
-class MarketDefinitionKeyLine:
-    def __init__(self, kl):
-        self.key_line = [MarketDefinitionKeyLineSelection(**i) for i in kl]
-
-
+@dataclass
 class MarketDefinition:
     """
     :type bet_delay: int
@@ -142,7 +129,8 @@ class MarketDefinition:
         self.market_type = marketType
         self.number_of_active_runners = numberOfActiveRunners
         self.number_of_winners = numberOfWinners
-        self.open_date = BaseResource.strip_datetime(openDate) if openDate else None
+        self.open_date = BaseResource.strip_datetime(
+            openDate) if openDate else None
         self.persistence_enabled = persistenceEnabled
         self.regulators = regulators
         self.runners_voidable = runnersVoidable
@@ -164,7 +152,8 @@ class MarketDefinition:
             else None
         )
         self.key_line_definitions = (
-            MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
+            KeyLine(
+                **keyLineDefinition) if keyLineDefinition else None
         )
         self.race_type = raceType
 
