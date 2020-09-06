@@ -351,11 +351,15 @@ class PriceSizeList:
     def __len__(self):
         return len(self.entries)
 
+    def __str__(self):
+        entries = [str(e) for e in self.entries]
+        return ",".join(entries)
+
     def sort(self):
         self.entries.sort(reverse=self.reverse)
 
     def clear(self):
-        self.entries.clear()
+        self.entries = []
 
     def update(self, book_update: List[List[float]]):
         for book in book_update:
@@ -403,7 +407,7 @@ class PositionPriceSizeList:
         return len(self.entries)
 
     def clear(self):
-        self.entries.clear()
+        self.entries = []
 
     def update(self, book_update: List[List[float]]):
         for book in book_update:

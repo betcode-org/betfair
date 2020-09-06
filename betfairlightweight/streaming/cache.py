@@ -133,8 +133,7 @@ class RunnerBook:
             return self.best_display_available_to_lay
         elif self.best_available_to_lay:
             return self.best_available_to_lay
-        else:
-            return []
+        return []
 
     def serialise(self, runner_definition: MarketDefinitionRunner) -> dict:
         return {
