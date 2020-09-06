@@ -19,7 +19,10 @@ from .bettingresources import (
     CancelOrders,
     UpdateOrders,
     ReplaceOrders,
-    PriceSize
+    PriceSize,
+    PriceSizeList,
+    PositionPriceSize,
+    PositionPriceSizeList,
 )
 
 from .accountresources import (

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List, Union
 
 from .baseresource import BaseResource
 
@@ -239,8 +240,7 @@ class MarketCatalogueDescription:
             if priceLadderDescription
             else None
         )
-        self.line_range_info = LineRangeInfo(
-            **lineRangeInfo) if lineRangeInfo else None
+        self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
         self.race_type = raceType
 
 
@@ -285,26 +285,22 @@ class MarketCatalogue(BaseResource):
         self.market_id = kwargs.get("marketId")
         self.market_name = kwargs.get("marketName")
         self.total_matched = kwargs.get("totalMatched")
-        self.market_start_time = self.strip_datetime(
-            kwargs.get("marketStartTime"))
+        self.market_start_time = self.strip_datetime(kwargs.get("marketStartTime"))
         self.competition = (
             Competition(**kwargs.get("competition"))
             if kwargs.get("competition")
             else None
         )
-        self.event = Event(**kwargs.get("event")
-                           ) if kwargs.get("event") else None
+        self.event = Event(**kwargs.get("event")) if kwargs.get("event") else None
         self.event_type = (
-            EventType(**kwargs.get("eventType")
-                      ) if kwargs.get("eventType") else None
+            EventType(**kwargs.get("eventType")) if kwargs.get("eventType") else None
         )
         self.description = (
             MarketCatalogueDescription(**kwargs.get("description"))
             if kwargs.get("description")
             else None
         )
-        self.runners = [RunnerCatalogue(**i)
-                        for i in kwargs.get("runners", [])]
+        self.runners = [RunnerCatalogue(**i) for i in kwargs.get("runners", [])]
 
 
 """
@@ -327,53 +323,136 @@ class Slotable:
             setattr(self, slot, d[slot])
 
 
-@dataclass
+@dataclass(order=True)
 class PriceSize(Slotable):
-    """
-    :type price: float
-    :type size: float
-    """
+    price: float
+    size: float
 
     __slots__ = ["price", "size"]
-
-    def __init__(self, price: float, size: float):
-        self.price = price
-        self.size = size
 
     def __str__(self):
         return "Price: %s Size: %s" % (self.price, self.size)
 
 
+class PriceSizeList:
+    entries: List[PriceSize]
+    reverse: bool
+
+    def __init__(self, books: List[PriceSize], reverse: bool = False):
+        self.reverse = reverse
+        self.entries = books or []
+        self.sort()
+
+    @staticmethod
+    def from_raw_books(books: List[List[float]], reverse: bool = False):
+        books = books or []
+        books = [PriceSize(*book) for book in books]
+        return PriceSizeList(books, reverse)
+
+    def __getitem__(self, key: int):
+        return self.entries[key]
+
+    def __len__(self):
+        return len(self.entries)
+
+    def sort(self):
+        self.entries.sort(reverse=self.reverse)
+
+    def clear(self):
+        self.entries.clear()
+
+    def update_from_raw_books(self, book_update: List[List[float]]):
+        parsed_book_update = (PriceSize(*book) for book in book_update)
+        self.update(parsed_book_update)
+
+    def update(self, book_update: List[PriceSize]):
+        for book in book_update:
+            for (count, entry) in enumerate(self.entries):
+                if entry.price == book.price:
+                    if book.size == 0:
+                        del self.entries[count]
+                        break
+                    else:
+                        self.entries[count] = book
+                        break
+            else:
+                if book.size != 0:
+                    # handles betfair bug,
+                    # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
+                    self.entries.append(book)
+        self.sort()
+
+
+@dataclass(order=True)
+class PositionPriceSize(Slotable):
+    position: float
+    price: float
+    size: float
+
+    __slots__ = ["position", "price", "size"]
+
+    def __str__(self):
+        return "Price: %s Size: %s" % (self.price, self.size)
+
+
+class PositionPriceSizeList:
+    entries: List[PositionPriceSize]
+
+    def __init__(self, books: List[PositionPriceSize]):
+        self.entries = books or []
+        self.entries.sort()
+
+    @staticmethod
+    def from_raw_books(books: List[List[float]]):
+        books = books or []
+        books = [PositionPriceSize(*book) for book in books]
+        return PositionPriceSizeList(books)
+
+    def __getitem__(self, key: int):
+        return self.entries[key]
+
+    def __len__(self):
+        return len(self.entries)
+
+    def clear(self):
+        self.entries.clear()
+
+    def update_from_raw_books(self, book_update: List[List[float]]):
+        parsed_book_update = (PositionPriceSize(*book) for book in book_update)
+        self.update(parsed_book_update)
+
+    def update(self, book_update: List[PositionPriceSize]):
+        for book in book_update:
+            for (count, entry) in enumerate(self.entries):
+                if entry.position == book.position:
+                    if book.size == 0:
+                        del self.entries[count]
+                        break
+                    else:
+                        self.entries[count] = book
+                        break
+            else:
+                if book.size != 0:
+                    # handles betfair bug,
+                    # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
+                    self.entries.append(book)
+        self.entries.sort()
+
+
+@dataclass
 class RunnerBookSP:
-    """
-    :type actual_sp: float
-    :type back_stake_taken: list[PriceSize]
-    :type far_price: float
-    :type lay_liability_taken: list[PriceSize]
-    :type near_price: float
-    """
-
-    def __init__(
-        self,
-        nearPrice: float = None,
-        farPrice: float = None,
-        backStakeTaken: list = None,
-        layLiabilityTaken: list = None,
-        actualSP: float = None,
-    ):
-        self.near_price = nearPrice
-        self.far_price = farPrice
-        self.actual_sp = actualSP
-        self.back_stake_taken = backStakeTaken
-        self.lay_liability_taken = layLiabilityTaken
+    nearPrice: float = None
+    farPrice: float = None
+    backStakeTaken: PriceSizeList = None
+    layLiabilityTaken: PriceSizeList = None
+    actualSP: float = None
 
 
+@dataclass
 class RunnerBookEX:
-    """
-    :type available_to_back: list[PriceSize]
-    :type available_to_lay: list[PriceSize]
-    :type traded_volume: list[PriceSize]
-    """
+    available_to_back: Union[PositionPriceSizeList, PriceSizeList] = None
+    available_to_lay: Union[PositionPriceSizeList, PriceSizeList] = None
+    traded_volume: PriceSizeList = None
 
     def __init__(
         self,
@@ -511,8 +590,7 @@ class RunnerBook:
         self.sp = RunnerBookSP(**sp) if sp else None
         self.ex = RunnerBookEX(**ex) if ex else None
         self.orders = [RunnerBookOrder(**i) for i in orders] if orders else []
-        self.matches = [RunnerBookMatch(**i)
-                        for i in matches] if matches else []
+        self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
         self.matches_by_strategy = matchesByStrategy
 
     def __str__(self):
@@ -610,7 +688,8 @@ class MarketBook(BaseResource):
             self.price_ladder_definition = price_ladder_definition
         else:
             self.price_ladder_definition = PriceLadderDescription(
-                **price_ladder_definition)
+                **price_ladder_definition
+            )
 
 
 class CurrentOrder:
@@ -777,16 +856,14 @@ class ClearedOrder:
         self.market_id = kwargs.get("marketId")
         self.order_type = kwargs.get("orderType")
         self.persistence_type = kwargs.get("persistenceType")
-        self.placed_date = BaseResource.strip_datetime(
-            kwargs.get("placedDate"))
+        self.placed_date = BaseResource.strip_datetime(kwargs.get("placedDate"))
         self.price_matched = kwargs.get("priceMatched")
         self.price_reduced = kwargs.get("priceReduced")
         self.price_requested = kwargs.get("priceRequested")
         self.profit = kwargs.get("profit")
         self.commission = kwargs.get("commission")
         self.selection_id = kwargs.get("selectionId")
-        self.settled_date = BaseResource.strip_datetime(
-            kwargs.get("settledDate"))
+        self.settled_date = BaseResource.strip_datetime(kwargs.get("settledDate"))
         self.side = kwargs.get("side")
         self.size_settled = kwargs.get("sizeSettled")
         self.size_cancelled = kwargs.get("sizeCancelled")
@@ -926,12 +1003,10 @@ class PlaceOrderInstruction:
         self.customer_order_ref = customerOrderRef
         self.limit_order = LimitOrder(**limitOrder) if limitOrder else None
         self.limit_on_close_order = (
-            LimitOnCloseOrder(
-                **limitOnCloseOrder) if limitOnCloseOrder else None
+            LimitOnCloseOrder(**limitOnCloseOrder) if limitOnCloseOrder else None
         )
         self.market_on_close_order = (
-            MarketOnCloseOrder(
-                **marketOnCloseOrder) if marketOnCloseOrder else None
+            MarketOnCloseOrder(**marketOnCloseOrder) if marketOnCloseOrder else None
         )
 
 
@@ -964,8 +1039,7 @@ class PlaceOrderInstructionReports:
         self.average_price_matched = averagePriceMatched
         self.size_matched = sizeMatched
         self.placed_date = BaseResource.strip_datetime(placedDate)
-        self.instruction = PlaceOrderInstruction(
-            **instruction) if instruction else None
+        self.instruction = PlaceOrderInstruction(**instruction) if instruction else None
         self.error_code = errorCode
 
 

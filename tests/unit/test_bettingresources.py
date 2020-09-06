@@ -7,6 +7,9 @@ from betfairlightweight.resources.bettingresources import (
     LimitOnCloseOrder,
     MarketOnCloseOrder,
     PriceSize,
+    PriceSizeList,
+    PositionPriceSize,
+    PositionPriceSizeList,
 )
 from tests.unit.tools import create_mock_json
 
@@ -215,26 +218,17 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.description.line_range_info.market_unit == market_catalogue[
                 "description"
             ]["lineRangeInfo"].get("marketUnit")
-            assert resource.description.line_range_info.min_unit_value == market_catalogue[
-                "description"
-            ][
-                "lineRangeInfo"
-            ].get(
-                "minUnitValue"
+            assert (
+                resource.description.line_range_info.min_unit_value
+                == market_catalogue["description"]["lineRangeInfo"].get("minUnitValue")
             )
-            assert resource.description.line_range_info.max_unit_value == market_catalogue[
-                "description"
-            ][
-                "lineRangeInfo"
-            ].get(
-                "maxUnitValue"
+            assert (
+                resource.description.line_range_info.max_unit_value
+                == market_catalogue["description"]["lineRangeInfo"].get("maxUnitValue")
             )
-            assert resource.description.price_ladder_description.type == market_catalogue[
-                "description"
-            ][
-                "priceLadderDescription"
-            ].get(
-                "type"
+            assert (
+                resource.description.price_ladder_description.type
+                == market_catalogue["description"]["priceLadderDescription"].get("type")
             )
 
             assert len(resource.runners) == 10
@@ -542,3 +536,78 @@ class BettingResourcesTest(unittest.TestCase):
         assert resource.customer_ref == replace_orders.get("customerRef")
         assert resource.error_code == replace_orders.get("errorCode")
         # assert len(resource.instruction_reports) == len(replace_orders.get('instructionReports'))
+
+    def test_update_price_size_list(self):
+        current = [PriceSize(27, 0.95), PriceSize(13, 28.01), PriceSize(1.02, 1157.21)]
+        book_update = [PriceSize(27, 6.9)]
+
+        price_size_list = PriceSizeList(current)
+        price_size_list.update(book_update)
+
+        assert price_size_list.entries == [
+            PriceSize(1.02, 1157.21),
+            PriceSize(13, 28.01),
+            PriceSize(27, 6.9),
+        ]
+
+        # reverse
+        current = [PriceSize(27, 0.95), PriceSize(13, 28.01), PriceSize(1.02, 1157.21)]
+        book_update = [PriceSize(27, 6.9)]
+
+        price_size_list = PriceSizeList(current, reverse=True)
+        price_size_list.update(book_update)
+
+        assert price_size_list.entries == [
+            PriceSize(27, 6.9),
+            PriceSize(13, 28.01),
+            PriceSize(1.02, 1157.21),
+        ]
+
+        # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
+        current = [PriceSize(1.01, 9835.74), PriceSize(1.02, 1126.22)]
+        book_update = [
+            PriceSize(0, 0),
+            PriceSize(1.01, 9835.74),
+            PriceSize(1.02, 1126.22),
+        ]
+
+        price_size_list = PriceSizeList(current)
+        price_size_list.update(book_update)
+
+        assert price_size_list.entries == [
+            PriceSize(1.01, 9835.74),
+            PriceSize(1.02, 1126.22),
+        ]
+
+    def test_update_position_price_size_list(self):
+        position_price_size_list = PositionPriceSizeList(
+            [PositionPriceSize(0, 36, 10.57), PositionPriceSize(1, 38, 3.57)]
+        )
+
+        position_price_size_list.update([PositionPriceSize(0, 36, 0.57)])
+
+        assert position_price_size_list.entries == [
+            PositionPriceSize(0, 36, 0.57),
+            PositionPriceSize(1, 38, 3.57),
+        ]
+
+        # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
+        position_price_size_list = PositionPriceSizeList(
+            [
+                PositionPriceSize(1, 1.01, 9835.74),
+                PositionPriceSize(0, 1.02, 1126.22),
+            ]
+        )
+
+        position_price_size_list.update(
+            [
+                PositionPriceSize(2, 0, 0),
+                PositionPriceSize(1, 1.01, 9835.74),
+                PositionPriceSize(0, 1.02, 1126.22),
+            ]
+        )
+
+        assert position_price_size_list.entries == [
+            PositionPriceSize(0, 1.02, 1126.22),
+            PositionPriceSize(1, 1.01, 9835.74),
+        ]

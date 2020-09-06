@@ -1,7 +1,17 @@
 import datetime
 from typing import Union
 
-from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, MarketDefinitionRunner, PriceSize
+from ..resources import (
+    BaseResource,
+    MarketBook,
+    CurrentOrders,
+    MarketDefinition,
+    MarketDefinitionRunner,
+    PriceSize,
+    PriceSizeList,
+    PositionPriceSize,
+    PositionPriceSizeList,
+)
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -33,8 +43,10 @@ class Available:
     def sort(self) -> None:
         self.prices.sort(reverse=self.reverse)
         self.serialise = [
-            PriceSize(price=volume[self.deletion_select - 1],
-                      size=volume[self.deletion_select])
+            PriceSize(
+                price=volume[self.deletion_select - 1],
+                size=volume[self.deletion_select],
+            )
             for volume in self.prices
         ]
 
@@ -82,34 +94,37 @@ class RunnerBook:
         self.selection_id = id
         self.last_price_traded = ltp
         self.total_matched = tv
-        self.traded = Available(trd, 1)
-        self.available_to_back = Available(atb, 1, True)
-        self.best_available_to_back = Available(batb, 2)
-        self.best_display_available_to_back = Available(bdatb, 2)
+        self.traded = PriceSizeList.from_raw_books(trd)
+        self.available_to_back = PriceSizeList.from_raw_books(atb, reverse=True)
+        self.best_available_to_back = PositionPriceSizeList.from_raw_books(batb)
+        self.best_display_available_to_back = PositionPriceSizeList.from_raw_books(
+            bdatb
+        )
         self.available_to_lay = Available(atl, 1)
         self.best_available_to_lay = Available(batl, 2)
         self.best_display_available_to_lay = Available(bdatl, 2)
-        self.starting_price_back = Available(spb, 1)
-        self.starting_price_lay = Available(spl, 1)
+        self.starting_price_back = PriceSizeList.from_raw_books(spb)
+        self.starting_price_lay = PriceSizeList.from_raw_books(spl)
         self.starting_price_near = spn
         self.starting_price_far = spf
         self.handicap = hc
 
     def update_traded(self, traded_update: list) -> None:
-        """:param traded_update: [price, size]
-        """
+        """:param traded_update: [price, size]"""
         if not traded_update:
             self.traded.clear()
         else:
-            self.traded.update(traded_update)
+            self.traded.update_from_raw_books(traded_update)
 
-    def serialise_available_to_back(self) -> list:
-        if self.available_to_back.prices:
-            return self.available_to_back.serialise
-        elif self.best_display_available_to_back.prices:
-            return self.best_display_available_to_back.serialise
-        elif self.best_available_to_back.prices:
-            return self.best_available_to_back.serialise
+    def serialise_available_to_back(
+        self,
+    ) -> Union[PriceSizeList, PositionPriceSizeList]:
+        if self.available_to_back:
+            return self.available_to_back
+        elif self.best_display_available_to_back:
+            return self.best_display_available_to_back
+        elif self.best_available_to_back:
+            return self.best_available_to_back
         else:
             return []
 
@@ -126,15 +141,15 @@ class RunnerBook:
         return {
             "status": runner_definition.status,
             "ex": {
-                "tradedVolume": self.traded.serialise,
+                "tradedVolume": self.traded,
                 "availableToBack": self.serialise_available_to_back(),
                 "availableToLay": self.serialise_available_to_lay(),
             },
             "sp": {
                 "nearPrice": self.starting_price_near,
                 "farPrice": self.starting_price_far,
-                "backStakeTaken": self.starting_price_back.serialise,
-                "layLiabilityTaken": self.starting_price_lay.serialise,
+                "backStakeTaken": self.starting_price_back,
+                "layLiabilityTaken": self.starting_price_lay,
                 "actualSP": runner_definition.bsp,
             },
             "adjustmentFactor": runner_definition.adjustment_factor,
@@ -157,8 +172,7 @@ class MarketBookCache(BaseResource):
         if "marketDefinition" not in kwargs:
             raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
         self.market_definition = kwargs["marketDefinition"]
-        self.parsed_market_definition = MarketDefinition(
-            **self.market_definition)
+        self.parsed_market_definition = MarketDefinition(**self.market_definition)
 
         self.streaming_update = None
         self.runners = []
@@ -176,8 +190,7 @@ class MarketBookCache(BaseResource):
 
         if "marketDefinition" in market_change:
             self.market_definition = market_change["marketDefinition"]
-            self.parsed_market_definition = MarketDefinition(
-                **self.market_definition)
+            self.parsed_market_definition = MarketDefinition(**self.market_definition)
             self._update_market_definition_runner_dict()
 
         if "tv" in market_change:
@@ -185,8 +198,7 @@ class MarketBookCache(BaseResource):
 
         if "rc" in market_change:
             for new_data in market_change["rc"]:
-                runner = self.runner_dict.get(
-                    (new_data["id"], new_data.get("hc", 0)))
+                runner = self.runner_dict.get((new_data["id"], new_data.get("hc", 0)))
                 if runner:
                     if "ltp" in new_data:
                         runner.last_price_traded = new_data["ltp"]
@@ -199,7 +211,7 @@ class MarketBookCache(BaseResource):
                     if "trd" in new_data:
                         runner.update_traded(new_data["trd"])
                     if "atb" in new_data:
-                        runner.available_to_back.update(new_data["atb"])
+                        runner.available_to_back.update_from_raw_books(new_data["atb"])
                     if "atl" in new_data:
                         runner.available_to_lay.update(new_data["atl"])
                     if "batb" in new_data:
@@ -207,15 +219,15 @@ class MarketBookCache(BaseResource):
                     if "batl" in new_data:
                         runner.best_available_to_lay.update(new_data["batl"])
                     if "bdatb" in new_data:
-                        runner.best_display_available_to_back.update(
-                            new_data["bdatb"])
+                        runner.best_display_available_to_back.update(new_data["bdatb"])
                     if "bdatl" in new_data:
-                        runner.best_display_available_to_lay.update(
-                            new_data["bdatl"])
+                        runner.best_display_available_to_lay.update(new_data["bdatl"])
                     if "spb" in new_data:
-                        runner.starting_price_back.update(new_data["spb"])
+                        runner.starting_price_back.update_from_raw_books(
+                            new_data["spb"]
+                        )
                     if "spl" in new_data:
-                        runner.starting_price_lay.update(new_data["spl"])
+                        runner.starting_price_lay.update_from_raw_books(new_data["spl"])
                 else:
                     self.runners.append(RunnerBook(**new_data))
                     self._update_runner_dict()
@@ -388,8 +400,7 @@ class OrderBookRunner:
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
         self.matched_backs = Available(mb, 1)
-        self.unmatched_orders = {
-            i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
+        self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
         self.handicap = hc
         self.strategy_matches = smc
 
