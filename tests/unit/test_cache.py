@@ -2,6 +2,7 @@ import unittest
 from unittest import mock
 
 from betfairlightweight.resources.baseresource import BaseResource
+from betfairlightweight.resources.bettingresources import PriceSize
 from betfairlightweight.streaming.cache import (
     OrderBookCache,
     OrderBookRunner,
@@ -29,8 +30,8 @@ class TestAvailable(unittest.TestCase):
         self.available.sort()
         assert self.available.prices == self.prices
         assert self.available.serialise == [
-            {"price": 1.01, "size": 12},
-            {"price": 1.02, "size": 34.45},
+            PriceSize(price=1.01, size=12),
+            PriceSize(price=1.02, size=34.45),
         ]
 
     def test_sort_short(self):
@@ -38,9 +39,9 @@ class TestAvailable(unittest.TestCase):
         available = Available(current, 1)
 
         assert available.serialise == [
-            {"price": 1.02, "size": 1157.21},
-            {"price": 13, "size": 28.01},
-            {"price": 27, "size": 0.95},
+            PriceSize(price=1.02, size=1157.21),
+            PriceSize(price=13, size=28.01),
+            PriceSize(price=27, size=0.95),
         ]
 
     def test_clear(self):

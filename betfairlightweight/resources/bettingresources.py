@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from .baseresource import BaseResource
 
 
@@ -325,6 +327,7 @@ class Slotable:
             setattr(self, slot, d[slot])
 
 
+@dataclass
 class PriceSize(Slotable):
     """
     :type price: float
@@ -361,8 +364,8 @@ class RunnerBookSP:
         self.near_price = nearPrice
         self.far_price = farPrice
         self.actual_sp = actualSP
-        self.back_stake_taken = [PriceSize(**i) for i in backStakeTaken]
-        self.lay_liability_taken = [PriceSize(**i) for i in layLiabilityTaken]
+        self.back_stake_taken = backStakeTaken
+        self.lay_liability_taken = layLiabilityTaken
 
 
 class RunnerBookEX:
@@ -378,9 +381,9 @@ class RunnerBookEX:
         availableToLay: list = None,
         tradedVolume: list = None,
     ):
-        self.available_to_back = [PriceSize(**i) for i in availableToBack]
-        self.available_to_lay = [PriceSize(**i) for i in availableToLay]
-        self.traded_volume = [PriceSize(**i) for i in tradedVolume]
+        self.available_to_back = availableToBack
+        self.available_to_lay = availableToLay
+        self.traded_volume = tradedVolume
 
 
 class RunnerBookOrder:

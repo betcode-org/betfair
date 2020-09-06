@@ -1,7 +1,7 @@
 import datetime
 from typing import Union
 
-from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, MarketDefinitionRunner
+from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, MarketDefinitionRunner, PriceSize
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -33,10 +33,8 @@ class Available:
     def sort(self) -> None:
         self.prices.sort(reverse=self.reverse)
         self.serialise = [
-            {
-                "price": volume[self.deletion_select - 1],
-                "size": volume[self.deletion_select],
-            }
+            PriceSize(price=volume[self.deletion_select - 1],
+                      size=volume[self.deletion_select])
             for volume in self.prices
         ]
 
