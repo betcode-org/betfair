@@ -94,17 +94,15 @@ class RunnerBook:
         self.selection_id = id
         self.last_price_traded = ltp
         self.total_matched = tv
-        self.traded = PriceSizeList.from_raw_books(trd)
-        self.available_to_back = PriceSizeList.from_raw_books(atb, reverse=True)
-        self.best_available_to_back = PositionPriceSizeList.from_raw_books(batb)
-        self.best_display_available_to_back = PositionPriceSizeList.from_raw_books(
-            bdatb
-        )
+        self.traded = PriceSizeList(trd)
+        self.available_to_back = PriceSizeList(atb, reverse=True)
+        self.best_available_to_back = PositionPriceSizeList(batb)
+        self.best_display_available_to_back = PositionPriceSizeList(bdatb)
         self.available_to_lay = Available(atl, 1)
         self.best_available_to_lay = Available(batl, 2)
         self.best_display_available_to_lay = Available(bdatl, 2)
-        self.starting_price_back = PriceSizeList.from_raw_books(spb)
-        self.starting_price_lay = PriceSizeList.from_raw_books(spl)
+        self.starting_price_back = PriceSizeList(spb)
+        self.starting_price_lay = PriceSizeList(spl)
         self.starting_price_near = spn
         self.starting_price_far = spf
         self.handicap = hc
@@ -114,7 +112,7 @@ class RunnerBook:
         if not traded_update:
             self.traded.clear()
         else:
-            self.traded.update_from_raw_books(traded_update)
+            self.traded.update(traded_update)
 
     def serialise_available_to_back(
         self,
@@ -211,7 +209,7 @@ class MarketBookCache(BaseResource):
                     if "trd" in new_data:
                         runner.update_traded(new_data["trd"])
                     if "atb" in new_data:
-                        runner.available_to_back.update_from_raw_books(new_data["atb"])
+                        runner.available_to_back.update(new_data["atb"])
                     if "atl" in new_data:
                         runner.available_to_lay.update(new_data["atl"])
                     if "batb" in new_data:
@@ -223,11 +221,9 @@ class MarketBookCache(BaseResource):
                     if "bdatl" in new_data:
                         runner.best_display_available_to_lay.update(new_data["bdatl"])
                     if "spb" in new_data:
-                        runner.starting_price_back.update_from_raw_books(
-                            new_data["spb"]
-                        )
+                        runner.starting_price_back.update(new_data["spb"])
                     if "spl" in new_data:
-                        runner.starting_price_lay.update_from_raw_books(new_data["spl"])
+                        runner.starting_price_lay.update(new_data["spl"])
                 else:
                     self.runners.append(RunnerBook(**new_data))
                     self._update_runner_dict()

@@ -234,7 +234,7 @@ class TestRunnerBook(unittest.TestCase):
         self.mock_traded.clear.assert_called_with()
 
         self.runner_book.update_traded([1, 2])
-        self.mock_traded.update_from_raw_books.assert_called_with([1, 2])
+        self.mock_traded.update.assert_called_with([1, 2])
 
     def test_serialise_back(self):
         mock_available_to_back = mock.Mock()

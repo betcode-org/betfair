@@ -538,8 +538,8 @@ class BettingResourcesTest(unittest.TestCase):
         # assert len(resource.instruction_reports) == len(replace_orders.get('instructionReports'))
 
     def test_update_price_size_list(self):
-        current = [PriceSize(27, 0.95), PriceSize(13, 28.01), PriceSize(1.02, 1157.21)]
-        book_update = [PriceSize(27, 6.9)]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        book_update = [[27, 6.9]]
 
         price_size_list = PriceSizeList(current)
         price_size_list.update(book_update)
@@ -551,8 +551,8 @@ class BettingResourcesTest(unittest.TestCase):
         ]
 
         # reverse
-        current = [PriceSize(27, 0.95), PriceSize(13, 28.01), PriceSize(1.02, 1157.21)]
-        book_update = [PriceSize(27, 6.9)]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        book_update = [[27, 6.9]]
 
         price_size_list = PriceSizeList(current, reverse=True)
         price_size_list.update(book_update)
@@ -564,11 +564,11 @@ class BettingResourcesTest(unittest.TestCase):
         ]
 
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
-        current = [PriceSize(1.01, 9835.74), PriceSize(1.02, 1126.22)]
+        current = [[1.01, 9835.74], [1.02, 1126.22]]
         book_update = [
-            PriceSize(0, 0),
-            PriceSize(1.01, 9835.74),
-            PriceSize(1.02, 1126.22),
+            [0, 0],
+            [1.01, 9835.74],
+            [1.02, 1126.22],
         ]
 
         price_size_list = PriceSizeList(current)
@@ -581,10 +581,10 @@ class BettingResourcesTest(unittest.TestCase):
 
     def test_update_position_price_size_list(self):
         position_price_size_list = PositionPriceSizeList(
-            [PositionPriceSize(0, 36, 10.57), PositionPriceSize(1, 38, 3.57)]
+            [[0, 36, 10.57], [1, 38, 3.57]]
         )
 
-        position_price_size_list.update([PositionPriceSize(0, 36, 0.57)])
+        position_price_size_list.update([[0, 36, 0.57]])
 
         assert position_price_size_list.entries == [
             PositionPriceSize(0, 36, 0.57),
@@ -594,16 +594,16 @@ class BettingResourcesTest(unittest.TestCase):
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
         position_price_size_list = PositionPriceSizeList(
             [
-                PositionPriceSize(1, 1.01, 9835.74),
-                PositionPriceSize(0, 1.02, 1126.22),
+                [1, 1.01, 9835.74],
+                [0, 1.02, 1126.22],
             ]
         )
 
         position_price_size_list.update(
             [
-                PositionPriceSize(2, 0, 0),
-                PositionPriceSize(1, 1.01, 9835.74),
-                PositionPriceSize(0, 1.02, 1126.22),
+                [2, 0, 0],
+                [1, 1.01, 9835.74],
+                [0, 1.02, 1126.22],
             ]
         )
 

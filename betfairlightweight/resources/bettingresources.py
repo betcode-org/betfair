@@ -338,16 +338,12 @@ class PriceSizeList:
     entries: List[PriceSize]
     reverse: bool
 
-    def __init__(self, books: List[PriceSize], reverse: bool = False):
-        self.reverse = reverse
-        self.entries = books or []
-        self.sort()
-
-    @staticmethod
-    def from_raw_books(books: List[List[float]], reverse: bool = False):
+    def __init__(self, books: List[List[float]], reverse: bool = False):
         books = books or []
-        books = [PriceSize(*book) for book in books]
-        return PriceSizeList(books, reverse)
+        self.entries = [PriceSize(*book) for book in books]
+        self.reverse = reverse
+
+        self.sort()
 
     def __getitem__(self, key: int):
         return self.entries[key]
@@ -361,12 +357,9 @@ class PriceSizeList:
     def clear(self):
         self.entries.clear()
 
-    def update_from_raw_books(self, book_update: List[List[float]]):
-        parsed_book_update = (PriceSize(*book) for book in book_update)
-        self.update(parsed_book_update)
-
-    def update(self, book_update: List[PriceSize]):
+    def update(self, book_update: List[List[float]]):
         for book in book_update:
+            book = PriceSize(*book)
             for (count, entry) in enumerate(self.entries):
                 if entry.price == book.price:
                     if book.size == 0:
@@ -398,15 +391,10 @@ class PositionPriceSize(Slotable):
 class PositionPriceSizeList:
     entries: List[PositionPriceSize]
 
-    def __init__(self, books: List[PositionPriceSize]):
-        self.entries = books or []
-        self.entries.sort()
-
-    @staticmethod
-    def from_raw_books(books: List[List[float]]):
+    def __init__(self, books: List[List[float]]):
         books = books or []
-        books = [PositionPriceSize(*book) for book in books]
-        return PositionPriceSizeList(books)
+        self.entries = [PositionPriceSize(*book) for book in books]
+        self.entries.sort()
 
     def __getitem__(self, key: int):
         return self.entries[key]
@@ -417,12 +405,9 @@ class PositionPriceSizeList:
     def clear(self):
         self.entries.clear()
 
-    def update_from_raw_books(self, book_update: List[List[float]]):
-        parsed_book_update = (PositionPriceSize(*book) for book in book_update)
-        self.update(parsed_book_update)
-
-    def update(self, book_update: List[PositionPriceSize]):
+    def update(self, book_update: List[List[float]]):
         for book in book_update:
+            book = PositionPriceSize(*book)
             for (count, entry) in enumerate(self.entries):
                 if entry.position == book.position:
                     if book.size == 0:
