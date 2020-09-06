@@ -98,9 +98,9 @@ class RunnerBook:
         self.available_to_back = PriceSizeList(atb, reverse=True)
         self.best_available_to_back = PositionPriceSizeList(batb)
         self.best_display_available_to_back = PositionPriceSizeList(bdatb)
-        self.available_to_lay = Available(atl, 1)
-        self.best_available_to_lay = Available(batl, 2)
-        self.best_display_available_to_lay = Available(bdatl, 2)
+        self.available_to_lay = PriceSizeList(atl)
+        self.best_available_to_lay = PositionPriceSizeList(batl)
+        self.best_display_available_to_lay = PositionPriceSizeList(bdatl)
         self.starting_price_back = PriceSizeList(spb)
         self.starting_price_lay = PriceSizeList(spl)
         self.starting_price_near = spn
@@ -126,14 +126,15 @@ class RunnerBook:
         else:
             return []
 
-    def serialise_available_to_lay(self) -> list:
-        if self.available_to_lay.prices:
-            return self.available_to_lay.serialise
-        elif self.best_display_available_to_lay.prices:
-            return self.best_display_available_to_lay.serialise
-        elif self.best_available_to_lay.prices:
-            return self.best_available_to_lay.serialise
-        return []
+    def serialise_available_to_lay(self) -> Union[PriceSizeList, PositionPriceSizeList]:
+        if self.available_to_lay:
+            return self.available_to_lay
+        elif self.best_display_available_to_lay:
+            return self.best_display_available_to_lay
+        elif self.best_available_to_lay:
+            return self.best_available_to_lay
+        else:
+            return []
 
     def serialise(self, runner_definition: MarketDefinitionRunner) -> dict:
         return {

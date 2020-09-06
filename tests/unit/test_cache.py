@@ -265,32 +265,28 @@ class TestRunnerBook(unittest.TestCase):
 
     def test_serialise_lay(self):
         mock_available_to_lay = mock.Mock()
-        mock_available_to_lay.prices = True
+        mock_available_to_lay.__len__ = mock.Mock(return_value=True)
         mock_best_available_to_lay = mock.Mock()
-        mock_best_available_to_lay.prices = True
+        mock_best_available_to_lay.__len__ = mock.Mock(return_value=True)
         mock_best_display_available_to_lay = mock.Mock()
-        mock_best_display_available_to_lay.prices = True
+        mock_best_display_available_to_lay.__len__ = mock.Mock(return_value=True)
         self.runner_book.available_to_lay = mock_available_to_lay
 
-        assert (
-            self.runner_book.serialise_available_to_lay()
-            == mock_available_to_lay.serialise
-        )
+        assert self.runner_book.serialise_available_to_lay() == mock_available_to_lay
 
-        mock_available_to_lay.prices = False
+        mock_available_to_lay.__len__ = mock.Mock(return_value=False)
         self.runner_book.best_available_to_lay = mock_best_available_to_lay
         assert (
-            self.runner_book.serialise_available_to_lay()
-            == mock_best_available_to_lay.serialise
+            self.runner_book.serialise_available_to_lay() == mock_best_available_to_lay
         )
 
-        mock_best_available_to_lay.prices = False
+        mock_best_available_to_lay.__len__ = mock.Mock(return_value=False)
         self.runner_book.best_display_available_to_lay = (
             mock_best_display_available_to_lay
         )
         assert (
             self.runner_book.serialise_available_to_lay()
-            == mock_best_display_available_to_lay.serialise
+            == mock_best_display_available_to_lay
         )
 
     def test_empty_serialise(self):
