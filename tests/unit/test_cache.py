@@ -13,7 +13,7 @@ from betfairlightweight.streaming.cache import (
 )
 from betfairlightweight.exceptions import CacheError
 from tests.unit.tools import create_mock_json
-from tests.unit.data import (
+from betfairlightweight.test_data import (
     create_market_definition_data,
     create_market_definition_runner,
 )
