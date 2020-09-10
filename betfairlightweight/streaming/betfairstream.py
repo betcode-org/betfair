@@ -257,12 +257,12 @@ class BetfairStream:
             self.authenticate()
 
         message_dumped = json.dumps(message)
-        if isinstance(
+
+        if not isinstance(
             message_dumped, bytes
-        ):  # handles orjson as `orjson.dumps -> bytes`
-            crlf = bytes(self.__CRLF, encoding=self.__encoding)
-        else:
-            crlf = self.__CRLF
+        ):  # handles orjson as `orjson.dumps -> bytes` but `json.dumps -> str`
+            message_dumped = message_dumped.encode(encoding=self.__encoding)
+        crlf = bytes(self.__CRLF, encoding=self.__encoding)
         message_dumped += crlf
 
         logger.debug(
