@@ -36,7 +36,10 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listEventTypes")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.EventTypeResult, elapsed_time, lightweight,
+            response_json,
+            resources.EventTypeResult,
+            elapsed_time,
+            lightweight,
         )
 
     def list_competitions(
@@ -61,7 +64,10 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listCompetitions")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.CompetitionResult, elapsed_time, lightweight,
+            response_json,
+            resources.CompetitionResult,
+            elapsed_time,
+            lightweight,
         )
 
     def list_time_ranges(
@@ -88,7 +94,10 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listTimeRanges")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.TimeRangeResult, elapsed_time, lightweight,
+            response_json,
+            resources.TimeRangeResult,
+            elapsed_time,
+            lightweight,
         )
 
     def list_events(
@@ -138,7 +147,10 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketTypes")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.MarketTypeResult, elapsed_time, lightweight,
+            response_json,
+            resources.MarketTypeResult,
+            elapsed_time,
+            lightweight,
         )
 
     def list_countries(
@@ -220,7 +232,10 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketCatalogue")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.MarketCatalogue, elapsed_time, lightweight,
+            response_json,
+            resources.MarketCatalogue,
+            elapsed_time,
+            lightweight,
         )
 
     def list_market_book(
@@ -289,8 +304,8 @@ class Betting(BaseEndpoint):
         lightweight: bool = None,
     ) -> Union[list, List[resources.MarketBook]]:
         """
-        Returns a list of dynamic data about a market and a specified runner. 
-        Dynamic data includes prices, the status of the market, the status of selections, 
+        Returns a list of dynamic data about a market and a specified runner.
+        Dynamic data includes prices, the status of the market, the status of selections,
         the traded volume, and the status of any orders you have placed in the market
 
         :param unicode market_id: The unique id for the market
@@ -445,7 +460,10 @@ class Betting(BaseEndpoint):
         method = "%s%s" % (self.URI, "listMarketProfitAndLoss")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.MarketProfitLoss, elapsed_time, lightweight,
+            response_json,
+            resources.MarketProfitLoss,
+            elapsed_time,
+            lightweight,
         )
 
     def place_orders(

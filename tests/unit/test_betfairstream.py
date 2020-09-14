@@ -4,6 +4,7 @@ import time
 import threading
 from unittest import mock
 
+from betfairlightweight.compat import json
 from betfairlightweight.streaming.betfairstream import (
     BetfairStream,
     HistoricalStream,
@@ -319,6 +320,16 @@ class BetfairStreamTest(unittest.TestCase):
         assert mock_connect.call_count == 1
         assert mock_authenticate.call_count == 1
         assert mock_socket.sendall.call_count == 1
+        try:
+            import orjson
+
+            rust = True
+        except:
+            rust = False
+        if rust:
+            mock_socket.sendall.assert_called_with(b'{"message":1}\r\n')
+        else:
+            mock_socket.sendall.assert_called_with(b'{"message": 1}\r\n')
 
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream.stop")
     def test_send_timeout(self, mock_stop):

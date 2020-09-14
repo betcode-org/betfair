@@ -188,7 +188,8 @@ class StreamListenerTest(unittest.TestCase):
         return_value=True,
     )
     def test_on_data_status_error(
-        self, mock_error_handler,
+        self,
+        mock_error_handler,
     ):
         self.stream_listener.stream_unique_id = 2
         mock_response = create_mock_json("tests/resources/streaming_503.json")

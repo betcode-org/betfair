@@ -132,7 +132,7 @@ class RaceCardTest(unittest.TestCase):
     @mock.patch("betfairlightweight.endpoints.racecard.RaceCard.create_req")
     @mock.patch("betfairlightweight.endpoints.racecard.RaceCard.headers")
     @mock.patch("betfairlightweight.baseclient.requests.get")
-    def test_request_error(
+    def test_request_error_invalid_response(
         self,
         mock_get,
         mock_login_headers,

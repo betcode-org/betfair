@@ -6,8 +6,7 @@ from ..compat import basestring, integer_types, json, parse_datetime
 
 
 class BaseResource:
-    """Lightweight data structure for resources.
-    """
+    """Lightweight data structure for resources."""
 
     def __init__(self, **kwargs):
         self.elapsed_time = kwargs.pop("elapsed_time", None)

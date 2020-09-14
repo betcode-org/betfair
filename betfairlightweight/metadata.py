@@ -3,7 +3,7 @@ Useful metadata/limits from:
     https://developer.betfair.com/exchange-api/
 """
 
-transaction_limit = 1000  # place_orders / replace_orders
+transaction_limit = 5000  # transactions per hour (£0.002 cost per transaction after)
 
 
 order_limits = {

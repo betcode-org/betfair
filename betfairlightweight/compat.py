@@ -5,10 +5,10 @@ basestring = (str, bytes)
 numeric_types = (int, float)
 integer_types = (int,)
 
-# will attempt to use c libraries if installed
+# will attempt to use C/Rust libraries if installed
 
 try:
-    import ujson as json
+    import orjson as json
 except ImportError:
     import json
 

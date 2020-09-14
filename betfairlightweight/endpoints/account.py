@@ -85,7 +85,10 @@ class Account(BaseEndpoint):
         method = "%s%s" % (self.URI, "getAccountStatement")
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
-            response_json, resources.AccountStatementResult, elapsed_time, lightweight,
+            response_json,
+            resources.AccountStatementResult,
+            elapsed_time,
+            lightweight,
         )
 
     def list_currency_rates(

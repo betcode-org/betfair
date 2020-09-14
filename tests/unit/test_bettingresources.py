@@ -215,26 +215,17 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.description.line_range_info.market_unit == market_catalogue[
                 "description"
             ]["lineRangeInfo"].get("marketUnit")
-            assert resource.description.line_range_info.min_unit_value == market_catalogue[
-                "description"
-            ][
-                "lineRangeInfo"
-            ].get(
-                "minUnitValue"
+            assert (
+                resource.description.line_range_info.min_unit_value
+                == market_catalogue["description"]["lineRangeInfo"].get("minUnitValue")
             )
-            assert resource.description.line_range_info.max_unit_value == market_catalogue[
-                "description"
-            ][
-                "lineRangeInfo"
-            ].get(
-                "maxUnitValue"
+            assert (
+                resource.description.line_range_info.max_unit_value
+                == market_catalogue["description"]["lineRangeInfo"].get("maxUnitValue")
             )
-            assert resource.description.price_ladder_description.type == market_catalogue[
-                "description"
-            ][
-                "priceLadderDescription"
-            ].get(
-                "type"
+            assert (
+                resource.description.price_ladder_description.type
+                == market_catalogue["description"]["priceLadderDescription"].get("type")
             )
 
             assert len(resource.runners) == 10

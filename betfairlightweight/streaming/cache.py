@@ -98,8 +98,7 @@ class RunnerBook:
         self.handicap = hc
 
     def update_traded(self, traded_update: list) -> None:
-        """:param traded_update: [price, size]
-        """
+        """:param traded_update: [price, size]"""
         if not traded_update:
             self.traded.clear()
         else:

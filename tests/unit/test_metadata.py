@@ -4,7 +4,7 @@ from betfairlightweight import metadata
 
 class MetadataTest(unittest.TestCase):
     def test_transaction_limit(self):
-        assert metadata.transaction_limit == 1000
+        assert metadata.transaction_limit == 5000
 
     def test_limits(self):
         assert metadata.order_limits == {

@@ -5,7 +5,7 @@ from requests.exceptions import ConnectionError
 from betfairlightweight.compat import json
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.historic import Historic
-from betfairlightweight.exceptions import APIError, InvalidResponse
+from betfairlightweight.exceptions import APIError
 
 
 class HistoricalTest(unittest.TestCase):
@@ -117,7 +117,6 @@ class HistoricalTest(unittest.TestCase):
     def test_request_error(self, mock_post, mock_headers):
         params = {"test": "me"}
         method = "test"
-        url = "https://historicdata.betfair.com/api/test"
         mock_post.side_effect = ConnectionError()
         with self.assertRaises(APIError):
             self.historic.request(params=params, method=method, session=None)
