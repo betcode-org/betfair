@@ -59,8 +59,7 @@ class BetfairStream:
         self._read_loop()
 
     def stop(self) -> None:
-        """Stops read loop and closes socket if it has been created.
-        """
+        """Stops read loop and closes socket if it has been created."""
         self._running = False
 
         if self._socket is None:
@@ -73,8 +72,7 @@ class BetfairStream:
         self._socket = None
 
     def authenticate(self) -> int:
-        """Authentication request.
-        """
+        """Authentication request."""
         unique_id = self.new_unique_id()
         message = {
             "op": "authentication",
@@ -86,8 +84,7 @@ class BetfairStream:
         return unique_id
 
     def heartbeat(self) -> int:
-        """Heartbeat request to keep session alive.
-        """
+        """Heartbeat request to keep session alive."""
         unique_id = self.new_unique_id()
         message = {"op": "heartbeat", "id": unique_id}
         self._send(message)
@@ -179,8 +176,7 @@ class BetfairStream:
         return self._unique_id
 
     def _connect(self) -> None:
-        """Creates socket and sets running to True.
-        """
+        """Creates socket and sets running to True."""
         self._socket = self._create_socket()
         self._running = True
 
@@ -259,12 +255,21 @@ class BetfairStream:
         if not self._running:
             self._connect()
             self.authenticate()
-        message_dumped = json.dumps(message) + self.__CRLF
+
+        message_dumped = json.dumps(message)
+
+        if not isinstance(
+            message_dumped, bytes
+        ):  # handles orjson as `orjson.dumps -> bytes` but `json.dumps -> str`
+            message_dumped = message_dumped.encode(encoding=self.__encoding)
+        crlf = bytes(self.__CRLF, encoding=self.__encoding)
+        message_dumped += crlf
+
         logger.debug(
             "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
         )
         try:
-            self._socket.sendall(message_dumped.encode())
+            self._socket.sendall(message_dumped)
         except (socket.timeout, socket.error) as e:
             self.stop()
             raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))

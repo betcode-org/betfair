@@ -261,16 +261,14 @@ class ExecutionReportErrorCode(Enum):
 
 
 class StreamingProtocolErrors(Enum):
-    """General errors not sent with id linking to specific request (as no request context)
-    """
+    """General errors not sent with id linking to specific request (as no request context)"""
 
     INVALID_INPUT = "Failure code returned when an invalid input is provided (could not deserialize the message)"
     TIMEOUT = "Failure code when a client times out (i.e. too slow sending data)"
 
 
 class StreamingAuthenticationErrors(Enum):
-    """Specific to authentication
-    """
+    """Specific to authentication"""
 
     NO_APP_KEY = (
         "Failure code returned when an application key is not found in the message"
@@ -294,8 +292,7 @@ class StreamingAuthenticationErrors(Enum):
 
 
 class StreamingSubscriptionErrors(Enum):
-    """Specific to subscription requests
-    """
+    """Specific to subscription requests"""
 
     SUBSCRIPTION_LIMIT_EXCEEDED = (
         "Customer tried to subscribe to more markets than allowed to"
@@ -307,8 +304,7 @@ class StreamingSubscriptionErrors(Enum):
 
 
 class StreamingGeneralErrors(Enum):
-    """General errors which may or may not be linked to specific request id
-    """
+    """General errors which may or may not be linked to specific request id"""
 
     UNEXPECTED_ERROR = (
         "Failure code returned when an internal error occurred on the server"
@@ -319,8 +315,7 @@ class StreamingGeneralErrors(Enum):
 
 
 class StreamingSide(Enum):
-    """Some enums are provided in shorthand
-    """
+    """Some enums are provided in shorthand"""
 
     L = "LAY"
     B = "BACK"

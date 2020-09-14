@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.8.0 (2020-09-14)
++++++++++++++++++++
+
+**Improvements**
+
+- Transaction count updated to 5000
+- Minor codebase cleanup
+
+**Dependencies**
+
+- #328 ujson migrated to orjson
+- black updated to 20.8b1
+
 2.7.2 (2020-08-03)
 +++++++++++++++++++
 

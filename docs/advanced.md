@@ -152,13 +152,13 @@ or on a per request basis:
 
 ### Dependencies
 
-By default betfairlightweight will install c based libraries if your os is either linux or darwin (Mac), due to difficulties in installation Windows users can install them seperatly:
+By default betfairlightweight will install C and Rust based libraries if your os is either linux or darwin (Mac), due to difficulties in installation Windows users can install them separately:
 
 ```bash
 pip install ciso8601=={version}
 ``` 
 ```bash
-pip install ujson=={version}
+pip install orjson=={version}
 ``` 
 
 !!! hint

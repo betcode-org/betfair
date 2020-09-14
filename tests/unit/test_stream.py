@@ -168,15 +168,6 @@ class MarketStreamTest(unittest.TestCase):
         self.stream.on_subscribe({"mc": {123}})
         mock_process.assert_called_once_with({123}, None)
 
-    @mock.patch("betfairlightweight.streaming.stream.MarketStream._process")
-    @mock.patch("betfairlightweight.streaming.stream.MarketStream._update_clk")
-    def test_on_subscribe(self, mock_update_clk, mock_process):
-        self.stream.on_subscribe({})
-        mock_update_clk.assert_called_once_with({})
-
-        self.stream.on_subscribe({"mc": {123}})
-        mock_process.assert_called_once_with({123}, None)
-
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
     def test_process(self, mock_on_process, mock_cache):

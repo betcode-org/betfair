@@ -69,7 +69,7 @@ betfairlightweight relies on these libraries:
 Linux and darwin platforms only:
 
 * `ciso8601` - C based datetime parsing
-* `ujson` - C based json parsing
+* `orjson` - Rust based json parsing
 
 ## Installation
 

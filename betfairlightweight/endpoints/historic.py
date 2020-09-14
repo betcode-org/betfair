@@ -151,7 +151,7 @@ class Historic(BaseEndpoint):
     def download_file(self, file_path: str, store_directory: str = None) -> str:
         """
         Download a file from betfair historical and store in given directory or current directory.
-        
+
         :param file_path: the file path as given by get_file_list method.
         :param store_directory: directory path to store data files in.
         :return: name of file.
