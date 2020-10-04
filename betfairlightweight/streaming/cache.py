@@ -247,7 +247,7 @@ class MarketBookCache(BaseResource):
         will error if EX_MARKET_DEF not incl.
         """
 
-        if 'runners' in self.market_definition:
+        if "runners" in self.market_definition:
             num_runners = len(self.market_definition["runners"])
         else:
             num_runners = None
@@ -274,8 +274,8 @@ class MarketBookCache(BaseResource):
             "runners": [
                 runner.serialise(
                     self.market_definition_runner_dict.get(
-                        (runner.selection_id, runner.handicap)
-                    , {})
+                        (runner.selection_id, runner.handicap), {}
+                    )
                 )
                 for runner in self.runners
             ],
