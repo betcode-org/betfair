@@ -109,7 +109,7 @@ class MarketDefinition:
         timezone: str,
         turnInPlayEnabled: bool,
         version: int,
-        runners: list,
+        runners: list = None,
         openDate: str = None,
         countryCode: str = None,
         eachWayDivisor: float = None,
@@ -157,7 +157,7 @@ class MarketDefinition:
         self.line_max_unit = lineMaxUnit
         self.line_min_unit = lineMinUnit
         self.line_interval = lineInterval
-        self.runners = [MarketDefinitionRunner(**i) for i in runners]
+        self.runners = [MarketDefinitionRunner(**i) for i in runners] if runners else []
         self.price_ladder_definition = (
             PriceLadderDescription(**priceLadderDefinition)
             if priceLadderDefinition

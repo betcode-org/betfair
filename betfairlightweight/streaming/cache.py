@@ -238,7 +238,7 @@ class MarketBookCache(BaseResource):
     def _update_market_definition_runner_dict(self) -> None:
         self.market_definition_runner_dict = {
             (runner["id"], runner.get("hc", 0)): runner
-            for runner in self.market_definition["runners"]
+            for runner in self.market_definition.get("runners", [])
         }
 
     @property
@@ -246,6 +246,12 @@ class MarketBookCache(BaseResource):
         """Creates standard market book json response,
         will error if EX_MARKET_DEF not incl.
         """
+
+        if 'runners' in self.market_definition:
+            num_runners = len(self.market_definition["runners"])
+        else:
+            num_runners = None
+
         return {
             "marketId": self.market_id,
             "totalAvailable": None,
@@ -261,15 +267,15 @@ class MarketBookCache(BaseResource):
             "crossMatching": self.market_definition.get("crossMatching"),
             "inplay": self.market_definition.get("inPlay"),
             "numberOfWinners": self.market_definition.get("numberOfWinners"),
-            "numberOfRunners": len(self.market_definition.get("runners")),
+            "numberOfRunners": num_runners,
             "numberOfActiveRunners": self.market_definition.get(
                 "numberOfActiveRunners"
             ),
             "runners": [
                 runner.serialise(
-                    self.market_definition_runner_dict[
+                    self.market_definition_runner_dict.get(
                         (runner.selection_id, runner.handicap)
-                    ]
+                    , {})
                 )
                 for runner in self.runners
             ],
