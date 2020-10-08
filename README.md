@@ -9,7 +9,7 @@ Lightweight, super fast (uses C and Rust libraries) pythonic wrapper for [Betfai
 
 [join slack group](https://betfairlightweight.herokuapp.com)
 
-Currently tested on Python 3.5, 3.6, 3.7 and 3.8.
+Currently tested on Python 3.6, 3.7, 3.8 and 3.9.
 
 # installation
 

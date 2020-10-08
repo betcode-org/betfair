@@ -79,4 +79,4 @@ Install with pip:
 $ pip install betfairlightweight
 ```
 
-betfairlightweight requires Python 3.5+
+betfairlightweight requires Python 3.6+

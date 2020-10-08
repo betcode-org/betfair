@@ -16,6 +16,7 @@ Release History
 
 **Dependencies**
 
+- py3.9 added to tests
 - orjson updated to 3.4.0
 
 2.8.0 (2020-09-14)
