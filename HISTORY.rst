@@ -3,6 +3,21 @@
 Release History
 ---------------
 
+2.9.0 (2020-10-??)
++++++++++++++++++++
+
+**Improvements**
+
+- Fix types for list_race_details (synapticarbors)
+
+**Bug Fixes**
+
+- PR added to actions
+
+**Dependencies**
+
+- orjson updated to 3.4.0
+
 2.8.0 (2020-09-14)
 +++++++++++++++++++
 
