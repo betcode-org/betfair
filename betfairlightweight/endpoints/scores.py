@@ -15,18 +15,18 @@ class Scores(BaseEndpoint):
 
     def list_race_details(
         self,
-        meeting_ids: dict = None,
-        race_ids: str = None,
+        meeting_ids: list = None,
+        race_ids: list = None,
         session: requests.Session = None,
         lightweight: bool = None,
     ) -> Union[list, List[resources.RaceDetails]]:
         """
         Search for races to get their details.
 
-        :param dict meeting_ids: Optionally restricts the results to the specified meeting IDs.
+        :param list meeting_ids: Optionally restricts the results to the specified meeting IDs.
         The unique Id for the meeting equivalent to the eventId for that specific race as
         returned by listEvents
-        :param str race_ids: Optionally restricts the results to the specified race IDs. The
+        :param list race_ids: Optionally restricts the results to the specified race IDs. The
         unique Id for the race in the format meetingid.raceTime (hhmm). raceTime is in GMT
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
