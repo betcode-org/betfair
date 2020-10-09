@@ -1,7 +1,12 @@
 import unittest
 from unittest import mock
 
-from betfairlightweight.streaming.stream import BaseStream, MarketStream, OrderStream
+from betfairlightweight.streaming.stream import (
+    BaseStream,
+    MarketStream,
+    OrderStream,
+    MAX_CACHE_AGE,
+)
 from tests.unit.tools import create_mock_json
 
 
@@ -13,13 +18,15 @@ class BaseStreamTest(unittest.TestCase):
 
     def test_init(self):
         assert self.stream._listener == self.listener
-
         assert self.stream._initial_clk is None
         assert self.stream._clk is None
         assert self.stream._caches == {}
         assert self.stream._updates_processed == 0
         assert self.stream.time_created is not None
         assert self.stream.time_updated is not None
+        assert self.stream._lookup == "mc"
+        assert self.stream._name == "Stream"
+        assert MAX_CACHE_AGE == 60 * 60 * 8
 
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")
@@ -73,6 +80,26 @@ class BaseStreamTest(unittest.TestCase):
         mock_update_clk.assert_called_with(data)
         mock_calc_latency.assert_called_with(data.get("pt"))
         mock_process.assert_called_with(data.get("mc"), data.get("pt"))
+
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
+    @mock.patch(
+        "betfairlightweight.streaming.stream.BaseStream._calc_latency", return_value=0.1
+    )
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")
+    def test_on_update_stale_cache(
+        self, mock_update_clk, mock_calc_latency, mock_process
+    ):
+        market_a = mock.Mock(market_id="1.23", publish_time=123, closed=False)
+        market_b = mock.Mock(market_id="4.56", publish_time=123, closed=True)
+        self.stream._caches = {
+            "1.23": market_a,
+            "4.56": market_b,
+        }
+        mock_response = {"pt": 123456789}
+        self.stream.on_update(mock_response)
+        mock_update_clk.assert_called_with(mock_response)
+        mock_calc_latency.assert_called_with(mock_response.get("pt"))
+        self.assertEqual(self.stream._caches, {"1.23": market_a})
 
     def test_clear_cache(self):
         self.stream._caches = {1: "abc"}
@@ -148,16 +175,20 @@ class BaseStreamTest(unittest.TestCase):
         assert len(self.stream) == 0
 
     def test_str(self):
-        assert str(self.stream) == "BaseStream"
+        assert str(self.stream) == "Stream"
 
     def test_repr(self):
-        assert repr(self.stream) == "<BaseStream [0]>"
+        assert repr(self.stream) == "<Stream [0]>"
 
 
 class MarketStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
         self.stream = MarketStream(self.listener)
+
+    def test_init(self):
+        assert self.stream._lookup == "mc"
+        assert self.stream._name == "MarketStream"
 
     @mock.patch("betfairlightweight.streaming.stream.MarketStream._process")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream._update_clk")
@@ -200,6 +231,10 @@ class OrderStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
         self.stream = OrderStream(self.listener)
+
+    def test_init(self):
+        assert self.stream._lookup == "oc"
+        assert self.stream._name == "OrderStream"
 
     @mock.patch("betfairlightweight.streaming.stream.OrderStream._process")
     @mock.patch("betfairlightweight.streaming.stream.OrderStream._update_clk")

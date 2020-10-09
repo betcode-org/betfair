@@ -242,6 +242,13 @@ class MarketBookCache(BaseResource):
         }
 
     @property
+    def closed(self) -> bool:
+        if self.market_definition.get("status") == "CLOSED":
+            return True
+        else:
+            return False
+
+    @property
     def serialise(self) -> dict:
         """Creates standard market book json response,
         will error if EX_MARKET_DEF not incl.

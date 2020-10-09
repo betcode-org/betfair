@@ -215,6 +215,11 @@ class TestMarketBookCache(unittest.TestCase):
 
         assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
 
+    def test_closed(self):
+        self.assertFalse(self.market_book_cache.closed)
+        self.market_book_cache.market_definition = {"status": "CLOSED"}
+        self.assertTrue(self.market_book_cache.closed)
+
 
 class TestRunnerBook(unittest.TestCase):
     def setUp(self):
