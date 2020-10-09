@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - Fix types for list_race_details (synapticarbors)
+- #340 cache removal added on old markets (8 hours closed)
 
 **Bug Fixes**
 
