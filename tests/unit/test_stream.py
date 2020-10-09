@@ -116,6 +116,9 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._caches = {"1.1": mock_cache}
 
         market_books = self.stream.snap()
+        mock_cache.create_resource.assert_called_with(
+            self.stream.unique_id, self.stream._lightweight, snap=True
+        )
         assert market_books == [mock_cache.create_resource()]
 
         market_books = self.stream.snap(["1.2"])

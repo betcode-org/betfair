@@ -214,11 +214,12 @@ class MarketBookCache(BaseResource):
                     self._update_runner_dict()
 
     def create_resource(
-        self, unique_id: int, lightweight: bool
+        self, unique_id: int, lightweight: bool, snap: bool = False
     ) -> Union[dict, MarketBook]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
         data["streaming_update"] = self.streaming_update
+        data["streaming_snap"] = snap
         if lightweight:
             return data
         else:
@@ -441,11 +442,12 @@ class OrderBookCache(BaseResource):
                 self.runners.append(OrderBookRunner(**order_changes))
 
     def create_resource(
-        self, unique_id: int, lightweight: bool
+        self, unique_id: int, lightweight: bool, snap: bool = False
     ) -> Union[dict, CurrentOrders]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
         data["streaming_update"] = self.streaming_update
+        data["streaming_snap"] = snap
         if lightweight:
             return data
         else:

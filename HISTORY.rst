@@ -10,6 +10,7 @@ Release History
 
 - Fix types for list_race_details (synapticarbors)
 - #340 cache removal added on old markets (8 hours closed)
+- Streaming snap added to resources
 
 **Bug Fixes**
 

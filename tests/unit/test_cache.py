@@ -183,11 +183,27 @@ class TestMarketBookCache(unittest.TestCase):
         assert market_book == {
             "streaming_update": self.market_book_cache.streaming_update,
             "streaming_unique_id": 1234,
+            "streaming_snap": False,
         }
         assert market_book == mock_serialise()
         # not lightweight
         market_book = self.market_book_cache.create_resource(1234, False)
         assert market_book == mock_market_book()
+
+    @mock.patch(
+        "betfairlightweight.streaming.cache.MarketBookCache.serialise",
+        new_callable=mock.PropertyMock,
+        return_value={},
+    )
+    @mock.patch("betfairlightweight.streaming.cache.MarketDefinition")
+    @mock.patch("betfairlightweight.streaming.cache.MarketBook")
+    def test_create_resource_snap(self, *_):
+        market_book = self.market_book_cache.create_resource(1234, True, True)
+        assert market_book == {
+            "streaming_update": self.market_book_cache.streaming_update,
+            "streaming_unique_id": 1234,
+            "streaming_snap": True,
+        }
 
     def test_update_runner_dict(self):
         assert self.market_book_cache.runner_dict == {}
@@ -378,6 +394,7 @@ class TestOrderBookCache(unittest.TestCase):
         assert current_orders == {
             "streaming_update": self.order_book_cache.streaming_update,
             "streaming_unique_id": 123,
+            "streaming_snap": False,
         }
         # not lightweight
         current_orders = self.order_book_cache.create_resource(123, False)
