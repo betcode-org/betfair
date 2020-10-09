@@ -36,7 +36,7 @@ class BaseStream:
             self._process(data[self._lookup], publish_time)
         logger.info(
             "[%s: %s]: %s %s added"
-            % (self._name, self.unique_id, len(self._caches), self._lookup)
+            % (self, self.unique_id, len(self._caches), self._lookup)
         )
 
     def on_heartbeat(self, data: dict) -> None:
@@ -46,7 +46,7 @@ class BaseStream:
         self.on_update(data)
         logger.info(
             "[%s: %s]: %s %s resubscribed"
-            % (self._name, self.unique_id, len(self._caches), self._lookup)
+            % (self, self.unique_id, len(self._caches), self._lookup)
         )
 
     def on_update(self, data: dict) -> None:
@@ -56,7 +56,7 @@ class BaseStream:
         latency = self._calc_latency(publish_time)
         if self._max_latency and latency > self._max_latency:
             logger.warning(
-                "[%s: %s]: Latency high: %s" % (self._name, self.unique_id, latency)
+                "[%s: %s]: Latency high: %s" % (self, self.unique_id, latency)
             )
 
         if self._lookup in data:
@@ -75,7 +75,7 @@ class BaseStream:
                 del self._caches[market_id]
                 logger.info(
                     "[%s: %s] %s removed, %s markets in cache"
-                    % (self._name, self.unique_id, market_id, len(self._caches))
+                    % (self, self.unique_id, market_id, len(self._caches))
                 )
 
     def clear_cache(self) -> None:
@@ -93,7 +93,7 @@ class BaseStream:
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
-        logger.info('[%s: %s]: "%s" created' % (self._name, self.unique_id, self))
+        logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
 
     def _process(self, data: dict, publish_time: int) -> None:
         pass
@@ -154,7 +154,7 @@ class MarketStream(BaseStream):
                     logger.error(
                         "[%s: %s] Unable to add %s to cache due to marketDefinition "
                         "not being present (make sure EX_MARKET_DEF is requested)"
-                        % (self._name, self.unique_id, market_id)
+                        % (self, self.unique_id, market_id)
                     )
                     continue
                 market_book_cache = MarketBookCache(
@@ -163,7 +163,7 @@ class MarketStream(BaseStream):
                 self._caches[market_id] = market_book_cache
                 logger.info(
                     "[%s: %s] %s added, %s markets in cache"
-                    % (self._name, self.unique_id, market_id, len(self._caches))
+                    % (self, self.unique_id, market_id, len(self._caches))
                 )
 
             market_book_cache.update_cache(market_book, publish_time)
@@ -193,7 +193,7 @@ class OrderStream(BaseStream):
                 self._caches[market_id] = order_book_cache
                 logger.info(
                     "[%s: %s] %s added, %s markets in cache"
-                    % (self._name, self.unique_id, market_id, len(self._caches))
+                    % (self, self.unique_id, market_id, len(self._caches))
                 )
 
             order_book_cache.update_cache(order_book, publish_time)
