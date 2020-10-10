@@ -74,7 +74,7 @@ class BaseStream:
             for market_id in _to_remove:
                 del self._caches[market_id]
                 logger.info(
-                    "[%s: %s] %s removed, %s markets in cache"
+                    "[%s: %s]: %s removed, %s markets in cache"
                     % (self, self.unique_id, market_id, len(self._caches))
                 )
 
@@ -152,7 +152,7 @@ class MarketStream(BaseStream):
             ):  # historic data does not contain img
                 if "marketDefinition" not in market_book:
                     logger.error(
-                        "[%s: %s] Unable to add %s to cache due to marketDefinition "
+                        "[%s: %s]: Unable to add %s to cache due to marketDefinition "
                         "not being present (make sure EX_MARKET_DEF is requested)"
                         % (self, self.unique_id, market_id)
                     )
@@ -162,7 +162,7 @@ class MarketStream(BaseStream):
                 )
                 self._caches[market_id] = market_book_cache
                 logger.info(
-                    "[%s: %s] %s added, %s markets in cache"
+                    "[%s: %s]: %s added, %s markets in cache"
                     % (self, self.unique_id, market_id, len(self._caches))
                 )
 
@@ -192,7 +192,7 @@ class OrderStream(BaseStream):
                 )
                 self._caches[market_id] = order_book_cache
                 logger.info(
-                    "[%s: %s] %s added, %s markets in cache"
+                    "[%s: %s]: %s added, %s markets in cache"
                     % (self, self.unique_id, market_id, len(self._caches))
                 )
 
