@@ -506,17 +506,21 @@ class RaceCache(BaseResource):
                 else:
                     self.rrc.append(RunnerChange(runner_update))
 
-    def create_resource(self, unique_id: int, lightweight: bool) -> Union[dict, Race]:
+    def create_resource(
+        self, unique_id: int, lightweight: bool, snap: bool = False
+    ) -> Union[dict, Race]:
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_update"] = self.streaming_update
+        data["streaming_snap"] = snap
         if lightweight:
-            return self.serialise
+            return data
         else:
             return Race(
                 elapsed_time=(
                     datetime.datetime.utcnow() - self._datetime_updated
                 ).total_seconds(),
-                streaming_unique_id=unique_id,
-                streaming_update=self.streaming_update,
-                **self.serialise
+                **data
             )
 
     @property

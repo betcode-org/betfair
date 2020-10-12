@@ -183,6 +183,7 @@ class Race(BaseResource):
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
         self.streaming_update = kwargs.pop("streaming_update", None)
+        self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.publish_time_epoch = kwargs.get("pt")
         self.publish_time = self.strip_datetime(kwargs.get("pt"))
         super(Race, self).__init__(**kwargs)
@@ -217,6 +218,7 @@ class RaceProgress(BaseResource):
         self.speed = kwargs.get("spd")
         self.progress = kwargs.get("prg")
         self.order = kwargs.get("ord")
+        self.jumps = kwargs.get("J")
 
 
 class RaceChange(BaseResource):
