@@ -298,13 +298,16 @@ class RaceStreamTest(unittest.TestCase):
         self.listener = mock.Mock()
         self.stream = RaceStream(self.listener)
 
+    def test_init(self):
+        assert self.stream._lookup == "rc"
+        assert self.stream._name == "RaceStream"
+
     @mock.patch("betfairlightweight.streaming.stream.RaceCache")
     @mock.patch("betfairlightweight.streaming.stream.RaceStream.on_process")
     def test_process(self, mock_on_process, mock_race_cache):
         update = [{"mid": "1.234567", "yad": "a"}]
         publish_time = 1234
-
-        self.stream._process(update, publish_time)
+        self.assertFalse(self.stream._process(update, publish_time))
         assert self.stream._caches["1.234567"] == mock_race_cache()
         mock_race_cache().update_cache.assert_called_with(update[0], publish_time)
         mock_race_cache().create_resource.assert_called_with(

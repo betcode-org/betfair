@@ -221,16 +221,17 @@ class RaceStream(BaseStream):
     """
 
     _lookup = "rc"
+    _name = "RaceStream"
 
-    def on_subscribe(self, data):
+    def on_subscribe(self, data: dict) -> None:
         """The initial message returned after
         a subscribe - This will currently not
         contain any Race Changes (rc) but may
         do in the future"""
         pass
 
-    def _process(self, race_updates, publish_time):
-        output = []
+    def _process(self, race_updates: list, publish_time: int) -> bool:
+        output, img = [], False  # todo cache.closed / img=True
         for update in race_updates:
             market_id = update["mid"]
 
@@ -238,9 +239,12 @@ class RaceStream(BaseStream):
             if race_cache is None:
                 race_cache = RaceCache(publish_time=publish_time, **update)
                 self._caches[market_id] = race_cache
-                logger.info("[RaceStream: %s] %s added" % (self.unique_id, market_id))
+                logger.info(
+                    "[%s: %s]: %s added" % (self._name, self.unique_id, market_id)
+                )
             race_cache.update_cache(update, publish_time)
             self._updates_processed += 1
 
             output.append(race_cache.create_resource(self.unique_id, self._lightweight))
         self.on_process(output)
+        return img
