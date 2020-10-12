@@ -6,6 +6,7 @@ from betfairlightweight.streaming.stream import (
     MarketStream,
     OrderStream,
     RaceStream,
+    MAX_CACHE_AGE,
 )
 from tests.unit.tools import create_mock_json
 
@@ -18,13 +19,15 @@ class BaseStreamTest(unittest.TestCase):
 
     def test_init(self):
         assert self.stream._listener == self.listener
-
         assert self.stream._initial_clk is None
         assert self.stream._clk is None
         assert self.stream._caches == {}
         assert self.stream._updates_processed == 0
         assert self.stream.time_created is not None
         assert self.stream.time_updated is not None
+        assert self.stream._lookup == "mc"
+        assert self.stream._name == "Stream"
+        assert MAX_CACHE_AGE == 60 * 60 * 8
 
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")
@@ -45,12 +48,17 @@ class BaseStreamTest(unittest.TestCase):
         self.stream.on_resubscribe({})
         mock_on_update.assert_called_once_with({})
 
-    @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream.clear_stale_cache")
+    @mock.patch(
+        "betfairlightweight.streaming.stream.BaseStream._process", return_value=False
+    )
     @mock.patch(
         "betfairlightweight.streaming.stream.BaseStream._calc_latency", return_value=0.1
     )
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")
-    def test_on_update(self, mock_update_clk, mock_calc_latency, mock_process):
+    def test_on_update(
+        self, mock_update_clk, mock_calc_latency, mock_process, mock_clear_stale_cache
+    ):
         mock_response = create_mock_json("tests/resources/streaming_mcm_update.json")
         self.stream.on_update(mock_response.json())
 
@@ -62,6 +70,31 @@ class BaseStreamTest(unittest.TestCase):
 
         mock_calc_latency.return_value = 10
         self.stream.on_update(mock_response.json())
+        mock_clear_stale_cache.assert_not_called()
+
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream.clear_stale_cache")
+    @mock.patch(
+        "betfairlightweight.streaming.stream.BaseStream._process", return_value=True
+    )
+    @mock.patch(
+        "betfairlightweight.streaming.stream.BaseStream._calc_latency", return_value=0.1
+    )
+    @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")
+    def test_on_update_clear_cache(
+        self, mock_update_clk, mock_calc_latency, mock_process, mock_clear_stale_cache
+    ):
+        mock_response = create_mock_json("tests/resources/streaming_mcm_update.json")
+        self.stream.on_update(mock_response.json())
+
+        mock_update_clk.assert_called_with(mock_response.json())
+        mock_calc_latency.assert_called_with(mock_response.json().get("pt"))
+        mock_process.assert_called_with(
+            mock_response.json().get("mc"), mock_response.json().get("pt")
+        )
+
+        mock_calc_latency.return_value = 10
+        self.stream.on_update(mock_response.json())
+        mock_clear_stale_cache.assert_called_with(mock_response.json().get("pt"))
 
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
     @mock.patch(
@@ -85,6 +118,16 @@ class BaseStreamTest(unittest.TestCase):
 
         assert self.stream._caches == {}
 
+    def test_clear_stale_cache(self):
+        market_a = mock.Mock(market_id="1.23", publish_time=123, closed=False)
+        market_b = mock.Mock(market_id="4.56", publish_time=123, closed=True)
+        self.stream._caches = {
+            "1.23": market_a,
+            "4.56": market_b,
+        }
+        self.stream.clear_stale_cache(123456789)
+        self.assertEqual(self.stream._caches, {"1.23": market_a})
+
     def test_snap(self):
         market_books = self.stream.snap()
         assert market_books == []
@@ -94,6 +137,9 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._caches = {"1.1": mock_cache}
 
         market_books = self.stream.snap()
+        mock_cache.create_resource.assert_called_with(
+            self.stream.unique_id, self.stream._lightweight, snap=True
+        )
         assert market_books == [mock_cache.create_resource()]
 
         market_books = self.stream.snap(["1.2"])
@@ -153,10 +199,10 @@ class BaseStreamTest(unittest.TestCase):
         assert len(self.stream) == 0
 
     def test_str(self):
-        assert str(self.stream) == "BaseStream"
+        assert str(self.stream) == "Stream"
 
     def test_repr(self):
-        assert repr(self.stream) == "<BaseStream [0]>"
+        assert repr(self.stream) == "<Stream [0]>"
 
 
 class MarketStreamTest(unittest.TestCase):
@@ -164,12 +210,15 @@ class MarketStreamTest(unittest.TestCase):
         self.listener = mock.Mock()
         self.stream = MarketStream(self.listener)
 
+    def test_init(self):
+        assert self.stream._lookup == "mc"
+        assert self.stream._name == "MarketStream"
+
     @mock.patch("betfairlightweight.streaming.stream.MarketStream._process")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream._update_clk")
     def test_on_subscribe(self, mock_update_clk, mock_process):
         self.stream.on_subscribe({})
         mock_update_clk.assert_called_once_with({})
-
         self.stream.on_subscribe({"mc": {123}})
         mock_process.assert_called_once_with({123}, None)
 
@@ -178,8 +227,7 @@ class MarketStreamTest(unittest.TestCase):
     def test_process(self, mock_on_process, mock_cache):
         sub_image = create_mock_json("tests/resources/streaming_mcm_SUB_IMAGE.json")
         data = sub_image.json()["mc"]
-        self.stream._process(data, 123)
-
+        self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
 
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
@@ -189,10 +237,21 @@ class MarketStreamTest(unittest.TestCase):
             "tests/resources/streaming_mcm_SUB_IMAGE_no_market_def.json"
         )
         data = sub_image_error.json()["mc"]
-        self.stream._process(data, 123)
-
+        self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(data), 137)
         self.assertEqual(len(self.stream), 135)  # two markets missing marketDef
+
+    @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
+    def test_process_no_img(self, mock_on_process, mock_cache):
+        sub_image = create_mock_json("tests/resources/streaming_mcm_SUB_IMAGE.json")
+        data = sub_image.json()["mc"]
+        data[0]["img"] = False
+        mock_market_cache = mock_cache()
+        self.stream._caches = {data[0]["id"]: mock_market_cache}
+        self.assertFalse(self.stream._process(data, 123))
+        self.assertEqual(len(self.stream), len(data))
+        mock_market_cache.update_cache.assert_called_with(data[0], 123)
 
     def test_str(self):
         assert str(self.stream) == "MarketStream"
@@ -206,12 +265,15 @@ class OrderStreamTest(unittest.TestCase):
         self.listener = mock.Mock()
         self.stream = OrderStream(self.listener)
 
+    def test_init(self):
+        assert self.stream._lookup == "oc"
+        assert self.stream._name == "OrderStream"
+
     @mock.patch("betfairlightweight.streaming.stream.OrderStream._process")
     @mock.patch("betfairlightweight.streaming.stream.OrderStream._update_clk")
     def test_on_subscribe(self, mock_update_clk, mock_process):
         self.stream.on_subscribe({})
         mock_update_clk.assert_called_once_with({})
-
         self.stream.on_subscribe({"oc": {123}})
         mock_process.assert_called_once_with({123}, None)
 
@@ -220,9 +282,9 @@ class OrderStreamTest(unittest.TestCase):
     def test_process(self, mock_on_process, mock_cache):
         sub_image = create_mock_json("tests/resources/streaming_ocm_FULL_IMAGE.json")
         data = sub_image.json()["oc"]
-        self.stream._process(data, 123)
-
+        self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
+        self.assertFalse(self.stream._process(data, 123))
 
     def test_str(self):
         assert str(self.stream) == "OrderStream"

@@ -20,7 +20,7 @@ class BaseListener:
         self.connections_available = None  # connection throttling
 
     def register_stream(self, unique_id: int, operation: str) -> None:
-        logger.info("Register: %s %s" % (operation, unique_id))
+        logger.info("[Register: %s]: %s" % (unique_id, operation))
         if self.stream is not None:
             logger.warning(
                 "[Listener: %s]: stream already registered, replacing data" % unique_id
@@ -139,7 +139,7 @@ class StreamListener(BaseListener):
             unique_id = self.stream_unique_id
         self.connection_id = data.get("connectionId")
         logger.info(
-            "[Connect: %s]: connection_id: %s" % (unique_id, self.connection_id)
+            "[%s: %s]: connection_id: %s" % (self.stream, unique_id, self.connection_id)
         )
 
     def _on_status(self, data: dict, unique_id: int) -> None:
@@ -152,14 +152,14 @@ class StreamListener(BaseListener):
         if connections_available:
             self.connections_available = data.get("connectionsAvailable")
         logger.info(
-            "[Subscription: %s]: %s (%s connections available)"
-            % (unique_id, status_code, self.connections_available)
+            "[%s: %s]: %s (%s connections available)"
+            % (self.stream, unique_id, status_code, self.connections_available)
         )
 
     def _on_change_message(self, data: dict, unique_id: int) -> None:
         change_type = data.get("ct", "UPDATE")
 
-        logger.debug("[Subscription: %s]: %s: %s" % (unique_id, change_type, data))
+        logger.debug("[%s: %s]: %s: %s" % (self.stream, unique_id, change_type, data))
 
         if change_type == "SUB_IMAGE":
             self.stream.on_subscribe(data)
@@ -179,12 +179,19 @@ class StreamListener(BaseListener):
         """
         if data.get("statusCode") == "FAILURE":
             logger.error(
-                "[Subscription: %s] %s: %s"
-                % (unique_id, data.get("errorCode"), data.get("errorMessage"))
+                "[%s: %s]: %s: %s"
+                % (
+                    self.stream,
+                    unique_id,
+                    data.get("errorCode"),
+                    data.get("errorMessage"),
+                )
             )
             if data.get("connectionClosed"):
                 return True
         if self.status:
             # Clients shouldn't disconnect if status 503 is returned; when the stream
             # recovers updates will be sent containing the latest data
-            logger.warning("[Subscription: %s] status: %s" % (unique_id, self.status))
+            logger.warning(
+                "[%s: %s]: status: %s" % (self.stream, unique_id, self.status)
+            )
