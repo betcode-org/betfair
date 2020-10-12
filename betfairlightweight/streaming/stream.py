@@ -60,26 +60,29 @@ class BaseStream:
             )
 
         if self._lookup in data:
-            self._process(data[self._lookup], publish_time)
+            img = self._process(data[self._lookup], publish_time)
 
-        # remove stale cache data to prevent memory leaks (only live)
-        if self.unique_id != 0:
-            _to_remove = []
-            for cache in self._caches.values():
-                if (
-                    cache.closed
-                    and (publish_time - cache.publish_time) / 1e3 > MAX_CACHE_AGE
-                ):
-                    _to_remove.append(cache.market_id)
-            for market_id in _to_remove:
-                del self._caches[market_id]
-                logger.info(
-                    "[%s: %s]: %s removed, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
-                )
+            # remove stale cache data on any new img to prevent memory leaks (only live)
+            if img and self.unique_id != 0:
+                self.clear_stale_cache(publish_time)
 
     def clear_cache(self) -> None:
         self._caches.clear()
+
+    def clear_stale_cache(self, publish_time: int) -> None:
+        _to_remove = []
+        for cache in self._caches.values():
+            if (
+                cache.closed
+                and (publish_time - cache.publish_time) / 1e3 > MAX_CACHE_AGE
+            ):
+                _to_remove.append(cache.market_id)
+        for market_id in _to_remove:
+            del self._caches[market_id]
+            logger.info(
+                "[%s: %s]: %s removed, %s markets in cache"
+                % (self, self.unique_id, market_id, len(self._caches))
+            )
 
     def snap(self, market_ids: list = None) -> list:
         return [
@@ -95,7 +98,8 @@ class BaseStream:
     def _on_creation(self) -> None:
         logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
 
-    def _process(self, data: dict, publish_time: int) -> None:
+    def _process(self, data: dict, publish_time: int) -> bool:
+        # Return True if new img within data
         pass
 
     def _update_clk(self, data: dict) -> None:
@@ -141,8 +145,8 @@ class MarketStream(BaseStream):
     _lookup = "mc"
     _name = "MarketStream"
 
-    def _process(self, data: list, publish_time: int) -> None:
-        output_market_book = []
+    def _process(self, data: list, publish_time: int) -> bool:
+        output_market_book, img = [], False
         for market_book in data:
             market_id = market_book["id"]
             market_book_cache = self._caches.get(market_id)
@@ -150,6 +154,7 @@ class MarketStream(BaseStream):
             if (
                 market_book.get("img") or market_book_cache is None
             ):  # historic data does not contain img
+                img = True
                 if "marketDefinition" not in market_book:
                     logger.error(
                         "[%s: %s]: Unable to add %s to cache due to marketDefinition "
@@ -173,6 +178,7 @@ class MarketStream(BaseStream):
                 market_book_cache.create_resource(self.unique_id, self._lightweight)
             )
         self.on_process(output_market_book)
+        return img
 
 
 class OrderStream(BaseStream):
@@ -180,13 +186,14 @@ class OrderStream(BaseStream):
     _lookup = "oc"
     _name = "OrderStream"
 
-    def _process(self, data: list, publish_time: int) -> None:
-        output_order_book = []
+    def _process(self, data: list, publish_time: int) -> bool:
+        output_order_book, img = [], False
         for order_book in data:
             market_id = order_book["id"]
             order_book_cache = self._caches.get(market_id)
 
             if order_book_cache is None:
+                img = True
                 order_book_cache = OrderBookCache(
                     publish_time=publish_time, **order_book
                 )
@@ -203,3 +210,4 @@ class OrderStream(BaseStream):
                 order_book_cache.create_resource(self.unique_id, self._lightweight)
             )
         self.on_process(output_order_book)
+        return img
