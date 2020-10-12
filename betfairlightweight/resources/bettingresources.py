@@ -564,6 +564,7 @@ class MarketBook(BaseResource):
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
         self.streaming_update = kwargs.pop("streaming_update", None)
+        self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.market_definition = kwargs.pop("market_definition", None)
         super(MarketBook, self).__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
@@ -681,6 +682,7 @@ class CurrentOrders(BaseResource):
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
         self.streaming_update = kwargs.pop("streaming_update", None)
+        self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.publish_time = kwargs.pop("publish_time", None)
         super(CurrentOrders, self).__init__(**kwargs)
         self.more_available = kwargs.get("moreAvailable")

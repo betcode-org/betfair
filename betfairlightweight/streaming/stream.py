@@ -7,11 +7,14 @@ from .cache import MarketBookCache, OrderBookCache
 
 logger = logging.getLogger(__name__)
 
+MAX_CACHE_AGE = 60 * 60 * 8
+
 
 class BaseStream:
     """Separate stream class to hold market/order caches"""
 
     _lookup = "mc"
+    _name = "Stream"
 
     def __init__(self, listener: object):
         self._listener = listener
@@ -32,8 +35,8 @@ class BaseStream:
         if self._lookup in data:
             self._process(data[self._lookup], publish_time)
         logger.info(
-            "[Stream: %s]: %s %s added"
-            % (self.unique_id, len(self._caches), self._lookup)
+            "[%s: %s]: %s %s added"
+            % (self, self.unique_id, len(self._caches), self._lookup)
         )
 
     def on_heartbeat(self, data: dict) -> None:
@@ -42,8 +45,8 @@ class BaseStream:
     def on_resubscribe(self, data: dict) -> None:
         self.on_update(data)
         logger.info(
-            "[Stream: %s]: %s %s resubscribed"
-            % (self.unique_id, len(self._caches), self._lookup)
+            "[%s: %s]: %s %s resubscribed"
+            % (self, self.unique_id, len(self._caches), self._lookup)
         )
 
     def on_update(self, data: dict) -> None:
@@ -52,17 +55,38 @@ class BaseStream:
         publish_time = data["pt"]
         latency = self._calc_latency(publish_time)
         if self._max_latency and latency > self._max_latency:
-            logger.warning("[Stream: %s]: Latency high: %s" % (self.unique_id, latency))
+            logger.warning(
+                "[%s: %s]: Latency high: %s" % (self, self.unique_id, latency)
+            )
 
         if self._lookup in data:
-            self._process(data[self._lookup], publish_time)
+            img = self._process(data[self._lookup], publish_time)
+
+            # remove stale cache data on any new img to prevent memory leaks (only live)
+            if img and self.unique_id != 0:
+                self.clear_stale_cache(publish_time)
 
     def clear_cache(self) -> None:
         self._caches.clear()
 
+    def clear_stale_cache(self, publish_time: int) -> None:
+        _to_remove = []
+        for cache in self._caches.values():
+            if (
+                cache.closed
+                and (publish_time - cache.publish_time) / 1e3 > MAX_CACHE_AGE
+            ):
+                _to_remove.append(cache.market_id)
+        for market_id in _to_remove:
+            del self._caches[market_id]
+            logger.info(
+                "[%s: %s]: %s removed, %s markets in cache"
+                % (self, self.unique_id, market_id, len(self._caches))
+            )
+
     def snap(self, market_ids: list = None) -> list:
         return [
-            cache.create_resource(self.unique_id, self._lightweight)
+            cache.create_resource(self.unique_id, self._lightweight, snap=True)
             for cache in list(self._caches.values())
             if market_ids is None or cache.market_id in market_ids
         ]
@@ -72,9 +96,10 @@ class BaseStream:
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
-        logger.info('[Stream: %s]: "%s" created' % (self.unique_id, self))
+        logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
 
-    def _process(self, data: dict, publish_time: int) -> None:
+    def _process(self, data: dict, publish_time: int) -> bool:
+        # Return True if new img within data
         pass
 
     def _update_clk(self, data: dict) -> None:
@@ -109,18 +134,19 @@ class BaseStream:
         return len(self._caches)
 
     def __str__(self) -> str:
-        return "{0}".format(self.__class__.__name__)
+        return "{0}".format(self._name)
 
     def __repr__(self) -> str:
-        return "<{0} [{1}]>".format(self.__class__.__name__, len(self))
+        return "<{0} [{1}]>".format(self._name, len(self))
 
 
 class MarketStream(BaseStream):
 
     _lookup = "mc"
+    _name = "MarketStream"
 
-    def _process(self, data: list, publish_time: int) -> None:
-        output_market_book = []
+    def _process(self, data: list, publish_time: int) -> bool:
+        output_market_book, img = [], False
         for market_book in data:
             market_id = market_book["id"]
             market_book_cache = self._caches.get(market_id)
@@ -128,11 +154,12 @@ class MarketStream(BaseStream):
             if (
                 market_book.get("img") or market_book_cache is None
             ):  # historic data does not contain img
+                img = True
                 if "marketDefinition" not in market_book:
                     logger.error(
-                        "[MarketStream: %s] Unable to add %s to cache due to marketDefinition "
+                        "[%s: %s]: Unable to add %s to cache due to marketDefinition "
                         "not being present (make sure EX_MARKET_DEF is requested)"
-                        % (self.unique_id, market_id)
+                        % (self, self.unique_id, market_id)
                     )
                     continue
                 market_book_cache = MarketBookCache(
@@ -140,8 +167,8 @@ class MarketStream(BaseStream):
                 )
                 self._caches[market_id] = market_book_cache
                 logger.info(
-                    "[MarketStream: %s] %s added, %s markets in cache"
-                    % (self.unique_id, market_id, len(self._caches))
+                    "[%s: %s]: %s added, %s markets in cache"
+                    % (self, self.unique_id, market_id, len(self._caches))
                 )
 
             market_book_cache.update_cache(market_book, publish_time)
@@ -151,26 +178,29 @@ class MarketStream(BaseStream):
                 market_book_cache.create_resource(self.unique_id, self._lightweight)
             )
         self.on_process(output_market_book)
+        return img
 
 
 class OrderStream(BaseStream):
 
     _lookup = "oc"
+    _name = "OrderStream"
 
-    def _process(self, data: list, publish_time: int) -> None:
-        output_order_book = []
+    def _process(self, data: list, publish_time: int) -> bool:
+        output_order_book, img = [], False
         for order_book in data:
             market_id = order_book["id"]
             order_book_cache = self._caches.get(market_id)
 
             if order_book_cache is None:
+                img = True
                 order_book_cache = OrderBookCache(
                     publish_time=publish_time, **order_book
                 )
                 self._caches[market_id] = order_book_cache
                 logger.info(
-                    "[OrderStream: %s] %s added, %s markets in cache"
-                    % (self.unique_id, market_id, len(self._caches))
+                    "[%s: %s]: %s added, %s markets in cache"
+                    % (self, self.unique_id, market_id, len(self._caches))
                 )
 
             order_book_cache.update_cache(order_book, publish_time)
@@ -180,3 +210,4 @@ class OrderStream(BaseStream):
                 order_book_cache.create_resource(self.unique_id, self._lightweight)
             )
         self.on_process(output_order_book)
+        return img
