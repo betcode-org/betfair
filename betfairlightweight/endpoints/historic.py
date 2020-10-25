@@ -165,6 +165,7 @@ class Historic(BaseEndpoint):
             params={"filePath": file_path},
             headers=self.headers,
             stream=True,
+            timeout=(self.connect_timeout, self.read_timeout),
         )
         with open(local_filename, "wb") as f:
             for chunk in r.iter_content(chunk_size=1024):
