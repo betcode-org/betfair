@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.9.1 (2020-10-26)
++++++++++++++++++++
+
+**Improvements**
+
+- #345: Improve Historic.download_file (@mberk)
+
+**Dependencies**
+
+- orjson and ciso8601 moved to optional requirement using `pip install betfairlightweight[speed]`
+
 2.9.0 (2020-10-12)
 +++++++++++++++++++
 
