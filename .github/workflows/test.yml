@@ -21,6 +21,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Check setup.py
+      run: |
+        python setup.py check
+
     - name: Install dependencies
       run: |
         pip install -r requirements.txt

@@ -31,7 +31,7 @@ setup(
     url=about["__url__"],
     license=about["__license__"],
     author=about["__author__"],
-    author_email="",
+    author_email="a@unknown.invalid",
     description=about["__description__"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
@@ -40,6 +40,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     test_suite="tests",
 )
