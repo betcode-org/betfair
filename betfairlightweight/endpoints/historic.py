@@ -148,7 +148,12 @@ class Historic(BaseEndpoint):
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return response_json
 
-    def download_file(self, file_path: str, store_directory: str = None) -> str:
+    def download_file(
+        self,
+        file_path: str,
+        store_directory: str = None,
+        session: requests.Session = None,
+    ) -> str:
         """
         Download a file from betfair historical and store in given directory or current directory.
 
@@ -159,11 +164,13 @@ class Historic(BaseEndpoint):
         local_filename = file_path.split("/")[-1]
         if store_directory:
             local_filename = os.path.join(store_directory, local_filename)
-        r = requests.get(
+        session = session or self.client.session
+        r = session.get(
             "%s%s" % (self.url, "DownloadFile"),
             params={"filePath": file_path},
             headers=self.headers,
             stream=True,
+            timeout=(self.connect_timeout, self.read_timeout),
         )
         with open(local_filename, "wb") as f:
             for chunk in r.iter_content(chunk_size=1024):
