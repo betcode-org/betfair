@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.9.2 (2020-10-26)
++++++++++++++++++++
+
+**Improvements**
+
+- Fix broken build from source due to missing requirements-speed.txt file (@synapticarbors)
+
 2.9.1 (2020-10-26)
 +++++++++++++++++++
 
