@@ -6,6 +6,12 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, "requirements.txt")) as f:
     INSTALL_REQUIRES = f.read().splitlines()
 
+with open(os.path.join(here, "requirements-speed.txt")) as f:
+    _requires = f.read().splitlines()
+    EXTRAS_REQUIRE = {
+        "speed": _requires,
+    }
+
 about = {}
 with open(os.path.join(here, "betfairlightweight", "__version__.py"), "r") as f:
     exec(f.read(), about)
@@ -21,6 +27,7 @@ setup(
     ],
     package_dir={"betfairlightweight": "betfairlightweight"},
     install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
     url=about["__url__"],
     license=about["__license__"],
     author=about["__author__"],

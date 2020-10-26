@@ -13,8 +13,14 @@ Currently tested on Python 3.6, 3.7, 3.8 and 3.9.
 
 # installation
 
-```
+```bash
 $ pip install betfairlightweight
+```
+
+To use C/Rust libraries install with
+
+```bash
+$ pip install betfairlightweight[speed]
 ```
 
 # setup
