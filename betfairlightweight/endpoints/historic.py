@@ -148,7 +148,12 @@ class Historic(BaseEndpoint):
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return response_json
 
-    def download_file(self, file_path: str, store_directory: str = None, session: requests.Session = None) -> str:
+    def download_file(
+        self,
+        file_path: str,
+        store_directory: str = None,
+        session: requests.Session = None,
+    ) -> str:
         """
         Download a file from betfair historical and store in given directory or current directory.
 
