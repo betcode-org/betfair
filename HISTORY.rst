@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.10.0 (2020-11-02)
++++++++++++++++++++
+
+**Improvements**
+
+- #352 exchange stream API release (10/11/20)
+
+**Dependencies**
+
+- orjson upgraded to 3.4.3
+
 2.9.2 (2020-10-26)
 +++++++++++++++++++
 
