@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - #352 exchange stream API release (10/11/20)
+- Add py3.9 actions test
 
 **Dependencies**
 
