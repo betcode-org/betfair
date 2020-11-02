@@ -332,9 +332,10 @@ class TestOrderBookCache(unittest.TestCase):
         self.runner.handicap = 0
         self.runner.serialise_orders = mock.Mock(return_value=[])
         self.runner.unmatched_orders = [1]
-        self.order_book_cache.runners = [self.runner]
+        self.order_book_cache.runners = {(10895629, 0): self.runner}
 
     def test_full_image(self):
+        self.order_book_cache.runners = {}
         mock_response = create_mock_json(
             "tests/resources/streaming_ocm_FULL_IMAGE.json"
         )
@@ -343,12 +344,8 @@ class TestOrderBookCache(unittest.TestCase):
             self.assertEqual(self.order_book_cache.streaming_update, order_book)
 
         self.assertEqual(len(self.order_book_cache.runners), 5)
-        self.assertEqual(len(self.order_book_cache.runner_dict), 5)
-        for k, v in self.order_book_cache.runner_dict.items():
-            if k == (7017905, 0):
-                self.assertEqual(len(v.unmatched_orders), 2)
-            else:
-                self.assertEqual(len(v.unmatched_orders), 1)
+        for k, v in self.order_book_cache.runners.items():
+            self.assertEqual(len(v.unmatched_orders), 1)
 
     def test_update_cache(self):
         mock_response = create_mock_json("tests/resources/streaming_ocm_UPDATE.json")
@@ -365,7 +362,7 @@ class TestOrderBookCache(unittest.TestCase):
 
     @mock.patch("betfairlightweight.streaming.cache.OrderBookRunner")
     def test_update_cache_new(self, mock_order_book_runner):
-        self.runner.selection_id = 108956
+        self.order_book_cache.runners = {(108956, 0): self.runner}
         mock_response = create_mock_json("tests/resources/streaming_ocm_UPDATE.json")
         for order_book in mock_response.json().get("oc"):
             self.order_book_cache.update_cache(order_book, 1234)
@@ -400,20 +397,8 @@ class TestOrderBookCache(unittest.TestCase):
         current_orders = self.order_book_cache.create_resource(123, False)
         assert current_orders == mock_current_orders()
 
-    def test_runner_dict(self):
-        class Runner:
-            def __init__(self, selection_id, name, handicap):
-                self.selection_id = selection_id
-                self.name = name
-                self.handicap = handicap
-
-        (a, b) = (Runner(123, "a", 0), Runner(456, "b", 1))
-        self.order_book_cache.runners = [a, b]
-        assert self.order_book_cache.runner_dict == {(123, 0): a, (456, 1): b}
-
     def test_serialise(self):
         serialised = self.order_book_cache.serialise
-
         assert serialised == {"currentOrders": [], "moreAvailable": False}
 
 
