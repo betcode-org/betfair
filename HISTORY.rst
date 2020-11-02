@@ -3,6 +3,36 @@
 Release History
 ---------------
 
+2.10.0 (2020-11-02)
++++++++++++++++++++
+
+**Improvements**
+
+- #352 exchange stream API release (10/11/20)
+- Add py3.9 actions test
+
+**Dependencies**
+
+- orjson upgraded to 3.4.3
+
+2.9.2 (2020-10-26)
++++++++++++++++++++
+
+**Improvements**
+
+- Fix broken build from source due to missing requirements-speed.txt file (@synapticarbors)
+
+2.9.1 (2020-10-26)
++++++++++++++++++++
+
+**Improvements**
+
+- #345: Improve Historic.download_file (@mberk)
+
+**Dependencies**
+
+- orjson and ciso8601 moved to optional requirement using `pip install betfairlightweight[speed]`
+
 2.9.0 (2020-10-12)
 +++++++++++++++++++
 

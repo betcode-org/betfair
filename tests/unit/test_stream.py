@@ -286,6 +286,18 @@ class OrderStreamTest(unittest.TestCase):
         self.assertEqual(len(self.stream), len(data))
         self.assertFalse(self.stream._process(data, 123))
 
+    @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
+    def test_process_new_image(self, mock_on_process, mock_cache):
+        self.stream._caches = {"1.161613698": mock.Mock()}
+        sub_image = create_mock_json(
+            "tests/resources/streaming_ocm_NEW_FULL_IMAGE.json"
+        )
+        data = sub_image.json()["oc"]
+        self.assertTrue(self.stream._process(data, 123))
+        self.assertEqual(len(self.stream), len(data))
+        self.assertTrue(self.stream._process(data, 123))
+
     def test_str(self):
         assert str(self.stream) == "OrderStream"
 

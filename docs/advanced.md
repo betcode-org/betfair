@@ -155,11 +155,8 @@ or on a per request basis:
 By default betfairlightweight will install C and Rust based libraries if your os is either linux or darwin (Mac), due to difficulties in installation Windows users can install them separately:
 
 ```bash
-pip install ciso8601=={version}
-``` 
-```bash
-pip install orjson=={version}
-``` 
+$ pip install betfairlightweight[speed]
+```
 
 !!! hint
-    It is likely that visual studio will need to be installed as well. 
+    If using windows it is likely that visual studio will need to be installed as well. 

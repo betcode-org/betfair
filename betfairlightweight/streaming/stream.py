@@ -149,10 +149,11 @@ class MarketStream(BaseStream):
         output_market_book, img = [], False
         for market_book in data:
             market_id = market_book["id"]
+            full_image = market_book.get("img", False)
             market_book_cache = self._caches.get(market_id)
 
             if (
-                market_book.get("img") or market_book_cache is None
+                full_image or market_book_cache is None
             ):  # historic data does not contain img
                 img = True
                 if "marketDefinition" not in market_book:
@@ -190,9 +191,10 @@ class OrderStream(BaseStream):
         output_order_book, img = [], False
         for order_book in data:
             market_id = order_book["id"]
+            full_image = order_book.get("fullImage", False)
             order_book_cache = self._caches.get(market_id)
 
-            if order_book_cache is None:
+            if full_image or order_book_cache is None:
                 img = True
                 order_book_cache = OrderBookCache(
                     publish_time=publish_time, **order_book

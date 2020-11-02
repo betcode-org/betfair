@@ -66,7 +66,7 @@ betfairlightweight relies on these libraries:
 
 * `requests` - HTTP support
 
-Linux and darwin platforms only:
+Speed install:
 
 * `ciso8601` - C based datetime parsing
 * `orjson` - Rust based json parsing
@@ -75,8 +75,14 @@ Linux and darwin platforms only:
 
 Install with pip:
 
-```shell
+```bash
 $ pip install betfairlightweight
+```
+
+or to use C/Rust libraries install with
+
+```bash
+$ pip install betfairlightweight[speed]
 ```
 
 betfairlightweight requires Python 3.6+

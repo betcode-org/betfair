@@ -1,7 +1,7 @@
 
 # betfairlightweight
 
-[![Build Status](https://travis-ci.org/liampauling/betfair.svg?branch=master)](https://travis-ci.org/liampauling/betfair) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight) [![Downloads](https://pepy.tech/badge/betfairlightweight)](https://pepy.tech/project/betfairlightweight)
+![Build Status](https://github.com/liampauling/betfair/workflows/test/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight) [![Downloads](https://pepy.tech/badge/betfairlightweight)](https://pepy.tech/project/betfairlightweight)
 
 Lightweight, super fast (uses C and Rust libraries) pythonic wrapper for [Betfair API-NG](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and account operations, see [examples](https://github.com/liampauling/betfair/tree/master/examples).
 
@@ -13,8 +13,14 @@ Currently tested on Python 3.6, 3.7, 3.8 and 3.9.
 
 # installation
 
-```
+```bash
 $ pip install betfairlightweight
+```
+
+To use C/Rust libraries install with
+
+```bash
+$ pip install betfairlightweight[speed]
 ```
 
 # setup
