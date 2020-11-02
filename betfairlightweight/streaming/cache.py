@@ -418,7 +418,7 @@ class OrderBookCache(BaseResource):
         self.market_id = kwargs.get("id")
         self.closed = kwargs.get("closed")
         self.streaming_update = None
-        self.runners = []
+        self.runners = {}  # (selectionId, handicap):
 
     def update_cache(self, order_book: dict, publish_time: int) -> None:
         self._datetime_updated = self.strip_datetime(publish_time)
@@ -430,16 +430,18 @@ class OrderBookCache(BaseResource):
         for order_changes in order_book.get("orc", []):
             selection_id = order_changes["id"]
             handicap = order_changes.get("hc", 0)
-            runner = self.runner_dict.get((selection_id, handicap))
-            if runner:
+            full_image = order_changes.get("fullImage")
+            _lookup = (selection_id, handicap)
+            runner = self.runners.get(_lookup)
+            if full_image or runner is None:
+                self.runners[_lookup] = OrderBookRunner(**order_changes)
+            else:
                 if "ml" in order_changes:
                     runner.matched_lays.update(order_changes["ml"])
                 if "mb" in order_changes:
                     runner.matched_backs.update(order_changes["mb"])
                 if "uo" in order_changes:
                     runner.update_unmatched(order_changes["uo"])
-            else:
-                self.runners.append(OrderBookRunner(**order_changes))
 
     def create_resource(
         self, unique_id: int, lightweight: bool, snap: bool = False
@@ -460,14 +462,9 @@ class OrderBookCache(BaseResource):
             )
 
     @property
-    def runner_dict(self) -> dict:
-        return {
-            (runner.selection_id, runner.handicap): runner for runner in self.runners
-        }
-
-    @property
     def serialise(self) -> dict:
+        runners = list(self.runners.values())  # runner may be added
         orders = []
-        for runner in self.runners:
+        for runner in runners:
             orders.extend(runner.serialise_orders(self.market_id))
         return {"currentOrders": orders, "moreAvailable": False}
