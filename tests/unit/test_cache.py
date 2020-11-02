@@ -398,8 +398,16 @@ class TestOrderBookCache(unittest.TestCase):
         assert current_orders == mock_current_orders()
 
     def test_serialise(self):
+        mock_runner_one = mock.Mock()
+        mock_runner_one.serialise_orders.return_value = [1]
+        mock_runner_two = mock.Mock()
+        mock_runner_two.serialise_orders.return_value = [2, 3]
+        self.order_book_cache.runners = {
+            (123, 0): mock_runner_one,
+            (123, 1): mock_runner_two,
+        }
         serialised = self.order_book_cache.serialise
-        assert serialised == {"currentOrders": [], "moreAvailable": False}
+        assert serialised == {"currentOrders": [1, 2, 3], "moreAvailable": False}
 
 
 class TestOrderBookRunner(unittest.TestCase):

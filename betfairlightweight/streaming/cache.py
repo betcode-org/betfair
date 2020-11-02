@@ -463,7 +463,8 @@ class OrderBookCache(BaseResource):
 
     @property
     def serialise(self) -> dict:
+        runners = list(self.runners.values())  # runner may be added
         orders = []
-        for runner in self.runners.values():
+        for runner in runners:
             orders.extend(runner.serialise_orders(self.market_id))
         return {"currentOrders": orders, "moreAvailable": False}
