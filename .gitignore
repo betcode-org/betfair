@@ -29,3 +29,7 @@ nosetests.xml
 
 # IDE metafile ignores
 .idea
+*.iml
+
+# C extensions
+*.so

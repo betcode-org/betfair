@@ -1,4 +1,5 @@
 import os
+from setuptools import Extension
 from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -43,4 +44,13 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
     test_suite="tests",
+    ext_modules=[
+        Extension(
+            'betfairlightweight.streaming._cache',
+            sources=[
+                'betfairlightweight/streaming/src/cache.c'
+            ],
+            extra_compile_args=['-std=gnu99', '-Werror']
+        ),
+    ],
 )
