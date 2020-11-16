@@ -7,7 +7,7 @@ from .cache import MarketBookCache, OrderBookCache
 
 logger = logging.getLogger(__name__)
 
-MAX_CACHE_AGE = 60 * 60 * 8
+MAX_CACHE_AGE = 60 * 60 * 8  # 8hrs
 
 
 class BaseStream:
@@ -91,14 +91,18 @@ class BaseStream:
             if market_ids is None or cache.market_id in market_ids
         ]
 
-    def on_process(self, output: list) -> None:
+    def on_process(self, caches: list) -> None:
         if self.output_queue:
+            output = [
+                cache.create_resource(self.unique_id, self._lightweight)
+                for cache in caches
+            ]
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
         logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
 
-    def _process(self, data: dict, publish_time: int) -> bool:
+    def _process(self, data: list, publish_time: int) -> bool:
         # Return True if new img within data
         pass
 
@@ -146,7 +150,7 @@ class MarketStream(BaseStream):
     _name = "MarketStream"
 
     def _process(self, data: list, publish_time: int) -> bool:
-        output_market_book, img = [], False
+        caches, img = [], False
         for market_book in data:
             market_id = market_book["id"]
             full_image = market_book.get("img", False)
@@ -173,12 +177,9 @@ class MarketStream(BaseStream):
                 )
 
             market_book_cache.update_cache(market_book, publish_time)
+            caches.append(market_book_cache)
             self._updates_processed += 1
-
-            output_market_book.append(
-                market_book_cache.create_resource(self.unique_id, self._lightweight)
-            )
-        self.on_process(output_market_book)
+        self.on_process(caches)
         return img
 
 
@@ -188,7 +189,7 @@ class OrderStream(BaseStream):
     _name = "OrderStream"
 
     def _process(self, data: list, publish_time: int) -> bool:
-        output_order_book, img = [], False
+        caches, img = [], False
         for order_book in data:
             market_id = order_book["id"]
             full_image = order_book.get("fullImage", False)
@@ -206,10 +207,7 @@ class OrderStream(BaseStream):
                 )
 
             order_book_cache.update_cache(order_book, publish_time)
+            caches.append(order_book_cache)
             self._updates_processed += 1
-
-            output_order_book.append(
-                order_book_cache.create_resource(self.unique_id, self._lightweight)
-            )
-        self.on_process(output_order_book)
+        self.on_process(caches)
         return img

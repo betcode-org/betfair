@@ -166,8 +166,12 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._process(None, None)
 
     def test_on_process(self):
-        self.stream.on_process([1, 2])
-        self.stream.output_queue.put.assert_called_with([1, 2])
+        mock_cache_one = mock.Mock()
+        mock_cache_two = mock.Mock()
+        self.stream.on_process([mock_cache_one, mock_cache_two])
+        self.stream.output_queue.put.assert_called_with(
+            [mock_cache_one.create_resource(), mock_cache_two.create_resource()]
+        )
 
     def test_update_clk(self):
         self.stream._update_clk({"initialClk": 1234})
@@ -228,6 +232,7 @@ class MarketStreamTest(unittest.TestCase):
         data = sub_image.json()["mc"]
         self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
+        mock_on_process.assert_called_with([mock_cache()])
 
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
@@ -284,6 +289,7 @@ class OrderStreamTest(unittest.TestCase):
         self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
         self.assertFalse(self.stream._process(data, 123))
+        mock_on_process.assert_called_with([mock_cache()])
 
     @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
     @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
@@ -292,6 +298,16 @@ class OrderStreamTest(unittest.TestCase):
         sub_image = create_mock_json(
             "tests/resources/streaming_ocm_NEW_FULL_IMAGE.json"
         )
+        data = sub_image.json()["oc"]
+        self.assertTrue(self.stream._process(data, 123))
+        self.assertEqual(len(self.stream), len(data))
+        self.assertTrue(self.stream._process(data, 123))
+
+    @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
+    def test_process_empty_image(self, mock_on_process, mock_cache):
+        self.stream._caches = {"1.161613698": mock.Mock()}
+        sub_image = create_mock_json("tests/resources/streaming_ocm_EMPTY_IMAGE.json")
         data = sub_image.json()["oc"]
         self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
