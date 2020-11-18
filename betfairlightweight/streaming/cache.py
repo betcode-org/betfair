@@ -13,57 +13,6 @@ from ..utils import create_date_string
 from ._cache import *
 
 
-class Available:
-    """
-    Data structure to hold prices/traded amount,
-    designed to be as quick as possible.
-    """
-
-    def __init__(self, prices: list, deletion_select: int, reverse: bool = False):
-        """
-        :param list prices: Current prices
-        :param int deletion_select: Used to decide if update should delete cache
-        :param bool reverse: Used for sorting
-        """
-        self.prices = prices or []
-        self.deletion_select = deletion_select
-        self.reverse = reverse
-
-        self.serialise = []
-        self.sort()
-
-    def sort(self) -> None:
-        self.prices.sort(reverse=self.reverse)
-        self.serialise = [
-            {
-                "price": volume[self.deletion_select - 1],
-                "size": volume[self.deletion_select],
-            }
-            for volume in self.prices
-        ]
-
-    def clear(self) -> None:
-        self.prices = []
-        self.sort()
-
-    def update(self, book_update: list) -> None:
-        for book in book_update:
-            for (count, trade) in enumerate(self.prices):
-                if trade[0] == book[0]:
-                    if book[self.deletion_select] == 0:
-                        del self.prices[count]
-                        break
-                    else:
-                        self.prices[count] = book
-                        break
-            else:
-                if book[self.deletion_select] != 0:
-                    # handles betfair bug,
-                    # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
-                    self.prices.append(book)
-        self.sort()
-
-
 class RunnerBook:
     def __init__(
         self,
