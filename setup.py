@@ -46,11 +46,9 @@ setup(
     test_suite="tests",
     ext_modules=[
         Extension(
-            'betfairlightweight.streaming._cache',
-            sources=[
-                'betfairlightweight/streaming/src/cache.c'
-            ],
-            extra_compile_args=['-std=gnu99', '-Werror']
-        ),
+            "betfairlightweight.streaming._cache",
+            sources=["betfairlightweight/streaming/src/cache.c"],
+            extra_compile_args=["-std=gnu99", "-Werror", "-g"],
+        )
     ],
 )
