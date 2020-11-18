@@ -241,8 +241,8 @@ PyMODINIT_FUNC PyInit__cache(void)
     Py_DECREF(class_bases);
     Py_DECREF(class_dict);
 
-	PyObject *module = PyModule_Create(&moduledef);
-	PyModule_AddObject(module, "Available", available_class);
+    PyObject *module = PyModule_Create(&moduledef);
+    PyModule_AddObject(module, "Available", available_class);
 
     return module;
 }
