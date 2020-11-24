@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.10.1 (2020-11-24)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Historical generator fixed to only call `create_resource` once per call (huge speed improvement)
+
+**Dependencies**
+
+- requests upgraded to <2.26.0
+
 2.10.0 (2020-11-02)
 +++++++++++++++++++
 
