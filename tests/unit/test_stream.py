@@ -338,9 +338,7 @@ class RaceStreamTest(unittest.TestCase):
         self.assertFalse(self.stream._process(update, publish_time))
         assert self.stream._caches["1.234567"] == mock_race_cache()
         mock_race_cache().update_cache.assert_called_with(update[0], publish_time)
-        mock_race_cache().create_resource.assert_called_with(
-            self.stream.unique_id, self.stream._lightweight
-        )
+        mock_on_process.assert_called_with([mock_race_cache()])
 
     def test_str(self):
         assert str(self.stream) == "RaceStream"

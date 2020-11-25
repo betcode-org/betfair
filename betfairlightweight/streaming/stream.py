@@ -231,7 +231,7 @@ class RaceStream(BaseStream):
         pass
 
     def _process(self, race_updates: list, publish_time: int) -> bool:
-        output, img = [], False  # todo cache.closed / img=True
+        caches, img = [], False  # todo cache.closed / img=True
         for update in race_updates:
             market_id = update["mid"]
 
@@ -240,11 +240,12 @@ class RaceStream(BaseStream):
                 race_cache = RaceCache(publish_time=publish_time, **update)
                 self._caches[market_id] = race_cache
                 logger.info(
-                    "[%s: %s]: %s added" % (self._name, self.unique_id, market_id)
+                    "[%s: %s]: %s added, %s markets in cache"
+                    % (self, self.unique_id, market_id, len(self._caches))
                 )
-            race_cache.update_cache(update, publish_time)
-            self._updates_processed += 1
 
-            output.append(race_cache.create_resource(self.unique_id, self._lightweight))
-        self.on_process(output)
+            race_cache.update_cache(update, publish_time)
+            caches.append(race_cache)
+            self._updates_processed += 1
+        self.on_process(caches)
         return img
