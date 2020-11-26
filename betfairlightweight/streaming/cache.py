@@ -315,6 +315,7 @@ class UnmatchedOrder:
         rac: str = None,
         rc: str = None,
         lsrc: str = None,
+        cd: int = None,
         **kwargs
     ):
         self.bet_id = id
@@ -340,7 +341,8 @@ class UnmatchedOrder:
         self.reference_order = rfo
         self.reference_strategy = rfs
         self.lapsed_date = BaseResource.strip_datetime(ld)
-        self.lapse_status_reason_code = lsrc  # todo add to output?
+        self.lapse_status_reason_code = lsrc  # todo add to output? + CurrentOrder resource
+        self.cancelled_date = BaseResource.strip_datetime(cd)  # todo add to output? + CurrentOrder resource
 
     def create_placed_date_string(self) -> str:
         if self.placed_date:

@@ -517,6 +517,7 @@ class TestUnmatchedOrder(unittest.TestCase):
             "lsrc": 17,
             "error": "test",
             "md": 4,
+            "cd": 18,
         }
         self.unmatched_order = UnmatchedOrder(**order)
 
@@ -538,6 +539,7 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.reference_strategy == 15
         assert self.unmatched_order.lapsed_date == BaseResource.strip_datetime(16)
         assert self.unmatched_order.lapse_status_reason_code == 17
+        assert self.unmatched_order.cancelled_date == BaseResource.strip_datetime(18)
 
     def test_placed_date_string(self):
         now = BaseResource.strip_datetime(8)
