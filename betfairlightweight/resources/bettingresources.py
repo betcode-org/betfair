@@ -648,6 +648,9 @@ class CurrentOrder:
         customerStrategyRef: str = None,
         customerOrderRef: str = None,
         regulatorAuthCode: str = None,
+        lapsedDate: str = None,
+        lapseStatusReasonCode: str = None,
+        cancelledDate: str = None,
     ):
         self.bet_id = betId
         self.average_price_matched = averagePriceMatched
@@ -671,6 +674,9 @@ class CurrentOrder:
         self.customer_strategy_ref = customerStrategyRef
         self.customer_order_ref = customerOrderRef
         self.price_size = PriceSize(**priceSize)
+        self.lapsed_date = BaseResource.strip_datetime(lapsedDate)
+        self.lapse_status_reason_code = lapseStatusReasonCode
+        self.cancelled_date = BaseResource.strip_datetime(cancelledDate)
 
 
 class CurrentOrders(BaseResource):
