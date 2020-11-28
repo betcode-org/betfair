@@ -2,6 +2,7 @@ import requests
 import datetime
 from typing import Optional
 
+from .compat import BETFAIR_DATE_FORMAT
 from .exceptions import StatusCodeError
 from .__version__ import __title__, __version__
 
@@ -72,4 +73,4 @@ def create_date_string(date: datetime.datetime) -> Optional[str]:
     date string.
     """
     if date:
-        return date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        return date.strftime(BETFAIR_DATE_FORMAT)
