@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.10.2 (2020-11-28)
++++++++++++++++++++
+
+**Improvements**
+
+- #359 Exchange Stream API Release - Tuesday 8th December – New field - cancelledDate
+- Historical gen updated to only yield on data (reduces function calls in flumine)
+
+**Dependencies**
+
+- orjson upgraded to 3.4.4
+
 2.10.1 (2020-11-24)
 +++++++++++++++++++
 
