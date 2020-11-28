@@ -8,6 +8,7 @@ from betfairlightweight.resources.bettingresources import (
     MarketOnCloseOrder,
     PriceSize,
 )
+from betfairlightweight.compat import BETFAIR_DATE_FORMAT
 from tests.unit.tools import create_mock_json
 
 
@@ -56,10 +57,10 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.elapsed_time == self.ELAPSED_TIME
             assert resource.market_count == time_range["marketCount"]
             assert resource.time_range._from == datetime.datetime.strptime(
-                time_range["timeRange"]["from"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                time_range["timeRange"]["from"], BETFAIR_DATE_FORMAT
             )
             assert resource.time_range.to == datetime.datetime.strptime(
-                time_range["timeRange"]["to"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                time_range["timeRange"]["to"], BETFAIR_DATE_FORMAT
             )
 
     def test_event_result(self):
@@ -75,7 +76,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.market_count == event_result["marketCount"]
             assert resource.event.id == event_result["event"]["id"]
             assert resource.event.open_date == datetime.datetime.strptime(
-                event_result["event"]["openDate"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                event_result["event"]["openDate"], BETFAIR_DATE_FORMAT
             )
             assert resource.event.time_zone == event_result["event"]["timezone"]
             assert resource.event.country_code == event_result["event"]["countryCode"]
@@ -135,7 +136,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.market_name == market_catalogue["marketName"]
             assert resource.total_matched == market_catalogue["totalMatched"]
             assert resource.market_start_time == datetime.datetime.strptime(
-                market_catalogue["marketStartTime"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                market_catalogue["marketStartTime"], BETFAIR_DATE_FORMAT
             )
 
             assert resource.competition.id == market_catalogue["competition"]["id"]
@@ -143,7 +144,7 @@ class BettingResourcesTest(unittest.TestCase):
 
             assert resource.event.id == market_catalogue["event"]["id"]
             assert resource.event.open_date == datetime.datetime.strptime(
-                market_catalogue["event"]["openDate"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                market_catalogue["event"]["openDate"], BETFAIR_DATE_FORMAT
             )
             assert resource.event.time_zone == market_catalogue["event"]["timezone"]
             assert (
@@ -172,7 +173,7 @@ class BettingResourcesTest(unittest.TestCase):
                 == market_catalogue["description"]["marketBaseRate"]
             )
             assert resource.description.market_time == datetime.datetime.strptime(
-                market_catalogue["description"]["marketTime"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                market_catalogue["description"]["marketTime"], BETFAIR_DATE_FORMAT
             )
             assert (
                 resource.description.market_type
@@ -194,7 +195,7 @@ class BettingResourcesTest(unittest.TestCase):
                 == market_catalogue["description"]["rulesHasDate"]
             )
             assert resource.description.suspend_time == datetime.datetime.strptime(
-                market_catalogue["description"]["suspendTime"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                market_catalogue["description"]["suspendTime"], BETFAIR_DATE_FORMAT
             )
             assert (
                 resource.description.turn_in_play_enabled
@@ -263,7 +264,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.inplay == market_book["inplay"]
             assert resource.is_market_data_delayed == market_book["isMarketDataDelayed"]
             assert resource.last_match_time == datetime.datetime.strptime(
-                market_book["lastMatchTime"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                market_book["lastMatchTime"], BETFAIR_DATE_FORMAT
             )
             assert (
                 resource.number_of_active_runners
@@ -306,7 +307,7 @@ class BettingResourcesTest(unittest.TestCase):
 
                 if runner.get("removalDate"):
                     assert resource_runner.removal_date == datetime.datetime.strptime(
-                        runner["removalDate"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        runner["removalDate"], BETFAIR_DATE_FORMAT
                     )
                 # else:
                 #     assert resource_runner.sp.near_price == runner['sp']['nearPrice']
@@ -430,7 +431,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.place_instruction_reports[
                 0
             ].placed_date == datetime.datetime.strptime(
-                order["placedDate"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                order["placedDate"], BETFAIR_DATE_FORMAT
             )
             assert resource.place_instruction_reports[0].error_code == order.get(
                 "errorCode"
@@ -492,7 +493,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.cancel_instruction_reports[
                 0
             ].cancelled_date == datetime.datetime.strptime(
-                order["cancelledDate"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                order["cancelledDate"], BETFAIR_DATE_FORMAT
             )
 
             assert (

@@ -1,4 +1,5 @@
 import unittest
+import datetime
 from unittest import mock
 
 from betfairlightweight import utils
@@ -31,3 +32,10 @@ class UtilsTest(unittest.TestCase):
 
     def test_default_user_agent(self):
         assert utils.default_user_agent()
+
+    def test_create_date_string(self):
+        self.assertIsNone(utils.create_date_string(None))
+        self.assertEqual(
+            utils.create_date_string(datetime.datetime(2020, 11, 27)),
+            "2020-11-27T00:00:00.000000Z",
+        )

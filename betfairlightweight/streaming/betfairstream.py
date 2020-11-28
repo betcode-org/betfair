@@ -339,7 +339,9 @@ class HistoricalGeneratorStream(HistoricalStream):
                 if not self._running:
                     break
                 else:
-                    yield self.listener.snap()
+                    data = self.listener.snap()
+                    if data:  # can return empty list
+                        yield data
             else:
                 # if f has finished, also stop the stream
                 self.stop()

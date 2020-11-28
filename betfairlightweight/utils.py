@@ -1,5 +1,8 @@
 import requests
+import datetime
+from typing import Optional
 
+from .compat import BETFAIR_DATE_FORMAT
 from .exceptions import StatusCodeError
 from .__version__ import __title__, __version__
 
@@ -62,3 +65,12 @@ def to_camel_case(snake_str: str) -> str:
 
 def default_user_agent():
     return "{0}/{1}".format(__title__, __version__)
+
+
+def create_date_string(date: datetime.datetime) -> Optional[str]:
+    """
+    Convert datetime to betfair
+    date string.
+    """
+    if date:
+        return date.strftime(BETFAIR_DATE_FORMAT)

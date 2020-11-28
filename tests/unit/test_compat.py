@@ -5,6 +5,12 @@ from betfairlightweight import compat
 
 
 class CompatTest(unittest.TestCase):
+    def test_defaults(self):
+        self.assertEqual(compat.BETFAIR_DATE_FORMAT, "%Y-%m-%dT%H:%M:%S.%fZ")
+        self.assertEqual(compat.basestring, (str, bytes))
+        self.assertEqual(compat.numeric_types, (int, float))
+        self.assertEqual(compat.integer_types, (int,))
+
     def test_json_loads(self):
         self.assertEqual(
             compat.json.loads('{"lastTradedPrice": 1000}'), {"lastTradedPrice": 1000}

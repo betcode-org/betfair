@@ -9,6 +9,7 @@ from ..enums import (
     StreamingStatus,
 )
 from ..exceptions import CacheError
+from ..utils import create_date_string
 
 
 class Available:
@@ -315,6 +316,7 @@ class UnmatchedOrder:
         rac: str = None,
         rc: str = None,
         lsrc: str = None,
+        cd: int = None,
         **kwargs
     ):
         self.bet_id = id
@@ -326,9 +328,9 @@ class UnmatchedOrder:
         self.persistence_type = pt
         self.order_type = ot
         self.placed_date = BaseResource.strip_datetime(pd)
-        self.placed_date_string = self.create_placed_date_string()
+        self._placed_date_string = create_date_string(self.placed_date)
         self.matched_date = BaseResource.strip_datetime(md)
-        self.matched_date_string = self.create_matched_date_string()
+        self._matched_date_string = create_date_string(self.matched_date)
         self.average_price_matched = avp
         self.size_matched = sm
         self.size_remaining = sr
@@ -340,15 +342,10 @@ class UnmatchedOrder:
         self.reference_order = rfo
         self.reference_strategy = rfs
         self.lapsed_date = BaseResource.strip_datetime(ld)
-        self.lapse_status_reason_code = lsrc  # todo add to output?
-
-    def create_placed_date_string(self) -> str:
-        if self.placed_date:
-            return self.placed_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-
-    def create_matched_date_string(self) -> str:
-        if self.matched_date:
-            return self.matched_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        self._lapsed_date_string = create_date_string(self.lapsed_date)
+        self.lapse_status_reason_code = lsrc
+        self.cancelled_date = BaseResource.strip_datetime(cd)
+        self._cancelled_date_string = create_date_string(self.cancelled_date)
 
     def serialise(self, market_id: str, selection_id: int, handicap: int) -> dict:
         return {
@@ -357,13 +354,14 @@ class UnmatchedOrder:
             "bspLiability": self.bsp_liability,
             "handicap": handicap,
             "marketId": market_id,
-            "matchedDate": self.matched_date_string,
+            "matchedDate": self._matched_date_string,
             "orderType": StreamingOrderType[self.order_type].value,
             "persistenceType": StreamingPersistenceType[self.persistence_type].value
             if self.persistence_type
             else None,
-            "placedDate": self.placed_date_string,
+            "placedDate": self._placed_date_string,
             "priceSize": {"price": self.price, "size": self.size},
+            "regulatorAuthCode": self.regulator_auth_code,
             "regulatorCode": self.regulator_code,
             "selectionId": selection_id,
             "side": StreamingSide[self.side].value,
@@ -375,6 +373,9 @@ class UnmatchedOrder:
             "status": StreamingStatus[self.status].value,
             "customerStrategyRef": self.reference_strategy,
             "customerOrderRef": self.reference_order,
+            "lapsedDate": self._lapsed_date_string,
+            "lapseStatusReasonCode": self.lapse_status_reason_code,
+            "cancelledDate": self._cancelled_date_string,
         }
 
 
