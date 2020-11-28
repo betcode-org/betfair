@@ -518,6 +518,7 @@ class TestUnmatchedOrder(unittest.TestCase):
             "lsrc": 17,
             "error": "test",
             "md": 4,
+            "cd": 18,
         }
         self.unmatched_order = UnmatchedOrder(**order)
 
@@ -539,43 +540,39 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.reference_strategy == 15
         assert self.unmatched_order.lapsed_date == BaseResource.strip_datetime(16)
         assert self.unmatched_order.lapse_status_reason_code == 17
-
-    def test_placed_date_string(self):
-        now = BaseResource.strip_datetime(8)
-        assert self.unmatched_order.placed_date_string == now.strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"
-        )
-
-    def test_matched_date_string(self):
-        now = BaseResource.strip_datetime(4)
-        assert self.unmatched_order.matched_date_string == now.strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"
-        )
+        assert self.unmatched_order.cancelled_date == BaseResource.strip_datetime(18)
 
     def test_serialise(self):
-        assert self.unmatched_order.serialise("1.23", 12345, 0.0) == {
-            "sizeLapsed": 11,
-            "persistenceType": "LAPSE",
-            "sizeRemaining": 10,
-            "placedDate": "1970-01-01T00:00:00.008000Z",
-            "sizeVoided": 13,
-            "sizeCancelled": 12,
-            "betId": 1,
-            "customerOrderRef": 14,
-            "orderType": "LIMIT",
-            "marketId": "1.23",
-            "side": "LAY",
-            "selectionId": 12345,
-            "bspLiability": None,
-            "sizeMatched": 9,
-            "handicap": 0.0,
-            "averagePriceMatched": 0.0,
-            "status": "EXECUTABLE",
-            "customerStrategyRef": 15,
-            "regulatorCode": None,
-            "priceSize": {"price": 2, "size": 3},
-            "matchedDate": "1970-01-01T00:00:00.004000Z",
-        }
+        self.assertEqual(
+            self.unmatched_order.serialise("1.23", 12345, 0.0),
+            {
+                "sizeLapsed": 11,
+                "persistenceType": "LAPSE",
+                "sizeRemaining": 10,
+                "placedDate": "1970-01-01T00:00:00.008000Z",
+                "sizeVoided": 13,
+                "sizeCancelled": 12,
+                "betId": 1,
+                "customerOrderRef": 14,
+                "orderType": "LIMIT",
+                "marketId": "1.23",
+                "side": "LAY",
+                "selectionId": 12345,
+                "bspLiability": None,
+                "sizeMatched": 9,
+                "handicap": 0.0,
+                "averagePriceMatched": 0.0,
+                "status": "EXECUTABLE",
+                "customerStrategyRef": 15,
+                "regulatorCode": None,
+                "regulatorAuthCode": None,
+                "priceSize": {"price": 2, "size": 3},
+                "matchedDate": "1970-01-01T00:00:00.004000Z",
+                "lapsedDate": "1970-01-01T00:00:00.016000Z",
+                "lapseStatusReasonCode": 17,
+                "cancelledDate": "1970-01-01T00:00:00.018000Z",
+            },
+        )
 
 
 class TestRaceCache(unittest.TestCase):
