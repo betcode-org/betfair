@@ -170,3 +170,77 @@ class MarketDefinition:
 
         self.name = name  # historic data only
         self.event_name = eventName  # historic data only
+
+
+class Race(BaseResource):
+    """
+    :type market_id: unicode
+    :type race_id: unicode
+    :type rpm: dict
+    :type rcm: dict
+    """
+
+    def __init__(self, **kwargs):
+        self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
+        self.streaming_update = kwargs.pop("streaming_update", None)
+        self.streaming_snap = kwargs.pop("streaming_snap", False)
+        self.publish_time_epoch = kwargs.get("pt")
+        self.publish_time = self.strip_datetime(kwargs.get("pt"))
+        super(Race, self).__init__(**kwargs)
+        self.market_id = kwargs.get("mid")
+        self.race_id = kwargs.get("id")
+        self.race_progress = (
+            RaceProgress(**kwargs["rpc"]) if kwargs.get("rpc") else None
+        )
+        self.race_runners = [RaceChange(**runner) for runner in kwargs.get("rrc") or []]
+
+
+class RaceProgress(BaseResource):
+    """
+    :type publish_time: int
+    :type feed_time: int
+    :type race_id: unicode
+    :type gate: unicode
+    :type sectional_time: float
+    :type running_time: float
+    :type speed: float
+    :type progress: float
+    :type order: list
+    """
+
+    def __init__(self, **kwargs):
+        super(RaceProgress, self).__init__(**kwargs)
+        self.feed_time_epoch = kwargs.get("ft")
+        self.feed_time = self.strip_datetime(kwargs.get("ft"))
+        self.gate_name = kwargs.get("g")
+        self.sectional_time = kwargs.get("st")
+        self.running_time = kwargs.get("rt")
+        self.speed = kwargs.get("spd")
+        self.progress = kwargs.get("prg")
+        self.order = kwargs.get("ord")
+        self.jumps = kwargs.get("J")
+
+
+class RaceChange(BaseResource):
+    """
+    :type publish_time: int
+    :type feed_time: int
+    :type race_id: unicode
+    :type selection_id: int
+    :type lat: float
+    :type long: float
+    :type speed: float
+    :type progress: float
+    :type stride_frequency: float
+    """
+
+    def __init__(self, **kwargs):
+        super(RaceChange, self).__init__(**kwargs)
+        self.feed_time_epoch = kwargs.get("ft")
+        self.feed_time = self.strip_datetime(kwargs.get("ft"))
+        self.selection_id = kwargs.get("id")
+        self.lat = kwargs.get("lat")
+        self.long = kwargs.get("long")
+        self.speed = kwargs.get("spd")
+        self.progress = kwargs.get("prg")
+        self.stride_frequency = kwargs.get("sfq")  # in Hz

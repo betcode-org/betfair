@@ -3,7 +3,7 @@ import logging
 import time
 import queue
 
-from .cache import MarketBookCache, OrderBookCache
+from .cache import MarketBookCache, OrderBookCache, RaceCache
 
 logger = logging.getLogger(__name__)
 
@@ -208,6 +208,44 @@ class OrderStream(BaseStream):
 
             order_book_cache.update_cache(order_book, publish_time)
             caches.append(order_book_cache)
+            self._updates_processed += 1
+        self.on_process(caches)
+        return img
+
+
+class RaceStream(BaseStream):
+
+    """
+    Cache contains latest update:
+        marketId: RaceCache
+    """
+
+    _lookup = "rc"
+    _name = "RaceStream"
+
+    def on_subscribe(self, data: dict) -> None:
+        """The initial message returned after
+        a subscribe - This will currently not
+        contain any Race Changes (rc) but may
+        do in the future"""
+        pass
+
+    def _process(self, race_updates: list, publish_time: int) -> bool:
+        caches, img = [], False  # todo cache.closed / img=True
+        for update in race_updates:
+            market_id = update["mid"]
+
+            race_cache = self._caches.get(market_id)
+            if race_cache is None:
+                race_cache = RaceCache(publish_time=publish_time, **update)
+                self._caches[market_id] = race_cache
+                logger.info(
+                    "[%s: %s]: %s added, %s markets in cache"
+                    % (self, self.unique_id, market_id, len(self._caches))
+                )
+
+            race_cache.update_cache(update, publish_time)
+            caches.append(race_cache)
             self._updates_processed += 1
         self.on_process(caches)
         return img

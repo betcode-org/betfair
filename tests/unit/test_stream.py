@@ -5,6 +5,7 @@ from betfairlightweight.streaming.stream import (
     BaseStream,
     MarketStream,
     OrderStream,
+    RaceStream,
     MAX_CACHE_AGE,
 )
 from tests.unit.tools import create_mock_json
@@ -318,3 +319,29 @@ class OrderStreamTest(unittest.TestCase):
 
     def test_repr(self):
         assert repr(self.stream) == "<OrderStream [0]>"
+
+
+class RaceStreamTest(unittest.TestCase):
+    def setUp(self):
+        self.listener = mock.Mock()
+        self.stream = RaceStream(self.listener)
+
+    def test_init(self):
+        assert self.stream._lookup == "rc"
+        assert self.stream._name == "RaceStream"
+
+    @mock.patch("betfairlightweight.streaming.stream.RaceCache")
+    @mock.patch("betfairlightweight.streaming.stream.RaceStream.on_process")
+    def test_process(self, mock_on_process, mock_race_cache):
+        update = [{"mid": "1.234567", "yad": "a"}]
+        publish_time = 1234
+        self.assertFalse(self.stream._process(update, publish_time))
+        assert self.stream._caches["1.234567"] == mock_race_cache()
+        mock_race_cache().update_cache.assert_called_with(update[0], publish_time)
+        mock_on_process.assert_called_with([mock_race_cache()])
+
+    def test_str(self):
+        assert str(self.stream) == "RaceStream"
+
+    def test_repr(self):
+        assert repr(self.stream) == "<RaceStream [0]>"

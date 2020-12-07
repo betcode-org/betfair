@@ -9,6 +9,7 @@ from betfairlightweight.streaming.cache import (
     MarketBookCache,
     RunnerBook,
     Available,
+    RaceCache,
 )
 from betfairlightweight.exceptions import CacheError
 from tests.unit.tools import create_mock_json
@@ -572,3 +573,56 @@ class TestUnmatchedOrder(unittest.TestCase):
                 "cancelledDate": "1970-01-01T00:00:00.018000Z",
             },
         )
+
+
+class TestRaceCache(unittest.TestCase):
+    def setUp(self):
+        update = {"mid": "1.12", "id": "12.12"}
+        self.race_cache = RaceCache(**update)
+
+    def test_init(self):
+        assert self.race_cache.publish_time is None
+        assert self.race_cache.rpc is None
+        assert self.race_cache.rrc == []
+
+    def test_update_rpm(self):
+        update = {"rpc": 1234}
+        publish_time = 1518626764
+        self.race_cache.update_cache(update, publish_time)
+
+        assert self.race_cache._datetime_updated is not None
+        assert self.race_cache.publish_time == publish_time
+        assert self.race_cache.rpc == 1234
+
+    def test_update_rrc(self):
+        update = {"rrc": [{"id": 1}]}
+        publish_time = 1518626764
+        self.race_cache.update_cache(update, publish_time)
+
+        assert self.race_cache._datetime_updated is not None
+        assert self.race_cache.publish_time == publish_time
+        assert len(self.race_cache.rrc) == 1
+
+    @mock.patch("betfairlightweight.streaming.cache.RaceCache.serialise")
+    def test_create_resource_lightweight(self, mock_serialise):
+        assert self.race_cache.create_resource(12, True) == mock_serialise
+
+    # @mock.patch('betfairlightweight.streaming.cache.Race')
+    # @mock.patch('betfairlightweight.streaming.cache.RaceCache.serialise')
+    # def test_create_resource(self, mock_serialise, mock_race):
+    #     # print(self.race_cache.create_resource(12, {}, False))
+    #     self.assertIsInstance(self.race_cache.create_resource(12, {}, False), mock_race)
+
+    def test_serialise(self):
+        self.race_cache.rpc = {"test": 123}
+        mock_runner = mock.Mock()
+        mock_runner.change = {"test": "me"}
+        self.race_cache.rrc = [mock_runner]
+        self.race_cache.publish_time = 12
+        assert self.race_cache.serialise == {
+            "pt": 12,
+            "mid": "1.12",
+            "id": "12.12",
+            "rpc": {"test": 123},
+            "rrc": [{"test": "me"}],
+        }
