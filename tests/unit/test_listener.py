@@ -159,7 +159,7 @@ class StreamListenerTest(unittest.TestCase):
         )
 
         mock_response = create_mock_json("tests/resources/streaming_rcm.json")
-        self.stream_listener.on_data(mock_response.content)
+        self.stream_listener.on_data(mock_response.text)
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
@@ -168,7 +168,7 @@ class StreamListenerTest(unittest.TestCase):
         )
 
         mock_response = create_mock_json("tests/resources/streaming_rcm.json")
-        self.stream_listener.on_data(mock_response.content)
+        self.stream_listener.on_data(mock_response.text)
         mock_error_handler.assert_called_with(
             mock_response.json(), mock_response.json().get("id")
         )
