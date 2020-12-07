@@ -173,8 +173,7 @@ class BetfairStream:
         return unique_id
 
     def subscribe_to_races(self) -> int:
-        """Race subscription request.
-        """
+        """Race subscription request."""
         unique_id = self.new_unique_id()
         message = {"op": "raceSubscription", "id": unique_id}
         self.listener.register_stream(unique_id, "raceSubscription")
