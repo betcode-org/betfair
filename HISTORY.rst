@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.11.0 (2020-12-07)
++++++++++++++++++++
+
+**Improvements**
+
+- Stream updates
+
+**Dependencies**
+
+- orjson upgraded to 3.4.5
+
 2.10.2 (2020-11-28)
 +++++++++++++++++++
 
