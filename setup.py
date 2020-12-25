@@ -7,9 +7,9 @@ with open(os.path.join(here, "requirements.txt")) as f:
     INSTALL_REQUIRES = f.read().splitlines()
 
 with open(os.path.join(here, "requirements-speed.txt")) as f:
-    _requires = f.read().splitlines()
+    extras_require = f.read().splitlines()
     EXTRAS_REQUIRE = {
-        "speed": _requires,
+        "speed": extras_require,
     }
 
 about = {}
