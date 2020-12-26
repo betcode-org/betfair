@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.11.1 (2020-12-26)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #366 Parse Error in Setup.py at '_require' (@mlabour)
+
+**Dependencies**
+
+- orjson upgraded to 3.4.6
+
 2.11.0 (2020-12-07)
 +++++++++++++++++++
 
