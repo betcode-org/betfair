@@ -401,14 +401,19 @@ class TestOrderBookCache(unittest.TestCase):
     def test_serialise(self):
         mock_runner_one = mock.Mock()
         mock_runner_one.serialise_orders.return_value = [1]
+        mock_runner_one.serialise_matches.return_value = 6
         mock_runner_two = mock.Mock()
         mock_runner_two.serialise_orders.return_value = [2, 3]
+        mock_runner_two.serialise_matches.return_value = 4
         self.order_book_cache.runners = {
             (123, 0): mock_runner_one,
             (123, 1): mock_runner_two,
         }
         serialised = self.order_book_cache.serialise
-        assert serialised == {"currentOrders": [1, 2, 3], "moreAvailable": False}
+        self.assertEqual(
+            serialised,
+            {"currentOrders": [1, 2, 3], "matches": [6, 4], "moreAvailable": False}
+        )
 
 
 class TestOrderBookRunner(unittest.TestCase):
@@ -494,6 +499,12 @@ class TestOrderBookRunner(unittest.TestCase):
         mock_order_two.serialise = mock_serialise
 
         assert len(self.order_book_runner.serialise_orders("1.1")), 2
+
+    def test_serialise_matches(self):
+        self.assertEqual(
+            self.order_book_runner.serialise_matches(),
+            {"matchedBacks": [], "matchedLays": [], "selectionId": 1}
+        )
 
 
 class TestUnmatchedOrder(unittest.TestCase):

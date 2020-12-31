@@ -411,6 +411,13 @@ class OrderBookRunner:
             for order in orders
         ]
 
+    def serialise_matches(self) -> dict:
+        return {
+            "selectionId": self.selection_id,
+            "matchedLays": self.matched_lays.serialise,
+            "matchedBacks": self.matched_backs.serialise,
+        }
+
 
 class OrderBookCache(BaseResource):
     def __init__(self, **kwargs):
@@ -465,10 +472,11 @@ class OrderBookCache(BaseResource):
     @property
     def serialise(self) -> dict:
         runners = list(self.runners.values())  # runner may be added
-        orders = []
+        orders, matches = [], []
         for runner in runners:
             orders.extend(runner.serialise_orders(self.market_id))
-        return {"currentOrders": orders, "moreAvailable": False}
+            matches.append(runner.serialise_matches())
+        return {"currentOrders": orders, "matches": matches, "moreAvailable": False}
 
 
 class RunnerChange:
