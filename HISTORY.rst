@@ -8,8 +8,10 @@ Release History
 
 **Improvements**
 
+- #369 Output streaming matched backs/lays
 - #370 Session timeout updated to 24hrs for international exchange
 - License update
+- Remove travis.yml and build.sh
 
 2.11.1 (2020-12-26)
 +++++++++++++++++++
