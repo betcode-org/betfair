@@ -124,6 +124,15 @@ while True:
     print(current_orders)
 ```
 
+### Order - Matches
+
+In addition to `orders` and the `moreAvailable` flag the streaming output has a `matches` field which contains a list of the selections with `matchedBacks` and `matchedLays`.
+
+```python
+>>> current_orders.matches
+[<bettingresources.Match>, <bettingresources.Match>]
+```
+
 ### Historical
 
 Betfairlightweight can also handle historical streaming data that has been purchased from [Betfair](https://historicdata.betfair.com/#/home) or collected yourself. 
