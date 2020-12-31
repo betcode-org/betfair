@@ -3,6 +3,14 @@
 Release History
 ---------------
 
+2.12.0 (2021-01-??)
++++++++++++++++++++
+
+**Improvements**
+
+- #370 Session timeout updated to 24hrs for international exchange
+- License update
+
 2.11.1 (2020-12-26)
 +++++++++++++++++++
 
