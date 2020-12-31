@@ -679,6 +679,13 @@ class CurrentOrder:
         self.cancelled_date = BaseResource.strip_datetime(cancelledDate)
 
 
+class Match:
+    def __init__(self, selectionId: int, matchedLays: list, matchedBacks: list):
+        self.selection_id = selectionId
+        self.matched_lays = [PriceSize(**m) for m in matchedLays]
+        self.matched_backs = [PriceSize(**m) for m in matchedBacks]
+
+
 class CurrentOrders(BaseResource):
     """
     :type more_available: bool
@@ -693,6 +700,7 @@ class CurrentOrders(BaseResource):
         super(CurrentOrders, self).__init__(**kwargs)
         self.more_available = kwargs.get("moreAvailable")
         self.orders = [CurrentOrder(**i) for i in kwargs.get("currentOrders")]
+        self.matches = [Match(**i) for i in kwargs.get("matches", [])]
 
 
 class ItemDescription:
