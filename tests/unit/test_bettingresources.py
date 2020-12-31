@@ -331,6 +331,18 @@ class BettingResourcesTest(unittest.TestCase):
         self.assertEqual(price_size.size, 2048)
         self.assertEqual(str(price_size), "Price: 1.01 Size: 2048")
 
+    def test_match(self):
+        match = {
+            "selectionId": 123,
+            "matchedLays": [{"price": 1.01, "size": 2.00}],
+            "matchedBacks": [],
+        }
+        resource = resources.Match(**match)
+        self.assertEqual(resource.selection_id, 123)
+        self.assertEqual(resource.matched_backs, [])
+        self.assertEqual(resource.matched_lays[0].price, 1.01)
+        self.assertEqual(resource.matched_lays[0].size, 2.00)
+
     def test_current_orders(self):
         mock_response = create_mock_json("tests/resources/list_current_orders.json")
         current_orders = mock_response.json().get("result")

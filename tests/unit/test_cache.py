@@ -412,7 +412,7 @@ class TestOrderBookCache(unittest.TestCase):
         serialised = self.order_book_cache.serialise
         self.assertEqual(
             serialised,
-            {"currentOrders": [1, 2, 3], "matches": [6, 4], "moreAvailable": False}
+            {"currentOrders": [1, 2, 3], "matches": [6, 4], "moreAvailable": False},
         )
 
 
@@ -503,7 +503,7 @@ class TestOrderBookRunner(unittest.TestCase):
     def test_serialise_matches(self):
         self.assertEqual(
             self.order_book_runner.serialise_matches(),
-            {"matchedBacks": [], "matchedLays": [], "selectionId": 1}
+            {"matchedBacks": [], "matchedLays": [], "selectionId": 1},
         )
 
 

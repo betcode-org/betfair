@@ -12,6 +12,7 @@ from .bettingresources import (
     VenueResult,
     MarketCatalogue,
     MarketBook,
+    Match,
     CurrentOrders,
     ClearedOrders,
     MarketProfitLoss,
