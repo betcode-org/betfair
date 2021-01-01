@@ -396,7 +396,7 @@ class OrderBookRunner:
         self.matched_backs = Available(mb, 1)
         self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
         self.handicap = hc
-        self.strategy_matches = smc
+        self.matches_by_strategy = smc
 
     def update_unmatched(self, unmatched_orders: list) -> None:
         for unmatched_order in unmatched_orders:
@@ -416,6 +416,21 @@ class OrderBookRunner:
             "selectionId": self.selection_id,
             "matchedLays": self.matched_lays.serialise,
             "matchedBacks": self.matched_backs.serialise,
+        }
+
+    def serialise_matches_by_strategy(self) -> dict:
+        if self.matches_by_strategy:
+            matches_by_strategy = {
+                k: {
+                    "matchedLays": Available(v.get("ml", []), 1).serialise,
+                    "matchedBacks": Available(v.get("mb", []), 1).serialise,
+                } for k, v in self.matches_by_strategy.items()
+            }
+        else:
+            matches_by_strategy = {}
+        return {
+            "selectionId": self.selection_id,
+            "matchesByStrategy": matches_by_strategy,
         }
 
 
@@ -472,11 +487,17 @@ class OrderBookCache(BaseResource):
     @property
     def serialise(self) -> dict:
         runners = list(self.runners.values())  # runner may be added
-        orders, matches = [], []
+        orders, matches, matches_by_strategy = [], [], []
         for runner in runners:
             orders.extend(runner.serialise_orders(self.market_id))
             matches.append(runner.serialise_matches())
-        return {"currentOrders": orders, "matches": matches, "moreAvailable": False}
+            matches_by_strategy.append(runner.serialise_matches_by_strategy())
+        return {
+            "currentOrders": orders,
+            "matches": matches,
+            "matchesByStrategy": matches_by_strategy,
+            "moreAvailable": False,
+        }
 
 
 class RunnerChange:

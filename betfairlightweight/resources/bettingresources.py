@@ -701,6 +701,7 @@ class CurrentOrders(BaseResource):
         self.more_available = kwargs.get("moreAvailable")
         self.orders = [CurrentOrder(**i) for i in kwargs.get("currentOrders")]
         self.matches = [Match(**i) for i in kwargs.get("matches", [])]
+        self.matches_by_strategy = kwargs.get("matchesByStrategy", {})
 
 
 class ItemDescription:

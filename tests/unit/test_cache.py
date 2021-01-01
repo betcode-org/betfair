@@ -402,9 +402,11 @@ class TestOrderBookCache(unittest.TestCase):
         mock_runner_one = mock.Mock()
         mock_runner_one.serialise_orders.return_value = [1]
         mock_runner_one.serialise_matches.return_value = 6
+        mock_runner_one.serialise_matches_by_strategy.return_value = 7
         mock_runner_two = mock.Mock()
         mock_runner_two.serialise_orders.return_value = [2, 3]
         mock_runner_two.serialise_matches.return_value = 4
+        mock_runner_two.serialise_matches_by_strategy.return_value = 8
         self.order_book_cache.runners = {
             (123, 0): mock_runner_one,
             (123, 1): mock_runner_two,
@@ -412,7 +414,12 @@ class TestOrderBookCache(unittest.TestCase):
         serialised = self.order_book_cache.serialise
         self.assertEqual(
             serialised,
-            {"currentOrders": [1, 2, 3], "matches": [6, 4], "moreAvailable": False},
+            {
+                "currentOrders": [1, 2, 3],
+                "matches": [6, 4],
+                "matchesByStrategy": [7, 8],
+                "moreAvailable": False,
+            },
         )
 
 
@@ -505,6 +512,14 @@ class TestOrderBookRunner(unittest.TestCase):
             self.order_book_runner.serialise_matches(),
             {"matchedBacks": [], "matchedLays": [], "selectionId": 1},
         )
+
+    def test_serialise_matches_by_strategy(self):
+        self.assertEqual(
+            self.order_book_runner.serialise_matches_by_strategy(),
+            {"matchesByStrategy": {}, "selectionId": 1},
+        )
+        self.order_book_runner.matches_by_strategy = {'c5b45c5208c2': {'mb': [[5.4, 2], [8.6, 2]], 'ml': [[2.02, 2], [3.75, 2], [3.3, 2]]}}
+
 
 
 class TestUnmatchedOrder(unittest.TestCase):
