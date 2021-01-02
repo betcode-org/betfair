@@ -160,6 +160,19 @@ class TestMarketBookCache(unittest.TestCase):
             assert self.market_book_cache.total_matched == book.get("tv")
             self.assertEqual(self.market_book_cache.streaming_update, book)
 
+    def test_update_multiple_rc(self):
+        # update data with multiple rc entries for the same selection
+        data = {"marketDefinition": {"runners": {}}}
+        data["rc"] = [
+            {"atb": [[1.01, 200]], "id": 13536143},
+            {"atl": [[1000.0, 200]], "id": 13536143},
+        ]
+
+        market_book_cache = MarketBookCache("1.123", 123)
+        market_book_cache.update_cache(data, 123)
+
+        assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
+
     # @mock.patch('betfairlightweight.resources.streamingresources.MarketBookCache.strip_datetime')
     # def test_update_cache_rc(self, mock_strip_datetime):
     #     publish_time = mock.Mock()
@@ -209,32 +222,45 @@ class TestMarketBookCache(unittest.TestCase):
             "streaming_snap": True,
         }
 
-    def test_update_runner_dict(self):
-        assert self.market_book_cache.runner_dict == {}
+    @mock.patch("betfairlightweight.streaming.cache.MarketBookCache._add_new_runner")
+    def test__process_market_definition(self, mock__add_new_runner):
+        mock_market_definition = {"runners": [{"id": 12}]}
+        self.market_book_cache._process_market_definition(mock_market_definition)
 
-        class Runner:
-            def __init__(self, selection_id, name, handicap):
-                self.selection_id = selection_id
-                self.name = name
-                self.handicap = handicap
+        self.assertEqual(
+            self.market_book_cache.market_definition, mock_market_definition
+        )
+        self.assertEqual(self.market_book_cache.runner_dict, {})
+        mock__add_new_runner.assert_called_with(id=12, hc=0, definition={"id": 12})
+        mock__add_new_runner().serialise.assert_called()
 
-        (a, b) = (Runner(123, "a", 1.25), Runner(456, "b", -0.25))
-        self.market_book_cache.runners = [a, b]
-        self.market_book_cache._update_runner_dict()
-        assert self.market_book_cache.runner_dict == {(123, 1.25): a, (456, -0.25): b}
+        mock_market_definition = {"runners": [{"id": 34, "hc": 1}]}
+        self.market_book_cache._process_market_definition(mock_market_definition)
 
-    def test_update_multiple_rc(self):
-        # Initialize data with multiple rc entries for the same selection
-        data = {"marketDefinition": {"runners": {}}}
-        data["rc"] = [
-            {"atb": [[1.01, 200]], "id": 13536143},
-            {"atl": [[1000.0, 200]], "id": 13536143},
-        ]
+        self.assertEqual(
+            self.market_book_cache.market_definition, mock_market_definition
+        )
+        self.assertEqual(self.market_book_cache.runner_dict, {})
+        mock__add_new_runner.assert_called_with(
+            id=34, hc=1, definition={"id": 34, "hc": 1}
+        )
+        mock__add_new_runner().serialise.assert_called()
 
-        market_book_cache = MarketBookCache("1.123", 123)
-        market_book_cache.update_cache(data, 123)
-
-        assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
+    @mock.patch("betfairlightweight.streaming.cache.RunnerBook")
+    def test__add_new_runner(self, mock_runner_book):
+        self.assertEqual(self.market_book_cache.runner_dict, {})
+        self.market_book_cache._add_new_runner(id=1, hc=2, definition={1: 2})
+        mock_runner_book.assert_called_with(id=1, hc=2, definition={1: 2})
+        self.assertEqual(
+            self.market_book_cache.runner_dict,
+            {
+                (
+                    mock_runner_book().selection_id,
+                    mock_runner_book().handicap,
+                ): mock_runner_book()
+            },
+        )
+        self.assertEqual(self.market_book_cache.runners, [mock_runner_book()])
 
     def test_closed(self):
         self.assertFalse(self.market_book_cache.closed)
@@ -245,6 +271,10 @@ class TestMarketBookCache(unittest.TestCase):
 class TestRunnerBook(unittest.TestCase):
     def setUp(self):
         self.runner_book = RunnerBook(**{"id": 123})
+
+    def test_init(self):
+        self.assertEqual(self.runner_book.selection_id, 123)
+        self.assertEqual(self.runner_book.serialised, {})
 
     def test_update_traded(self):
         self.mock_traded = mock.Mock()
@@ -316,14 +346,43 @@ class TestRunnerBook(unittest.TestCase):
             == mock_best_display_available_to_lay.serialise
         )
 
-    def test_empty_serialise(self):
-        serialise_d = self.runner_book.serialise()
+    def test_serialise(self):
+        self.runner_book.definition = {
+            "status": "ACTIVE",
+            "bsp": 12,
+            "adjustmentFactor": 23.1,
+        }
 
-        ex = serialise_d["ex"]
+        self.runner_book.serialise()
+        self.assertEqual(
+            self.runner_book.serialised,
+            {
+                "adjustmentFactor": 23.1,
+                "ex": {"availableToBack": [], "availableToLay": [], "tradedVolume": []},
+                "handicap": 0,
+                "lastPriceTraded": None,
+                "removalDate": None,
+                "selectionId": 123,
+                "sp": {
+                    "actualSP": 12,
+                    "backStakeTaken": [],
+                    "farPrice": None,
+                    "layLiabilityTaken": [],
+                    "nearPrice": None,
+                },
+                "status": "ACTIVE",
+                "totalMatched": None,
+            },
+        )
+
+    def test_empty_serialise(self):
+        self.runner_book.serialise()
+
+        ex = self.runner_book.serialised["ex"]
         # all empty lists
         assert all(not ex[a] for a in ex.keys())
 
-        sp = serialise_d["sp"]
+        sp = self.runner_book.serialised["sp"]
         # all 'None' or empty lists
         assert all(not sp[a] for a in sp.keys())
 
