@@ -40,22 +40,6 @@ class HistoricalStreamTest(unittest.TestCase):
         ) as f:
             expected_data = json.load(f)
 
-        # for i, v in zip(gen(), expected_data):
-        #     market_book = i[0]
-        #     i_runners = market_book.pop("runners")
-        #     v_runners = v.pop("runners")
-        #     self.assertEqual(market_book, v)
-        #     if len(i_runners) == len(v_runners):
-        #         self.assertEqual(
-        #             sorted(i_runners, key=lambda k: k["selectionId"]),
-        #             sorted(v_runners, key=lambda k: k["selectionId"])
-        #         )
-        #         from betfairlightweight.resources import BaseResource
-        #         print(BaseResource.strip_datetime(market_book["publishTime"]))
-        #     else:
-        #         from betfairlightweight.resources import BaseResource
-        #         print("skip", BaseResource.strip_datetime(market_book["publishTime"]), len(i_runners), len(v_runners))
-
         assert expected_data == data
 
 

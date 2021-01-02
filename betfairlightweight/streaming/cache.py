@@ -262,7 +262,8 @@ class MarketBookCache(BaseResource):
     @property
     def serialise(self) -> dict:
         """Creates standard market book json response,
-        will error if EX_MARKET_DEF not incl.
+        will contain missing data if EX_MARKET_DEF
+        not incl.
         """
         return {
             "marketId": self.market_id,
@@ -279,7 +280,7 @@ class MarketBookCache(BaseResource):
             "crossMatching": self.market_definition.get("crossMatching"),
             "inplay": self.market_definition.get("inPlay"),
             "numberOfWinners": self.market_definition.get("numberOfWinners"),
-            "numberOfRunners": len(self.market_definition.get("runners")),
+            "numberOfRunners": len(self.runners),
             "numberOfActiveRunners": self.market_definition.get(
                 "numberOfActiveRunners"
             ),

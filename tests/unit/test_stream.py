@@ -244,7 +244,7 @@ class MarketStreamTest(unittest.TestCase):
         data = sub_image_error.json()["mc"]
         self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(data), 137)
-        self.assertEqual(len(self.stream), 135)  # two markets missing marketDef
+        self.assertEqual(len(self.stream), 137)  # two markets not missing
 
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
