@@ -81,6 +81,7 @@ class RunnerBook:
         spb: list = None,
         spl: list = None,
         hc: int = 0,
+        definition: dict = None,
     ):
         self.selection_id = id
         self.last_price_traded = ltp
@@ -97,6 +98,7 @@ class RunnerBook:
         self.starting_price_near = spn
         self.starting_price_far = spf
         self.handicap = hc
+        self.definition = definition or {}
 
     def update_traded(self, traded_update: list) -> None:
         """:param traded_update: [price, size]"""
@@ -124,9 +126,9 @@ class RunnerBook:
             return self.best_available_to_lay.serialise
         return []
 
-    def serialise(self, runner_definition: dict) -> dict:
+    def serialise(self) -> dict:
         return {
-            "status": runner_definition.get("status"),
+            "status": self.definition.get("status"),
             "ex": {
                 "tradedVolume": self.traded.serialise,
                 "availableToBack": self.serialise_available_to_back(),
@@ -137,10 +139,10 @@ class RunnerBook:
                 "farPrice": self.starting_price_far,
                 "backStakeTaken": self.starting_price_back.serialise,
                 "layLiabilityTaken": self.starting_price_lay.serialise,
-                "actualSP": runner_definition.get("bsp"),
+                "actualSP": self.definition.get("bsp"),
             },
-            "adjustmentFactor": runner_definition.get("adjustmentFactor"),
-            "removalDate": runner_definition.get("removalDate"),
+            "adjustmentFactor": self.definition.get("adjustmentFactor"),
+            "removalDate": self.definition.get("removalDate"),
             "lastPriceTraded": self.last_price_traded,
             "handicap": self.handicap,
             "totalMatched": self.total_matched,
@@ -149,22 +151,16 @@ class RunnerBook:
 
 
 class MarketBookCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(MarketBookCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("id")
-        self.image = kwargs.get("img")
-        self.total_matched = kwargs.get("tv")
-        if "marketDefinition" not in kwargs:
-            raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
-        self.market_definition = kwargs["marketDefinition"]
+    def __init__(self, market_id, publish_time):
+        super(MarketBookCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
 
+        self.total_matched = None
+        self.market_definition = {}
         self.streaming_update = None
         self.runners = []
         self.runner_dict = {}
-        self.market_definition_runner_dict = {}
-        self._update_runner_dict()
-        self._update_market_definition_runner_dict()
 
     def update_cache(self, market_change: dict, publish_time: int) -> None:
         self._datetime_updated = (
@@ -174,8 +170,7 @@ class MarketBookCache(BaseResource):
         self.streaming_update = market_change
 
         if "marketDefinition" in market_change:
-            self.market_definition = market_change["marketDefinition"]
-            self._update_market_definition_runner_dict()
+            self._process_market_definition(market_change["marketDefinition"])
 
         if "tv" in market_change:
             self.total_matched = market_change["tv"]
@@ -214,6 +209,21 @@ class MarketBookCache(BaseResource):
                     self.runners.append(RunnerBook(**new_data))
                     self._update_runner_dict()
 
+    def _process_market_definition(self, market_definition: dict) -> None:
+        self.market_definition = market_definition
+        # process runners
+        for runner_definition in market_definition["runners"]:
+            selection_id = runner_definition["id"]
+            hc = runner_definition.get("hc", 0)
+            runner = self.runner_dict.get((selection_id, hc))
+            if runner:
+                runner.definition = runner_definition
+            else:
+                self.runners.append(
+                    RunnerBook(id=selection_id, hc=hc, definition=runner_definition)
+                )
+                self._update_runner_dict()
+
     def create_resource(
         self, unique_id: int, lightweight: bool, snap: bool = False
     ) -> Union[dict, MarketBook]:
@@ -235,12 +245,6 @@ class MarketBookCache(BaseResource):
     def _update_runner_dict(self) -> None:
         self.runner_dict = {
             (runner.selection_id, runner.handicap): runner for runner in self.runners
-        }
-
-    def _update_market_definition_runner_dict(self) -> None:
-        self.market_definition_runner_dict = {
-            (runner["id"], runner.get("hc", 0)): runner
-            for runner in self.market_definition["runners"]
         }
 
     @property
@@ -274,14 +278,7 @@ class MarketBookCache(BaseResource):
             "numberOfActiveRunners": self.market_definition.get(
                 "numberOfActiveRunners"
             ),
-            "runners": [
-                runner.serialise(
-                    self.market_definition_runner_dict[
-                        (runner.selection_id, runner.handicap)
-                    ]
-                )
-                for runner in self.runners
-            ],
+            "runners": [runner.serialise() for runner in self.runners],
             "publishTime": self.publish_time,
             "priceLadderDefinition": self.market_definition.get(
                 "priceLadderDefinition"

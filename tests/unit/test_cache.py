@@ -123,13 +123,16 @@ class TestAvailable(unittest.TestCase):
 
 class TestMarketBookCache(unittest.TestCase):
     def setUp(self):
-        self.market_book_cache = MarketBookCache(
-            **{"marketDefinition": {"runners": {}}}
-        )
+        self.market_book_cache = MarketBookCache("1.2345", 12345)
 
-    def test_error(self):
-        with self.assertRaises(CacheError):
-            self.market_book_cache = MarketBookCache()
+    def test_init(self):
+        self.assertEqual(self.market_book_cache.market_id, "1.2345")
+        self.assertEqual(self.market_book_cache.publish_time, 12345)
+        self.assertIsNone(self.market_book_cache.total_matched)
+        self.assertEqual(self.market_book_cache.market_definition, {})
+        self.assertIsNone(self.market_book_cache.streaming_update)
+        self.assertEqual(self.market_book_cache.runners, [])
+        self.assertEqual(self.market_book_cache.runner_dict, {})
 
     @mock.patch("betfairlightweight.streaming.cache.MarketBookCache.strip_datetime")
     def test_update_cache_md(self, mock_strip_datetime):
@@ -220,7 +223,7 @@ class TestMarketBookCache(unittest.TestCase):
         self.market_book_cache._update_runner_dict()
         assert self.market_book_cache.runner_dict == {(123, 1.25): a, (456, -0.25): b}
 
-    def test_init_multiple_rc(self):
+    def test_update_multiple_rc(self):
         # Initialize data with multiple rc entries for the same selection
         data = {"marketDefinition": {"runners": {}}}
         data["rc"] = [
@@ -228,7 +231,8 @@ class TestMarketBookCache(unittest.TestCase):
             {"atl": [[1000.0, 200]], "id": 13536143},
         ]
 
-        market_book_cache = MarketBookCache(**data)
+        market_book_cache = MarketBookCache("1.123", 123)
+        market_book_cache.update_cache(data, 123)
 
         assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
 
@@ -313,8 +317,7 @@ class TestRunnerBook(unittest.TestCase):
         )
 
     def test_empty_serialise(self):
-        runner_definition = {"bdp": None}
-        serialise_d = self.runner_book.serialise(runner_definition)
+        serialise_d = self.runner_book.serialise()
 
         ex = serialise_d["ex"]
         # all empty lists

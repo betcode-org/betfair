@@ -167,9 +167,7 @@ class MarketStream(BaseStream):
                         % (self, self.unique_id, market_id)
                     )
                     continue
-                market_book_cache = MarketBookCache(
-                    publish_time=publish_time, **market_book
-                )
+                market_book_cache = MarketBookCache(market_id, publish_time)
                 self._caches[market_id] = market_book_cache
                 logger.info(
                     "[%s: %s]: %s added, %s markets in cache"
