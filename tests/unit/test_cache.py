@@ -174,9 +174,22 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertEqual(self.market_book_cache.publish_time, 12345)
         self.assertIsNone(self.market_book_cache.total_matched)
         self.assertEqual(self.market_book_cache.market_definition, {})
+        self.assertIsNone(self.market_book_cache._definition_bet_delay)
+        self.assertIsNone(self.market_book_cache._definition_version)
+        self.assertIsNone(self.market_book_cache._definition_complete)
+        self.assertIsNone(self.market_book_cache._definition_runners_voidable)
+        self.assertIsNone(self.market_book_cache._definition_status)
+        self.assertIsNone(self.market_book_cache._definition_bsp_reconciled)
+        self.assertIsNone(self.market_book_cache._definition_cross_matching)
+        self.assertIsNone(self.market_book_cache._definition_in_play)
+        self.assertIsNone(self.market_book_cache._definition_number_of_winners)
+        self.assertIsNone(self.market_book_cache._definition_number_of_active_runners)
+        self.assertIsNone(self.market_book_cache._definition_price_ladder_definition)
+        self.assertIsNone(self.market_book_cache._definition_key_line_description)
         self.assertIsNone(self.market_book_cache.streaming_update)
         self.assertEqual(self.market_book_cache.runners, [])
         self.assertEqual(self.market_book_cache.runner_dict, {})
+        self.assertEqual(self.market_book_cache._number_of_runners, 0)
 
     @mock.patch("betfairlightweight.streaming.cache.MarketBookCache.strip_datetime")
     def test_update_cache_md(self, mock_strip_datetime):
@@ -288,6 +301,35 @@ class TestMarketBookCache(unittest.TestCase):
         )
         mock__add_new_runner().serialise.assert_called()
 
+    def test__process_market_definition_caches(self):
+        mock_market_definition = {
+            "betDelay": 1,
+            "version": 234,
+            "complete": True,
+            "runnersVoidable": False,
+            "status": "ACTIVE",
+            "bspReconciled": True,
+            "crossMatching": False,
+            "inPlay": True,
+            "numberOfWinners": 5,
+            "numberOfActiveRunners": 6,
+            "priceLadderDefinition": "",
+        }
+        self.market_book_cache._process_market_definition(mock_market_definition)
+
+        self.assertEqual(self.market_book_cache._definition_bet_delay, 1)
+        self.assertEqual(self.market_book_cache._definition_version, 234)
+        self.assertEqual(self.market_book_cache._definition_complete, True)
+        self.assertEqual(self.market_book_cache._definition_runners_voidable, False)
+        self.assertEqual(self.market_book_cache._definition_status, "ACTIVE")
+        self.assertEqual(self.market_book_cache._definition_bsp_reconciled, True)
+        self.assertEqual(self.market_book_cache._definition_cross_matching, False)
+        self.assertEqual(self.market_book_cache._definition_in_play, True)
+        self.assertEqual(self.market_book_cache._definition_number_of_winners, 5)
+        self.assertEqual(self.market_book_cache._definition_number_of_active_runners, 6)
+        self.assertEqual(self.market_book_cache._definition_price_ladder_definition, "")
+        self.assertEqual(self.market_book_cache._definition_key_line_description, None)
+
     @mock.patch("betfairlightweight.streaming.cache.RunnerBook")
     def test__add_new_runner(self, mock_runner_book):
         self.assertEqual(self.market_book_cache.runner_dict, {})
@@ -303,6 +345,7 @@ class TestMarketBookCache(unittest.TestCase):
             },
         )
         self.assertEqual(self.market_book_cache.runners, [mock_runner_book()])
+        self.assertEqual(self.market_book_cache._number_of_runners, 1)
 
     def test_closed(self):
         self.assertFalse(self.market_book_cache.closed)
