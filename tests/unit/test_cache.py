@@ -320,6 +320,19 @@ class TestRunnerBook(unittest.TestCase):
         self.assertEqual(self.runner_book.selection_id, 123)
         self.assertEqual(self.runner_book.serialised, {})
 
+    def test_update_definition(self):
+        definition = {
+            "status": "ACTIVE",
+            "bsp": 12,
+            "adjustmentFactor": 23.1,
+        }
+        self.runner_book.update_definition(definition)
+        self.assertEqual(self.runner_book.definition, definition)
+        self.assertEqual(self.runner_book._definition_status, "ACTIVE")
+        self.assertEqual(self.runner_book._definition_bsp, 12)
+        self.assertEqual(self.runner_book._definition_adjustment_factor, 23.1)
+        self.assertIsNone(self.runner_book._definition_removal_date)
+
     def test_update_traded(self):
         self.mock_traded = mock.Mock()
         self.runner_book.traded = self.mock_traded
@@ -391,12 +404,9 @@ class TestRunnerBook(unittest.TestCase):
         )
 
     def test_serialise(self):
-        self.runner_book.definition = {
-            "status": "ACTIVE",
-            "bsp": 12,
-            "adjustmentFactor": 23.1,
-        }
-
+        self.runner_book._definition_status = "ACTIVE"
+        self.runner_book._definition_bsp = 12
+        self.runner_book._definition_adjustment_factor = 23.1
         self.runner_book.serialise()
         self.assertEqual(
             self.runner_book.serialised,

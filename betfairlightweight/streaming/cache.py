@@ -104,7 +104,20 @@ class RunnerBook:
         self.starting_price_far = spf
         self.handicap = hc
         self.definition = definition or {}
+        self._definition_status = None
+        self._definition_bsp = None
+        self._definition_adjustment_factor = None
+        self._definition_removal_date = None
+        self.update_definition(self.definition)
         self.serialised = {}  # cache is king
+
+    def update_definition(self, definition: dict) -> None:
+        self.definition = definition
+        # cache values used in serialisation to prevent duplicate <get>
+        self._definition_status = self.definition.get("status")
+        self._definition_bsp = self.definition.get("bsp")
+        self._definition_adjustment_factor = self.definition.get("adjustmentFactor")
+        self._definition_removal_date = self.definition.get("removalDate")
 
     def update_traded(self, traded_update: list) -> None:
         """:param traded_update: [price, size]"""
@@ -134,7 +147,7 @@ class RunnerBook:
 
     def serialise(self) -> None:
         self.serialised = {
-            "status": self.definition.get("status"),
+            "status": self._definition_status,
             "ex": {
                 "tradedVolume": self.traded.serialise,
                 "availableToBack": self.serialise_available_to_back(),
@@ -145,10 +158,10 @@ class RunnerBook:
                 "farPrice": self.starting_price_far,
                 "backStakeTaken": self.starting_price_back.serialise,
                 "layLiabilityTaken": self.starting_price_lay.serialise,
-                "actualSP": self.definition.get("bsp"),
+                "actualSP": self._definition_bsp,
             },
-            "adjustmentFactor": self.definition.get("adjustmentFactor"),
-            "removalDate": self.definition.get("removalDate"),
+            "adjustmentFactor": self._definition_adjustment_factor,
+            "removalDate": self._definition_removal_date,
             "lastPriceTraded": self.last_price_traded,
             "handicap": self.handicap,
             "totalMatched": self.total_matched,
@@ -223,7 +236,7 @@ class MarketBookCache(BaseResource):
             hc = runner_definition.get("hc", 0)
             runner = self.runner_dict.get((selection_id, hc))
             if runner:
-                runner.definition = runner_definition
+                runner.update_definition(runner_definition)
             else:
                 runner = self._add_new_runner(
                     id=selection_id, hc=hc, definition=runner_definition
