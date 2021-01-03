@@ -85,15 +85,18 @@ class StreamListener(BaseListener):
         output_queue: queue.Queue = None,
         max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
+        debug: bool = True,
     ):
         """
         :param Queue output_queue: Queue used to return data
         :param float max_latency: Logs warning if latency above value
         :param bool lightweight: Returns dict instead of resource
+        :param bool debug: Debug logging calls enabled (setting to True has slight performance hit)
         """
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
+        self.debug = debug
 
     def on_data(self, raw_data: str) -> Optional[bool]:
         """Called when raw data is received from connection.
@@ -159,7 +162,10 @@ class StreamListener(BaseListener):
     def _on_change_message(self, data: dict, unique_id: int) -> None:
         change_type = data.get("ct", "UPDATE")
 
-        logger.debug("[%s: %s]: %s: %s" % (self.stream, unique_id, change_type, data))
+        if self.debug:
+            logger.debug(  # very slow call due to data dict
+                "[%s: %s]: %s: %s" % (self.stream, unique_id, change_type, data)
+            )
 
         if change_type == "SUB_IMAGE":
             self.stream.on_subscribe(data)

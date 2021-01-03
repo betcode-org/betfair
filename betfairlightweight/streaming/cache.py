@@ -8,7 +8,6 @@ from ..enums import (
     StreamingSide,
     StreamingStatus,
 )
-from ..exceptions import CacheError
 from ..utils import create_date_string
 
 
@@ -31,12 +30,16 @@ class Available:
         self.serialise = []
         self.sort()
 
-    def sort(self) -> None:
-        self.prices.sort(reverse=self.reverse)
+    def sort(self, sort=True) -> None:
+        if sort:  # limit expensive sort
+            self.prices.sort(reverse=self.reverse)
+        # avoiding dots / create local vars
+        v_deletion_select = self.deletion_select - 1
+        s_deletion_select = self.deletion_select
         self.serialise = [
             {
-                "price": volume[self.deletion_select - 1],
-                "size": volume[self.deletion_select],
+                "price": volume[v_deletion_select],
+                "size": volume[s_deletion_select],
             }
             for volume in self.prices
         ]
@@ -46,6 +49,7 @@ class Available:
         self.sort()
 
     def update(self, book_update: list) -> None:
+        sort = False
         for book in book_update:
             for (count, trade) in enumerate(self.prices):
                 if trade[0] == book[0]:
@@ -60,7 +64,8 @@ class Available:
                     # handles betfair bug,
                     # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
                     self.prices.append(book)
-        self.sort()
+                    sort = True
+        self.sort(sort)
 
 
 class RunnerBook:

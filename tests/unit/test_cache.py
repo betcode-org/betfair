@@ -33,6 +33,14 @@ class TestAvailable(unittest.TestCase):
             {"price": 1.02, "size": 34.45},
         ]
 
+    def test_sort_false(self):
+        self.available.prices = [[1, 1.02, 34.45], [0, 1.01, 12]]
+        self.available.sort(False)
+        assert self.available.serialise == [
+            {"price": 1.02, "size": 34.45},
+            {"price": 1.01, "size": 12},
+        ]
+
     def test_sort_short(self):
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
         available = Available(current, 1)
@@ -46,6 +54,42 @@ class TestAvailable(unittest.TestCase):
     def test_clear(self):
         self.available.clear()
         assert self.available.prices == []
+
+    @mock.patch("betfairlightweight.streaming.cache.Available.sort")
+    def test_update_sort_true(self, mock_sort):
+        # [price, size]
+        book_update = [[30, 6.9]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [30, 6.9]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        mock_sort.assert_called_with(True)
+        self.assertEqual(available.prices, expected)
+
+    @mock.patch("betfairlightweight.streaming.cache.Available.sort")
+    def test_update_sort_false(self, mock_sort):
+        # [price, size]
+        book_update = [[27, 6.9]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[27, 6.9], [13, 28.01], [1.02, 1157.21]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        mock_sort.assert_called_with(False)
+        self.assertEqual(available.prices, expected)
+
+    @mock.patch("betfairlightweight.streaming.cache.Available.sort")
+    def test_update_sort_false_del(self, mock_sort):
+        # [price, size]
+        book_update = [[27, 0]]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = [[13, 28.01], [1.02, 1157.21]]
+
+        available = Available(current, 1)
+        available.update(book_update)
+        mock_sort.assert_called_with(False)
+        self.assertEqual(available.prices, expected)
 
     def test_update_available_new_update(self):
         # [price, size]
