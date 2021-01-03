@@ -141,7 +141,7 @@ Betfairlightweight can also handle historical streaming data that has been purch
 >>> trading = betfairlightweight.APIClient("username", "password")
 
     # create listener
->>> listener = HistoricalListener(max_latency=1e100)
+>>> listener = StreamListener(max_latency=None)
 
     # create historical stream, update file_path to file location
 >>> stream = trading.streaming.create_historical_stream(
@@ -152,6 +152,9 @@ Betfairlightweight can also handle historical streaming data that has been purch
     # start stream
 >>> stream.start()
 ```
+
+!!! tip
+    The streaming code is highly optimised however to further improve speed the debug flag can be set to False on the listener `StreamListener(debug=False)`
 
 The historical stream can be used in the same way as the market/order stream allowing backtesting / market processing.
 

@@ -1,8 +1,8 @@
 import unittest
+from json import load  # orjson does not provide load
 
 import betfairlightweight
 from betfairlightweight import StreamListener
-from betfairlightweight.compat import json
 
 
 class HistoricalStreamTest(unittest.TestCase):
@@ -38,7 +38,7 @@ class HistoricalStreamTest(unittest.TestCase):
         with open(
             "tests/resources/historicaldata/BASIC-1.132153978-processed.json", "r"
         ) as f:
-            expected_data = json.load(f)
+            expected_data = load(f)
 
         assert expected_data == data
 
