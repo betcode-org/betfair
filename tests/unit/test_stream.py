@@ -19,6 +19,11 @@ class BaseStreamTest(unittest.TestCase):
 
     def test_init(self):
         assert self.stream._listener == self.listener
+        assert self.stream.unique_id == self.listener.stream_unique_id
+        assert self.stream.output_queue == self.listener.output_queue
+        assert self.stream.update_clk == self.listener.update_clk
+        assert self.stream._max_latency == self.listener.max_latency
+        assert self.stream._lightweight == self.listener.lightweight
         assert self.stream._initial_clk is None
         assert self.stream._clk is None
         assert self.stream._caches == {}
@@ -180,18 +185,6 @@ class BaseStreamTest(unittest.TestCase):
 
         self.stream._update_clk({"clk": 123})
         assert self.stream._clk == 123
-
-    def test_unique_id(self):
-        assert self.stream.unique_id == self.listener.stream_unique_id
-
-    def test_output_queue(self):
-        assert self.stream.output_queue == self.listener.output_queue
-
-    def test_max_latency(self):
-        assert self.stream._max_latency == self.listener.max_latency
-
-    def test_lightweight(self):
-        assert self.stream._lightweight == self.listener.lightweight
 
     @mock.patch("time.time", return_value=1485554805.107185)
     def test_calc_latency(self, mock_time):

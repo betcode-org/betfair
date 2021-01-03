@@ -186,7 +186,6 @@ class TestMarketBookCache(unittest.TestCase):
 
         for book in book_data:
             self.market_book_cache.update_cache(book, publish_time)
-            mock_strip_datetime.assert_called_with(publish_time)
             assert self.market_book_cache.market_definition == book.get(
                 "marketDefinition"
             )
@@ -200,7 +199,6 @@ class TestMarketBookCache(unittest.TestCase):
 
         for book in book_data:
             self.market_book_cache.update_cache(book, publish_time)
-            mock_strip_datetime.assert_called_with(publish_time)
             assert self.market_book_cache.total_matched == book.get("tv")
             self.assertEqual(self.market_book_cache.streaming_update, book)
 

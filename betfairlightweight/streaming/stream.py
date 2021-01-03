@@ -1,7 +1,6 @@
 import datetime
 import logging
 import time
-import queue
 
 from .cache import MarketBookCache, OrderBookCache, RaceCache
 
@@ -18,6 +17,11 @@ class BaseStream:
 
     def __init__(self, listener: object):
         self._listener = listener
+        self.unique_id = listener.stream_unique_id
+        self.output_queue = listener.output_queue
+        self.update_clk = listener.update_clk
+        self._max_latency = listener.max_latency
+        self._lightweight = listener.lightweight
 
         self._initial_clk = None
         self._clk = None
@@ -50,14 +54,16 @@ class BaseStream:
         )
 
     def on_update(self, data: dict) -> None:
-        self._update_clk(data)
+        if self.update_clk:
+            self._update_clk(data)
 
         publish_time = data["pt"]
-        latency = self._calc_latency(publish_time)
-        if self._max_latency and latency > self._max_latency:
-            logger.warning(
-                "[%s: %s]: Latency high: %s" % (self, self.unique_id, latency)
-            )
+        if self._max_latency:
+            latency = self._calc_latency(publish_time)
+            if latency > self._max_latency:
+                logger.warning(
+                    "[%s: %s]: Latency high: %s" % (self, self.unique_id, latency)
+                )
 
         if self._lookup in data:
             img = self._process(data[self._lookup], publish_time)
@@ -113,22 +119,6 @@ class BaseStream:
         if clk:
             self._clk = clk
         self.time_updated = datetime.datetime.utcnow()
-
-    @property
-    def unique_id(self) -> int:
-        return self._listener.stream_unique_id
-
-    @property
-    def output_queue(self) -> queue.Queue:
-        return self._listener.output_queue
-
-    @property
-    def _max_latency(self) -> float:
-        return self._listener.max_latency
-
-    @property
-    def _lightweight(self) -> bool:
-        return self._listener.lightweight
 
     @staticmethod
     def _calc_latency(publish_time: int) -> float:

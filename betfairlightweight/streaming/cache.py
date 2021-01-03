@@ -182,9 +182,6 @@ class MarketBookCache(BaseResource):
         self.runner_dict = {}
 
     def update_cache(self, market_change: dict, publish_time: int) -> None:
-        self._datetime_updated = (
-            self.strip_datetime(publish_time) or self._datetime_updated
-        )
         self.publish_time = publish_time
         self.streaming_update = market_change
 

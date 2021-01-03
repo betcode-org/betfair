@@ -86,17 +86,20 @@ class StreamListener(BaseListener):
         max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
         debug: bool = True,
+        update_clk: bool = True,
     ):
         """
         :param Queue output_queue: Queue used to return data
         :param float max_latency: Logs warning if latency above value
         :param bool lightweight: Returns dict instead of resource
         :param bool debug: Debug logging calls enabled (setting to True has slight performance hit)
+        :param bool update_clk: initialClk/clk not updated on updates if False (quicker)
         """
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
         self.debug = debug
+        self.update_clk = update_clk
 
     def on_data(self, raw_data: str) -> Optional[bool]:
         """Called when raw data is received from connection.
