@@ -17,55 +17,62 @@ class Available:
     designed to be as quick as possible.
     """
 
+    __slots__ = [
+        "order_book",
+        "deletion_select",
+        "reverse",
+        "serialised",
+    ]
+
     def __init__(self, prices: list, deletion_select: int, reverse: bool = False):
         """
         :param list prices: Current prices
         :param int deletion_select: Used to decide if update should delete cache
         :param bool reverse: Used for sorting
         """
-        self.prices = prices or []
+        self.order_book = {}
         self.deletion_select = deletion_select
         self.reverse = reverse
+        self.serialised = []
+        self.update(prices or [])
 
-        self.serialise = []
-        self.sort()
-
-    def sort(self, sort=True) -> None:
-        if sort:  # limit expensive sort
-            self.prices.sort(reverse=self.reverse)
+    def serialise(self) -> None:
         # avoiding dots / create local vars
-        v_deletion_select = self.deletion_select - 1
         s_deletion_select = self.deletion_select
-        self.serialise = [
+        self.serialised = [
             {
-                "price": volume[v_deletion_select],
+                "price": price,
                 "size": volume[s_deletion_select],
             }
-            for volume in self.prices
+            for price, volume in self.order_book.items()
         ]
 
     def clear(self) -> None:
-        self.prices = []
-        self.sort()
+        self.order_book = {}
+        self.serialise()
+
+    def _sort_order_book(self):
+        self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
 
     def update(self, book_update: list) -> None:
-        sort = False
         for book in book_update:
-            for (count, trade) in enumerate(self.prices):
-                if trade[0] == book[0]:
-                    if book[self.deletion_select] == 0:
-                        del self.prices[count]
-                        break
-                    else:
-                        self.prices[count] = book
-                        break
+            price = book[0]
+            if book[self.deletion_select] == 0:
+                # remove price/size
+                try:
+                    del self.order_book[price]
+                except KeyError:
+                    continue
             else:
-                if book[self.deletion_select] != 0:
-                    # handles betfair bug,
-                    # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
-                    self.prices.append(book)
-                    sort = True
-        self.sort(sort)
+                if price not in self.order_book:
+                    # new price requiring a reorder
+                    # to the book.
+                    self.order_book[price] = book
+                    self._sort_order_book()
+                else:
+                    # update book
+                    self.order_book[price] = book
+        self.serialise()
 
 
 class RunnerBook:
@@ -127,37 +134,37 @@ class RunnerBook:
             self.traded.update(traded_update)
 
     def serialise_available_to_back(self) -> list:
-        if self.available_to_back.prices:
-            return self.available_to_back.serialise
-        elif self.best_display_available_to_back.prices:
-            return self.best_display_available_to_back.serialise
-        elif self.best_available_to_back.prices:
-            return self.best_available_to_back.serialise
+        if self.available_to_back.order_book:
+            return self.available_to_back.serialised
+        elif self.best_display_available_to_back.order_book:
+            return self.best_display_available_to_back.serialised
+        elif self.best_available_to_back.order_book:
+            return self.best_available_to_back.serialised
         else:
             return []
 
     def serialise_available_to_lay(self) -> list:
-        if self.available_to_lay.prices:
-            return self.available_to_lay.serialise
-        elif self.best_display_available_to_lay.prices:
-            return self.best_display_available_to_lay.serialise
-        elif self.best_available_to_lay.prices:
-            return self.best_available_to_lay.serialise
+        if self.available_to_lay.order_book:
+            return self.available_to_lay.serialised
+        elif self.best_display_available_to_lay.order_book:
+            return self.best_display_available_to_lay.serialised
+        elif self.best_available_to_lay.order_book:
+            return self.best_available_to_lay.serialised
         return []
 
     def serialise(self) -> None:
         self.serialised = {
             "status": self._definition_status,
             "ex": {
-                "tradedVolume": self.traded.serialise,
+                "tradedVolume": self.traded.serialised,
                 "availableToBack": self.serialise_available_to_back(),
                 "availableToLay": self.serialise_available_to_lay(),
             },
             "sp": {
                 "nearPrice": self.starting_price_near,
                 "farPrice": self.starting_price_far,
-                "backStakeTaken": self.starting_price_back.serialise,
-                "layLiabilityTaken": self.starting_price_lay.serialise,
+                "backStakeTaken": self.starting_price_back.serialised,
+                "layLiabilityTaken": self.starting_price_lay.serialised,
                 "actualSP": self._definition_bsp,
             },
             "adjustmentFactor": self._definition_adjustment_factor,
