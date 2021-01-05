@@ -36,28 +36,11 @@ class Available:
         self.serialised = []
         self.update(prices or [])
 
-    def serialise(self) -> None:
-        # avoiding dots / create local vars
-        s_deletion_select = self.deletion_select
-        self.serialised = [
-            {
-                "price": price,
-                "size": volume[s_deletion_select],
-            }
-            for price, volume in self.order_book.items()
-        ]
-
-    def clear(self) -> None:
-        self.order_book = {}
-        self.serialise()
-
-    def _sort_order_book(self):
-        self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
-
     def update(self, book_update: list) -> None:
+        deletion_select = self.deletion_select  # local vars
         for book in book_update:
-            price = book[0]
-            if book[self.deletion_select] == 0:
+            price = book[deletion_select - 1]
+            if book[deletion_select] == 0:
                 # remove price/size
                 try:
                     del self.order_book[price]
@@ -73,6 +56,24 @@ class Available:
                     # update book
                     self.order_book[price] = book
         self.serialise()
+
+    def clear(self) -> None:
+        self.order_book = {}
+        self.serialise()
+
+    def serialise(self) -> None:
+        # avoiding dots / create local vars
+        s_deletion_select = self.deletion_select
+        self.serialised = [
+            {
+                "price": price,
+                "size": volume[s_deletion_select],
+            }
+            for price, volume in self.order_book.items()
+        ]
+
+    def _sort_order_book(self):
+        self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
 
 
 class RunnerBook:
@@ -467,8 +468,8 @@ class OrderBookRunner:
     def serialise_matches(self) -> dict:
         return {
             "selectionId": self.selection_id,
-            "matchedLays": self.matched_lays.serialise,
-            "matchedBacks": self.matched_backs.serialise,
+            "matchedLays": self.matched_lays.serialised,
+            "matchedBacks": self.matched_backs.serialised,
         }
 
 

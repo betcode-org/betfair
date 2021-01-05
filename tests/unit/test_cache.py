@@ -21,148 +21,180 @@ class TestAvailable(unittest.TestCase):
         self.available = Available(self.prices, 2)
 
     def test_init(self):
-        assert self.available.prices == self.prices
-        assert self.available.deletion_select == 2
-        assert self.available.reverse is False
+        self.assertEqual(
+            self.available.order_book, {1.01: [0, 1.01, 12], 1.02: [1, 1.02, 34.45]}
+        )
+        self.assertEqual(self.available.deletion_select, 2)
+        self.assertFalse(self.available.reverse)
+        self.assertEqual(
+            self.available.serialised,
+            [{"price": 1.01, "size": 12}, {"price": 1.02, "size": 34.45}],
+        )
 
-    def test_sort(self):
-        self.available.sort()
-        assert self.available.prices == self.prices
-        assert self.available.serialise == [
-            {"price": 1.01, "size": 12},
-            {"price": 1.02, "size": 34.45},
-        ]
-
-    def test_sort_false(self):
-        self.available.prices = [[1, 1.02, 34.45], [0, 1.01, 12]]
-        self.available.sort(False)
-        assert self.available.serialise == [
-            {"price": 1.02, "size": 34.45},
-            {"price": 1.01, "size": 12},
-        ]
-
-    def test_sort_short(self):
+    def test_serialise(self):
+        # [price, size]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
         available = Available(current, 1)
+        available.serialise()
+        self.assertEqual(
+            available.serialised,
+            [
+                {"price": 1.02, "size": 1157.21},
+                {"price": 13, "size": 28.01},
+                {"price": 27, "size": 0.95},
+            ],
+        )
 
-        assert available.serialise == [
-            {"price": 1.02, "size": 1157.21},
-            {"price": 13, "size": 28.01},
-            {"price": 27, "size": 0.95},
-        ]
+        # [position, price, size]
+        current = [[2, 27, 0.95], [1, 13, 28.01], [0, 1.02, 1157.21]]
+        available = Available(current, 2)
+        available.serialise()
+        self.assertEqual(
+            available.serialised,
+            [
+                {"price": 1.02, "size": 1157.21},
+                {"price": 13, "size": 28.01},
+                {"price": 27, "size": 0.95},
+            ],
+        )
 
-    def test_clear(self):
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_clear(self, mock_serialise):
         self.available.clear()
-        assert self.available.prices == []
+        assert self.available.order_book == {}
+        mock_serialise.assert_called()
 
-    @mock.patch("betfairlightweight.streaming.cache.Available.sort")
-    def test_update_sort_true(self, mock_sort):
+    def test__sort_order_book(self):
+        self.available.order_book = {1.01: [2], 100: [3], 13: [5]}
+        self.available._sort_order_book()
+        self.assertEqual(list(self.available.order_book.keys()), [1.01, 13, 100])
+        # reverse
+        self.available.reverse = True
+        self.available._sort_order_book()
+        self.assertEqual(list(self.available.order_book.keys()), [100, 13, 1.01])
+
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update(self, mock_serialise):
+        book_update = [[27, 2]]  # [price, size]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = {27: [27, 2], 13: [13, 28.01], 1.02: [1.02, 1157.21]}
+
+        available = Available(current, 1)
+        available.update(book_update)
+        mock_serialise.assert_called()
+        self.assertEqual(available.order_book, expected)
+
+    @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update_new(self, mock_serialise, mock__sort_order_book):
+        book_update = [[30, 6.9]]  # [price, size]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = {
+            27: [27, 0.95],
+            13: [13, 28.01],
+            1.02: [1.02, 1157.21],
+            30: [30, 6.9],
+        }
+
+        available = Available(current, 1)
+        available.update(book_update)
+        mock_serialise.assert_called()
+        mock__sort_order_book.assert_called()
+        self.assertEqual(available.order_book, expected)
+
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update_del(self, mock_serialise):
+        book_update = [[27, 0]]  # [price, size]
+        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
+        expected = {13: [13, 28.01], 1.02: [1.02, 1157.21]}
+
+        available = Available(current, 1)
+        available.update(book_update)
+        mock_serialise.assert_called()
+        self.assertEqual(available.order_book, expected)
+
+    @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update_available_new_update(self, mock_serialise, mock__sort_order_book):
         # [price, size]
         book_update = [[30, 6.9]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[27, 0.95], [13, 28.01], [1.02, 1157.21], [30, 6.9]]
-
+        expected = {
+            27: [27, 0.95],
+            13: [13, 28.01],
+            1.02: [1.02, 1157.21],
+            30: [30, 6.9],
+        }
         available = Available(current, 1)
         available.update(book_update)
-        mock_sort.assert_called_with(True)
-        self.assertEqual(available.prices, expected)
-
-    @mock.patch("betfairlightweight.streaming.cache.Available.sort")
-    def test_update_sort_false(self, mock_sort):
-        # [price, size]
-        book_update = [[27, 6.9]]
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[27, 6.9], [13, 28.01], [1.02, 1157.21]]
-
-        available = Available(current, 1)
-        available.update(book_update)
-        mock_sort.assert_called_with(False)
-        self.assertEqual(available.prices, expected)
-
-    @mock.patch("betfairlightweight.streaming.cache.Available.sort")
-    def test_update_sort_false_del(self, mock_sort):
-        # [price, size]
-        book_update = [[27, 0]]
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[13, 28.01], [1.02, 1157.21]]
-
-        available = Available(current, 1)
-        available.update(book_update)
-        mock_sort.assert_called_with(False)
-        self.assertEqual(available.prices, expected)
-
-    def test_update_available_new_update(self):
-        # [price, size]
-        book_update = [[30, 6.9]]
-        current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[1.02, 1157.21], [13, 28.01], [27, 0.95], [30, 6.9]]
-
-        available = Available(current, 1)
-        available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
         book_update = [[30, 6.9], [1.01, 12]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[1.01, 12], [1.02, 1157.21], [13, 28.01], [27, 0.95], [30, 6.9]]
-
+        expected = {
+            27: [27, 0.95],
+            13: [13, 28.01],
+            1.02: [1.02, 1157.21],
+            1.01: [1.01, 12],
+            30: [30, 6.9],
+        }
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
         current = []
-        expected = [[0, 36, 0.57]]
-
+        expected = {36: [0, 36, 0.57]}
         available = Available(current, 2)
         available.update(book_update)
-        assert available.prices == expected
+        assert available.order_book == expected
 
-    def test_update_available_new_replace(self):
+    @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update_available_new_replace(self, mock_serialise, mock__sort_order_book):
         # [price, size]
         book_update = [[27, 6.9]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[1.02, 1157.21], [13, 28.01], [27, 6.9]]
-
+        expected = {27: [27, 6.9], 13: [13, 28.01], 1.02: [1.02, 1157.21]}
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
         current = [[0, 36, 10.57], [1, 38, 3.57]]
-        expected = [[0, 36, 0.57], [1, 38, 3.57]]
-
+        expected = {36: [0, 36, 0.57], 38: [1, 38, 3.57]}
         available = Available(current, 2)
         available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
         book_update = [[2, 0, 0], [1, 1.01, 9835.74], [0, 1.02, 1126.22]]
         current = [[1, 1.01, 9835.74], [0, 1.02, 1126.22]]
-        expected = [[0, 1.02, 1126.22], [1, 1.01, 9835.74]]
-
+        expected = {1.02: [0, 1.02, 1126.22], 1.01: [1, 1.01, 9835.74]}
         available = Available(current, 2)
         available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
-    def test_update_available_new_remove(self):
+    @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update_available_new_remove(self, mock_serialise, mock__sort_order_book):
+        # [price, size]
         book_update = [[27, 0]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = [[1.02, 1157.21], [13, 28.01]]
-
+        expected = {1.02: [1.02, 1157.21], 13: [13, 28.01]}
         available = Available(current, 1)
         available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
         # [position, price, size]
         book_update = [[0, 36, 0], [1, 38, 0], [0, 38, 3.57]]
         current = [[0, 36, 10.57], [1, 38, 3.57]]
-        expected = [[0, 38, 3.57]]
-
+        expected = {38: [0, 38, 3.57]}
         available = Available(current, 2)
         available.update(book_update)
-        assert current == expected
+        assert available.order_book == expected
 
 
 class TestMarketBookCache(unittest.TestCase):
@@ -386,62 +418,62 @@ class TestRunnerBook(unittest.TestCase):
 
     def test_serialise_back(self):
         mock_available_to_back = mock.Mock()
-        mock_available_to_back.prices = True
+        mock_available_to_back.order_book = True
         mock_best_available_to_back = mock.Mock()
         mock_best_available_to_back.prices = True
         mock_best_display_available_to_back = mock.Mock()
-        mock_best_display_available_to_back.prices = True
+        mock_best_display_available_to_back.order_book = True
         self.runner_book.available_to_back = mock_available_to_back
 
         assert (
             self.runner_book.serialise_available_to_back()
-            == mock_available_to_back.serialise
+            == mock_available_to_back.serialised
         )
 
-        mock_available_to_back.prices = False
+        mock_available_to_back.order_book = False
         self.runner_book.best_available_to_back = mock_best_available_to_back
         assert (
             self.runner_book.serialise_available_to_back()
-            == mock_best_available_to_back.serialise
+            == mock_best_available_to_back.serialised
         )
 
-        mock_best_available_to_back.prices = False
+        mock_best_available_to_back.order_book = False
         self.runner_book.best_display_available_to_back = (
             mock_best_display_available_to_back
         )
         assert (
             self.runner_book.serialise_available_to_back()
-            == mock_best_display_available_to_back.serialise
+            == mock_best_display_available_to_back.serialised
         )
 
     def test_serialise_lay(self):
         mock_available_to_lay = mock.Mock()
-        mock_available_to_lay.prices = True
+        mock_available_to_lay.order_book = True
         mock_best_available_to_lay = mock.Mock()
         mock_best_available_to_lay.prices = True
         mock_best_display_available_to_lay = mock.Mock()
-        mock_best_display_available_to_lay.prices = True
+        mock_best_display_available_to_lay.order_book = True
         self.runner_book.available_to_lay = mock_available_to_lay
 
         assert (
             self.runner_book.serialise_available_to_lay()
-            == mock_available_to_lay.serialise
+            == mock_available_to_lay.serialised
         )
 
-        mock_available_to_lay.prices = False
+        mock_available_to_lay.order_book = False
         self.runner_book.best_available_to_lay = mock_best_available_to_lay
         assert (
             self.runner_book.serialise_available_to_lay()
-            == mock_best_available_to_lay.serialise
+            == mock_best_available_to_lay.serialised
         )
 
-        mock_best_available_to_lay.prices = False
+        mock_best_available_to_lay.order_book = False
         self.runner_book.best_display_available_to_lay = (
             mock_best_display_available_to_lay
         )
         assert (
             self.runner_book.serialise_available_to_lay()
-            == mock_best_display_available_to_lay.serialise
+            == mock_best_display_available_to_lay.serialised
         )
 
     def test_serialise(self):
