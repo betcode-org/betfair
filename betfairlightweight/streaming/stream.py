@@ -222,8 +222,8 @@ class RaceStream(BaseStream):
         caches, img = [], False  # todo cache.closed / img=True
         for update in race_updates:
             market_id = update["mid"]
-
             race_cache = self._caches.get(market_id)
+
             if race_cache is None:
                 race_id = update.get("id")
                 race_cache = RaceCache(market_id, publish_time, race_id)
