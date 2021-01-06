@@ -15,11 +15,11 @@ class BaseStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
         self.listener.max_latency = 0.5
-        self.stream = BaseStream(self.listener)
+        self.stream = BaseStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._listener == self.listener
-        assert self.stream.unique_id == self.listener.stream_unique_id
+        assert self.stream.unique_id == 123
         assert self.stream.output_queue == self.listener.output_queue
         assert self.stream.update_clk == self.listener.update_clk
         assert self.stream._max_latency == self.listener.max_latency
@@ -205,7 +205,7 @@ class BaseStreamTest(unittest.TestCase):
 class MarketStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
-        self.stream = MarketStream(self.listener)
+        self.stream = MarketStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._lookup == "mc"
@@ -261,7 +261,7 @@ class MarketStreamTest(unittest.TestCase):
 class OrderStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
-        self.stream = OrderStream(self.listener)
+        self.stream = OrderStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._lookup == "oc"
@@ -317,7 +317,7 @@ class OrderStreamTest(unittest.TestCase):
 class RaceStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
-        self.stream = RaceStream(self.listener)
+        self.stream = RaceStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._lookup == "rc"

@@ -4,7 +4,6 @@ import time
 import threading
 from unittest import mock
 
-from betfairlightweight.compat import json
 from betfairlightweight.streaming.betfairstream import (
     BetfairStream,
     HistoricalStream,
@@ -178,20 +177,22 @@ class BetfairStreamTest(unittest.TestCase):
             }
         )
         assert not self.mock_listener.register_stream.called
+        self.mock_listener.update_unique_id.assert_called_with(
+            self.betfair_stream._unique_id
+        )
 
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._send")
     def test_subscribe_to_orders(self, mock_send):
-        initial_clk = "abcdef"
-        clk = "abc"
+        order_filter = {"test": 123}
         self.betfair_stream.subscribe_to_orders(
-            initial_clk, clk, heartbeat_ms=1, conflate_ms=2, segmentation_enabled=False
+            order_filter, heartbeat_ms=1, conflate_ms=2, segmentation_enabled=False
         )
         mock_send.assert_called_with(
             {
-                "orderFilter": "abcdef",
+                "orderFilter": order_filter,
                 "id": self.betfair_stream._unique_id,
                 "op": "orderSubscription",
-                "initialClk": "abc",
+                "initialClk": None,
                 "clk": None,
                 "heartbeatMs": 1,
                 "conflateMs": 2,
@@ -200,6 +201,36 @@ class BetfairStreamTest(unittest.TestCase):
         )
         self.mock_listener.register_stream.assert_called_with(
             self.betfair_stream._unique_id, "orderSubscription"
+        )
+
+    @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._send")
+    def test_subscribe_to_orders_resubscribe(self, mock_send):
+        order_filter = {"test": 123}
+        initial_clk = "abcdef"
+        clk = "abc"
+        self.betfair_stream.subscribe_to_orders(
+            order_filter,
+            initial_clk,
+            clk,
+            heartbeat_ms=1,
+            conflate_ms=2,
+            segmentation_enabled=False,
+        )
+        mock_send.assert_called_with(
+            {
+                "orderFilter": order_filter,
+                "id": self.betfair_stream._unique_id,
+                "op": "orderSubscription",
+                "initialClk": initial_clk,
+                "clk": clk,
+                "heartbeatMs": 1,
+                "conflateMs": 2,
+                "segmentationEnabled": False,
+            }
+        )
+        assert not self.mock_listener.register_stream.called
+        self.mock_listener.update_unique_id.assert_called_with(
+            self.betfair_stream._unique_id
         )
 
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._send")

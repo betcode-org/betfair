@@ -39,22 +39,22 @@ class Available:
     def update(self, book_update: list) -> None:
         deletion_select = self.deletion_select  # local vars
         for book in book_update:
-            price = book[deletion_select - 1]
+            key = book[0]  # price or position
             if book[deletion_select] == 0:
                 # remove price/size
                 try:
-                    del self.order_book[price]
+                    del self.order_book[key]
                 except KeyError:
                     continue
             else:
-                if price not in self.order_book:
+                if key not in self.order_book:
                     # new price requiring a reorder
                     # to the book.
-                    self.order_book[price] = book
+                    self.order_book[key] = book
                     self._sort_order_book()
                 else:
                     # update book
-                    self.order_book[price] = book
+                    self.order_book[key] = book
         self.serialise()
 
     def clear(self) -> None:
@@ -63,13 +63,14 @@ class Available:
 
     def serialise(self) -> None:
         # avoiding dots / create local vars
+        p_deletion_select = self.deletion_select - 1
         s_deletion_select = self.deletion_select
         self.serialised = [
             {
-                "price": price,
-                "size": volume[s_deletion_select],
+                "price": book[p_deletion_select],
+                "size": book[s_deletion_select],
             }
-            for price, volume in self.order_book.items()
+            for book in self.order_book.values()
         ]
 
     def _sort_order_book(self):

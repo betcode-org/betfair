@@ -15,9 +15,9 @@ class BaseStream:
     _lookup = "mc"
     _name = "Stream"
 
-    def __init__(self, listener: object):
+    def __init__(self, listener: object, unique_id: int):
         self._listener = listener
-        self.unique_id = listener.stream_unique_id
+        self.unique_id = unique_id
         self.output_queue = listener.output_queue
         self.update_clk = listener.update_clk
         self._max_latency = listener.max_latency

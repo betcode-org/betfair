@@ -22,7 +22,7 @@ class TestAvailable(unittest.TestCase):
 
     def test_init(self):
         self.assertEqual(
-            self.available.order_book, {1.01: [0, 1.01, 12], 1.02: [1, 1.02, 34.45]}
+            self.available.order_book, {0: [0, 1.01, 12], 1: [1, 1.02, 34.45]}
         )
         self.assertEqual(self.available.deletion_select, 2)
         self.assertFalse(self.available.reverse)
@@ -145,7 +145,7 @@ class TestAvailable(unittest.TestCase):
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
         current = []
-        expected = {36: [0, 36, 0.57]}
+        expected = {0: [0, 36, 0.57]}
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected
@@ -164,7 +164,7 @@ class TestAvailable(unittest.TestCase):
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
         current = [[0, 36, 10.57], [1, 38, 3.57]]
-        expected = {36: [0, 36, 0.57], 38: [1, 38, 3.57]}
+        expected = {0: [0, 36, 0.57], 1: [1, 38, 3.57]}
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected
@@ -172,7 +172,7 @@ class TestAvailable(unittest.TestCase):
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
         book_update = [[2, 0, 0], [1, 1.01, 9835.74], [0, 1.02, 1126.22]]
         current = [[1, 1.01, 9835.74], [0, 1.02, 1126.22]]
-        expected = {1.02: [0, 1.02, 1126.22], 1.01: [1, 1.01, 9835.74]}
+        expected = {0: [0, 1.02, 1126.22], 1: [1, 1.01, 9835.74]}
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected
@@ -191,7 +191,7 @@ class TestAvailable(unittest.TestCase):
         # [position, price, size]
         book_update = [[0, 36, 0], [1, 38, 0], [0, 38, 3.57]]
         current = [[0, 36, 10.57], [1, 38, 3.57]]
-        expected = {38: [0, 38, 3.57]}
+        expected = {0: [0, 38, 3.57]}
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected

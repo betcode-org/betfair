@@ -29,6 +29,13 @@ class BaseListener:
         self.stream_type = operation
         self.stream = self._add_stream(unique_id, operation)
 
+    def update_unique_id(self, unique_id: int) -> None:
+        logger.info(
+            "[Register: %s]: Unique id updated on listener and stream" % unique_id
+        )
+        self.stream_unique_id = unique_id
+        self.stream.unique_id = unique_id
+
     def on_data(self, raw_data: str) -> None:
         logger.info(raw_data)
 
@@ -61,11 +68,11 @@ class BaseListener:
 
     def _add_stream(self, unique_id: int, operation: str) -> BaseStream:
         if operation == "marketSubscription":
-            return MarketStream(self)
+            return MarketStream(self, unique_id)
         elif operation == "orderSubscription":
-            return OrderStream(self)
+            return OrderStream(self, unique_id)
         elif operation == "raceSubscription":
-            return RaceStream(self)
+            return RaceStream(self, unique_id)
 
     def __str__(self) -> str:
         return "{0}".format(self.__class__.__name__)
