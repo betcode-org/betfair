@@ -39,7 +39,7 @@ class BaseListener:
         :param list market_ids: Market ids to return
         :return: Return List of resources
         """
-        if self.stream:
+        if self.stream_type:  # quicker than self.stream due to __len__ call
             return self.stream.snap(market_ids)
         else:
             return []

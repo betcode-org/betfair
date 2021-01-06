@@ -72,10 +72,11 @@ class BaseListenerTest(unittest.TestCase):
 
     def test_snap(self):
         mock_stream = mock.Mock()
-        self.base_listener.stream = None
+        self.base_listener.stream = mock_stream
+        self.base_listener.stream_type = None
         assert self.base_listener.snap() == []
 
-        self.base_listener.stream = mock_stream
+        self.base_listener.stream_type = "test"
         assert self.base_listener.snap() == mock_stream.snap(None)
 
     def test_props(self):
