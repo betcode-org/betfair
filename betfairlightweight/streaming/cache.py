@@ -533,11 +533,6 @@ class OrderBookCache(BaseResource):
         return {"currentOrders": orders, "matches": matches, "moreAvailable": False}
 
 
-class RunnerChange:
-    def __init__(self, change: dict):
-        self.change = change
-
-
 class RaceCache(BaseResource):
     def __init__(self, market_id: str, publish_time: int, race_id: str):
         super(RaceCache, self).__init__()
@@ -545,7 +540,7 @@ class RaceCache(BaseResource):
         self.publish_time = publish_time
         self.race_id = race_id
         self.rpc = None  # RaceProgressChange
-        self.rrc = []  # RaceRunnerChange
+        self.rrc = {}  # {id: RaceRunnerChange..
         self.streaming_update = None
 
     def update_cache(self, update: dict, publish_time: int) -> None:
@@ -556,14 +551,8 @@ class RaceCache(BaseResource):
             self.rpc = update["rpc"]
 
         if "rrc" in update:
-            runner_dict = {runner.change["id"]: runner for runner in self.rrc}
-
             for runner_update in update["rrc"]:
-                runner = runner_dict.get(runner_update["id"])
-                if runner:
-                    runner.change = runner_update
-                else:
-                    self.rrc.append(RunnerChange(runner_update))
+                self.rrc[runner_update["id"]] = runner_update
 
     def create_resource(
         self, unique_id: int, lightweight: bool, snap: bool = False
@@ -589,5 +578,5 @@ class RaceCache(BaseResource):
             "mid": self.market_id,
             "id": self.race_id,
             "rpc": self.rpc,
-            "rrc": [runner.change for runner in self.rrc],
+            "rrc": list(self.rrc.values()),
         }

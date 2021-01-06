@@ -787,7 +787,7 @@ class TestRaceCache(unittest.TestCase):
         self.assertEqual(self.race_cache.publish_time, self.publish_time)
         self.assertEqual(self.race_cache.race_id, self.race_id)
         self.assertIsNone(self.race_cache.rpc)
-        self.assertEqual(self.race_cache.rrc, [])
+        self.assertEqual(self.race_cache.rrc, {})
         self.assertIsNone(self.race_cache.streaming_update)
 
     def test_update_rpm(self):
@@ -806,7 +806,7 @@ class TestRaceCache(unittest.TestCase):
 
         assert self.race_cache._datetime_updated is not None
         assert self.race_cache.publish_time == publish_time
-        assert len(self.race_cache.rrc) == 1
+        assert self.race_cache.rrc == {1: {"id": 1}}
 
     @mock.patch("betfairlightweight.streaming.cache.RaceCache.serialise")
     def test_create_resource_lightweight(self, mock_serialise):
@@ -820,9 +820,7 @@ class TestRaceCache(unittest.TestCase):
 
     def test_serialise(self):
         self.race_cache.rpc = {"test": 123}
-        mock_runner = mock.Mock()
-        mock_runner.change = {"test": "me"}
-        self.race_cache.rrc = [mock_runner]
+        self.race_cache.rrc = {1: {"test": "me"}}
         self.race_cache.publish_time = 12
         assert self.race_cache.serialise == {
             "pt": 12,
