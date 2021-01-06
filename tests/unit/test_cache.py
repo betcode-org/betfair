@@ -777,13 +777,18 @@ class TestUnmatchedOrder(unittest.TestCase):
 
 class TestRaceCache(unittest.TestCase):
     def setUp(self):
-        update = {"mid": "1.12", "id": "12.12"}
-        self.race_cache = RaceCache(**update)
+        self.market_id = "1.12"
+        self.publish_time = 123
+        self.race_id = "456"
+        self.race_cache = RaceCache(self.market_id, self.publish_time, self.race_id)
 
     def test_init(self):
-        assert self.race_cache.publish_time is None
-        assert self.race_cache.rpc is None
-        assert self.race_cache.rrc == []
+        self.assertEqual(self.race_cache.market_id, self.market_id)
+        self.assertEqual(self.race_cache.publish_time, self.publish_time)
+        self.assertEqual(self.race_cache.race_id, self.race_id)
+        self.assertIsNone(self.race_cache.rpc)
+        self.assertEqual(self.race_cache.rrc, [])
+        self.assertIsNone(self.race_cache.streaming_update)
 
     def test_update_rpm(self):
         update = {"rpc": 1234}
@@ -821,8 +826,8 @@ class TestRaceCache(unittest.TestCase):
         self.race_cache.publish_time = 12
         assert self.race_cache.serialise == {
             "pt": 12,
-            "mid": "1.12",
-            "id": "12.12",
+            "mid": self.market_id,
+            "id": self.race_id,
             "rpc": {"test": 123},
             "rrc": [{"test": "me"}],
         }

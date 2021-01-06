@@ -539,17 +539,16 @@ class RunnerChange:
 
 
 class RaceCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(RaceCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("mid")
-        self.race_id = kwargs.get("id")
-        self.rpc = kwargs.get("rpc")  # RaceProgressChange
-        self.rrc = [RunnerChange(i) for i in kwargs.get("rrc", [])]  # RaceRunnerChange
+    def __init__(self, market_id: str, publish_time: int, race_id: str):
+        super(RaceCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.race_id = race_id
+        self.rpc = None  # RaceProgressChange
+        self.rrc = []  # RaceRunnerChange
         self.streaming_update = None
 
     def update_cache(self, update: dict, publish_time: int) -> None:
-        self._datetime_updated = self.strip_datetime(publish_time)
         self.publish_time = publish_time
         self.streaming_update = update
 

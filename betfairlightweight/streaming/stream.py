@@ -225,7 +225,8 @@ class RaceStream(BaseStream):
 
             race_cache = self._caches.get(market_id)
             if race_cache is None:
-                race_cache = RaceCache(publish_time=publish_time, **update)
+                race_id = update.get("id")
+                race_cache = RaceCache(market_id, publish_time, race_id)
                 self._caches[market_id] = race_cache
                 logger.info(
                     "[%s: %s]: %s added, %s markets in cache"
