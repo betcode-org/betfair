@@ -106,7 +106,7 @@ class RunnerBook:
         self.available_to_lay = Available(atl, 1)
         self.best_available_to_lay = Available(batl, 2)
         self.best_display_available_to_lay = Available(bdatl, 2)
-        self.starting_price_back = Available(spb, 1)
+        self.starting_price_back = Available(spb, 1, True)
         self.starting_price_lay = Available(spl, 1)
         self.starting_price_near = spn
         self.starting_price_far = spf
@@ -164,8 +164,8 @@ class RunnerBook:
             "sp": {
                 "nearPrice": self.starting_price_near,
                 "farPrice": self.starting_price_far,
-                "backStakeTaken": self.starting_price_back.serialised,
-                "layLiabilityTaken": self.starting_price_lay.serialised,
+                "backStakeTaken": self.starting_price_lay.serialised,
+                "layLiabilityTaken": self.starting_price_back.serialised,
                 "actualSP": self._definition_bsp,
             },
             "adjustmentFactor": self._definition_adjustment_factor,
