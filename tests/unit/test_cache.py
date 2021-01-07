@@ -22,7 +22,11 @@ class TestAvailable(unittest.TestCase):
 
     def test_init(self):
         self.assertEqual(
-            self.available.order_book, {0: [0, 1.01, 12], 1: [1, 1.02, 34.45]}
+            self.available.order_book,
+            {
+                0: [0, 1.01, 12, {"price": 1.01, "size": 12}],
+                1: [1, 1.02, 34.45, {"price": 1.02, "size": 34.45}],
+            },
         )
         self.assertEqual(self.available.deletion_select, 2)
         self.assertFalse(self.available.reverse)
@@ -77,7 +81,11 @@ class TestAvailable(unittest.TestCase):
     def test_update(self, mock_serialise):
         book_update = [[27, 2]]  # [price, size]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = {27: [27, 2], 13: [13, 28.01], 1.02: [1.02, 1157.21]}
+        expected = {
+            27: [27, 2, {"price": 27, "size": 2}],
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+        }
 
         available = Available(current, 1)
         available.update(book_update)
@@ -90,10 +98,10 @@ class TestAvailable(unittest.TestCase):
         book_update = [[30, 6.9]]  # [price, size]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
         expected = {
-            27: [27, 0.95],
-            13: [13, 28.01],
-            1.02: [1.02, 1157.21],
-            30: [30, 6.9],
+            27: [27, 0.95, {"price": 27, "size": 0.95}],
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+            30: [30, 6.9, {"price": 30, "size": 6.9}],
         }
 
         available = Available(current, 1)
@@ -106,7 +114,10 @@ class TestAvailable(unittest.TestCase):
     def test_update_del(self, mock_serialise):
         book_update = [[27, 0]]  # [price, size]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = {13: [13, 28.01], 1.02: [1.02, 1157.21]}
+        expected = {
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+        }
 
         available = Available(current, 1)
         available.update(book_update)
@@ -120,10 +131,10 @@ class TestAvailable(unittest.TestCase):
         book_update = [[30, 6.9]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
         expected = {
-            27: [27, 0.95],
-            13: [13, 28.01],
-            1.02: [1.02, 1157.21],
-            30: [30, 6.9],
+            27: [27, 0.95, {"price": 27, "size": 0.95}],
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+            30: [30, 6.9, {"price": 30, "size": 6.9}],
         }
         available = Available(current, 1)
         available.update(book_update)
@@ -132,11 +143,11 @@ class TestAvailable(unittest.TestCase):
         book_update = [[30, 6.9], [1.01, 12]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
         expected = {
-            27: [27, 0.95],
-            13: [13, 28.01],
-            1.02: [1.02, 1157.21],
-            1.01: [1.01, 12],
-            30: [30, 6.9],
+            27: [27, 0.95, {"price": 27, "size": 0.95}],
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+            1.01: [1.01, 12, {"price": 1.01, "size": 12}],
+            30: [30, 6.9, {"price": 30, "size": 6.9}],
         }
         available = Available(current, 1)
         available.update(book_update)
@@ -145,7 +156,7 @@ class TestAvailable(unittest.TestCase):
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
         current = []
-        expected = {0: [0, 36, 0.57]}
+        expected = {0: [0, 36, 0.57, {"price": 36, "size": 0.57}]}
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected
@@ -156,7 +167,11 @@ class TestAvailable(unittest.TestCase):
         # [price, size]
         book_update = [[27, 6.9]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = {27: [27, 6.9], 13: [13, 28.01], 1.02: [1.02, 1157.21]}
+        expected = {
+            27: [27, 6.9, {"price": 27, "size": 6.9}],
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+        }
         available = Available(current, 1)
         available.update(book_update)
         assert available.order_book == expected
@@ -164,7 +179,10 @@ class TestAvailable(unittest.TestCase):
         # [position, price, size]
         book_update = [[0, 36, 0.57]]
         current = [[0, 36, 10.57], [1, 38, 3.57]]
-        expected = {0: [0, 36, 0.57], 1: [1, 38, 3.57]}
+        expected = {
+            0: [0, 36, 0.57, {"price": 36, "size": 0.57}],
+            1: [1, 38, 3.57, {"price": 38, "size": 3.57}],
+        }
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected
@@ -172,7 +190,10 @@ class TestAvailable(unittest.TestCase):
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
         book_update = [[2, 0, 0], [1, 1.01, 9835.74], [0, 1.02, 1126.22]]
         current = [[1, 1.01, 9835.74], [0, 1.02, 1126.22]]
-        expected = {0: [0, 1.02, 1126.22], 1: [1, 1.01, 9835.74]}
+        expected = {
+            0: [0, 1.02, 1126.22, {"price": 1.02, "size": 1126.22}],
+            1: [1, 1.01, 9835.74, {"price": 1.01, "size": 9835.74}],
+        }
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected
@@ -183,7 +204,10 @@ class TestAvailable(unittest.TestCase):
         # [price, size]
         book_update = [[27, 0]]
         current = [[27, 0.95], [13, 28.01], [1.02, 1157.21]]
-        expected = {1.02: [1.02, 1157.21], 13: [13, 28.01]}
+        expected = {
+            1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
+            13: [13, 28.01, {"price": 13, "size": 28.01}],
+        }
         available = Available(current, 1)
         available.update(book_update)
         assert available.order_book == expected
@@ -191,7 +215,7 @@ class TestAvailable(unittest.TestCase):
         # [position, price, size]
         book_update = [[0, 36, 0], [1, 38, 0], [0, 38, 3.57]]
         current = [[0, 36, 10.57], [1, 38, 3.57]]
-        expected = {0: [0, 38, 3.57]}
+        expected = {0: [0, 38, 3.57, {"price": 38, "size": 3.57}]}
         available = Available(current, 2)
         available.update(book_update)
         assert available.order_book == expected

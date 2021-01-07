@@ -39,6 +39,7 @@ class Available:
     def update(self, book_update: list) -> None:
         deletion_select = self.deletion_select  # local vars
         for book in book_update:
+            book = book.copy()  # create copy to keep streaming_update raw
             key = book[0]  # price or position
             if book[deletion_select] == 0:
                 # remove price/size
@@ -47,6 +48,13 @@ class Available:
                 except KeyError:
                     continue
             else:
+                # serialise once and cache in the book
+                book.append(
+                    {
+                        "price": book[deletion_select - 1],
+                        "size": book[deletion_select],
+                    }
+                )
                 if key not in self.order_book:
                     # new price requiring a reorder
                     # to the book.
@@ -62,18 +70,9 @@ class Available:
         self.serialise()
 
     def serialise(self) -> None:
-        # avoiding dots / create local vars
-        p_deletion_select = self.deletion_select - 1
-        s_deletion_select = self.deletion_select
-        self.serialised = [
-            {
-                "price": book[p_deletion_select],
-                "size": book[s_deletion_select],
-            }
-            for book in self.order_book.values()
-        ]
+        self.serialised = [book[-1] for book in self.order_book.values()]
 
-    def _sort_order_book(self):
+    def _sort_order_book(self) -> None:
         self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
 
 
