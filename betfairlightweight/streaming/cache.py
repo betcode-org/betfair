@@ -1,7 +1,14 @@
 import datetime
 from typing import Union
 
-from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, Race
+from ..resources import (
+    BaseResource,
+    MarketBook,
+    RunnerBook as ResRunnerBook,
+    CurrentOrders,
+    MarketDefinition,
+    Race,
+)
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -80,6 +87,7 @@ class RunnerBook:
     def __init__(
         self,
         id: int,
+        lightweight: bool,
         ltp: float = None,
         tv: float = None,
         trd: list = None,
@@ -97,6 +105,7 @@ class RunnerBook:
         definition: dict = None,
     ):
         self.selection_id = id
+        self.lightweight = lightweight
         self.last_price_traded = ltp
         self.total_matched = tv
         self.traded = Available(trd, 1)
@@ -118,6 +127,7 @@ class RunnerBook:
         self._definition_removal_date = None
         self.update_definition(self.definition)
         self.serialised = {}  # cache is king
+        self.resource = None
 
     def update_definition(self, definition: dict) -> None:
         self.definition = definition
@@ -175,15 +185,19 @@ class RunnerBook:
             "totalMatched": self.total_matched,
             "selectionId": self.selection_id,
         }
+        if self.lightweight is False:
+            self.resource = ResRunnerBook(**self.serialised)
 
 
 class MarketBookCache(BaseResource):
-    def __init__(self, market_id, publish_time):
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
         super(MarketBookCache, self).__init__()
         self.market_id = market_id
         self.publish_time = publish_time
+        self.lightweight = lightweight
         self.total_matched = None
         self.market_definition = {}
+        self._market_definition_resource = None
         self._definition_bet_delay = None
         self._definition_version = None
         self._definition_complete = None
@@ -247,6 +261,8 @@ class MarketBookCache(BaseResource):
 
     def _process_market_definition(self, market_definition: dict) -> None:
         self.market_definition = market_definition
+        if self.lightweight is False:  # cache resource
+            self._market_definition_resource = MarketDefinition(**market_definition)
         # cache values used in serialisation to prevent duplicate <get>
         self._definition_bet_delay = market_definition.get("betDelay")
         self._definition_version = market_definition.get("version")
@@ -280,7 +296,7 @@ class MarketBookCache(BaseResource):
             runner.serialise()
 
     def _add_new_runner(self, **kwargs) -> RunnerBook:
-        runner = RunnerBook(**kwargs)
+        runner = RunnerBook(lightweight=self.lightweight, **kwargs)
         self.runners.append(runner)
         self._number_of_runners = len(self.runners)
         # update runner_dict
@@ -299,13 +315,13 @@ class MarketBookCache(BaseResource):
         if lightweight:
             return data
         else:
-            return MarketBook(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                market_definition=MarketDefinition(**self.market_definition),
-                **data
+            _runners = data.pop("runners", [])
+            market_book = MarketBook(
+                market_definition=self._market_definition_resource, runners=[], **data
             )
+            market_book.runners = [r.resource for r in self.runners]
+            market_book._data["runners"] = _runners
+            return market_book
 
     @property
     def closed(self) -> bool:
