@@ -7,7 +7,7 @@ from betfairlightweight.streaming.cache import (
     OrderBookRunner,
     UnmatchedOrder,
     MarketBookCache,
-    RunnerBook,
+    RunnerBookCache,
     Available,
     RaceCache,
 )
@@ -312,13 +312,13 @@ class TestMarketBookCache(unittest.TestCase):
         # lightweight
         market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == {
-            "streaming_update": self.market_book_cache.streaming_update,
             "streaming_unique_id": 1234,
-            "streaming_snap": False,
+            "streaming_snap": True,
         }
         assert market_book == mock_serialise()
         # not lightweight
-        market_book = self.market_book_cache.create_resource(1234, False)
+        self.market_book_cache.lightweight = False
+        market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == mock_market_book()
 
     @mock.patch(
@@ -329,9 +329,8 @@ class TestMarketBookCache(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.cache.MarketDefinition")
     @mock.patch("betfairlightweight.streaming.cache.MarketBook")
     def test_create_resource_snap(self, *_):
-        market_book = self.market_book_cache.create_resource(1234, True, True)
+        market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == {
-            "streaming_update": self.market_book_cache.streaming_update,
             "streaming_unique_id": 1234,
             "streaming_snap": True,
         }
@@ -407,23 +406,23 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertEqual(self.market_book_cache._definition_price_ladder_definition, "")
         self.assertEqual(self.market_book_cache._definition_key_line_description, None)
 
-    @mock.patch("betfairlightweight.streaming.cache.RunnerBook")
-    def test__add_new_runner(self, mock_runner_book):
+    @mock.patch("betfairlightweight.streaming.cache.RunnerBookCache")
+    def test__add_new_runner(self, mock_runner_book_cache):
         self.assertEqual(self.market_book_cache.runner_dict, {})
         self.market_book_cache._add_new_runner(id=1, hc=2, definition={1: 2})
-        mock_runner_book.assert_called_with(
+        mock_runner_book_cache.assert_called_with(
             lightweight=True, id=1, hc=2, definition={1: 2}
         )
         self.assertEqual(
             self.market_book_cache.runner_dict,
             {
                 (
-                    mock_runner_book().selection_id,
-                    mock_runner_book().handicap,
-                ): mock_runner_book()
+                    mock_runner_book_cache().selection_id,
+                    mock_runner_book_cache().handicap,
+                ): mock_runner_book_cache()
             },
         )
-        self.assertEqual(self.market_book_cache.runners, [mock_runner_book()])
+        self.assertEqual(self.market_book_cache.runners, [mock_runner_book_cache()])
         self.assertEqual(self.market_book_cache._number_of_runners, 1)
 
     def test_closed(self):
@@ -432,9 +431,9 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertTrue(self.market_book_cache.closed)
 
 
-class TestRunnerBook(unittest.TestCase):
+class TestRunnerBookCache(unittest.TestCase):
     def setUp(self):
-        self.runner_book = RunnerBook(lightweight=True, **{"id": 123})
+        self.runner_book = RunnerBookCache(lightweight=True, **{"id": 123})
 
     def test_init(self):
         self.assertEqual(self.runner_book.selection_id, 123)
@@ -562,7 +561,7 @@ class TestRunnerBook(unittest.TestCase):
         # all 'None' or empty lists
         assert all(not sp[a] for a in sp.keys())
 
-    @mock.patch("betfairlightweight.streaming.cache.ResRunnerBook")
+    @mock.patch("betfairlightweight.streaming.cache.RunnerBook")
     def test_serialise_resource(self, mock_runner_book):
         self.runner_book.lightweight = False
         self.runner_book.serialise()
@@ -572,13 +571,18 @@ class TestRunnerBook(unittest.TestCase):
 
 class TestOrderBookCache(unittest.TestCase):
     def setUp(self):
-        self.order_book_cache = OrderBookCache(**{})
+        self.order_book_cache = OrderBookCache("1.123", 123, True)
         self.runner = mock.Mock()
         self.runner.selection_id = 10895629
         self.runner.handicap = 0
         self.runner.serialise_orders = mock.Mock(return_value=[])
         self.runner.unmatched_orders = [1]
         self.order_book_cache.runners = {(10895629, 0): self.runner}
+
+    def test_init(self):
+        self.assertEqual(self.order_book_cache.market_id, "1.123")
+        self.assertEqual(self.order_book_cache.publish_time, 123)
+        self.assertTrue(self.order_book_cache.lightweight)
 
     def test_full_image(self):
         self.order_book_cache.runners = {}
@@ -635,12 +639,12 @@ class TestOrderBookCache(unittest.TestCase):
         current_orders = self.order_book_cache.create_resource(123, True)
         assert current_orders == mock_serialise()
         assert current_orders == {
-            "streaming_update": self.order_book_cache.streaming_update,
             "streaming_unique_id": 123,
-            "streaming_snap": False,
+            "streaming_snap": True,
         }
         # not lightweight
-        current_orders = self.order_book_cache.create_resource(123, False)
+        self.order_book_cache.lightweight = False
+        current_orders = self.order_book_cache.create_resource(123, True)
         assert current_orders == mock_current_orders()
 
     def test_serialise(self):
@@ -657,7 +661,12 @@ class TestOrderBookCache(unittest.TestCase):
         serialised = self.order_book_cache.serialise
         self.assertEqual(
             serialised,
-            {"currentOrders": [1, 2, 3], "matches": [6, 4], "moreAvailable": False},
+            {
+                "currentOrders": [1, 2, 3],
+                "matches": [6, 4],
+                "moreAvailable": False,
+                "streaming_update": None,
+            },
         )
 
 
@@ -836,12 +845,15 @@ class TestRaceCache(unittest.TestCase):
         self.market_id = "1.12"
         self.publish_time = 123
         self.race_id = "456"
-        self.race_cache = RaceCache(self.market_id, self.publish_time, self.race_id)
+        self.race_cache = RaceCache(
+            self.market_id, self.publish_time, self.race_id, True
+        )
 
     def test_init(self):
         self.assertEqual(self.race_cache.market_id, self.market_id)
         self.assertEqual(self.race_cache.publish_time, self.publish_time)
         self.assertEqual(self.race_cache.race_id, self.race_id)
+        self.assertTrue(self.race_cache.lightweight)
         self.assertIsNone(self.race_cache.rpc)
         self.assertEqual(self.race_cache.rrc, {})
         self.assertIsNone(self.race_cache.streaming_update)
@@ -884,4 +896,5 @@ class TestRaceCache(unittest.TestCase):
             "id": self.race_id,
             "rpc": {"test": 123},
             "rrc": [{"test": "me"}],
+            "streaming_update": None,
         }

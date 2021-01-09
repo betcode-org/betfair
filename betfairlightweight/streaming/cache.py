@@ -4,7 +4,7 @@ from typing import Union
 from ..resources import (
     BaseResource,
     MarketBook,
-    RunnerBook as ResRunnerBook,
+    RunnerBook,
     CurrentOrders,
     MarketDefinition,
     Race,
@@ -83,7 +83,7 @@ class Available:
         self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
 
 
-class RunnerBook:
+class RunnerBookCache:
     def __init__(
         self,
         id: int,
@@ -185,8 +185,8 @@ class RunnerBook:
             "totalMatched": self.total_matched,
             "selectionId": self.selection_id,
         }
-        if self.lightweight is False:
-            self.resource = ResRunnerBook(**self.serialised)
+        if self.lightweight is False:  # cache resource
+            self.resource = RunnerBook(**self.serialised)
 
 
 class MarketBookCache(BaseResource):
@@ -295,8 +295,8 @@ class MarketBookCache(BaseResource):
                 )
             runner.serialise()
 
-    def _add_new_runner(self, **kwargs) -> RunnerBook:
-        runner = RunnerBook(lightweight=self.lightweight, **kwargs)
+    def _add_new_runner(self, **kwargs) -> RunnerBookCache:
+        runner = RunnerBookCache(lightweight=self.lightweight, **kwargs)
         self.runners.append(runner)
         self._number_of_runners = len(self.runners)
         # update runner_dict
@@ -306,13 +306,12 @@ class MarketBookCache(BaseResource):
         return runner
 
     def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
+        self, unique_id: int, snap: bool = False
     ) -> Union[dict, MarketBook]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
             _runners = data.pop("runners", [])
@@ -358,6 +357,7 @@ class MarketBookCache(BaseResource):
             "priceLadderDefinition": self._definition_price_ladder_definition,
             "keyLineDescription": self._definition_key_line_description,
             "marketDefinition": self.market_definition,  # used in lightweight
+            "streaming_update": self.streaming_update,
         }
 
 
@@ -490,11 +490,12 @@ class OrderBookRunner:
 
 
 class OrderBookCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(OrderBookCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("id")
-        self.closed = kwargs.get("closed")
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+        super(OrderBookCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.lightweight = lightweight
+        self.closed = None
         self.streaming_update = None
         self.runners = {}  # (selectionId, handicap):
 
@@ -522,13 +523,12 @@ class OrderBookCache(BaseResource):
                     runner.update_unmatched(order_changes["uo"])
 
     def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
+        self, unique_id: int, snap: bool = False
     ) -> Union[dict, CurrentOrders]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
             return CurrentOrders(
@@ -546,15 +546,23 @@ class OrderBookCache(BaseResource):
         for runner in runners:
             orders.extend(runner.serialise_orders(self.market_id))
             matches.append(runner.serialise_matches())
-        return {"currentOrders": orders, "matches": matches, "moreAvailable": False}
+        return {
+            "currentOrders": orders,
+            "matches": matches,
+            "moreAvailable": False,
+            "streaming_update": self.streaming_update,
+        }
 
 
 class RaceCache(BaseResource):
-    def __init__(self, market_id: str, publish_time: int, race_id: str):
+    def __init__(
+        self, market_id: str, publish_time: int, race_id: str, lightweight: bool
+    ):
         super(RaceCache, self).__init__()
         self.market_id = market_id
         self.publish_time = publish_time
         self.race_id = race_id
+        self.lightweight = lightweight
         self.rpc = None  # RaceProgressChange
         self.rrc = {}  # {id: RaceRunnerChange..
         self.streaming_update = None
@@ -570,14 +578,11 @@ class RaceCache(BaseResource):
             for runner_update in update["rrc"]:
                 self.rrc[runner_update["id"]] = runner_update
 
-    def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
-    ) -> Union[dict, Race]:
+    def create_resource(self, unique_id: int, snap: bool = False) -> Union[dict, Race]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
             return Race(
@@ -595,4 +600,5 @@ class RaceCache(BaseResource):
             "id": self.race_id,
             "rpc": self.rpc,
             "rrc": list(self.rrc.values()),
+            "streaming_update": self.streaming_update,
         }
