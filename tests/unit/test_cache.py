@@ -619,7 +619,9 @@ class TestOrderBookCache(unittest.TestCase):
             self.assertEqual(self.order_book_cache.streaming_update, order_book)
 
             for order_changes in order_book.get("orc"):
-                mock_order_book_runner.assert_called_with(**order_changes)
+                mock_order_book_runner.assert_called_with(
+                    self.order_book_cache.market_id, **order_changes
+                )
 
     def test_update_cache_closed(self):
         mock_response = create_mock_json("tests/resources/streaming_ocm_SUB_IMAGE.json")
@@ -677,8 +679,8 @@ class TestOrderBookRunner(unittest.TestCase):
                 "id": 1,
                 "p": "a",
                 "s": "a",
-                "side": "a",
-                "ot": "a",
+                "side": "L",
+                "ot": "L",
                 "pd": "a",
                 "sm": "a",
                 "sr": "a",
@@ -687,14 +689,14 @@ class TestOrderBookRunner(unittest.TestCase):
                 "sv": "a",
                 "rfo": "a",
                 "rfs": "a",
-                "status": "a",
+                "status": "E",
             },
             {
                 "id": 2,
                 "p": "b",
                 "s": "a",
-                "side": "a",
-                "ot": "a",
+                "side": "L",
+                "ot": "L",
                 "pd": "a",
                 "sm": "a",
                 "sr": "a",
@@ -703,12 +705,20 @@ class TestOrderBookRunner(unittest.TestCase):
                 "sv": "a",
                 "rfo": "a",
                 "rfs": "a",
-                "status": "b",
+                "status": "EC",
             },
         ]
         self.order_book_runner = OrderBookRunner(
-            **{"id": 1, "ml": [], "mb": [], "uo": uo}
+            "1.123", **{"id": 1, "ml": [], "mb": [], "uo": uo}
         )
+
+    def test_init(self):
+        self.assertEqual(self.order_book_runner.market_id, "1.123")
+        self.assertEqual(self.order_book_runner.selection_id, 1)
+        self.assertEqual(self.order_book_runner.handicap, 0)
+        self.assertIsNone(self.order_book_runner.full_image)
+        self.assertIsNone(self.order_book_runner.strategy_matches)
+        self.assertEqual(len(self.order_book_runner.unmatched_orders), 2)
 
     def test_update_unmatched(self):
         unmatched_orders = [
@@ -716,8 +726,8 @@ class TestOrderBookRunner(unittest.TestCase):
                 "id": 2,
                 "p": "b",
                 "s": "a",
-                "side": "a",
-                "ot": "a",
+                "side": "L",
+                "ot": "L",
                 "pd": "a",
                 "sm": "a",
                 "sr": "a",
@@ -726,13 +736,42 @@ class TestOrderBookRunner(unittest.TestCase):
                 "sv": "a",
                 "rfo": "a",
                 "rfs": "a",
-                "status": "c",
+                "status": "EC",
             }
         ]
         self.order_book_runner.update_unmatched(unmatched_orders)
-
-        self.assertEqual(self.order_book_runner.unmatched_orders[1].status, "a")
-        self.assertEqual(self.order_book_runner.unmatched_orders[2].status, "c")
+        self.assertEqual(self.order_book_runner.unmatched_orders[1].status, "E")
+        self.assertEqual(self.order_book_runner.unmatched_orders[2].status, "EC")
+        self.assertEqual(
+            self.order_book_runner.unmatched_orders[2].serialised,
+            {
+                "averagePriceMatched": 0.0,
+                "betId": 2,
+                "bspLiability": None,
+                "cancelledDate": None,
+                "customerOrderRef": "a",
+                "customerStrategyRef": "a",
+                "handicap": 0,
+                "lapseStatusReasonCode": None,
+                "lapsedDate": None,
+                "marketId": "1.123",
+                "matchedDate": None,
+                "orderType": "LIMIT",
+                "persistenceType": None,
+                "placedDate": None,
+                "priceSize": {"price": "b", "size": "a"},
+                "regulatorAuthCode": None,
+                "regulatorCode": None,
+                "selectionId": 1,
+                "side": "LAY",
+                "sizeCancelled": "a",
+                "sizeLapsed": "a",
+                "sizeMatched": "a",
+                "sizeRemaining": "a",
+                "sizeVoided": "a",
+                "status": "EXECUTION_COMPLETE",
+            },
+        )
 
     def test_serialise_orders(self):
         mock_order = mock.Mock()
@@ -752,7 +791,7 @@ class TestOrderBookRunner(unittest.TestCase):
 
         mock_order_two.serialise = mock_serialise
 
-        assert len(self.order_book_runner.serialise_orders("1.1")), 2
+        assert len(self.order_book_runner.serialise_orders()), 2
 
     def test_serialise_matches(self):
         self.assertEqual(
@@ -806,10 +845,12 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.lapsed_date == BaseResource.strip_datetime(16)
         assert self.unmatched_order.lapse_status_reason_code == 17
         assert self.unmatched_order.cancelled_date == BaseResource.strip_datetime(18)
+        assert self.unmatched_order.serialised == {}
 
     def test_serialise(self):
+        self.unmatched_order.serialise("1.23", 12345, 0)
         self.assertEqual(
-            self.unmatched_order.serialise("1.23", 12345, 0.0),
+            self.unmatched_order.serialised,
             {
                 "sizeLapsed": 11,
                 "persistenceType": "LAPSE",
