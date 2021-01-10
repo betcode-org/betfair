@@ -195,7 +195,7 @@ class Race(BaseResource):
         self.race_runners = [RaceChange(**runner) for runner in kwargs.get("rrc") or []]
 
 
-class RaceProgress(BaseResource):
+class RaceProgress:
     """
     :type publish_time: int
     :type feed_time: int
@@ -209,9 +209,8 @@ class RaceProgress(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        super(RaceProgress, self).__init__(**kwargs)
         self.feed_time_epoch = kwargs.get("ft")
-        self.feed_time = self.strip_datetime(kwargs.get("ft"))
+        self.feed_time = BaseResource.strip_datetime(kwargs.get("ft"))
         self.gate_name = kwargs.get("g")
         self.sectional_time = kwargs.get("st")
         self.running_time = kwargs.get("rt")
@@ -221,7 +220,7 @@ class RaceProgress(BaseResource):
         self.jumps = kwargs.get("J")
 
 
-class RaceChange(BaseResource):
+class RaceChange:
     """
     :type publish_time: int
     :type feed_time: int
@@ -235,9 +234,8 @@ class RaceChange(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        super(RaceChange, self).__init__(**kwargs)
         self.feed_time_epoch = kwargs.get("ft")
-        self.feed_time = self.strip_datetime(kwargs.get("ft"))
+        self.feed_time = BaseResource.strip_datetime(kwargs.get("ft"))
         self.selection_id = kwargs.get("id")
         self.lat = kwargs.get("lat")
         self.long = kwargs.get("long")

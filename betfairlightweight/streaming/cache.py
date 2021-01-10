@@ -579,12 +579,7 @@ class RaceCache(BaseResource):
         if self.lightweight:
             return data
         else:
-            return Race(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                **data
-            )
+            return Race(**data)
 
     @property
     def serialise(self) -> dict:
