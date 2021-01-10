@@ -154,7 +154,7 @@ Betfairlightweight can also handle historical streaming data that has been purch
 ```
 
 !!! tip
-    The streaming code is highly optimised however to further improve speed the debug flag can be set to False on the listener `StreamListener(debug=False)`
+    The streaming code is highly optimised however to further improve speed the `debug` and `update_clk` flag can be set to False on the listener `StreamListener(debug=False, update_clk=False)` however update_clk is required to be True when live streaming (resubscribe uses it).
 
 The historical stream can be used in the same way as the market/order stream allowing backtesting / market processing.
 
