@@ -400,7 +400,7 @@ class HistoricalStreamTest(unittest.TestCase):
         self.file_path = "tests/resources/historicaldata/BASIC-1.132153978"
         self.listener = mock.Mock()
         self.operation = "marketSubscription"
-        self.stream = HistoricalStream(self.file_path, self.listener, self.operation)
+        self.stream = HistoricalStream(self.file_path, self.listener, self.operation, 0)
 
     def test_init(self):
         assert self.stream.file_path == self.file_path
@@ -436,7 +436,7 @@ class HistoricalGeneratorStreamTest(unittest.TestCase):
         self.listener = mock.Mock()
         self.operation = "marketSubscription"
         self.stream = HistoricalGeneratorStream(
-            self.file_path, self.listener, self.operation
+            self.file_path, self.listener, self.operation, 0
         )
 
     def test_init(self):

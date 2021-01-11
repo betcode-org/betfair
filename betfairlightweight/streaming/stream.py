@@ -92,17 +92,14 @@ class BaseStream:
 
     def snap(self, market_ids: list = None) -> list:
         return [
-            cache.create_resource(self.unique_id, self._lightweight, snap=True)
+            cache.create_resource(self.unique_id, snap=True)
             for cache in list(self._caches.values())
             if market_ids is None or cache.market_id in market_ids
         ]
 
     def on_process(self, caches: list) -> None:
         if self.output_queue:
-            output = [
-                cache.create_resource(self.unique_id, self._lightweight)
-                for cache in caches
-            ]
+            output = [cache.create_resource(self.unique_id) for cache in caches]
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
@@ -157,7 +154,9 @@ class MarketStream(BaseStream):
                         "EX_MARKET_DEF is requested)"
                         % (self, self.unique_id, market_id)
                     )
-                market_book_cache = MarketBookCache(market_id, publish_time)
+                market_book_cache = MarketBookCache(
+                    market_id, publish_time, self._lightweight
+                )
                 self._caches[market_id] = market_book_cache
                 logger.info(
                     "[%s: %s]: %s added, %s markets in cache"
@@ -186,7 +185,7 @@ class OrderStream(BaseStream):
             if full_image or order_book_cache is None:
                 img = True
                 order_book_cache = OrderBookCache(
-                    publish_time=publish_time, **order_book
+                    market_id, publish_time, self._lightweight
                 )
                 self._caches[market_id] = order_book_cache
                 logger.info(
@@ -226,7 +225,9 @@ class RaceStream(BaseStream):
 
             if race_cache is None:
                 race_id = update.get("id")
-                race_cache = RaceCache(market_id, publish_time, race_id)
+                race_cache = RaceCache(
+                    market_id, publish_time, race_id, self._lightweight
+                )
                 self._caches[market_id] = race_cache
                 logger.info(
                     "[%s: %s]: %s added, %s markets in cache"

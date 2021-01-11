@@ -1,7 +1,13 @@
-import datetime
 from typing import Union
 
-from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, Race
+from ..resources import (
+    BaseResource,
+    MarketBook,
+    RunnerBook,
+    CurrentOrders,
+    MarketDefinition,
+    Race,
+)
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -76,10 +82,11 @@ class Available:
         self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
 
 
-class RunnerBook:
+class RunnerBookCache:
     def __init__(
         self,
         id: int,
+        lightweight: bool,
         ltp: float = None,
         tv: float = None,
         trd: list = None,
@@ -97,6 +104,7 @@ class RunnerBook:
         definition: dict = None,
     ):
         self.selection_id = id
+        self.lightweight = lightweight
         self.last_price_traded = ltp
         self.total_matched = tv
         self.traded = Available(trd, 1)
@@ -118,6 +126,7 @@ class RunnerBook:
         self._definition_removal_date = None
         self.update_definition(self.definition)
         self.serialised = {}  # cache is king
+        self.resource = None
 
     def update_definition(self, definition: dict) -> None:
         self.definition = definition
@@ -175,15 +184,19 @@ class RunnerBook:
             "totalMatched": self.total_matched,
             "selectionId": self.selection_id,
         }
+        if self.lightweight is False:  # cache resource
+            self.resource = RunnerBook(**self.serialised)
 
 
 class MarketBookCache(BaseResource):
-    def __init__(self, market_id, publish_time):
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
         super(MarketBookCache, self).__init__()
         self.market_id = market_id
         self.publish_time = publish_time
+        self.lightweight = lightweight
         self.total_matched = None
         self.market_definition = {}
+        self._market_definition_resource = None
         self._definition_bet_delay = None
         self._definition_version = None
         self._definition_complete = None
@@ -202,8 +215,8 @@ class MarketBookCache(BaseResource):
         self._number_of_runners = 0
 
     def update_cache(self, market_change: dict, publish_time: int) -> None:
-        self.publish_time = publish_time
         self.streaming_update = market_change
+        self.publish_time = publish_time
 
         if "marketDefinition" in market_change:
             self._process_market_definition(market_change["marketDefinition"])
@@ -247,6 +260,8 @@ class MarketBookCache(BaseResource):
 
     def _process_market_definition(self, market_definition: dict) -> None:
         self.market_definition = market_definition
+        if self.lightweight is False:  # cache resource
+            self._market_definition_resource = MarketDefinition(**market_definition)
         # cache values used in serialisation to prevent duplicate <get>
         self._definition_bet_delay = market_definition.get("betDelay")
         self._definition_version = market_definition.get("version")
@@ -279,8 +294,8 @@ class MarketBookCache(BaseResource):
                 )
             runner.serialise()
 
-    def _add_new_runner(self, **kwargs) -> RunnerBook:
-        runner = RunnerBook(**kwargs)
+    def _add_new_runner(self, **kwargs) -> RunnerBookCache:
+        runner = RunnerBookCache(lightweight=self.lightweight, **kwargs)
         self.runners.append(runner)
         self._number_of_runners = len(self.runners)
         # update runner_dict
@@ -290,22 +305,21 @@ class MarketBookCache(BaseResource):
         return runner
 
     def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
+        self, unique_id: int, snap: bool = False
     ) -> Union[dict, MarketBook]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
-            return MarketBook(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                market_definition=MarketDefinition(**self.market_definition),
-                **data
+            _runners = data.pop("runners", [])
+            market_book = MarketBook(
+                market_definition=self._market_definition_resource, runners=[], **data
             )
+            market_book.runners = [r.resource for r in self.runners]
+            market_book._data["runners"] = _runners
+            return market_book
 
     @property
     def closed(self) -> bool:
@@ -342,6 +356,7 @@ class MarketBookCache(BaseResource):
             "priceLadderDefinition": self._definition_price_ladder_definition,
             "keyLineDescription": self._definition_key_line_description,
             "marketDefinition": self.market_definition,  # used in lightweight
+            "streaming_update": self.streaming_update,
         }
 
 
@@ -400,9 +415,10 @@ class UnmatchedOrder:
         self.lapse_status_reason_code = lsrc
         self.cancelled_date = BaseResource.strip_datetime(cd)
         self._cancelled_date_string = create_date_string(self.cancelled_date)
+        self.serialised = {}  # cache is king
 
-    def serialise(self, market_id: str, selection_id: int, handicap: int) -> dict:
-        return {
+    def serialise(self, market_id: str, selection_id: int, handicap: int):
+        self.serialised = {
             "averagePriceMatched": self.average_price_matched or 0.0,
             "betId": self.bet_id,
             "bspLiability": self.bsp_liability,
@@ -436,6 +452,7 @@ class UnmatchedOrder:
 class OrderBookRunner:
     def __init__(
         self,
+        market_id: str,
         id: int,
         fullImage: dict = None,
         ml: list = None,
@@ -444,26 +461,25 @@ class OrderBookRunner:
         hc: int = 0,
         smc: dict = None,
     ):
+        self.market_id = market_id
         self.selection_id = id
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
         self.matched_backs = Available(mb, 1)
-        self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
+        self.unmatched_orders = {}  # {betId: UnmatchedOrder..
         self.handicap = hc
         self.strategy_matches = smc
+        self.update_unmatched(uo or [])
 
     def update_unmatched(self, unmatched_orders: list) -> None:
         for unmatched_order in unmatched_orders:
-            self.unmatched_orders[unmatched_order["id"]] = UnmatchedOrder(
-                **unmatched_order
-            )
+            order = UnmatchedOrder(**unmatched_order)
+            order.serialise(self.market_id, self.selection_id, self.handicap)
+            self.unmatched_orders[order.bet_id] = order
 
-    def serialise_orders(self, market_id: str) -> list:
+    def serialise_orders(self) -> list:
         orders = list(self.unmatched_orders.values())  # order may be added (#232)
-        return [
-            order.serialise(market_id, self.selection_id, self.handicap)
-            for order in orders
-        ]
+        return [order.serialised for order in orders]
 
     def serialise_matches(self) -> dict:
         return {
@@ -474,18 +490,18 @@ class OrderBookRunner:
 
 
 class OrderBookCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(OrderBookCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("id")
-        self.closed = kwargs.get("closed")
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+        super(OrderBookCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.lightweight = lightweight
+        self.closed = None
         self.streaming_update = None
         self.runners = {}  # (selectionId, handicap):
 
     def update_cache(self, order_book: dict, publish_time: int) -> None:
-        self._datetime_updated = self.strip_datetime(publish_time)
-        self.publish_time = publish_time
         self.streaming_update = order_book
+        self.publish_time = publish_time
         if "closed" in order_book:
             self.closed = order_book["closed"]
 
@@ -496,7 +512,7 @@ class OrderBookCache(BaseResource):
             _lookup = (selection_id, handicap)
             runner = self.runners.get(_lookup)
             if full_image or runner is None:
-                self.runners[_lookup] = OrderBookRunner(**order_changes)
+                self.runners[_lookup] = OrderBookRunner(self.market_id, **order_changes)
             else:
                 if "ml" in order_changes:
                     runner.matched_lays.update(order_changes["ml"])
@@ -506,46 +522,47 @@ class OrderBookCache(BaseResource):
                     runner.update_unmatched(order_changes["uo"])
 
     def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
+        self, unique_id: int, snap: bool = False
     ) -> Union[dict, CurrentOrders]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
-            return CurrentOrders(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                publish_time=self.publish_time,
-                **data
-            )
+            return CurrentOrders(publish_time=self.publish_time, **data)
 
     @property
     def serialise(self) -> dict:
         runners = list(self.runners.values())  # runner may be added
         orders, matches = [], []
         for runner in runners:
-            orders.extend(runner.serialise_orders(self.market_id))
+            orders.extend(runner.serialise_orders())
             matches.append(runner.serialise_matches())
-        return {"currentOrders": orders, "matches": matches, "moreAvailable": False}
+        return {
+            "currentOrders": orders,
+            "matches": matches,
+            "moreAvailable": False,
+            "streaming_update": self.streaming_update,
+        }
 
 
 class RaceCache(BaseResource):
-    def __init__(self, market_id: str, publish_time: int, race_id: str):
+    def __init__(
+        self, market_id: str, publish_time: int, race_id: str, lightweight: bool
+    ):
         super(RaceCache, self).__init__()
         self.market_id = market_id
         self.publish_time = publish_time
         self.race_id = race_id
+        self.lightweight = lightweight
         self.rpc = None  # RaceProgressChange
         self.rrc = {}  # {id: RaceRunnerChange..
         self.streaming_update = None
 
     def update_cache(self, update: dict, publish_time: int) -> None:
-        self.publish_time = publish_time
         self.streaming_update = update
+        self.publish_time = publish_time
 
         if "rpc" in update:
             self.rpc = update["rpc"]
@@ -554,22 +571,14 @@ class RaceCache(BaseResource):
             for runner_update in update["rrc"]:
                 self.rrc[runner_update["id"]] = runner_update
 
-    def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
-    ) -> Union[dict, Race]:
+    def create_resource(self, unique_id: int, snap: bool = False) -> Union[dict, Race]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
-            return Race(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                **data
-            )
+            return Race(**data)
 
     @property
     def serialise(self) -> dict:
@@ -579,4 +588,5 @@ class RaceCache(BaseResource):
             "id": self.race_id,
             "rpc": self.rpc,
             "rrc": list(self.rrc.values()),
+            "streaming_update": self.streaming_update,
         }

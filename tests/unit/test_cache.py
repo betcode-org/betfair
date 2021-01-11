@@ -7,11 +7,10 @@ from betfairlightweight.streaming.cache import (
     OrderBookRunner,
     UnmatchedOrder,
     MarketBookCache,
-    RunnerBook,
+    RunnerBookCache,
     Available,
     RaceCache,
 )
-from betfairlightweight.exceptions import CacheError
 from tests.unit.tools import create_mock_json
 
 
@@ -223,13 +222,15 @@ class TestAvailable(unittest.TestCase):
 
 class TestMarketBookCache(unittest.TestCase):
     def setUp(self):
-        self.market_book_cache = MarketBookCache("1.2345", 12345)
+        self.market_book_cache = MarketBookCache("1.2345", 12345, True)
 
     def test_init(self):
         self.assertEqual(self.market_book_cache.market_id, "1.2345")
         self.assertEqual(self.market_book_cache.publish_time, 12345)
+        self.assertTrue(self.market_book_cache.lightweight)
         self.assertIsNone(self.market_book_cache.total_matched)
         self.assertEqual(self.market_book_cache.market_definition, {})
+        self.assertIsNone(self.market_book_cache._market_definition_resource)
         self.assertIsNone(self.market_book_cache._definition_bet_delay)
         self.assertIsNone(self.market_book_cache._definition_version)
         self.assertIsNone(self.market_book_cache._definition_complete)
@@ -273,13 +274,14 @@ class TestMarketBookCache(unittest.TestCase):
 
     def test_update_multiple_rc(self):
         # update data with multiple rc entries for the same selection
-        data = {"marketDefinition": {"runners": {}}}
-        data["rc"] = [
-            {"atb": [[1.01, 200]], "id": 13536143},
-            {"atl": [[1000.0, 200]], "id": 13536143},
-        ]
+        data = {
+            "rc": [
+                {"atb": [[1.01, 200]], "id": 13536143},
+                {"atl": [[1000.0, 200]], "id": 13536143},
+            ]
+        }
 
-        market_book_cache = MarketBookCache("1.123", 123)
+        market_book_cache = MarketBookCache("1.123", 123, True)
         market_book_cache.update_cache(data, 123)
 
         assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
@@ -309,13 +311,13 @@ class TestMarketBookCache(unittest.TestCase):
         # lightweight
         market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == {
-            "streaming_update": self.market_book_cache.streaming_update,
             "streaming_unique_id": 1234,
-            "streaming_snap": False,
+            "streaming_snap": True,
         }
         assert market_book == mock_serialise()
         # not lightweight
-        market_book = self.market_book_cache.create_resource(1234, False)
+        self.market_book_cache.lightweight = False
+        market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == mock_market_book()
 
     @mock.patch(
@@ -326,15 +328,26 @@ class TestMarketBookCache(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.cache.MarketDefinition")
     @mock.patch("betfairlightweight.streaming.cache.MarketBook")
     def test_create_resource_snap(self, *_):
-        market_book = self.market_book_cache.create_resource(1234, True, True)
+        market_book = self.market_book_cache.create_resource(1234, True)
         assert market_book == {
-            "streaming_update": self.market_book_cache.streaming_update,
             "streaming_unique_id": 1234,
             "streaming_snap": True,
         }
 
+    @mock.patch("betfairlightweight.streaming.cache.MarketBook")
+    def test_create_resource_resource(self, mock_market_book):
+        self.market_book_cache.lightweight = False
+        self.assertEqual(
+            self.market_book_cache.create_resource(1, False), mock_market_book()
+        )
+        # todo
+
+    @mock.patch("betfairlightweight.streaming.cache.MarketDefinition")
     @mock.patch("betfairlightweight.streaming.cache.MarketBookCache._add_new_runner")
-    def test__process_market_definition(self, mock__add_new_runner):
+    def test__process_market_definition(
+        self, mock__add_new_runner, mock_market_definition_cls
+    ):
+        self.market_book_cache.lightweight = False
         mock_market_definition = {"runners": [{"id": 12}]}
         self.market_book_cache._process_market_definition(mock_market_definition)
 
@@ -356,8 +369,14 @@ class TestMarketBookCache(unittest.TestCase):
             id=34, hc=1, definition={"id": 34, "hc": 1}
         )
         mock__add_new_runner().serialise.assert_called()
+        mock_market_definition_cls.assert_called_with(**mock_market_definition)
+        self.assertEqual(
+            self.market_book_cache._market_definition_resource,
+            mock_market_definition_cls(),
+        )
 
-    def test__process_market_definition_caches(self):
+    @mock.patch("betfairlightweight.streaming.cache.MarketDefinition")
+    def test__process_market_definition_caches(self, mock_market_definition_cls):
         mock_market_definition = {
             "betDelay": 1,
             "version": 234,
@@ -386,21 +405,23 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertEqual(self.market_book_cache._definition_price_ladder_definition, "")
         self.assertEqual(self.market_book_cache._definition_key_line_description, None)
 
-    @mock.patch("betfairlightweight.streaming.cache.RunnerBook")
-    def test__add_new_runner(self, mock_runner_book):
+    @mock.patch("betfairlightweight.streaming.cache.RunnerBookCache")
+    def test__add_new_runner(self, mock_runner_book_cache):
         self.assertEqual(self.market_book_cache.runner_dict, {})
         self.market_book_cache._add_new_runner(id=1, hc=2, definition={1: 2})
-        mock_runner_book.assert_called_with(id=1, hc=2, definition={1: 2})
+        mock_runner_book_cache.assert_called_with(
+            lightweight=True, id=1, hc=2, definition={1: 2}
+        )
         self.assertEqual(
             self.market_book_cache.runner_dict,
             {
                 (
-                    mock_runner_book().selection_id,
-                    mock_runner_book().handicap,
-                ): mock_runner_book()
+                    mock_runner_book_cache().selection_id,
+                    mock_runner_book_cache().handicap,
+                ): mock_runner_book_cache()
             },
         )
-        self.assertEqual(self.market_book_cache.runners, [mock_runner_book()])
+        self.assertEqual(self.market_book_cache.runners, [mock_runner_book_cache()])
         self.assertEqual(self.market_book_cache._number_of_runners, 1)
 
     def test_closed(self):
@@ -409,13 +430,15 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertTrue(self.market_book_cache.closed)
 
 
-class TestRunnerBook(unittest.TestCase):
+class TestRunnerBookCache(unittest.TestCase):
     def setUp(self):
-        self.runner_book = RunnerBook(**{"id": 123})
+        self.runner_book = RunnerBookCache(lightweight=True, **{"id": 123})
 
     def test_init(self):
         self.assertEqual(self.runner_book.selection_id, 123)
+        self.assertTrue(self.runner_book.lightweight)
         self.assertEqual(self.runner_book.serialised, {})
+        self.assertIsNone(self.runner_book.resource)
 
     def test_update_definition(self):
         definition = {
@@ -537,16 +560,28 @@ class TestRunnerBook(unittest.TestCase):
         # all 'None' or empty lists
         assert all(not sp[a] for a in sp.keys())
 
+    @mock.patch("betfairlightweight.streaming.cache.RunnerBook")
+    def test_serialise_resource(self, mock_runner_book):
+        self.runner_book.lightweight = False
+        self.runner_book.serialise()
+        mock_runner_book.assert_called_with(**self.runner_book.serialised)
+        self.assertEqual(self.runner_book.resource, mock_runner_book())
+
 
 class TestOrderBookCache(unittest.TestCase):
     def setUp(self):
-        self.order_book_cache = OrderBookCache(**{})
+        self.order_book_cache = OrderBookCache("1.123", 123, True)
         self.runner = mock.Mock()
         self.runner.selection_id = 10895629
         self.runner.handicap = 0
         self.runner.serialise_orders = mock.Mock(return_value=[])
         self.runner.unmatched_orders = [1]
         self.order_book_cache.runners = {(10895629, 0): self.runner}
+
+    def test_init(self):
+        self.assertEqual(self.order_book_cache.market_id, "1.123")
+        self.assertEqual(self.order_book_cache.publish_time, 123)
+        self.assertTrue(self.order_book_cache.lightweight)
 
     def test_full_image(self):
         self.order_book_cache.runners = {}
@@ -583,7 +618,9 @@ class TestOrderBookCache(unittest.TestCase):
             self.assertEqual(self.order_book_cache.streaming_update, order_book)
 
             for order_changes in order_book.get("orc"):
-                mock_order_book_runner.assert_called_with(**order_changes)
+                mock_order_book_runner.assert_called_with(
+                    self.order_book_cache.market_id, **order_changes
+                )
 
     def test_update_cache_closed(self):
         mock_response = create_mock_json("tests/resources/streaming_ocm_SUB_IMAGE.json")
@@ -603,12 +640,12 @@ class TestOrderBookCache(unittest.TestCase):
         current_orders = self.order_book_cache.create_resource(123, True)
         assert current_orders == mock_serialise()
         assert current_orders == {
-            "streaming_update": self.order_book_cache.streaming_update,
             "streaming_unique_id": 123,
-            "streaming_snap": False,
+            "streaming_snap": True,
         }
         # not lightweight
-        current_orders = self.order_book_cache.create_resource(123, False)
+        self.order_book_cache.lightweight = False
+        current_orders = self.order_book_cache.create_resource(123, True)
         assert current_orders == mock_current_orders()
 
     def test_serialise(self):
@@ -625,7 +662,12 @@ class TestOrderBookCache(unittest.TestCase):
         serialised = self.order_book_cache.serialise
         self.assertEqual(
             serialised,
-            {"currentOrders": [1, 2, 3], "matches": [6, 4], "moreAvailable": False},
+            {
+                "currentOrders": [1, 2, 3],
+                "matches": [6, 4],
+                "moreAvailable": False,
+                "streaming_update": None,
+            },
         )
 
 
@@ -636,8 +678,8 @@ class TestOrderBookRunner(unittest.TestCase):
                 "id": 1,
                 "p": "a",
                 "s": "a",
-                "side": "a",
-                "ot": "a",
+                "side": "L",
+                "ot": "L",
                 "pd": "a",
                 "sm": "a",
                 "sr": "a",
@@ -646,14 +688,14 @@ class TestOrderBookRunner(unittest.TestCase):
                 "sv": "a",
                 "rfo": "a",
                 "rfs": "a",
-                "status": "a",
+                "status": "E",
             },
             {
                 "id": 2,
                 "p": "b",
                 "s": "a",
-                "side": "a",
-                "ot": "a",
+                "side": "L",
+                "ot": "L",
                 "pd": "a",
                 "sm": "a",
                 "sr": "a",
@@ -662,12 +704,20 @@ class TestOrderBookRunner(unittest.TestCase):
                 "sv": "a",
                 "rfo": "a",
                 "rfs": "a",
-                "status": "b",
+                "status": "EC",
             },
         ]
         self.order_book_runner = OrderBookRunner(
-            **{"id": 1, "ml": [], "mb": [], "uo": uo}
+            "1.123", **{"id": 1, "ml": [], "mb": [], "uo": uo}
         )
+
+    def test_init(self):
+        self.assertEqual(self.order_book_runner.market_id, "1.123")
+        self.assertEqual(self.order_book_runner.selection_id, 1)
+        self.assertEqual(self.order_book_runner.handicap, 0)
+        self.assertIsNone(self.order_book_runner.full_image)
+        self.assertIsNone(self.order_book_runner.strategy_matches)
+        self.assertEqual(len(self.order_book_runner.unmatched_orders), 2)
 
     def test_update_unmatched(self):
         unmatched_orders = [
@@ -675,8 +725,8 @@ class TestOrderBookRunner(unittest.TestCase):
                 "id": 2,
                 "p": "b",
                 "s": "a",
-                "side": "a",
-                "ot": "a",
+                "side": "L",
+                "ot": "L",
                 "pd": "a",
                 "sm": "a",
                 "sr": "a",
@@ -685,13 +735,42 @@ class TestOrderBookRunner(unittest.TestCase):
                 "sv": "a",
                 "rfo": "a",
                 "rfs": "a",
-                "status": "c",
+                "status": "EC",
             }
         ]
         self.order_book_runner.update_unmatched(unmatched_orders)
-
-        self.assertEqual(self.order_book_runner.unmatched_orders[1].status, "a")
-        self.assertEqual(self.order_book_runner.unmatched_orders[2].status, "c")
+        self.assertEqual(self.order_book_runner.unmatched_orders[1].status, "E")
+        self.assertEqual(self.order_book_runner.unmatched_orders[2].status, "EC")
+        self.assertEqual(
+            self.order_book_runner.unmatched_orders[2].serialised,
+            {
+                "averagePriceMatched": 0.0,
+                "betId": 2,
+                "bspLiability": None,
+                "cancelledDate": None,
+                "customerOrderRef": "a",
+                "customerStrategyRef": "a",
+                "handicap": 0,
+                "lapseStatusReasonCode": None,
+                "lapsedDate": None,
+                "marketId": "1.123",
+                "matchedDate": None,
+                "orderType": "LIMIT",
+                "persistenceType": None,
+                "placedDate": None,
+                "priceSize": {"price": "b", "size": "a"},
+                "regulatorAuthCode": None,
+                "regulatorCode": None,
+                "selectionId": 1,
+                "side": "LAY",
+                "sizeCancelled": "a",
+                "sizeLapsed": "a",
+                "sizeMatched": "a",
+                "sizeRemaining": "a",
+                "sizeVoided": "a",
+                "status": "EXECUTION_COMPLETE",
+            },
+        )
 
     def test_serialise_orders(self):
         mock_order = mock.Mock()
@@ -711,7 +790,7 @@ class TestOrderBookRunner(unittest.TestCase):
 
         mock_order_two.serialise = mock_serialise
 
-        assert len(self.order_book_runner.serialise_orders("1.1")), 2
+        assert len(self.order_book_runner.serialise_orders()), 2
 
     def test_serialise_matches(self):
         self.assertEqual(
@@ -765,10 +844,12 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.lapsed_date == BaseResource.strip_datetime(16)
         assert self.unmatched_order.lapse_status_reason_code == 17
         assert self.unmatched_order.cancelled_date == BaseResource.strip_datetime(18)
+        assert self.unmatched_order.serialised == {}
 
     def test_serialise(self):
+        self.unmatched_order.serialise("1.23", 12345, 0)
         self.assertEqual(
-            self.unmatched_order.serialise("1.23", 12345, 0.0),
+            self.unmatched_order.serialised,
             {
                 "sizeLapsed": 11,
                 "persistenceType": "LAPSE",
@@ -804,12 +885,15 @@ class TestRaceCache(unittest.TestCase):
         self.market_id = "1.12"
         self.publish_time = 123
         self.race_id = "456"
-        self.race_cache = RaceCache(self.market_id, self.publish_time, self.race_id)
+        self.race_cache = RaceCache(
+            self.market_id, self.publish_time, self.race_id, True
+        )
 
     def test_init(self):
         self.assertEqual(self.race_cache.market_id, self.market_id)
         self.assertEqual(self.race_cache.publish_time, self.publish_time)
         self.assertEqual(self.race_cache.race_id, self.race_id)
+        self.assertTrue(self.race_cache.lightweight)
         self.assertIsNone(self.race_cache.rpc)
         self.assertEqual(self.race_cache.rrc, {})
         self.assertIsNone(self.race_cache.streaming_update)
@@ -852,4 +936,5 @@ class TestRaceCache(unittest.TestCase):
             "id": self.race_id,
             "rpc": {"test": 123},
             "rrc": [{"test": "me"}],
+            "streaming_update": None,
         }
