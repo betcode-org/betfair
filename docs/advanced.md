@@ -170,7 +170,7 @@ As detailed above using lightweight mode and the [speed] install improves the pe
 listener = betfairlightweight.StreamListener(
     max_latency=None,  # ignore latency errors
     output_queue=None,  # use generator rather than a queue (faster)
-    lightweight=False,  # lightweight mode is faster
+    lightweight=True,  # lightweight mode is faster
     debug=False,  # prevent logging calls on each update (slow)
     update_clk=False,  # do not update clk on updates (not required when backtesting)
 )
