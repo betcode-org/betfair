@@ -1,14 +1,19 @@
-import datetime
 from typing import Union
 
-from ..resources import BaseResource, MarketBook, CurrentOrders, MarketDefinition, Race
+from ..resources import (
+    BaseResource,
+    MarketBook,
+    RunnerBook,
+    CurrentOrders,
+    MarketDefinition,
+    Race,
+)
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
     StreamingSide,
     StreamingStatus,
 )
-from ..exceptions import CacheError
 from ..utils import create_date_string
 
 
@@ -18,55 +23,70 @@ class Available:
     designed to be as quick as possible.
     """
 
+    __slots__ = [
+        "order_book",
+        "deletion_select",
+        "reverse",
+        "serialised",
+    ]
+
     def __init__(self, prices: list, deletion_select: int, reverse: bool = False):
         """
         :param list prices: Current prices
         :param int deletion_select: Used to decide if update should delete cache
         :param bool reverse: Used for sorting
         """
-        self.prices = prices or []
+        self.order_book = {}
         self.deletion_select = deletion_select
         self.reverse = reverse
-
-        self.serialise = []
-        self.sort()
-
-    def sort(self) -> None:
-        self.prices.sort(reverse=self.reverse)
-        self.serialise = [
-            {
-                "price": volume[self.deletion_select - 1],
-                "size": volume[self.deletion_select],
-            }
-            for volume in self.prices
-        ]
-
-    def clear(self) -> None:
-        self.prices = []
-        self.sort()
+        self.serialised = []
+        self.update(prices or [])
 
     def update(self, book_update: list) -> None:
+        deletion_select = self.deletion_select  # local vars
         for book in book_update:
-            for (count, trade) in enumerate(self.prices):
-                if trade[0] == book[0]:
-                    if book[self.deletion_select] == 0:
-                        del self.prices[count]
-                        break
-                    else:
-                        self.prices[count] = book
-                        break
+            book = book.copy()  # create copy to keep streaming_update raw
+            key = book[0]  # price or position
+            if book[deletion_select] == 0:
+                # remove price/size
+                try:
+                    del self.order_book[key]
+                except KeyError:
+                    continue
             else:
-                if book[self.deletion_select] != 0:
-                    # handles betfair bug,
-                    # https://forum.developer.betfair.com/forum/sports-exchange-api/exchange-api/3425-streaming-bug
-                    self.prices.append(book)
-        self.sort()
+                # serialise once and cache in the book
+                book.append(
+                    {
+                        "price": book[deletion_select - 1],
+                        "size": book[deletion_select],
+                    }
+                )
+                if key not in self.order_book:
+                    # new price requiring a reorder
+                    # to the book.
+                    self.order_book[key] = book
+                    self._sort_order_book()
+                else:
+                    # update book
+                    self.order_book[key] = book
+        self.serialise()
+
+    def clear(self) -> None:
+        self.order_book = {}
+        self.serialise()
+
+    def serialise(self) -> None:
+        self.serialised = [book[-1] for book in self.order_book.values()]
+
+    def _sort_order_book(self) -> None:
+        self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
 
 
-class RunnerBook:
+class RunnerBookCache:
     def __init__(
         self,
         id: int,
+        lightweight: bool,
         ltp: float = None,
         tv: float = None,
         trd: list = None,
@@ -81,8 +101,10 @@ class RunnerBook:
         spb: list = None,
         spl: list = None,
         hc: int = 0,
+        definition: dict = None,
     ):
         self.selection_id = id
+        self.lightweight = lightweight
         self.last_price_traded = ltp
         self.total_matched = tv
         self.traded = Available(trd, 1)
@@ -92,11 +114,27 @@ class RunnerBook:
         self.available_to_lay = Available(atl, 1)
         self.best_available_to_lay = Available(batl, 2)
         self.best_display_available_to_lay = Available(bdatl, 2)
-        self.starting_price_back = Available(spb, 1)
+        self.starting_price_back = Available(spb, 1, True)
         self.starting_price_lay = Available(spl, 1)
         self.starting_price_near = spn
         self.starting_price_far = spf
         self.handicap = hc
+        self.definition = definition or {}
+        self._definition_status = None
+        self._definition_bsp = None
+        self._definition_adjustment_factor = None
+        self._definition_removal_date = None
+        self.update_definition(self.definition)
+        self.serialised = {}  # cache is king
+        self.resource = None
+
+    def update_definition(self, definition: dict) -> None:
+        self.definition = definition
+        # cache values used in serialisation to prevent duplicate <get>
+        self._definition_status = self.definition.get("status")
+        self._definition_bsp = self.definition.get("bsp")
+        self._definition_adjustment_factor = self.definition.get("adjustmentFactor")
+        self._definition_removal_date = self.definition.get("removalDate")
 
     def update_traded(self, traded_update: list) -> None:
         """:param traded_update: [price, size]"""
@@ -106,76 +144,82 @@ class RunnerBook:
             self.traded.update(traded_update)
 
     def serialise_available_to_back(self) -> list:
-        if self.available_to_back.prices:
-            return self.available_to_back.serialise
-        elif self.best_display_available_to_back.prices:
-            return self.best_display_available_to_back.serialise
-        elif self.best_available_to_back.prices:
-            return self.best_available_to_back.serialise
+        if self.available_to_back.order_book:
+            return self.available_to_back.serialised
+        elif self.best_display_available_to_back.order_book:
+            return self.best_display_available_to_back.serialised
+        elif self.best_available_to_back.order_book:
+            return self.best_available_to_back.serialised
         else:
             return []
 
     def serialise_available_to_lay(self) -> list:
-        if self.available_to_lay.prices:
-            return self.available_to_lay.serialise
-        elif self.best_display_available_to_lay.prices:
-            return self.best_display_available_to_lay.serialise
-        elif self.best_available_to_lay.prices:
-            return self.best_available_to_lay.serialise
+        if self.available_to_lay.order_book:
+            return self.available_to_lay.serialised
+        elif self.best_display_available_to_lay.order_book:
+            return self.best_display_available_to_lay.serialised
+        elif self.best_available_to_lay.order_book:
+            return self.best_available_to_lay.serialised
         return []
 
-    def serialise(self, runner_definition: dict) -> dict:
-        return {
-            "status": runner_definition.get("status"),
+    def serialise(self) -> None:
+        self.serialised = {
+            "status": self._definition_status,
             "ex": {
-                "tradedVolume": self.traded.serialise,
+                "tradedVolume": self.traded.serialised,
                 "availableToBack": self.serialise_available_to_back(),
                 "availableToLay": self.serialise_available_to_lay(),
             },
             "sp": {
                 "nearPrice": self.starting_price_near,
                 "farPrice": self.starting_price_far,
-                "backStakeTaken": self.starting_price_back.serialise,
-                "layLiabilityTaken": self.starting_price_lay.serialise,
-                "actualSP": runner_definition.get("bsp"),
+                "backStakeTaken": self.starting_price_lay.serialised,
+                "layLiabilityTaken": self.starting_price_back.serialised,
+                "actualSP": self._definition_bsp,
             },
-            "adjustmentFactor": runner_definition.get("adjustmentFactor"),
-            "removalDate": runner_definition.get("removalDate"),
+            "adjustmentFactor": self._definition_adjustment_factor,
+            "removalDate": self._definition_removal_date,
             "lastPriceTraded": self.last_price_traded,
             "handicap": self.handicap,
             "totalMatched": self.total_matched,
             "selectionId": self.selection_id,
         }
+        if self.lightweight is False:  # cache resource
+            self.resource = RunnerBook(**self.serialised)
 
 
 class MarketBookCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(MarketBookCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("id")
-        self.image = kwargs.get("img")
-        self.total_matched = kwargs.get("tv")
-        if "marketDefinition" not in kwargs:
-            raise CacheError('"EX_MARKET_DEF" must be requested to use cache')
-        self.market_definition = kwargs["marketDefinition"]
-
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+        super(MarketBookCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.lightweight = lightweight
+        self.total_matched = None
+        self.market_definition = {}
+        self._market_definition_resource = None
+        self._definition_bet_delay = None
+        self._definition_version = None
+        self._definition_complete = None
+        self._definition_runners_voidable = None
+        self._definition_status = None
+        self._definition_bsp_reconciled = None
+        self._definition_cross_matching = None
+        self._definition_in_play = None
+        self._definition_number_of_winners = None
+        self._definition_number_of_active_runners = None
+        self._definition_price_ladder_definition = None
+        self._definition_key_line_description = None
         self.streaming_update = None
         self.runners = []
         self.runner_dict = {}
-        self.market_definition_runner_dict = {}
-        self._update_runner_dict()
-        self._update_market_definition_runner_dict()
+        self._number_of_runners = 0
 
     def update_cache(self, market_change: dict, publish_time: int) -> None:
-        self._datetime_updated = (
-            self.strip_datetime(publish_time) or self._datetime_updated
-        )
-        self.publish_time = publish_time
         self.streaming_update = market_change
+        self.publish_time = publish_time
 
         if "marketDefinition" in market_change:
-            self.market_definition = market_change["marketDefinition"]
-            self._update_market_definition_runner_dict()
+            self._process_market_definition(market_change["marketDefinition"])
 
         if "tv" in market_change:
             self.total_matched = market_change["tv"]
@@ -211,37 +255,71 @@ class MarketBookCache(BaseResource):
                     if "spl" in new_data:
                         runner.starting_price_lay.update(new_data["spl"])
                 else:
-                    self.runners.append(RunnerBook(**new_data))
-                    self._update_runner_dict()
+                    runner = self._add_new_runner(**new_data)
+                runner.serialise()
 
-    def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
-    ) -> Union[dict, MarketBook]:
-        data = self.serialise
-        data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
-        data["streaming_snap"] = snap
-        if lightweight:
-            return data
-        else:
-            return MarketBook(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                market_definition=MarketDefinition(**self.market_definition),
-                **data
-            )
+    def _process_market_definition(self, market_definition: dict) -> None:
+        self.market_definition = market_definition
+        if self.lightweight is False:  # cache resource
+            self._market_definition_resource = MarketDefinition(**market_definition)
+        # cache values used in serialisation to prevent duplicate <get>
+        self._definition_bet_delay = market_definition.get("betDelay")
+        self._definition_version = market_definition.get("version")
+        self._definition_complete = market_definition.get("complete")
+        self._definition_runners_voidable = market_definition.get("runnersVoidable")
+        self._definition_status = market_definition.get("status")
+        self._definition_bsp_reconciled = market_definition.get("bspReconciled")
+        self._definition_cross_matching = market_definition.get("crossMatching")
+        self._definition_in_play = market_definition.get("inPlay")
+        self._definition_number_of_winners = market_definition.get("numberOfWinners")
+        self._definition_number_of_active_runners = market_definition.get(
+            "numberOfActiveRunners"
+        )
+        self._definition_price_ladder_definition = market_definition.get(
+            "priceLadderDefinition"
+        )
+        self._definition_key_line_description = market_definition.get(
+            "keyLineDefinition"
+        )
+        # process runners
+        for runner_definition in market_definition.get("runners", []):
+            selection_id = runner_definition["id"]
+            hc = runner_definition.get("hc", 0)
+            runner = self.runner_dict.get((selection_id, hc))
+            if runner:
+                runner.update_definition(runner_definition)
+            else:
+                runner = self._add_new_runner(
+                    id=selection_id, hc=hc, definition=runner_definition
+                )
+            runner.serialise()
 
-    def _update_runner_dict(self) -> None:
+    def _add_new_runner(self, **kwargs) -> RunnerBookCache:
+        runner = RunnerBookCache(lightweight=self.lightweight, **kwargs)
+        self.runners.append(runner)
+        self._number_of_runners = len(self.runners)
+        # update runner_dict
         self.runner_dict = {
             (runner.selection_id, runner.handicap): runner for runner in self.runners
         }
+        return runner
 
-    def _update_market_definition_runner_dict(self) -> None:
-        self.market_definition_runner_dict = {
-            (runner["id"], runner.get("hc", 0)): runner
-            for runner in self.market_definition["runners"]
-        }
+    def create_resource(
+        self, unique_id: int, snap: bool = False
+    ) -> Union[dict, MarketBook]:
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_snap"] = snap
+        if self.lightweight:
+            return data
+        else:
+            _runners = data.pop("runners", [])
+            market_book = MarketBook(
+                market_definition=self._market_definition_resource, runners=[], **data
+            )
+            market_book.runners = [r.resource for r in self.runners]
+            market_book._data["runners"] = _runners
+            return market_book
 
     @property
     def closed(self) -> bool:
@@ -253,41 +331,32 @@ class MarketBookCache(BaseResource):
     @property
     def serialise(self) -> dict:
         """Creates standard market book json response,
-        will error if EX_MARKET_DEF not incl.
+        will contain missing data if EX_MARKET_DEF
+        not incl.
         """
         return {
             "marketId": self.market_id,
             "totalAvailable": None,
             "isMarketDataDelayed": None,
             "lastMatchTime": None,
-            "betDelay": self.market_definition.get("betDelay"),
-            "version": self.market_definition.get("version"),
-            "complete": self.market_definition.get("complete"),
-            "runnersVoidable": self.market_definition.get("runnersVoidable"),
+            "betDelay": self._definition_bet_delay,
+            "version": self._definition_version,
+            "complete": self._definition_complete,
+            "runnersVoidable": self._definition_runners_voidable,
             "totalMatched": self.total_matched,
-            "status": self.market_definition.get("status"),
-            "bspReconciled": self.market_definition.get("bspReconciled"),
-            "crossMatching": self.market_definition.get("crossMatching"),
-            "inplay": self.market_definition.get("inPlay"),
-            "numberOfWinners": self.market_definition.get("numberOfWinners"),
-            "numberOfRunners": len(self.market_definition.get("runners")),
-            "numberOfActiveRunners": self.market_definition.get(
-                "numberOfActiveRunners"
-            ),
-            "runners": [
-                runner.serialise(
-                    self.market_definition_runner_dict[
-                        (runner.selection_id, runner.handicap)
-                    ]
-                )
-                for runner in self.runners
-            ],
+            "status": self._definition_status,
+            "bspReconciled": self._definition_bsp_reconciled,
+            "crossMatching": self._definition_cross_matching,
+            "inplay": self._definition_in_play,
+            "numberOfWinners": self._definition_number_of_winners,
+            "numberOfRunners": self._number_of_runners,
+            "numberOfActiveRunners": self._definition_number_of_active_runners,
+            "runners": [runner.serialised for runner in self.runners],
             "publishTime": self.publish_time,
-            "priceLadderDefinition": self.market_definition.get(
-                "priceLadderDefinition"
-            ),
-            "keyLineDescription": self.market_definition.get("keyLineDefinition"),
+            "priceLadderDefinition": self._definition_price_ladder_definition,
+            "keyLineDescription": self._definition_key_line_description,
             "marketDefinition": self.market_definition,  # used in lightweight
+            "streaming_update": self.streaming_update,
         }
 
 
@@ -346,9 +415,10 @@ class UnmatchedOrder:
         self.lapse_status_reason_code = lsrc
         self.cancelled_date = BaseResource.strip_datetime(cd)
         self._cancelled_date_string = create_date_string(self.cancelled_date)
+        self.serialised = {}  # cache is king
 
-    def serialise(self, market_id: str, selection_id: int, handicap: int) -> dict:
-        return {
+    def serialise(self, market_id: str, selection_id: int, handicap: int):
+        self.serialised = {
             "averagePriceMatched": self.average_price_matched or 0.0,
             "betId": self.bet_id,
             "bspLiability": self.bsp_liability,
@@ -382,6 +452,7 @@ class UnmatchedOrder:
 class OrderBookRunner:
     def __init__(
         self,
+        market_id: str,
         id: int,
         fullImage: dict = None,
         ml: list = None,
@@ -390,48 +461,47 @@ class OrderBookRunner:
         hc: int = 0,
         smc: dict = None,
     ):
+        self.market_id = market_id
         self.selection_id = id
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
         self.matched_backs = Available(mb, 1)
-        self.unmatched_orders = {i["id"]: UnmatchedOrder(**i) for i in uo} if uo else {}
+        self.unmatched_orders = {}  # {betId: UnmatchedOrder..
         self.handicap = hc
         self.strategy_matches = smc
+        self.update_unmatched(uo or [])
 
     def update_unmatched(self, unmatched_orders: list) -> None:
         for unmatched_order in unmatched_orders:
-            self.unmatched_orders[unmatched_order["id"]] = UnmatchedOrder(
-                **unmatched_order
-            )
+            order = UnmatchedOrder(**unmatched_order)
+            order.serialise(self.market_id, self.selection_id, self.handicap)
+            self.unmatched_orders[order.bet_id] = order
 
-    def serialise_orders(self, market_id: str) -> list:
+    def serialise_orders(self) -> list:
         orders = list(self.unmatched_orders.values())  # order may be added (#232)
-        return [
-            order.serialise(market_id, self.selection_id, self.handicap)
-            for order in orders
-        ]
+        return [order.serialised for order in orders]
 
     def serialise_matches(self) -> dict:
         return {
             "selectionId": self.selection_id,
-            "matchedLays": self.matched_lays.serialise,
-            "matchedBacks": self.matched_backs.serialise,
+            "matchedLays": self.matched_lays.serialised,
+            "matchedBacks": self.matched_backs.serialised,
         }
 
 
 class OrderBookCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(OrderBookCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("id")
-        self.closed = kwargs.get("closed")
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+        super(OrderBookCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.lightweight = lightweight
+        self.closed = None
         self.streaming_update = None
         self.runners = {}  # (selectionId, handicap):
 
     def update_cache(self, order_book: dict, publish_time: int) -> None:
-        self._datetime_updated = self.strip_datetime(publish_time)
-        self.publish_time = publish_time
         self.streaming_update = order_book
+        self.publish_time = publish_time
         if "closed" in order_book:
             self.closed = order_book["closed"]
 
@@ -442,7 +512,7 @@ class OrderBookCache(BaseResource):
             _lookup = (selection_id, handicap)
             runner = self.runners.get(_lookup)
             if full_image or runner is None:
-                self.runners[_lookup] = OrderBookRunner(**order_changes)
+                self.runners[_lookup] = OrderBookRunner(self.market_id, **order_changes)
             else:
                 if "ml" in order_changes:
                     runner.matched_lays.update(order_changes["ml"])
@@ -452,82 +522,63 @@ class OrderBookCache(BaseResource):
                     runner.update_unmatched(order_changes["uo"])
 
     def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
+        self, unique_id: int, snap: bool = False
     ) -> Union[dict, CurrentOrders]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
-            return CurrentOrders(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                publish_time=self.publish_time,
-                **data
-            )
+            return CurrentOrders(publish_time=self.publish_time, **data)
 
     @property
     def serialise(self) -> dict:
         runners = list(self.runners.values())  # runner may be added
         orders, matches = [], []
         for runner in runners:
-            orders.extend(runner.serialise_orders(self.market_id))
+            orders.extend(runner.serialise_orders())
             matches.append(runner.serialise_matches())
-        return {"currentOrders": orders, "matches": matches, "moreAvailable": False}
-
-
-class RunnerChange:
-    def __init__(self, change: dict):
-        self.change = change
+        return {
+            "currentOrders": orders,
+            "matches": matches,
+            "moreAvailable": False,
+            "streaming_update": self.streaming_update,
+        }
 
 
 class RaceCache(BaseResource):
-    def __init__(self, **kwargs):
-        super(RaceCache, self).__init__(**kwargs)
-        self.publish_time = kwargs.get("publish_time")
-        self.market_id = kwargs.get("mid")
-        self.race_id = kwargs.get("id")
-        self.rpc = kwargs.get("rpc")  # RaceProgressChange
-        self.rrc = [RunnerChange(i) for i in kwargs.get("rrc", [])]  # RaceRunnerChange
+    def __init__(
+        self, market_id: str, publish_time: int, race_id: str, lightweight: bool
+    ):
+        super(RaceCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.race_id = race_id
+        self.lightweight = lightweight
+        self.rpc = None  # RaceProgressChange
+        self.rrc = {}  # {id: RaceRunnerChange..
         self.streaming_update = None
 
     def update_cache(self, update: dict, publish_time: int) -> None:
-        self._datetime_updated = self.strip_datetime(publish_time)
-        self.publish_time = publish_time
         self.streaming_update = update
+        self.publish_time = publish_time
 
         if "rpc" in update:
             self.rpc = update["rpc"]
 
         if "rrc" in update:
-            runner_dict = {runner.change["id"]: runner for runner in self.rrc}
-
             for runner_update in update["rrc"]:
-                runner = runner_dict.get(runner_update["id"])
-                if runner:
-                    runner.change = runner_update
-                else:
-                    self.rrc.append(RunnerChange(runner_update))
+                self.rrc[runner_update["id"]] = runner_update
 
-    def create_resource(
-        self, unique_id: int, lightweight: bool, snap: bool = False
-    ) -> Union[dict, Race]:
+    def create_resource(self, unique_id: int, snap: bool = False) -> Union[dict, Race]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
-        data["streaming_update"] = self.streaming_update
         data["streaming_snap"] = snap
-        if lightweight:
+        if self.lightweight:
             return data
         else:
-            return Race(
-                elapsed_time=(
-                    datetime.datetime.utcnow() - self._datetime_updated
-                ).total_seconds(),
-                **data
-            )
+            return Race(**data)
 
     @property
     def serialise(self) -> dict:
@@ -536,5 +587,6 @@ class RaceCache(BaseResource):
             "mid": self.market_id,
             "id": self.race_id,
             "rpc": self.rpc,
-            "rrc": [runner.change for runner in self.rrc],
+            "rrc": list(self.rrc.values()),
+            "streaming_update": self.streaming_update,
         }

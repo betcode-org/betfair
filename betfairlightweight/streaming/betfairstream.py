@@ -127,7 +127,7 @@ class BetfairStream:
         }
         if initial_clk and clk:
             # if resubscribe only update unique_id
-            self.listener.stream_unique_id = unique_id
+            self.listener.update_unique_id(unique_id)
         else:
             self.listener.register_stream(unique_id, "marketSubscription")
         self._send(message)
@@ -166,7 +166,7 @@ class BetfairStream:
         }
         if initial_clk and clk:
             # if resubscribe only update unique_id
-            self.listener.stream_unique_id = unique_id
+            self.listener.update_unique_id(unique_id)
         else:
             self.listener.register_stream(unique_id, "orderSubscription")
         self._send(message)
@@ -295,15 +295,19 @@ class HistoricalStream:
     historical data.
     """
 
-    def __init__(self, file_path: str, listener: BaseListener, operation: str):
+    def __init__(
+        self, file_path: str, listener: BaseListener, operation: str, unique_id: int
+    ):
         """
         :param str file_path: Directory of betfair data
         :param BaseListener listener: Listener object
         :param str operation: Operation type
+        :param int unique_id: Stream id (added to updates)
         """
         self.file_path = file_path
         self.listener = listener
         self.operation = operation
+        self.unique_id = unique_id
         self._running = False
 
     def start(self) -> None:
@@ -314,7 +318,7 @@ class HistoricalStream:
         self._running = False
 
     def _read_loop(self) -> None:
-        self.listener.register_stream(0, self.operation)
+        self.listener.register_stream(self.unique_id, self.operation)
         with open(self.file_path, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:
@@ -338,7 +342,7 @@ class HistoricalGeneratorStream(HistoricalStream):
 
     def _read_loop(self) -> dict:
         self._running = True
-        self.listener.register_stream(0, self.operation)
+        self.listener.register_stream(self.unique_id, self.operation)
         with open(self.file_path, "r") as f:
             for update in f:
                 if self.listener.on_data(update) is False:

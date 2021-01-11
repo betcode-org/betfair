@@ -29,6 +29,13 @@ class BaseListener:
         self.stream_type = operation
         self.stream = self._add_stream(unique_id, operation)
 
+    def update_unique_id(self, unique_id: int) -> None:
+        logger.info(
+            "[Register: %s]: Unique id updated on listener and stream" % unique_id
+        )
+        self.stream_unique_id = unique_id
+        self.stream.unique_id = unique_id
+
     def on_data(self, raw_data: str) -> None:
         logger.info(raw_data)
 
@@ -39,7 +46,7 @@ class BaseListener:
         :param list market_ids: Market ids to return
         :return: Return List of resources
         """
-        if self.stream:
+        if self.stream_type:  # quicker than self.stream due to __len__ call
             return self.stream.snap(market_ids)
         else:
             return []
@@ -61,11 +68,11 @@ class BaseListener:
 
     def _add_stream(self, unique_id: int, operation: str) -> BaseStream:
         if operation == "marketSubscription":
-            return MarketStream(self)
+            return MarketStream(self, unique_id)
         elif operation == "orderSubscription":
-            return OrderStream(self)
+            return OrderStream(self, unique_id)
         elif operation == "raceSubscription":
-            return RaceStream(self)
+            return RaceStream(self, unique_id)
 
     def __str__(self) -> str:
         return "{0}".format(self.__class__.__name__)
@@ -85,15 +92,21 @@ class StreamListener(BaseListener):
         output_queue: queue.Queue = None,
         max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
+        debug: bool = True,
+        update_clk: bool = True,
     ):
         """
         :param Queue output_queue: Queue used to return data
         :param float max_latency: Logs warning if latency above value
         :param bool lightweight: Returns dict instead of resource
+        :param bool debug: Debug logging calls enabled (setting to True has slight performance hit)
+        :param bool update_clk: initialClk/clk not updated on updates if False (quicker)
         """
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
+        self.debug = debug
+        self.update_clk = update_clk
 
     def on_data(self, raw_data: str) -> Optional[bool]:
         """Called when raw data is received from connection.
@@ -159,7 +172,10 @@ class StreamListener(BaseListener):
     def _on_change_message(self, data: dict, unique_id: int) -> None:
         change_type = data.get("ct", "UPDATE")
 
-        logger.debug("[%s: %s]: %s: %s" % (self.stream, unique_id, change_type, data))
+        if self.debug:
+            logger.debug(  # very slow call due to data dict
+                "[%s: %s]: %s: %s" % (self.stream, unique_id, change_type, data)
+            )
 
         if change_type == "SUB_IMAGE":
             self.stream.on_subscribe(data)
