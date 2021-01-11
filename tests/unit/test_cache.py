@@ -11,7 +11,6 @@ from betfairlightweight.streaming.cache import (
     Available,
     RaceCache,
 )
-from betfairlightweight.exceptions import CacheError
 from tests.unit.tools import create_mock_json
 
 
