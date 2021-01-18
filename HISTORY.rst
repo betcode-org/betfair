@@ -3,13 +3,18 @@
 Release History
 ---------------
 
-2.12.0 (2021-01-??)
+2.11.2 (2021-01-18)
 +++++++++++++++++++
 
 **Improvements**
 
 - #370 Session timeout updated to 24hrs for international exchange
 - License update
+- Removed build.sh
+
+**Dependencies**
+
+- py3.5 testing removed
 
 2.11.1 (2020-12-26)
 +++++++++++++++++++
