@@ -3,7 +3,15 @@
 Release History
 ---------------
 
-2.12.0 (2021-01-??)
+2.12.0b1 (2021-01-??)
++++++++++++++++++++
+
+**Improvements**
+
+- #373 Streaming refactor (2-3x+ speed improvement across the board)
+- #369 Matches resource added
+
+2.11.2 (2021-01-18)
 +++++++++++++++++++
 
 **Improvements**
