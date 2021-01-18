@@ -91,7 +91,7 @@ class BaseClientInit(unittest.TestCase):
 
     def test_session_timeout(self):
         client = APIClient("bf_username", "password", "app_key")
-        assert client.session_timeout == 28800
+        assert client.session_timeout == 86400
 
         client = APIClient("bf_username", "password", "app_key", locale="italy")
         assert client.session_timeout == 1200
