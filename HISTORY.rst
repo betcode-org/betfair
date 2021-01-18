@@ -16,8 +16,6 @@ Release History
 
 **Improvements**
 
-- #373 Streaming refactor (2-3x+ speed improvement across the board)
-- #369 Output streaming matched backs/lays
 - #370 Session timeout updated to 24hrs for international exchange
 - License update
 - Removed build.sh
