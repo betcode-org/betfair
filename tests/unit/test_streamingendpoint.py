@@ -35,7 +35,7 @@ class StreamingTest(unittest.TestCase):
         file_path = "test"
         listener = mock.Mock()
         self.streaming.create_historical_stream(file_path=file_path, listener=listener)
-        mock_stream.assert_called_with(file_path, listener, "marketSubscription")
+        mock_stream.assert_called_with(file_path, listener, "marketSubscription", 0)
 
     @mock.patch("betfairlightweight.endpoints.streaming.HistoricalGeneratorStream")
     def test_create_historical_generator_stream(self, mock_stream):
@@ -44,4 +44,4 @@ class StreamingTest(unittest.TestCase):
         self.streaming.create_historical_generator_stream(
             file_path=file_path, listener=listener
         )
-        mock_stream.assert_called_with(file_path, listener, "marketSubscription")
+        mock_stream.assert_called_with(file_path, listener, "marketSubscription", 0)

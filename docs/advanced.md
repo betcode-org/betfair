@@ -160,3 +160,20 @@ $ pip install betfairlightweight[speed]
 
 !!! hint
     If using windows it is likely that visual studio will need to be installed as well. 
+
+
+### Performance
+
+As detailed above using lightweight mode and the [speed] install improves the performance of bflw however it is possible to further improve the speed of backtesting by setting the following on the `Listener`:
+
+```python
+listener = betfairlightweight.StreamListener(
+    max_latency=None,  # ignore latency errors
+    output_queue=None,  # use generator rather than a queue (faster)
+    lightweight=True,  # lightweight mode is faster
+    debug=False,  # prevent logging calls on each update (slow)
+    update_clk=False,  # do not update clk on updates (not required when backtesting)
+)
+```
+
+For any further inspiration on speeding up backtesting have a read of the flumine source code, especially [patching.py](https://github.com/liampauling/flumine/blob/master/flumine/patching.py) and [historicalstream.py](https://github.com/liampauling/flumine/blob/master/flumine/streams/historicalstream.py)

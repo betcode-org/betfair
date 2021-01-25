@@ -15,10 +15,15 @@ class BaseStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
         self.listener.max_latency = 0.5
-        self.stream = BaseStream(self.listener)
+        self.stream = BaseStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._listener == self.listener
+        assert self.stream.unique_id == 123
+        assert self.stream.output_queue == self.listener.output_queue
+        assert self.stream.update_clk == self.listener.update_clk
+        assert self.stream._max_latency == self.listener.max_latency
+        assert self.stream._lightweight == self.listener.lightweight
         assert self.stream._initial_clk is None
         assert self.stream._clk is None
         assert self.stream._caches == {}
@@ -137,9 +142,7 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._caches = {"1.1": mock_cache}
 
         market_books = self.stream.snap()
-        mock_cache.create_resource.assert_called_with(
-            self.stream.unique_id, self.stream._lightweight, snap=True
-        )
+        mock_cache.create_resource.assert_called_with(self.stream.unique_id, snap=True)
         assert market_books == [mock_cache.create_resource()]
 
         market_books = self.stream.snap(["1.2"])
@@ -181,18 +184,6 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._update_clk({"clk": 123})
         assert self.stream._clk == 123
 
-    def test_unique_id(self):
-        assert self.stream.unique_id == self.listener.stream_unique_id
-
-    def test_output_queue(self):
-        assert self.stream.output_queue == self.listener.output_queue
-
-    def test_max_latency(self):
-        assert self.stream._max_latency == self.listener.max_latency
-
-    def test_lightweight(self):
-        assert self.stream._lightweight == self.listener.lightweight
-
     @mock.patch("time.time", return_value=1485554805.107185)
     def test_calc_latency(self, mock_time):
         pt = 1485554796455
@@ -212,7 +203,7 @@ class BaseStreamTest(unittest.TestCase):
 class MarketStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
-        self.stream = MarketStream(self.listener)
+        self.stream = MarketStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._lookup == "mc"
@@ -244,7 +235,7 @@ class MarketStreamTest(unittest.TestCase):
         data = sub_image_error.json()["mc"]
         self.assertTrue(self.stream._process(data, 123))
         self.assertEqual(len(data), 137)
-        self.assertEqual(len(self.stream), 135)  # two markets missing marketDef
+        self.assertEqual(len(self.stream), 137)  # two markets not missing
 
     @mock.patch("betfairlightweight.streaming.stream.MarketBookCache")
     @mock.patch("betfairlightweight.streaming.stream.MarketStream.on_process")
@@ -268,7 +259,7 @@ class MarketStreamTest(unittest.TestCase):
 class OrderStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
-        self.stream = OrderStream(self.listener)
+        self.stream = OrderStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._lookup == "oc"
@@ -324,7 +315,7 @@ class OrderStreamTest(unittest.TestCase):
 class RaceStreamTest(unittest.TestCase):
     def setUp(self):
         self.listener = mock.Mock()
-        self.stream = RaceStream(self.listener)
+        self.stream = RaceStream(self.listener, 123)
 
     def test_init(self):
         assert self.stream._lookup == "rc"

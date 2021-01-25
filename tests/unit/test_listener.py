@@ -51,6 +51,12 @@ class BaseListenerTest(unittest.TestCase):
         mock_add_stream.assert_called_with(2, "raceSubscription")
         assert self.base_listener.stream == 123
 
+    def test_update_unique_id(self):
+        self.base_listener.stream = mock.Mock()
+        self.base_listener.update_unique_id(987)
+        self.assertEqual(self.base_listener.stream_unique_id, 987)
+        self.assertEqual(self.base_listener.stream.unique_id, 987)
+
     def test_on_data(self):
         self.base_listener.on_data({})
 
@@ -60,22 +66,23 @@ class BaseListenerTest(unittest.TestCase):
     def test_add_stream(self, mock_market_stream, mock_order_stream, mock_race_stream):
         new_stream = self.base_listener._add_stream(1, "marketSubscription")
         assert new_stream == 123
-        mock_market_stream.assert_called_with(self.base_listener)
+        mock_market_stream.assert_called_with(self.base_listener, 1)
 
         new_stream = self.base_listener._add_stream(1, "orderSubscription")
         assert new_stream == 456
-        mock_order_stream.assert_called_with(self.base_listener)
+        mock_order_stream.assert_called_with(self.base_listener, 1)
 
         new_stream = self.base_listener._add_stream(1, "raceSubscription")
         assert new_stream == 789
-        mock_race_stream.assert_called_with(self.base_listener)
+        mock_race_stream.assert_called_with(self.base_listener, 1)
 
     def test_snap(self):
         mock_stream = mock.Mock()
-        self.base_listener.stream = None
+        self.base_listener.stream = mock_stream
+        self.base_listener.stream_type = None
         assert self.base_listener.snap() == []
 
-        self.base_listener.stream = mock_stream
+        self.base_listener.stream_type = "test"
         assert self.base_listener.snap() == mock_stream.snap(None)
 
     def test_props(self):
@@ -112,6 +119,7 @@ class StreamListenerTest(unittest.TestCase):
     def test_init(self):
         assert self.stream_listener.output_queue == self.output_queue
         assert self.stream_listener.max_latency == self.max_latency
+        assert self.stream_listener.debug == True
 
     @mock.patch("betfairlightweight.streaming.listener.StreamListener._on_connection")
     @mock.patch("betfairlightweight.streaming.listener.StreamListener._on_status")
