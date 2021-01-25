@@ -3,13 +3,22 @@
 Release History
 ---------------
 
-2.12.0b1 (2021-01-??)
+2.12.0 (2021-01-25)
 +++++++++++++++++++
 
 **Improvements**
 
-- #373 Streaming refactor (2-3x+ speed improvement across the board)
+- #373 Streaming refactor (2-3x+ speed improvement) using extensive caching of dicts/resources
 - #369 Matches resource added
+- Regression tests added to streaming operations
+
+**Bug Fixes**
+
+- SP traded fix, order wrong and wrong way around vs api/site
+
+**Dependencies**
+
+- orjson upgraded to 3.4.7
 
 2.11.2 (2021-01-18)
 +++++++++++++++++++
