@@ -108,7 +108,7 @@ class BaseClientTest(unittest.TestCase):
     @mock.patch("betfairlightweight.baseclient.os.listdir")
     def test_client_certs_mocked(self, mock_listdir):
         mock_listdir.return_value = [".DS_Store", "client-2048.crt", "client-2048.key"]
-        assert self.client.cert == ["/fail/client-2048.crt", "/fail/client-2048.key"]
+        assert self.client.cert == ("/fail/client-2048.crt", "/fail/client-2048.key")
 
     @mock.patch("betfairlightweight.baseclient.os.listdir")
     def test_client_certs_missing(self, mock_listdir):
@@ -183,7 +183,7 @@ class BaseClientTest(unittest.TestCase):
 
 
 def normpaths(p):
-    return list(map(os.path.normpath, p))
+    return tuple(map(os.path.normpath, p))
 
 
 class BaseClientRelativePathTest(unittest.TestCase):
@@ -196,6 +196,22 @@ class BaseClientRelativePathTest(unittest.TestCase):
     def test_client_certs_mocked(self, mock_listdir):
         mock_listdir.return_value = normpaths(
             [".DS_Store", "client-2048.crt", "client-2048.key"]
+        )
+        assert self.client.cert == normpaths(
+            ["../fail/client-2048.crt", "../fail/client-2048.key"]
+        )
+
+    @mock.patch("betfairlightweight.baseclient.os.listdir")
+    def test_client_single_file_cert_mocked(self, mock_listdir):
+        mock_listdir.return_value = normpaths(
+            [".DS_Store", "client-2048.pem"]
+        )
+        assert self.client.cert == os.path.normpath("../fail/client-2048.pem")
+
+    @mock.patch("betfairlightweight.baseclient.os.listdir")
+    def test_client_crt_key_preferred_over_pem_mocked(self, mock_listdir):
+        mock_listdir.return_value = normpaths(
+            [".DS_Store", "client-2048.crt", "client-2048.key", "client-2048.pem"]
         )
         assert self.client.cert == normpaths(
             ["../fail/client-2048.crt", "../fail/client-2048.key"]
@@ -215,3 +231,16 @@ class BaseClientCertFilesTest(unittest.TestCase):
         assert self.client.cert == normpaths(
             ["/fail/client-2048.crt", "/fail/client-2048.key"]
         )
+
+
+class BaseClientSingleCertFileTest(unittest.TestCase):
+    def setUp(self):
+        self.client = APIClient(
+            "bf_username",
+            "password",
+            "app_key",
+            cert_files=os.path.normpath("/fail/client-2048.pem"),
+        )
+
+    def test_client_cert_files(self):
+        assert self.client.cert == os.path.normpath("/fail/client-2048.pem")
