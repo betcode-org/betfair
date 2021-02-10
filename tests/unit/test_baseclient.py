@@ -203,9 +203,7 @@ class BaseClientRelativePathTest(unittest.TestCase):
 
     @mock.patch("betfairlightweight.baseclient.os.listdir")
     def test_client_single_file_cert_mocked(self, mock_listdir):
-        mock_listdir.return_value = normpaths(
-            [".DS_Store", "client-2048.pem"]
-        )
+        mock_listdir.return_value = normpaths([".DS_Store", "client-2048.pem"])
         assert self.client.cert == os.path.normpath("../fail/client-2048.pem")
 
     @mock.patch("betfairlightweight.baseclient.os.listdir")
