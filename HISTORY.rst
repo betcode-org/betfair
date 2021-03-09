@@ -13,6 +13,7 @@ Release History
 **Bug Fixes**
 
 - #387 default total matched set to 0 (was None)
+- #384 make regulator code optional
 
 **Dependencies**
 
