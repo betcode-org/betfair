@@ -8,7 +8,7 @@ from betfairlightweight.streaming.stream import (
     RaceStream,
     MAX_CACHE_AGE,
 )
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class BaseStreamTest(unittest.TestCase):

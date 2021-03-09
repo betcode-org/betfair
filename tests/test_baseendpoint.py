@@ -6,7 +6,7 @@ from betfairlightweight.compat import json
 from betfairlightweight import APIClient
 from betfairlightweight.endpoints.baseendpoint import BaseEndpoint
 from betfairlightweight.exceptions import APIError, InvalidResponse
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class BaseEndpointInit(unittest.TestCase):

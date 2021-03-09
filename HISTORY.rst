@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - Allow single file (.pem) certificate (@beci)
+- Tests directory cleanup
 
 **Bug Fixes**
 

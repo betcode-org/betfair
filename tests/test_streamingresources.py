@@ -7,7 +7,7 @@ from betfairlightweight.resources.streamingresources import (
     RaceProgress,
     RaceChange,
 )
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class TestMarketDefinition(unittest.TestCase):

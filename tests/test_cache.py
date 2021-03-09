@@ -11,7 +11,7 @@ from betfairlightweight.streaming.cache import (
     Available,
     RaceCache,
 )
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class TestAvailable(unittest.TestCase):

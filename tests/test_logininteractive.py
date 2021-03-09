@@ -6,7 +6,7 @@ from betfairlightweight import APIClient
 from betfairlightweight.endpoints.logininteractive import LoginInteractive
 from betfairlightweight.exceptions import LoginError, APIError, InvalidResponse
 from betfairlightweight.resources import LoginResource
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class LoginInteractiveTest(unittest.TestCase):

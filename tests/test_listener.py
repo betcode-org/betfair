@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from betfairlightweight.streaming.listener import BaseListener, StreamListener
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class BaseListenerTest(unittest.TestCase):
