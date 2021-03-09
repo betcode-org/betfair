@@ -1,3 +1,5 @@
+from typing import Union, Tuple
+
 import requests
 
 from .baseclient import BaseClient
@@ -12,7 +14,7 @@ class APIClient(BaseClient):
         app_key: str = None,
         certs: str = None,
         locale: str = None,
-        cert_files: list = None,
+        cert_files: Union[Tuple[str], str, None] = None,
         lightweight: bool = False,
         session: requests.Session = None,
     ):
@@ -24,7 +26,8 @@ class APIClient(BaseClient):
         :param str app_key: App Key for account, if None will look in .bashprofile
         :param str certs: Directory for certificates, if None will look in /certs
         :param str locale: Exchange to be used, defaults to international (.com) exchange
-        :param list cert_files: Certificate and key files. If None will use `self.certs`
+        :param list cert_files: if String, path to ssl client cert file (.pem).
+            If Tuple, ('cert', 'key') path pair. If None will use `self.certs`
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
         :param requests.Session session: Pass requests session object, defaults to a new request each request
         """
