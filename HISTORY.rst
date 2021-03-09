@@ -3,6 +3,24 @@
 Release History
 ---------------
 
+2.12.1 (2021-03-09)
++++++++++++++++++++
+
+**Improvements**
+
+- Allow single file (.pem) certificate (@beci)
+- Tests directory cleanup
+
+**Bug Fixes**
+
+- #387 default total matched set to 0 (was None)
+- #384 make regulator code optional in CurrentOrder
+- #380 make name optional in scores
+
+**Dependencies**
+
+- orjson upgraded to 3.5.1
+
 2.12.0 (2021-01-25)
 +++++++++++++++++++
 

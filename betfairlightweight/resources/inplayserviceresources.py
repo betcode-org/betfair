@@ -15,7 +15,7 @@ class HomeAwayBase:
         penaltiesSequence,
         halfTimeScore,
         fullTimeScore,
-        name,
+        name=None,
         score=None,
         sets=None,
         games=None,

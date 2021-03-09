@@ -9,7 +9,7 @@ from betfairlightweight.resources.bettingresources import (
     PriceSize,
 )
 from betfairlightweight.compat import BETFAIR_DATE_FORMAT
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class BettingResourcesTest(unittest.TestCase):

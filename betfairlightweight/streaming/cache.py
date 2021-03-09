@@ -88,7 +88,7 @@ class RunnerBookCache:
         id: int,
         lightweight: bool,
         ltp: float = None,
-        tv: float = None,
+        tv: float = 0,
         trd: list = None,
         atb: list = None,
         batb: list = None,
@@ -194,7 +194,7 @@ class MarketBookCache(BaseResource):
         self.market_id = market_id
         self.publish_time = publish_time
         self.lightweight = lightweight
-        self.total_matched = None
+        self.total_matched = 0
         self.market_definition = {}
         self._market_definition_resource = None
         self._definition_bet_delay = None

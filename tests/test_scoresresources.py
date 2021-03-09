@@ -1,7 +1,7 @@
 import unittest
 
 from betfairlightweight import resources
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class ScoreResourcesTest(unittest.TestCase):

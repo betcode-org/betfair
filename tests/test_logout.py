@@ -6,7 +6,7 @@ from betfairlightweight import APIClient
 from betfairlightweight.endpoints.logout import Logout
 from betfairlightweight.exceptions import LogoutError, APIError, InvalidResponse
 from betfairlightweight.resources import LogoutResource
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class LogoutTest(unittest.TestCase):

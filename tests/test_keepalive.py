@@ -6,7 +6,7 @@ from betfairlightweight import APIClient
 from betfairlightweight.endpoints.keepalive import KeepAlive, APIError
 from betfairlightweight.exceptions import KeepAliveError, InvalidResponse
 from betfairlightweight.resources.authresources import KeepAliveResource
-from tests.unit.tools import create_mock_json
+from tests.tools import create_mock_json
 
 
 class KeepAliveTest(unittest.TestCase):
