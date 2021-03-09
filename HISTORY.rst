@@ -3,6 +3,21 @@
 Release History
 ---------------
 
+2.12.1 (2021-03-09)
++++++++++++++++++++
+
+**Improvements**
+
+- Allow single file (.pem) certificate (@beci)
+
+**Bug Fixes**
+
+- #387 default total matched set to 0 (was None)
+
+**Dependencies**
+
+- orjson upgraded to 3.5.1
+
 2.12.0 (2021-01-25)
 +++++++++++++++++++
 

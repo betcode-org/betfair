@@ -228,7 +228,7 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertEqual(self.market_book_cache.market_id, "1.2345")
         self.assertEqual(self.market_book_cache.publish_time, 12345)
         self.assertTrue(self.market_book_cache.lightweight)
-        self.assertIsNone(self.market_book_cache.total_matched)
+        self.assertEqual(self.market_book_cache.total_matched, 0)
         self.assertEqual(self.market_book_cache.market_definition, {})
         self.assertIsNone(self.market_book_cache._market_definition_resource)
         self.assertIsNone(self.market_book_cache._definition_bet_delay)
@@ -545,7 +545,7 @@ class TestRunnerBookCache(unittest.TestCase):
                     "nearPrice": None,
                 },
                 "status": "ACTIVE",
-                "totalMatched": None,
+                "totalMatched": 0,
             },
         )
 
