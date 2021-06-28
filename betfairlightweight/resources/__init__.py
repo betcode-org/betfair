@@ -29,6 +29,7 @@ from .accountresources import (
     AccountStatementResult,
     CurrencyRate,
     TransferFunds,
+    LegacyData,
 )
 
 from .scoresresources import RaceDetails, Score, Incidents, AvailableEvent

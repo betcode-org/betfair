@@ -3,6 +3,22 @@
 Release History
 ---------------
 
+2.12.2 (2021-06-28)
++++++++++++++++++++
+
+**Improvements**
+
+- Upgrade to GitHub-native Dependabot
+
+**Bug Fixes**
+
+- Change to resources.LegacyData to make marketName non required field (@varneyo)
+
+**Dependencies**
+
+- orjson upgraded to 3.5.3
+- black upgraded to 21.6b0
+
 2.12.1 (2021-03-09)
 +++++++++++++++++++
 
