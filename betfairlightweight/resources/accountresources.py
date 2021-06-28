@@ -29,28 +29,28 @@ class AccountDetails(BaseResource):
 
 class LegacyData:
     def __init__(
-            self,
-            avgPrice,
-            betCategoryType,
-            betSize,
-            betType,
-            eventId,
-            eventTypeId,
-            fullMarketName,
-            grossBetAmount,
-            transactionId,
-            marketType,
-            placedDate,
-            selectionId,
-            startDate,
-            transactionType,
-            winLose,
-            marketName=None,
-            selectionName=None,
-            commissionRate=None,
-            avgPriceRaw=None,
-            handicap=None,
-            deadHeatPriceDivisor=None,
+        self,
+        avgPrice,
+        betCategoryType,
+        betSize,
+        betType,
+        eventId,
+        eventTypeId,
+        fullMarketName,
+        grossBetAmount,
+        transactionId,
+        marketType,
+        placedDate,
+        selectionId,
+        startDate,
+        transactionType,
+        winLose,
+        marketName=None,
+        selectionName=None,
+        commissionRate=None,
+        avgPriceRaw=None,
+        handicap=None,
+        deadHeatPriceDivisor=None,
     ):
         self.avg_price = avgPrice
         self.avg_price_raw = avgPriceRaw
@@ -77,7 +77,7 @@ class LegacyData:
 
 class AccountStatement:
     def __init__(
-            self, amount, balance, itemClass, itemClassData, itemDate, refId, legacyData
+        self, amount, balance, itemClass, itemClassData, itemDate, refId, legacyData
     ):
         self.amount = amount
         self.balance = balance
