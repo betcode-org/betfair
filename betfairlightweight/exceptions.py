@@ -15,11 +15,14 @@ class PasswordError(BetfairError):
     """
 
     def __init__(self, username: str):
-        message = (
+        super(PasswordError, self).__init__(username)
+        self.username = username
+
+    def __str__(self):
+        return (
             "Password not found in .bashprofile for %s, add or pass to APIClient"
-            % username
+            % self.username
         )
-        super(PasswordError, self).__init__(message)
 
 
 class AppKeyError(BetfairError):
@@ -28,11 +31,14 @@ class AppKeyError(BetfairError):
     """
 
     def __init__(self, username: str):
-        message = (
+        super(AppKeyError, self).__init__(username)
+        self.username = username
+
+    def __str__(self):
+        return (
             "AppKey not found in .bashprofile for %s, add or pass to APIClient"
-            % username
+            % self.username
         )
-        super(AppKeyError, self).__init__(message)
 
 
 class CertsError(BetfairError):
@@ -42,6 +48,10 @@ class CertsError(BetfairError):
 
     def __init__(self, message: str = None):
         super(CertsError, self).__init__(message)
+        self.message = message
+
+    def __str__(self):
+        return self.message
 
 
 class StatusCodeError(BetfairError):
@@ -50,8 +60,11 @@ class StatusCodeError(BetfairError):
     """
 
     def __init__(self, status_code: str):
-        message = "Status code error: %s" % status_code
-        super(StatusCodeError, self).__init__(message)
+        super(StatusCodeError, self).__init__(status_code)
+        self.status_code = status_code
+
+    def __str__(self):
+        return "Status code error: %s" % self.status_code
 
 
 class InvalidResponse(BetfairError):
@@ -61,8 +74,11 @@ class InvalidResponse(BetfairError):
     """
 
     def __init__(self, response: Union[dict, list]):
-        message = "Invalid response received: %s" % response
-        super(InvalidResponse, self).__init__(message)
+        super(InvalidResponse, self).__init__(response)
+        self.response = response
+
+    def __str__(self):
+        return "Invalid response received: %s" % self.response
 
 
 class LoginError(BetfairError):
@@ -71,11 +87,14 @@ class LoginError(BetfairError):
     """
 
     def __init__(self, response: dict):
-        login_status = response.get("loginStatus")
+        super(LoginError, self).__init__(response)
+        self.response = response
+
+    def __str__(self):
+        login_status = self.response.get("loginStatus")
         if login_status is None:  # different response when interactive login requested
-            login_status = response.get("error", "UNKNOWN")
-        message = "API login: %s" % login_status
-        super(LoginError, self).__init__(message)
+            login_status = self.response.get("error", "UNKNOWN")
+        return "API login: %s" % login_status
 
 
 class KeepAliveError(BetfairError):
@@ -84,10 +103,13 @@ class KeepAliveError(BetfairError):
     """
 
     def __init__(self, response: dict):
-        keep_alive_status = response.get("status", "UNKNOWN")
-        keep_alive_error = response.get("error")
-        message = "API keepAlive %s: %s" % (keep_alive_status, keep_alive_error)
-        super(KeepAliveError, self).__init__(message)
+        super(KeepAliveError, self).__init__(response)
+        self.response = response
+
+    def __str__(self):
+        keep_alive_status = self.response.get("status", "UNKNOWN")
+        keep_alive_error = self.response.get("error")
+        return "API keepAlive %s: %s" % (keep_alive_status, keep_alive_error)
 
 
 class APIError(BetfairError):
@@ -102,15 +124,21 @@ class APIError(BetfairError):
         params: dict = None,
         exception: Exception = None,
     ):
-        if response:
-            error_data = response.get("error")
-            message = (
+        super(APIError, self).__init__(response, method, params, exception)
+        self.response = response
+        self.method = method
+        self.params = params
+        self.exception = exception
+
+    def __str__(self):
+        if self.response:
+            error_data = self.response.get("error")
+            return (
                 "%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s"
-                % (method, params, exception, error_data, response)
+                % (self.method, self.params, self.exception, error_data, self.response)
             )
         else:
-            message = "%s \nParams: %s \nException: %s" % (method, params, exception)
-        super(APIError, self).__init__(message)
+            return "%s \nParams: %s \nException: %s" % (self.method, self.params, self.exception)
 
 
 class LogoutError(BetfairError):
@@ -119,10 +147,13 @@ class LogoutError(BetfairError):
     """
 
     def __init__(self, response: dict):
-        logout_status = response.get("status", "UNKNOWN")
-        logout_error = response.get("error")
-        message = "API logout %s: %s" % (logout_status, logout_error)
-        super(LogoutError, self).__init__(message)
+        super(LogoutError, self).__init__(response)
+        self.response = response
+
+    def __str__(self):
+        logout_status = self.response.get("status", "UNKNOWN")
+        logout_error = self.response.get("error")
+        return "API logout %s: %s" % (logout_status, logout_error)
 
 
 class SocketError(BetfairError):
@@ -132,6 +163,10 @@ class SocketError(BetfairError):
 
     def __init__(self, message: str):
         super(SocketError, self).__init__(message)
+        self.message = message
+
+    def __str__(self):
+        return self.message
 
 
 class ListenerError(BetfairError):
@@ -140,8 +175,12 @@ class ListenerError(BetfairError):
     """
 
     def __init__(self, connection_id: str, data: str):
-        message = "connection_id: %s, data: %s" % (connection_id, data)
-        super(ListenerError, self).__init__(message)
+        super(ListenerError, self).__init__(connection_id, data)
+        self.connection_id = connection_id
+        self.data = data
+
+    def __str__(self):
+        return "connection_id: %s, data: %s" % (self.connection_id, self.data)
 
 
 class CacheError(BetfairError):
@@ -151,6 +190,10 @@ class CacheError(BetfairError):
 
     def __init__(self, message: str):
         super(CacheError, self).__init__(message)
+        self.message = message
+
+    def __str__(self):
+        return self.message
 
 
 class RaceCardError(BetfairError):
@@ -160,3 +203,7 @@ class RaceCardError(BetfairError):
 
     def __init__(self, message: str):
         super(RaceCardError, self).__init__(message)
+        self.message = message
+
+    def __str__(self):
+        return self.message
