@@ -133,12 +133,19 @@ class APIError(BetfairError):
     def __str__(self):
         if self.response:
             error_data = self.response.get("error")
-            return (
-                "%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s"
-                % (self.method, self.params, self.exception, error_data, self.response)
+            return "%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s" % (
+                self.method,
+                self.params,
+                self.exception,
+                error_data,
+                self.response,
             )
         else:
-            return "%s \nParams: %s \nException: %s" % (self.method, self.params, self.exception)
+            return "%s \nParams: %s \nException: %s" % (
+                self.method,
+                self.params,
+                self.exception,
+            )
 
 
 class LogoutError(BetfairError):
