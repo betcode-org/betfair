@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.12.3 (2021-07-15)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #312 ensure exceptions are picklable
+- KA resources typo(@stevenwinfield)
+
+**Dependencies**
+
+- orjson upgraded to 3.6.0
+- requests upgraded to 2.27.0
+
 2.12.2 (2021-06-28)
 +++++++++++++++++++
 
