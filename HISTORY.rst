@@ -8,7 +8,7 @@ Release History
 
 **Bug Fixes**
 
-- #312 ensure exceptions are picklable
+- #312 ensure exceptions are picklable (@aquasync)
 - KA resources typo(@stevenwinfield)
 
 **Dependencies**
