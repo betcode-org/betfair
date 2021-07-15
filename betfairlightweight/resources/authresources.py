@@ -11,7 +11,7 @@ class LoginResource(BaseResource):
 class KeepAliveResource(BaseResource):
     def __init__(self, **kwargs):
         super(KeepAliveResource, self).__init__(**kwargs)
-        self.product = kwargs.get("sessionToken")
+        self.product = kwargs.get("product")
         self.status = kwargs.get("status")
         self.token = kwargs.get("token")
         self.error = kwargs.get("error")
