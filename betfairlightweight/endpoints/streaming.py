@@ -38,7 +38,7 @@ class Streaming:
 
         :rtype: BetfairStream
         """
-        listener = listener if listener else BaseListener()
+        listener = listener if listener else StreamListener()
         return BetfairStream(
             unique_id,
             listener,
@@ -68,7 +68,7 @@ class Streaming:
 
         :rtype: HistoricalStream
         """
-        listener = listener if listener else BaseListener()
+        listener = listener if listener else StreamListener()
         return HistoricalStream(file_path, listener, operation, unique_id)
 
     @staticmethod

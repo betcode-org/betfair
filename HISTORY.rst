@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.13.0 (2021-08-03)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #396 Socket timeout set after call to connect (no thanks to @agberk)
+- #403 default to StreamListener
+- #411 New API Release w/c 9th August - listCurrentOrders - includeItemDescription
+
+**Dependencies**
+
+- black upgraded to 21.7b0
+
 2.12.3 (2021-07-15)
 +++++++++++++++++++
 
