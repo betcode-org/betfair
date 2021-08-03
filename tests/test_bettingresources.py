@@ -351,10 +351,21 @@ class BettingResourcesTest(unittest.TestCase):
         )
         assert resource.elapsed_time == self.ELAPSED_TIME
         assert len(resource.orders) == len(current_orders.get("currentOrders"))
-
         for current_order in current_orders.get("currentOrders"):
             assert resource.orders[0].bet_id == current_order["betId"]
-            # todo complete
+
+    def test_current_orders_description(self):
+        mock_response = create_mock_json(
+            "tests/resources/list_current_orders_description.json"
+        )
+        current_orders = mock_response.json().get("result")
+        resource = resources.CurrentOrders(
+            elapsed_time=self.ELAPSED_TIME, **current_orders
+        )
+        assert resource.elapsed_time == self.ELAPSED_TIME
+        assert len(resource.orders) == len(current_orders.get("currentOrders"))
+        for current_order in current_orders.get("currentOrders"):
+            assert resource.orders[0].bet_id == current_order["betId"]
 
     def test_cleared_orders(self):
         mock_response = create_mock_json("tests/resources/list_cleared_orders.json")
