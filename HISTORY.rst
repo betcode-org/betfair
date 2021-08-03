@@ -8,8 +8,9 @@ Release History
 
 **Bug Fixes**
 
-- #403 default to StreamListener
 - #396 Socket timeout set after call to connect (no thanks to @agberk)
+- #403 default to StreamListener
+- #411 New API Release w/c 9th August - listCurrentOrders - includeItemDescription
 
 **Dependencies**
 
