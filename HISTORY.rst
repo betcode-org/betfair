@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.13.0 (2021-08-03)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #403 default to StreamListener
+
+**Dependencies**
+
+- black upgraded to 21.7b0
+
 2.12.3 (2021-07-15)
 +++++++++++++++++++
 
