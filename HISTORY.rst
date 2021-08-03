@@ -9,6 +9,7 @@ Release History
 **Bug Fixes**
 
 - #403 default to StreamListener
+- #396 Socket timeout set after call to connect (no thanks to @agberk)
 
 **Dependencies**
 

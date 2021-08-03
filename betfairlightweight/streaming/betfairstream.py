@@ -195,8 +195,8 @@ class BetfairStream:
         """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s = ssl.wrap_socket(s)
-        s.connect((self.host, self.__port))
         s.settimeout(self.timeout)
+        s.connect((self.host, self.__port))
         return s
 
     def _read_loop(self) -> None:
