@@ -598,6 +598,11 @@ class MarketBook(BaseResource):
         )
 
 
+class CurrentItemDescription:
+    def __init__(self, marketVersion: dict):
+        self.market_version = marketVersion
+
+
 class CurrentOrder:
     """
     :type average_price_matched: float
@@ -622,6 +627,7 @@ class CurrentOrder:
     :type size_remaining: float
     :type size_voided: float
     :type status: unicode
+    :type currentItemDescription: CurrentItemDescription
     """
 
     def __init__(
@@ -651,6 +657,7 @@ class CurrentOrder:
         lapsedDate: str = None,
         lapseStatusReasonCode: str = None,
         cancelledDate: str = None,
+        currentItemDescription: dict = None,
     ):
         self.bet_id = betId
         self.average_price_matched = averagePriceMatched
@@ -677,6 +684,11 @@ class CurrentOrder:
         self.lapsed_date = BaseResource.strip_datetime(lapsedDate)
         self.lapse_status_reason_code = lapseStatusReasonCode
         self.cancelled_date = BaseResource.strip_datetime(cancelledDate)
+        self.current_item_description = (
+            CurrentItemDescription(**currentItemDescription)
+            if currentItemDescription
+            else None
+        )
 
 
 class Match:

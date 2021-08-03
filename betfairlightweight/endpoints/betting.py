@@ -351,6 +351,7 @@ class Betting(BaseEndpoint):
         sort_dir: str = None,
         from_record: int = None,
         record_count: int = None,
+        include_item_description: bool = None,
         session: requests.Session = None,
         lightweight: bool = None,
     ) -> Union[dict, resources.CurrentOrders]:
@@ -370,6 +371,7 @@ class Betting(BaseEndpoint):
         :param str sort_dir: Specifies the direction the results will be sorted in
         :param int from_record: Specifies the first record that will be returned
         :param int record_count: Specifies how many records will be returned from the index position 'fromRecord'
+        :param bool include_item_description: If true then extra description parameters are included in the CurrentOrderSummaryReport
         :param requests.session session: Requests session object
         :param bool lightweight: If True will return dict not a resource
 
