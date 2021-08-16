@@ -117,9 +117,12 @@ class StreamListenerTest(unittest.TestCase):
         self.stream_listener = StreamListener(self.output_queue, self.max_latency)
 
     def test_init(self):
-        assert self.stream_listener.output_queue == self.output_queue
-        assert self.stream_listener.max_latency == self.max_latency
-        assert self.stream_listener.debug == True
+        self.assertEqual(self.stream_listener.output_queue, self.output_queue)
+        self.assertEqual(self.stream_listener.max_latency, self.max_latency)
+        self.assertTrue(self.stream_listener.debug)
+        self.assertTrue(self.stream_listener.update_clk)
+        self.assertFalse(self.stream_listener.calculate_market_tv)
+        self.assertFalse(self.stream_listener.cumulative_runner_tv)
 
     @mock.patch("betfairlightweight.streaming.listener.StreamListener._on_connection")
     @mock.patch("betfairlightweight.streaming.listener.StreamListener._on_status")

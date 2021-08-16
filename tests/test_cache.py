@@ -222,12 +222,14 @@ class TestAvailable(unittest.TestCase):
 
 class TestMarketBookCache(unittest.TestCase):
     def setUp(self):
-        self.market_book_cache = MarketBookCache("1.2345", 12345, True)
+        self.market_book_cache = MarketBookCache("1.2345", 12345, True, False, False)
 
     def test_init(self):
         self.assertEqual(self.market_book_cache.market_id, "1.2345")
         self.assertEqual(self.market_book_cache.publish_time, 12345)
         self.assertTrue(self.market_book_cache.lightweight)
+        self.assertFalse(self.market_book_cache.calculate_market_tv)
+        self.assertFalse(self.market_book_cache.cumulative_runner_tv)
         self.assertEqual(self.market_book_cache.total_matched, 0)
         self.assertEqual(self.market_book_cache.market_definition, {})
         self.assertIsNone(self.market_book_cache._market_definition_resource)
@@ -281,7 +283,7 @@ class TestMarketBookCache(unittest.TestCase):
             ]
         }
 
-        market_book_cache = MarketBookCache("1.123", 123, True)
+        market_book_cache = MarketBookCache("1.123", 123, True, False, False)
         market_book_cache.update_cache(data, 123)
 
         assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
@@ -428,6 +430,35 @@ class TestMarketBookCache(unittest.TestCase):
         self.assertFalse(self.market_book_cache.closed)
         self.market_book_cache.market_definition = {"status": "CLOSED"}
         self.assertTrue(self.market_book_cache.closed)
+
+
+class TestMarketBookCacheCumulative(unittest.TestCase):
+    def setUp(self):
+        self.market_book_cache = MarketBookCache("1.2345", 12345, True, False, True)
+
+    def test_update_cache_runner_tv(self):
+        market_change = {"rc": [{"tv": 123, "id": 13536143}]}
+        self.market_book_cache.update_cache(market_change, 123)
+        self.assertEqual(self.market_book_cache.runners[0].total_matched, 123)
+        market_change = {"rc": [{"tv": 123, "trd": [], "id": 13536143}]}
+        self.market_book_cache.update_cache(market_change, 123)
+        self.assertEqual(self.market_book_cache.runners[0].total_matched, 0)
+        market_change = {"rc": [{"tv": 123, "trd": [[12, 2]], "id": 13536143}]}
+        self.market_book_cache.update_cache(market_change, 123)
+        self.assertEqual(self.market_book_cache.runners[0].total_matched, 2)
+
+
+class TestMarketBookCacheCalculate(unittest.TestCase):
+    def setUp(self):
+        self.market_book_cache = MarketBookCache("1.2345", 12345, True, True, False)
+
+    def test_update_cache_market_tv(self):
+        market_change = {"rc": [{"tv": 123, "id": 13536143}]}
+        self.market_book_cache.update_cache(market_change, 123)
+        self.assertEqual(self.market_book_cache.total_matched, 0)
+        market_change = {"rc": [{"tv": 123, "trd": [[12, 2]], "id": 13536143}]}
+        self.market_book_cache.update_cache(market_change, 123)
+        self.assertEqual(self.market_book_cache.total_matched, 2)
 
 
 class TestRunnerBookCache(unittest.TestCase):

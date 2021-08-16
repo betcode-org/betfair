@@ -189,11 +189,20 @@ class RunnerBookCache:
 
 
 class MarketBookCache(BaseResource):
-    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+    def __init__(
+        self,
+        market_id: str,
+        publish_time: int,
+        lightweight: bool,
+        calculate_market_tv: bool,
+        cumulative_runner_tv: bool,
+    ):
         super(MarketBookCache, self).__init__()
         self.market_id = market_id
         self.publish_time = publish_time
         self.lightweight = lightweight
+        self.calculate_market_tv = calculate_market_tv
+        self.cumulative_runner_tv = cumulative_runner_tv
         self.total_matched = 0
         self.market_definition = {}
         self._market_definition_resource = None
@@ -223,6 +232,7 @@ class MarketBookCache(BaseResource):
 
         if "tv" in market_change:
             self.total_matched = market_change["tv"]
+        calculate_tv = False
 
         if "rc" in market_change:
             for new_data in market_change["rc"]:
@@ -231,13 +241,20 @@ class MarketBookCache(BaseResource):
                     if "ltp" in new_data:
                         runner.last_price_traded = new_data["ltp"]
                     if "tv" in new_data:  # if runner removed tv: 0 is returned
-                        runner.total_matched = new_data["tv"]
+                        if not self.cumulative_runner_tv:
+                            runner.total_matched = new_data["tv"]
                     if "spn" in new_data:
                         runner.starting_price_near = new_data["spn"]
                     if "spf" in new_data:
                         runner.starting_price_far = new_data["spf"]
                     if "trd" in new_data:
                         runner.update_traded(new_data["trd"])
+                        if self.cumulative_runner_tv:
+                            runner.total_matched = round(
+                                sum([vol["size"] for vol in runner.traded.serialised]),
+                                2,
+                            )
+                        calculate_tv = True
                     if "atb" in new_data:
                         runner.available_to_back.update(new_data["atb"])
                     if "atl" in new_data:
@@ -257,6 +274,10 @@ class MarketBookCache(BaseResource):
                 else:
                     runner = self._add_new_runner(**new_data)
                 runner.serialise()
+        if self.calculate_market_tv and calculate_tv:
+            self.total_matched = round(
+                sum(vol["size"] for r in self.runners for vol in r.traded.serialised), 2
+            )
 
     def _process_market_definition(self, market_definition: dict) -> None:
         self.market_definition = market_definition

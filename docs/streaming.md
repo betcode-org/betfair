@@ -177,6 +177,9 @@ It is also possible to return a generator instead which can be easier to use (no
 ..
 ```
 
+!!! tip
+    When using betfair purchased historical data the listener vars `calculate_market_tv` and `cumulative_runner_tv` are required to access `totalMatched` in the market and runner books (depending on data package)
+
 ### Snap
 
 Instead of waiting for an update you can snap the listener to get an up to date version of the data.

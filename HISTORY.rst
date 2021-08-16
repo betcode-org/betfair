@@ -8,7 +8,7 @@ Release History
 
 **Bug Fixes**
 
--
+- #417 handle betfair historic data with listener flags
 
 **Dependencies**
 

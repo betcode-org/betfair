@@ -22,6 +22,8 @@ class BaseStream:
         self.update_clk = listener.update_clk
         self._max_latency = listener.max_latency
         self._lightweight = listener.lightweight
+        self._calculate_market_tv = listener.calculate_market_tv
+        self._cumulative_runner_tv = listener.cumulative_runner_tv
 
         self._initial_clk = None
         self._clk = None
@@ -155,7 +157,11 @@ class MarketStream(BaseStream):
                         % (self, self.unique_id, market_id)
                     )
                 market_book_cache = MarketBookCache(
-                    market_id, publish_time, self._lightweight
+                    market_id,
+                    publish_time,
+                    self._lightweight,
+                    self._calculate_market_tv,
+                    self._cumulative_runner_tv,
                 )
                 self._caches[market_id] = market_book_cache
                 logger.info(
