@@ -18,21 +18,27 @@ class BaseStreamTest(unittest.TestCase):
         self.stream = BaseStream(self.listener, 123)
 
     def test_init(self):
-        assert self.stream._listener == self.listener
-        assert self.stream.unique_id == 123
-        assert self.stream.output_queue == self.listener.output_queue
-        assert self.stream.update_clk == self.listener.update_clk
-        assert self.stream._max_latency == self.listener.max_latency
-        assert self.stream._lightweight == self.listener.lightweight
-        assert self.stream._initial_clk is None
-        assert self.stream._clk is None
-        assert self.stream._caches == {}
-        assert self.stream._updates_processed == 0
-        assert self.stream.time_created is not None
-        assert self.stream.time_updated is not None
-        assert self.stream._lookup == "mc"
-        assert self.stream._name == "Stream"
-        assert MAX_CACHE_AGE == 60 * 60 * 8
+        self.assertEqual(self.stream._listener, self.listener)
+        self.assertEqual(self.stream.unique_id, 123)
+        self.assertEqual(self.stream.output_queue, self.listener.output_queue)
+        self.assertEqual(self.stream.update_clk, self.listener.update_clk)
+        self.assertEqual(self.stream._max_latency, self.listener.max_latency)
+        self.assertEqual(self.stream._lightweight, self.listener.lightweight)
+        self.assertEqual(
+            self.stream._calculate_market_tv, self.listener.calculate_market_tv
+        )
+        self.assertEqual(
+            self.stream._cumulative_runner_tv, self.listener.cumulative_runner_tv
+        )
+        self.assertIsNone(self.stream._initial_clk)
+        self.assertIsNone(self.stream._clk)
+        self.assertEqual(self.stream._caches, {})
+        self.assertEqual(self.stream._updates_processed, 0)
+        self.assertIsNotNone(self.stream.time_created)
+        self.assertIsNotNone(self.stream.time_updated)
+        self.assertEqual(self.stream._lookup, "mc")
+        self.assertEqual(self.stream._name, "Stream")
+        self.assertEqual(MAX_CACHE_AGE, 60 * 60 * 8)
 
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._process")
     @mock.patch("betfairlightweight.streaming.stream.BaseStream._update_clk")

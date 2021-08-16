@@ -94,6 +94,8 @@ class StreamListener(BaseListener):
         lightweight: bool = False,
         debug: bool = True,
         update_clk: bool = True,
+        calculate_market_tv: bool = False,
+        cumulative_runner_tv: bool = False,
     ):
         """
         :param Queue output_queue: Queue used to return data
@@ -101,12 +103,16 @@ class StreamListener(BaseListener):
         :param bool lightweight: Returns dict instead of resource
         :param bool debug: Debug logging calls enabled (setting to True has slight performance hit)
         :param bool update_clk: initialClk/clk not updated on updates if False (quicker)
+        :param bool calculate_market_tv: Calculate market traded volume from runner traded (should be True if using betfair PRO data)
+        :param bool cumulative_runner_tv: Cumulative runner traded volume (should be True if using betfair purchased data)
         """
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
         self.debug = debug
         self.update_clk = update_clk
+        self.calculate_market_tv = calculate_market_tv
+        self.cumulative_runner_tv = cumulative_runner_tv
 
     def on_data(self, raw_data: str) -> Optional[bool]:
         """Called when raw data is received from connection.

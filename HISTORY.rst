@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.13.1 (2021-08-16)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #417 handle betfair historic data with listener flags
+
+**Dependencies**
+
+- orjson upgraded to 3.6.1
+- ciso8601 upgraded to 2.2.0
+
 2.13.0 (2021-08-03)
 +++++++++++++++++++
 
