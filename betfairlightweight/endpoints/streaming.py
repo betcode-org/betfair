@@ -23,7 +23,7 @@ class Streaming:
         self,
         unique_id: int = 0,
         listener: BaseListener = None,
-        timeout: float = 11,
+        timeout: float = 64,
         buffer_size: int = 1024,
         host: str = None,
     ) -> BetfairStream:
@@ -34,7 +34,7 @@ class Streaming:
         :param resources.Listener listener:  Listener class to use
         :param float timeout: Socket timeout
         :param int buffer_size: Socket buffer size
-        :param str host: Host endpoint (prod (default) or integration)
+        :param str host: Host endpoint (prod (default), integration or race)
 
         :rtype: BetfairStream
         """

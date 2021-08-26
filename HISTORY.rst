@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.13.2 (2021-08-26)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Bump socket timeout to 64s to correctly raise Betfair timeouts and prevent unwanted Socket timeouts
+
+**Dependencies**
+
+- orjson upgraded to 3.6.3
+
 2.13.1 (2021-08-16)
 +++++++++++++++++++
 
