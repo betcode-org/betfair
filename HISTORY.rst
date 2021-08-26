@@ -6,6 +6,10 @@ Release History
 2.13.2 (2021-08-26)
 +++++++++++++++++++
 
+**Improvements**
+
+- currency_parameters updated
+
 **Bug Fixes**
 
 - Bump socket timeout to 64s to correctly raise Betfair timeouts and prevent unwanted Socket timeouts

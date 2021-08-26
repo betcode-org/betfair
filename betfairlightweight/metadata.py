@@ -60,7 +60,7 @@ Currency Parameters
 
 currency_parameters = {
     "GBP": {"min_bet_size": 2, "min_bet_payout": 10, "min_bsp_liability": 10},
-    "EUR": {"min_bet_size": 2, "min_bet_payout": 20, "min_bsp_liability": 20},
+    "EUR": {"min_bet_size": 1, "min_bet_payout": 20, "min_bsp_liability": 20},
     "USD": {"min_bet_size": 3, "min_bet_payout": 20, "min_bsp_liability": 20},
     "HKD": {"min_bet_size": 25, "min_bet_payout": 125, "min_bsp_liability": 125},
     "AUD": {"min_bet_size": 5, "min_bet_payout": 30, "min_bsp_liability": 30},
@@ -71,4 +71,11 @@ currency_parameters = {
     "SGD": {"min_bet_size": 6, "min_bet_payout": 30, "min_bsp_liability": 30},
     "RON": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
     "BRL": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
+    "MXN": {"min_bet_size": 60, "min_bet_payout": 300, "min_bsp_liability": 300},
+    "PEN": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
+    "HUF": {"min_bet_size": 800, "min_bet_payout": 4000, "min_bsp_liability": 4000},
+    "ISK": {"min_bet_size": 350, "min_bet_payout": 1750, "min_bsp_liability": 1750},
+    "NZD": {"min_bet_size": 2, "min_bet_payout": 10, "min_bsp_liability": 10},
+    "ARS": {"min_bet_size": 100, "min_bet_payout": 500, "min_bsp_liability": 500},
+    "GEL": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
 }
