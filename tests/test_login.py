@@ -38,6 +38,7 @@ class LoginTest(unittest.TestCase):
             data={"username": "username", "password": "password"},
             headers=mock_login_headers,
             cert=mock_cert,
+            timeout=(3.05, 16),
         )
         assert response[1] == mock_response.json()
 

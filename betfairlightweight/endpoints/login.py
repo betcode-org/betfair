@@ -46,6 +46,7 @@ class Login(BaseEndpoint):
                 data=self.data,
                 headers=self.client.login_headers,
                 cert=self.client.cert,
+                timeout=(self.connect_timeout, self.read_timeout),
             )
         except requests.ConnectionError as e:
             raise APIError(None, exception=e)

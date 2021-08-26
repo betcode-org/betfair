@@ -110,7 +110,9 @@ class RaceCardTest(unittest.TestCase):
         mock_get.return_value = mock_response
         self.race_card.request(method="test")
 
-        mock_get.assert_called_with(_url, headers=mock_login_headers, params=None)
+        mock_get.assert_called_with(
+            _url, headers=mock_login_headers, params=None, timeout=(3.05, 16)
+        )
         assert mock_get.call_count == 1
 
     @mock.patch("betfairlightweight.endpoints.racecard.RaceCard.create_req")

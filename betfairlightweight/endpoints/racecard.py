@@ -103,7 +103,12 @@ class RaceCard(BaseEndpoint):
         time_sent = time.time()
         url = "%s%s" % (self.url, method)
         try:
-            response = session.get(url, params=params, headers=self.headers)
+            response = session.get(
+                url,
+                params=params,
+                headers=self.headers,
+                timeout=(self.connect_timeout, self.read_timeout),
+            )
         except requests.ConnectionError as e:
             raise APIError(None, method, params, e)
         except Exception as e:

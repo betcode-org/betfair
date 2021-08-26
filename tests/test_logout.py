@@ -32,7 +32,9 @@ class LogoutTest(unittest.TestCase):
         url = "https://identitysso.betfair.com/api/logout"
         response = self.logout.request()
 
-        mock_post.assert_called_once_with(url, headers=mock_logout_headers)
+        mock_post.assert_called_once_with(
+            url, headers=mock_logout_headers, timeout=(3.05, 16)
+        )
         assert response[1] == mock_response.json()
 
     @mock.patch("betfairlightweight.baseclient.BaseClient.cert")
