@@ -13,6 +13,7 @@ Release History
 **Bug Fixes**
 
 - Bump socket timeout to 64s to correctly raise Betfair timeouts and prevent unwanted Socket timeouts
+- Split socket shutdown and close in socket.stop()
 - Missing timeouts added to request endpoints
 
 **Dependencies**

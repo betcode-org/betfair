@@ -65,8 +65,13 @@ class BetfairStream:
 
         if self._socket is None:
             return
+        # attempt graceful shutdown
         try:
             self._socket.shutdown(socket.SHUT_RDWR)
+        except socket.error:
+            pass
+        # close socket
+        try:
             self._socket.close()
         except socket.error:
             pass
