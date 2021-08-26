@@ -40,6 +40,7 @@ class LoginInteractiveTest(unittest.TestCase):
             url,
             data={"username": "username", "password": "password"},
             headers=mock_login_headers,
+            timeout=(3.05, 16),
         )
         assert response[1] == mock_response.json()
 

@@ -36,33 +36,103 @@ class MetadataTest(unittest.TestCase):
         assert metadata.list_market_profit_and_loss == {"": 4}
 
     def test_currency_parameters(self):
-        assert metadata.currency_parameters == {
-            "GBP": {"min_bet_size": 2, "min_bet_payout": 10, "min_bsp_liability": 10},
-            "EUR": {"min_bet_size": 2, "min_bet_payout": 20, "min_bsp_liability": 20},
-            "USD": {"min_bet_size": 3, "min_bet_payout": 20, "min_bsp_liability": 20},
-            "HKD": {
-                "min_bet_size": 25,
-                "min_bet_payout": 125,
-                "min_bsp_liability": 125,
+        self.assertEqual(
+            metadata.currency_parameters,
+            {
+                "ARS": {
+                    "min_bet_payout": 500,
+                    "min_bet_size": 100,
+                    "min_bsp_liability": 500,
+                },
+                "AUD": {
+                    "min_bet_payout": 30,
+                    "min_bet_size": 5,
+                    "min_bsp_liability": 30,
+                },
+                "BRL": {
+                    "min_bet_payout": 50,
+                    "min_bet_size": 10,
+                    "min_bsp_liability": 50,
+                },
+                "CAD": {
+                    "min_bet_payout": 30,
+                    "min_bet_size": 6,
+                    "min_bsp_liability": 30,
+                },
+                "DKK": {
+                    "min_bet_payout": 150,
+                    "min_bet_size": 30,
+                    "min_bsp_liability": 150,
+                },
+                "EUR": {
+                    "min_bet_payout": 20,
+                    "min_bet_size": 1,
+                    "min_bsp_liability": 20,
+                },
+                "GBP": {
+                    "min_bet_payout": 10,
+                    "min_bet_size": 2,
+                    "min_bsp_liability": 10,
+                },
+                "GEL": {
+                    "min_bet_payout": 50,
+                    "min_bet_size": 10,
+                    "min_bsp_liability": 50,
+                },
+                "HKD": {
+                    "min_bet_payout": 125,
+                    "min_bet_size": 25,
+                    "min_bsp_liability": 125,
+                },
+                "HUF": {
+                    "min_bet_payout": 4000,
+                    "min_bet_size": 800,
+                    "min_bsp_liability": 4000,
+                },
+                "ISK": {
+                    "min_bet_payout": 1750,
+                    "min_bet_size": 350,
+                    "min_bsp_liability": 1750,
+                },
+                "MXN": {
+                    "min_bet_payout": 300,
+                    "min_bet_size": 60,
+                    "min_bsp_liability": 300,
+                },
+                "NOK": {
+                    "min_bet_payout": 150,
+                    "min_bet_size": 30,
+                    "min_bsp_liability": 150,
+                },
+                "NZD": {
+                    "min_bet_payout": 10,
+                    "min_bet_size": 2,
+                    "min_bsp_liability": 10,
+                },
+                "PEN": {
+                    "min_bet_payout": 50,
+                    "min_bet_size": 10,
+                    "min_bsp_liability": 50,
+                },
+                "RON": {
+                    "min_bet_payout": 50,
+                    "min_bet_size": 10,
+                    "min_bsp_liability": 50,
+                },
+                "SEK": {
+                    "min_bet_payout": 150,
+                    "min_bet_size": 30,
+                    "min_bsp_liability": 150,
+                },
+                "SGD": {
+                    "min_bet_payout": 30,
+                    "min_bet_size": 6,
+                    "min_bsp_liability": 30,
+                },
+                "USD": {
+                    "min_bet_payout": 20,
+                    "min_bet_size": 3,
+                    "min_bsp_liability": 20,
+                },
             },
-            "AUD": {"min_bet_size": 5, "min_bet_payout": 30, "min_bsp_liability": 30},
-            "CAD": {"min_bet_size": 6, "min_bet_payout": 30, "min_bsp_liability": 30},
-            "DKK": {
-                "min_bet_size": 30,
-                "min_bet_payout": 150,
-                "min_bsp_liability": 150,
-            },
-            "NOK": {
-                "min_bet_size": 30,
-                "min_bet_payout": 150,
-                "min_bsp_liability": 150,
-            },
-            "SEK": {
-                "min_bet_size": 30,
-                "min_bet_payout": 150,
-                "min_bsp_liability": 150,
-            },
-            "SGD": {"min_bet_size": 6, "min_bet_payout": 30, "min_bsp_liability": 30},
-            "RON": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
-            "BRL": {"min_bet_size": 10, "min_bet_payout": 50, "min_bsp_liability": 50},
-        }
+        )

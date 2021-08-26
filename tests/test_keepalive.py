@@ -32,7 +32,9 @@ class KeepAliveTest(unittest.TestCase):
         url = "https://identitysso.betfair.com/api/keepAlive"
         response = self.keep_alive.request()
 
-        mock_post.assert_called_once_with(url, headers=mock_keep_alive_headers)
+        mock_post.assert_called_once_with(
+            url, headers=mock_keep_alive_headers, timeout=(3.05, 16)
+        )
         assert response[1] == mock_response.json()
 
     @mock.patch("betfairlightweight.baseclient.BaseClient.keep_alive_headers")

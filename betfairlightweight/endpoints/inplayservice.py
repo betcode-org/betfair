@@ -110,7 +110,12 @@ class InPlayService(BaseEndpoint):
         session = session or self.client.session
         time_sent = time.time()
         try:
-            response = session.get(url, params=params, headers=self.headers)
+            response = session.get(
+                url,
+                params=params,
+                headers=self.headers,
+                timeout=(self.connect_timeout, self.read_timeout),
+            )
         except requests.ConnectionError as e:
             raise APIError(None, method, params, e)
         except Exception as e:

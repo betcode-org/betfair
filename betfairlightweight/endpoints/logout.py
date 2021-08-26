@@ -39,7 +39,11 @@ class Logout(BaseEndpoint):
         session = session or self.client.session
         time_sent = time.time()
         try:
-            response = session.post(self.url, headers=self.client.keep_alive_headers)
+            response = session.post(
+                self.url,
+                headers=self.client.keep_alive_headers,
+                timeout=(self.connect_timeout, self.read_timeout),
+            )
         except requests.ConnectionError as e:
             raise APIError(None, exception=e)
         except Exception as e:

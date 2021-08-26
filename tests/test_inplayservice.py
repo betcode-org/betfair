@@ -105,7 +105,9 @@ class InPlayServiceTest(unittest.TestCase):
 
         self.in_play_service.request(params=params, url=url)
 
-        mock_get.assert_called_with(url, headers=mock_headers, params=params)
+        mock_get.assert_called_with(
+            url, headers=mock_headers, params=params, timeout=(3.05, 16)
+        )
         assert mock_get.call_count == 1
         assert mock_check_status_code.call_count == 1
 

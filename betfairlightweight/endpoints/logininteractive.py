@@ -42,7 +42,10 @@ class LoginInteractive(BaseEndpoint):
         time_sent = time.time()
         try:
             response = session.post(
-                self.url, data=self.data, headers=self.client.login_headers
+                self.url,
+                data=self.data,
+                headers=self.client.login_headers,
+                timeout=(self.connect_timeout, self.read_timeout),
             )
         except requests.ConnectionError as e:
             raise APIError(None, exception=e)
