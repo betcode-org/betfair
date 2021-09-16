@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.14.0 (2021-09-16)
++++++++++++++++++++
+
+**Improvements**
+
+- `active` flag added to stream and cache to optimise calls in flumine when backtesting
+
 2.13.2 (2021-08-26)
 +++++++++++++++++++
 

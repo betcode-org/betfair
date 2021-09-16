@@ -157,6 +157,10 @@ class BaseStreamTest(unittest.TestCase):
         market_books = self.stream.snap(["1.1"])
         assert market_books == [mock_cache.create_resource()]
 
+        self.stream._caches["1.1"].active = False
+        market_books = self.stream.snap(["1.1"])
+        assert market_books == []
+
     def test_snap_dict_size_err(self):
         mock_cache = mock.Mock()
         mock_cache.market_id = "1.1"
@@ -253,7 +257,7 @@ class MarketStreamTest(unittest.TestCase):
         self.stream._caches = {data[0]["id"]: mock_market_cache}
         self.assertFalse(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
-        mock_market_cache.update_cache.assert_called_with(data[0], 123)
+        mock_market_cache.update_cache.assert_called_with(data[0], 123, True)
 
     def test_str(self):
         assert str(self.stream) == "MarketStream"

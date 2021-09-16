@@ -96,7 +96,7 @@ class BaseStream:
         return [
             cache.create_resource(self.unique_id, snap=True)
             for cache in list(self._caches.values())
-            if market_ids is None or cache.market_id in market_ids
+            if cache.active and (market_ids is None or cache.market_id in market_ids)
         ]
 
     def on_process(self, caches: list) -> None:
@@ -169,7 +169,7 @@ class MarketStream(BaseStream):
                     % (self, self.unique_id, market_id, len(self._caches))
                 )
 
-            market_book_cache.update_cache(market_book, publish_time)
+            market_book_cache.update_cache(market_book, publish_time, True)
             caches.append(market_book_cache)
             self._updates_processed += 1
         self.on_process(caches)

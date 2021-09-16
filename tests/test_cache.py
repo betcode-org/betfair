@@ -87,9 +87,22 @@ class TestAvailable(unittest.TestCase):
         }
 
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         mock_serialise.assert_called()
         self.assertEqual(available.order_book, expected)
+
+    @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_update_false(self, mock_serialise, mock__sort_order_book):
+        book_update = [[1, 1.02, 2]]
+        expected = {
+            0: [0, 1.01, 12, {"price": 1.01, "size": 12}],
+            1: [1, 1.02, 2, {"price": 1.02, "size": 2}],
+        }
+        self.available.update(book_update, False)
+        self.assertEqual(self.available.order_book, expected)
+        mock_serialise.assert_not_called()
+        mock__sort_order_book.assert_not_called()
 
     @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
     @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
@@ -104,7 +117,7 @@ class TestAvailable(unittest.TestCase):
         }
 
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         mock_serialise.assert_called()
         mock__sort_order_book.assert_called()
         self.assertEqual(available.order_book, expected)
@@ -119,7 +132,7 @@ class TestAvailable(unittest.TestCase):
         }
 
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         mock_serialise.assert_called()
         self.assertEqual(available.order_book, expected)
 
@@ -136,7 +149,7 @@ class TestAvailable(unittest.TestCase):
             30: [30, 6.9, {"price": 30, "size": 6.9}],
         }
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
         book_update = [[30, 6.9], [1.01, 12]]
@@ -149,7 +162,7 @@ class TestAvailable(unittest.TestCase):
             30: [30, 6.9, {"price": 30, "size": 6.9}],
         }
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
         # [position, price, size]
@@ -157,7 +170,7 @@ class TestAvailable(unittest.TestCase):
         current = []
         expected = {0: [0, 36, 0.57, {"price": 36, "size": 0.57}]}
         available = Available(current, 2)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
     @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
@@ -172,7 +185,7 @@ class TestAvailable(unittest.TestCase):
             1.02: [1.02, 1157.21, {"price": 1.02, "size": 1157.21}],
         }
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
         # [position, price, size]
@@ -183,7 +196,7 @@ class TestAvailable(unittest.TestCase):
             1: [1, 38, 3.57, {"price": 38, "size": 3.57}],
         }
         available = Available(current, 2)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
         # tests handling of betfair bug, http://forum.bdp.betfair.com/showthread.php?t=3351
@@ -194,7 +207,7 @@ class TestAvailable(unittest.TestCase):
             1: [1, 1.01, 9835.74, {"price": 1.01, "size": 9835.74}],
         }
         available = Available(current, 2)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
     @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
@@ -208,7 +221,7 @@ class TestAvailable(unittest.TestCase):
             13: [13, 28.01, {"price": 13, "size": 28.01}],
         }
         available = Available(current, 1)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
 
         # [position, price, size]
@@ -216,8 +229,15 @@ class TestAvailable(unittest.TestCase):
         current = [[0, 36, 10.57], [1, 38, 3.57]]
         expected = {0: [0, 38, 3.57, {"price": 38, "size": 3.57}]}
         available = Available(current, 2)
-        available.update(book_update)
+        available.update(book_update, True)
         assert available.order_book == expected
+
+    @mock.patch("betfairlightweight.streaming.cache.Available._sort_order_book")
+    @mock.patch("betfairlightweight.streaming.cache.Available.serialise")
+    def test_refresh(self, mock_serialise, mock__sort_order_book):
+        self.available.refresh()
+        mock_serialise.assert_called()
+        mock__sort_order_book.assert_called()
 
 
 class TestMarketBookCache(unittest.TestCase):
@@ -225,6 +245,7 @@ class TestMarketBookCache(unittest.TestCase):
         self.market_book_cache = MarketBookCache("1.2345", 12345, True, False, False)
 
     def test_init(self):
+        self.assertTrue(self.market_book_cache.active)
         self.assertEqual(self.market_book_cache.market_id, "1.2345")
         self.assertEqual(self.market_book_cache.publish_time, 12345)
         self.assertTrue(self.market_book_cache.lightweight)
@@ -257,7 +278,8 @@ class TestMarketBookCache(unittest.TestCase):
         book_data = market_change.json().get("mc")
 
         for book in book_data:
-            self.market_book_cache.update_cache(book, publish_time)
+            self.market_book_cache.update_cache(book, publish_time, True)
+            self.assertTrue(self.market_book_cache.active)
             assert self.market_book_cache.market_definition == book.get(
                 "marketDefinition"
             )
@@ -270,7 +292,8 @@ class TestMarketBookCache(unittest.TestCase):
         book_data = market_change.json().get("mc")
 
         for book in book_data:
-            self.market_book_cache.update_cache(book, publish_time)
+            self.market_book_cache.update_cache(book, publish_time, True)
+            self.assertTrue(self.market_book_cache.active)
             assert self.market_book_cache.total_matched == book.get("tv")
             self.assertEqual(self.market_book_cache.streaming_update, book)
 
@@ -284,7 +307,8 @@ class TestMarketBookCache(unittest.TestCase):
         }
 
         market_book_cache = MarketBookCache("1.123", 123, True, False, False)
-        market_book_cache.update_cache(data, 123)
+        market_book_cache.update_cache(data, 123, True)
+        self.assertTrue(market_book_cache.active)
 
         assert len(market_book_cache.runners) == len(market_book_cache.runner_dict)
 
@@ -299,6 +323,21 @@ class TestMarketBookCache(unittest.TestCase):
     #         mock_strip_datetime.assert_called_with(publish_time)
     #
     #         assert self.market_book_cache.total_matched == book.get('tv')
+
+    def test_refresh_cache(self):
+        mock_runner = mock.Mock()
+        self.market_book_cache.runners = [mock_runner]
+        self.market_book_cache.refresh_cache()
+        mock_runner.traded.refresh.assert_called()
+        mock_runner.available_to_back.refresh.assert_called()
+        mock_runner.available_to_lay.refresh.assert_called()
+        mock_runner.best_available_to_back.refresh.assert_called()
+        mock_runner.best_available_to_lay.refresh.assert_called()
+        mock_runner.best_display_available_to_back.refresh.assert_called()
+        mock_runner.best_display_available_to_lay.refresh.assert_called()
+        mock_runner.starting_price_back.refresh.assert_called()
+        mock_runner.starting_price_lay.refresh.assert_called()
+        mock_runner.serialise.assert_called()
 
     @mock.patch(
         "betfairlightweight.streaming.cache.MarketBookCache.serialise",
@@ -428,7 +467,7 @@ class TestMarketBookCache(unittest.TestCase):
 
     def test_closed(self):
         self.assertFalse(self.market_book_cache.closed)
-        self.market_book_cache.market_definition = {"status": "CLOSED"}
+        self.market_book_cache._definition_status = "CLOSED"
         self.assertTrue(self.market_book_cache.closed)
 
 
@@ -438,13 +477,13 @@ class TestMarketBookCacheCumulative(unittest.TestCase):
 
     def test_update_cache_runner_tv(self):
         market_change = {"rc": [{"tv": 123, "id": 13536143}]}
-        self.market_book_cache.update_cache(market_change, 123)
+        self.market_book_cache.update_cache(market_change, 123, True)
         self.assertEqual(self.market_book_cache.runners[0].total_matched, 123)
         market_change = {"rc": [{"tv": 123, "trd": [], "id": 13536143}]}
-        self.market_book_cache.update_cache(market_change, 123)
+        self.market_book_cache.update_cache(market_change, 123, True)
         self.assertEqual(self.market_book_cache.runners[0].total_matched, 0)
         market_change = {"rc": [{"tv": 123, "trd": [[12, 2]], "id": 13536143}]}
-        self.market_book_cache.update_cache(market_change, 123)
+        self.market_book_cache.update_cache(market_change, 123, True)
         self.assertEqual(self.market_book_cache.runners[0].total_matched, 2)
 
 
@@ -454,10 +493,10 @@ class TestMarketBookCacheCalculate(unittest.TestCase):
 
     def test_update_cache_market_tv(self):
         market_change = {"rc": [{"tv": 123, "id": 13536143}]}
-        self.market_book_cache.update_cache(market_change, 123)
+        self.market_book_cache.update_cache(market_change, 123, True)
         self.assertEqual(self.market_book_cache.total_matched, 0)
         market_change = {"rc": [{"tv": 123, "trd": [[12, 2]], "id": 13536143}]}
-        self.market_book_cache.update_cache(market_change, 123)
+        self.market_book_cache.update_cache(market_change, 123, True)
         self.assertEqual(self.market_book_cache.total_matched, 2)
 
 
@@ -488,11 +527,14 @@ class TestRunnerBookCache(unittest.TestCase):
         self.mock_traded = mock.Mock()
         self.runner_book.traded = self.mock_traded
 
-        self.runner_book.update_traded([])
+        self.runner_book.update_traded([], True)
         self.mock_traded.clear.assert_called_with()
 
-        self.runner_book.update_traded([1, 2])
-        self.mock_traded.update.assert_called_with([1, 2])
+        self.runner_book.update_traded([1, 2], True)
+        self.mock_traded.update.assert_called_with([1, 2], True)
+
+        self.runner_book.update_traded([1, 2], False)
+        self.mock_traded.update.assert_called_with([1, 2], False)
 
     def test_serialise_back(self):
         mock_available_to_back = mock.Mock()
@@ -610,6 +652,7 @@ class TestOrderBookCache(unittest.TestCase):
         self.order_book_cache.runners = {(10895629, 0): self.runner}
 
     def test_init(self):
+        self.assertTrue(self.order_book_cache.active)
         self.assertEqual(self.order_book_cache.market_id, "1.123")
         self.assertEqual(self.order_book_cache.publish_time, 123)
         self.assertTrue(self.order_book_cache.lightweight)
@@ -921,6 +964,7 @@ class TestRaceCache(unittest.TestCase):
         )
 
     def test_init(self):
+        self.assertTrue(self.race_cache.active)
         self.assertEqual(self.race_cache.market_id, self.market_id)
         self.assertEqual(self.race_cache.publish_time, self.publish_time)
         self.assertEqual(self.race_cache.race_id, self.race_id)
