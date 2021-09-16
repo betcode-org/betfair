@@ -44,6 +44,7 @@ class Available:
 
     def update(self, book_update: list, active: bool) -> None:
         deletion_select = self.deletion_select  # local vars
+        _sort = False
         for book in book_update:
             book = book.copy()  # create copy to keep streaming_update raw
             key = book[0]  # price or position
@@ -61,15 +62,14 @@ class Available:
                         "size": book[deletion_select],
                     }
                 )
-                if key not in self.order_book:
+                if active and key not in self.order_book:
                     # new price requiring a reorder
                     # to the book.
-                    self.order_book[key] = book
-                    if active:
-                        self._sort_order_book()
-                else:
-                    # update book
-                    self.order_book[key] = book
+                    _sort = True
+                # update book
+                self.order_book[key] = book
+        if _sort:
+            self._sort_order_book()
         if active:
             self.serialise()
 

@@ -169,7 +169,12 @@ class MarketStream(BaseStream):
                     % (self, self.unique_id, market_id, len(self._caches))
                 )
 
-            market_book_cache.update_cache(market_book, publish_time, True)
+            # active = market_book_cache._definition_in_play
+            # if active and not market_book_cache.active:
+            #     market_book_cache.refresh_cache()
+            active = True
+
+            market_book_cache.update_cache(market_book, publish_time, active)
             caches.append(market_book_cache)
             self._updates_processed += 1
         self.on_process(caches)
