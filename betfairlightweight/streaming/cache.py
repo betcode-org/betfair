@@ -40,10 +40,11 @@ class Available:
         self.deletion_select = deletion_select
         self.reverse = reverse
         self.serialised = []
-        self.update(prices or [])
+        self.update(prices or [], True)
 
-    def update(self, book_update: list) -> None:
+    def update(self, book_update: list, active: bool) -> None:
         deletion_select = self.deletion_select  # local vars
+        _sort = False
         for book in book_update:
             book = book.copy()  # create copy to keep streaming_update raw
             key = book[0]  # price or position
@@ -61,15 +62,16 @@ class Available:
                         "size": book[deletion_select],
                     }
                 )
-                if key not in self.order_book:
+                if active and key not in self.order_book:
                     # new price requiring a reorder
                     # to the book.
-                    self.order_book[key] = book
-                    self._sort_order_book()
-                else:
-                    # update book
-                    self.order_book[key] = book
-        self.serialise()
+                    _sort = True
+                # update book
+                self.order_book[key] = book
+        if _sort:
+            self._sort_order_book()
+        if active:
+            self.serialise()
 
     def clear(self) -> None:
         self.order_book = {}
@@ -77,6 +79,10 @@ class Available:
 
     def serialise(self) -> None:
         self.serialised = [book[-1] for book in self.order_book.values()]
+
+    def refresh(self) -> None:
+        self._sort_order_book()
+        self.serialise()
 
     def _sort_order_book(self) -> None:
         self.order_book = dict(sorted(self.order_book.items(), reverse=self.reverse))
@@ -136,12 +142,11 @@ class RunnerBookCache:
         self._definition_adjustment_factor = self.definition.get("adjustmentFactor")
         self._definition_removal_date = self.definition.get("removalDate")
 
-    def update_traded(self, traded_update: list) -> None:
-        """:param traded_update: [price, size]"""
+    def update_traded(self, traded_update: list, active: bool) -> None:
         if not traded_update:
             self.traded.clear()
         else:
-            self.traded.update(traded_update)
+            self.traded.update(traded_update, active)
 
     def serialise_available_to_back(self) -> list:
         if self.available_to_back.order_book:
@@ -198,6 +203,7 @@ class MarketBookCache(BaseResource):
         cumulative_runner_tv: bool,
     ):
         super(MarketBookCache, self).__init__()
+        self.active = True
         self.market_id = market_id
         self.publish_time = publish_time
         self.lightweight = lightweight
@@ -223,7 +229,10 @@ class MarketBookCache(BaseResource):
         self.runner_dict = {}
         self._number_of_runners = 0
 
-    def update_cache(self, market_change: dict, publish_time: int) -> None:
+    def update_cache(
+        self, market_change: dict, publish_time: int, active: bool
+    ) -> None:
+        self.active = active
         self.streaming_update = market_change
         self.publish_time = publish_time
 
@@ -248,7 +257,7 @@ class MarketBookCache(BaseResource):
                     if "spf" in new_data:
                         runner.starting_price_far = new_data["spf"]
                     if "trd" in new_data:
-                        runner.update_traded(new_data["trd"])
+                        runner.update_traded(new_data["trd"], active)
                         if self.cumulative_runner_tv:
                             runner.total_matched = round(
                                 sum([vol["size"] for vol in runner.traded.serialised]),
@@ -256,28 +265,46 @@ class MarketBookCache(BaseResource):
                             )
                         calculate_tv = True
                     if "atb" in new_data:
-                        runner.available_to_back.update(new_data["atb"])
+                        runner.available_to_back.update(new_data["atb"], active)
                     if "atl" in new_data:
-                        runner.available_to_lay.update(new_data["atl"])
+                        runner.available_to_lay.update(new_data["atl"], active)
                     if "batb" in new_data:
-                        runner.best_available_to_back.update(new_data["batb"])
+                        runner.best_available_to_back.update(new_data["batb"], active)
                     if "batl" in new_data:
-                        runner.best_available_to_lay.update(new_data["batl"])
+                        runner.best_available_to_lay.update(new_data["batl"], active)
                     if "bdatb" in new_data:
-                        runner.best_display_available_to_back.update(new_data["bdatb"])
+                        runner.best_display_available_to_back.update(
+                            new_data["bdatb"], active
+                        )
                     if "bdatl" in new_data:
-                        runner.best_display_available_to_lay.update(new_data["bdatl"])
+                        runner.best_display_available_to_lay.update(
+                            new_data["bdatl"], active
+                        )
                     if "spb" in new_data:
-                        runner.starting_price_back.update(new_data["spb"])
+                        runner.starting_price_back.update(new_data["spb"], active)
                     if "spl" in new_data:
-                        runner.starting_price_lay.update(new_data["spl"])
+                        runner.starting_price_lay.update(new_data["spl"], active)
                 else:
                     runner = self._add_new_runner(**new_data)
-                runner.serialise()
+                if active:
+                    runner.serialise()
         if self.calculate_market_tv and calculate_tv:
             self.total_matched = round(
                 sum(vol["size"] for r in self.runners for vol in r.traded.serialised), 2
             )
+
+    def refresh_cache(self) -> None:
+        for runner in self.runners:
+            runner.traded.refresh()
+            runner.available_to_back.refresh()
+            runner.available_to_lay.refresh()
+            runner.best_available_to_back.refresh()
+            runner.best_available_to_lay.refresh()
+            runner.best_display_available_to_back.refresh()
+            runner.best_display_available_to_lay.refresh()
+            runner.starting_price_back.refresh()
+            runner.starting_price_lay.refresh()
+            runner.serialise()
 
     def _process_market_definition(self, market_definition: dict) -> None:
         self.market_definition = market_definition
@@ -344,7 +371,7 @@ class MarketBookCache(BaseResource):
 
     @property
     def closed(self) -> bool:
-        if self.market_definition.get("status") == "CLOSED":
+        if self._definition_status == "CLOSED":
             return True
         else:
             return False
@@ -513,6 +540,7 @@ class OrderBookRunner:
 class OrderBookCache(BaseResource):
     def __init__(self, market_id: str, publish_time: int, lightweight: bool):
         super(OrderBookCache, self).__init__()
+        self.active = True
         self.market_id = market_id
         self.publish_time = publish_time
         self.lightweight = lightweight
@@ -573,6 +601,7 @@ class RaceCache(BaseResource):
         self, market_id: str, publish_time: int, race_id: str, lightweight: bool
     ):
         super(RaceCache, self).__init__()
+        self.active = True
         self.market_id = market_id
         self.publish_time = publish_time
         self.race_id = race_id
