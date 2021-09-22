@@ -1,5 +1,6 @@
 import logging
 import queue
+import warnings
 from typing import Optional
 
 from .stream import BaseStream, MarketStream, OrderStream, RaceStream
@@ -109,7 +110,12 @@ class StreamListener(BaseListener):
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
-        self.debug = debug
+        if debug is False:
+            warnings.warn(
+                "`debug` param to be deprecated from v2.15.0 and handled explicitly",
+                DeprecationWarning,
+            )
+        self.debug = logger.isEnabledFor(logging.DEBUG)
         self.update_clk = update_clk
         self.calculate_market_tv = calculate_market_tv
         self.cumulative_runner_tv = cumulative_runner_tv
