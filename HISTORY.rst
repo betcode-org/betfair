@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.14.1 (2021-09-22)
++++++++++++++++++++
+
+**Improvements**
+
+- Explicit handling of debug flag in listener and depreciation warning added
+
 2.14.0 (2021-09-16)
 +++++++++++++++++++
 
