@@ -290,7 +290,10 @@ class MarketBookCache(BaseResource):
                     runner.serialise()
             if self.calculate_market_tv and calculate_tv:
                 self.total_matched = round(
-                    sum(vol["size"] for r in self.runners for vol in r.traded.serialised), 2
+                    sum(
+                        vol["size"] for r in self.runners for vol in r.traded.serialised
+                    ),
+                    2,
                 )
 
     def refresh_cache(self) -> None:
