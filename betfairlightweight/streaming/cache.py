@@ -241,9 +241,9 @@ class MarketBookCache(BaseResource):
 
         if "tv" in market_change:
             self.total_matched = market_change["tv"]
-        calculate_tv = False
 
         if "rc" in market_change:
+            calculate_tv = False
             for new_data in market_change["rc"]:
                 runner = self.runner_dict.get((new_data["id"], new_data.get("hc", 0)))
                 if runner:
@@ -288,10 +288,10 @@ class MarketBookCache(BaseResource):
                     runner = self._add_new_runner(**new_data)
                 if active:
                     runner.serialise()
-        if self.calculate_market_tv and calculate_tv:
-            self.total_matched = round(
-                sum(vol["size"] for r in self.runners for vol in r.traded.serialised), 2
-            )
+            if self.calculate_market_tv and calculate_tv:
+                self.total_matched = round(
+                    sum(vol["size"] for r in self.runners for vol in r.traded.serialised), 2
+                )
 
     def refresh_cache(self) -> None:
         for runner in self.runners:
