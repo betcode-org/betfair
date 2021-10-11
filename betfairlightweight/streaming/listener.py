@@ -1,6 +1,5 @@
 import logging
 import queue
-import warnings
 from typing import Optional
 
 from .stream import BaseStream, MarketStream, OrderStream, RaceStream
@@ -93,7 +92,6 @@ class StreamListener(BaseListener):
         output_queue: queue.Queue = None,
         max_latency: Optional[float] = 0.5,
         lightweight: bool = False,
-        debug: bool = True,
         update_clk: bool = True,
         calculate_market_tv: bool = False,
         cumulative_runner_tv: bool = False,
@@ -102,7 +100,6 @@ class StreamListener(BaseListener):
         :param Queue output_queue: Queue used to return data
         :param float max_latency: Logs warning if latency above value
         :param bool lightweight: Returns dict instead of resource
-        :param bool debug: Debug logging calls enabled (setting to True has slight performance hit)
         :param bool update_clk: initialClk/clk not updated on updates if False (quicker)
         :param bool calculate_market_tv: Calculate market traded volume from runner traded (should be True if using betfair PRO data)
         :param bool cumulative_runner_tv: Cumulative runner traded volume (should be True if using betfair purchased data)
@@ -110,11 +107,6 @@ class StreamListener(BaseListener):
         super(StreamListener, self).__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
-        if debug is False:
-            warnings.warn(
-                "`debug` param to be deprecated from v2.15.0 and handled explicitly",
-                DeprecationWarning,
-            )
         self.debug = logger.isEnabledFor(logging.DEBUG)
         self.update_clk = update_clk
         self.calculate_market_tv = calculate_market_tv

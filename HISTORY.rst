@@ -3,6 +3,23 @@
 Release History
 ---------------
 
+2.15.0 (2021-10-11)
++++++++++++++++++++
+
+**Improvements**
+
+- #426 minor calculate tv imp
+- `debug` param deprecated and handled explicitly
+
+**Bug Fixes**
+
+-
+
+**Dependencies**
+
+- black upgraded to 21.9b0
+- orjson upgraded to 3.6.4
+
 2.14.1 (2021-09-22)
 +++++++++++++++++++
 
