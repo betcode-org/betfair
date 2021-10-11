@@ -3,6 +3,24 @@
 Release History
 ---------------
 
+2.15.0 (2021-10-11)
++++++++++++++++++++
+
+**Improvements**
+
+- #426 minor calculate tv imp
+- #428 OrderStream with no caching using `listener.order_updates_only` flag
+- `debug` param deprecated and handled explicitly
+
+**Bug Fixes**
+
+- #429 update `create_req` typing
+
+**Dependencies**
+
+- black upgraded to 21.9b0
+- orjson upgraded to 3.6.4
+
 2.14.1 (2021-09-22)
 +++++++++++++++++++
 

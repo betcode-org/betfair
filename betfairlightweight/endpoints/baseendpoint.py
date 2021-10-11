@@ -56,7 +56,7 @@ class BaseEndpoint:
         return response, response_json, elapsed_time
 
     @staticmethod
-    def create_req(method: str, params: dict) -> str:
+    def create_req(method: str, params: dict) -> Union[str, bytes]:
         """
         :param method: Betfair api-ng method to be used.
         :param params: Params to be used in request.

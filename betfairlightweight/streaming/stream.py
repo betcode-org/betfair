@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+from typing import Optional
 
 from .cache import MarketBookCache, OrderBookCache, RaceCache
 
@@ -24,6 +25,7 @@ class BaseStream:
         self._lightweight = listener.lightweight
         self._calculate_market_tv = listener.calculate_market_tv
         self._cumulative_runner_tv = listener.cumulative_runner_tv
+        self._order_updates_only = listener.order_updates_only
 
         self._initial_clk = None
         self._clk = None
@@ -92,16 +94,21 @@ class BaseStream:
                 % (self, self.unique_id, market_id, len(self._caches))
             )
 
-    def snap(self, market_ids: list = None) -> list:
+    def snap(self, market_ids: list = None, publish_time: Optional[int] = None) -> list:
         return [
-            cache.create_resource(self.unique_id, snap=True)
+            cache.create_resource(self.unique_id, snap=True, publish_time=publish_time)
             for cache in list(self._caches.values())
             if cache.active and (market_ids is None or cache.market_id in market_ids)
         ]
 
-    def on_process(self, caches: list) -> None:
+    def on_process(self, caches: list, publish_time: Optional[int] = None) -> None:
         if self.output_queue:
-            output = [cache.create_resource(self.unique_id) for cache in caches]
+            output = [
+                cache.create_resource(
+                    self.unique_id, snap=False, publish_time=publish_time
+                )
+                for cache in caches
+            ]
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
@@ -202,7 +209,10 @@ class OrderStream(BaseStream):
             order_book_cache.update_cache(order_book, publish_time)
             caches.append(order_book_cache)
             self._updates_processed += 1
-        self.on_process(caches)
+        if self._order_updates_only:
+            self.on_process(caches, publish_time)
+        else:
+            self.on_process(caches)
         return img
 
 

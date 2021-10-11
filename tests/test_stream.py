@@ -30,6 +30,9 @@ class BaseStreamTest(unittest.TestCase):
         self.assertEqual(
             self.stream._cumulative_runner_tv, self.listener.cumulative_runner_tv
         )
+        self.assertEqual(
+            self.stream._order_updates_only, self.listener.order_updates_only
+        )
         self.assertIsNone(self.stream._initial_clk)
         self.assertIsNone(self.stream._clk)
         self.assertEqual(self.stream._caches, {})
@@ -148,7 +151,9 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._caches = {"1.1": mock_cache}
 
         market_books = self.stream.snap()
-        mock_cache.create_resource.assert_called_with(self.stream.unique_id, snap=True)
+        mock_cache.create_resource.assert_called_with(
+            self.stream.unique_id, snap=True, publish_time=None
+        )
         assert market_books == [mock_cache.create_resource()]
 
         market_books = self.stream.snap(["1.2"])
@@ -268,7 +273,7 @@ class MarketStreamTest(unittest.TestCase):
 
 class OrderStreamTest(unittest.TestCase):
     def setUp(self):
-        self.listener = mock.Mock()
+        self.listener = mock.Mock(order_updates_only=False)
         self.stream = OrderStream(self.listener, 123)
 
     def test_init(self):
@@ -292,6 +297,17 @@ class OrderStreamTest(unittest.TestCase):
         self.assertEqual(len(self.stream), len(data))
         self.assertFalse(self.stream._process(data, 123))
         mock_on_process.assert_called_with([mock_cache()])
+
+    @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
+    @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
+    def test_process_order_updates(self, mock_on_process, mock_cache):
+        self.stream._order_updates_only = True
+        sub_image = create_mock_json("tests/resources/streaming_ocm_FULL_IMAGE.json")
+        data = sub_image.json()["oc"]
+        self.assertTrue(self.stream._process(data, 123))
+        self.assertEqual(len(self.stream), len(data))
+        self.assertFalse(self.stream._process(data, 123))
+        mock_on_process.assert_called_with([mock_cache()], 123)
 
     @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
     @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")

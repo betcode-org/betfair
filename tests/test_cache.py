@@ -350,7 +350,7 @@ class TestMarketBookCache(unittest.TestCase):
         self, mock_market_book, mock_market_definition, mock_serialise
     ):
         # lightweight
-        market_book = self.market_book_cache.create_resource(1234, True)
+        market_book = self.market_book_cache.create_resource(1234, snap=True)
         assert market_book == {
             "streaming_unique_id": 1234,
             "streaming_snap": True,
@@ -358,7 +358,7 @@ class TestMarketBookCache(unittest.TestCase):
         assert market_book == mock_serialise()
         # not lightweight
         self.market_book_cache.lightweight = False
-        market_book = self.market_book_cache.create_resource(1234, True)
+        market_book = self.market_book_cache.create_resource(1234, snap=True)
         assert market_book == mock_market_book()
 
     @mock.patch(
@@ -680,7 +680,7 @@ class TestOrderBookCache(unittest.TestCase):
                 # self.runner.matched_lays.update.assert_called_with(order_changes.get('ml', []))
                 # self.runner.matched_backs.update.assert_called_with(order_book.get('mb', []))
                 self.runner.update_unmatched.assert_called_with(
-                    order_changes.get("uo", [])
+                    1234, order_changes.get("uo", [])
                 )
 
     @mock.patch("betfairlightweight.streaming.cache.OrderBookRunner")
@@ -693,7 +693,7 @@ class TestOrderBookCache(unittest.TestCase):
 
             for order_changes in order_book.get("orc"):
                 mock_order_book_runner.assert_called_with(
-                    self.order_book_cache.market_id, **order_changes
+                    self.order_book_cache.market_id, 1234, **order_changes
                 )
 
     def test_update_cache_closed(self):
@@ -705,7 +705,6 @@ class TestOrderBookCache(unittest.TestCase):
 
     @mock.patch(
         "betfairlightweight.streaming.cache.OrderBookCache.serialise",
-        new_callable=mock.PropertyMock,
         return_value={},
     )
     @mock.patch("betfairlightweight.streaming.cache.CurrentOrders")
@@ -733,9 +732,8 @@ class TestOrderBookCache(unittest.TestCase):
             (123, 0): mock_runner_one,
             (123, 1): mock_runner_two,
         }
-        serialised = self.order_book_cache.serialise
         self.assertEqual(
-            serialised,
+            self.order_book_cache.serialise(None),
             {
                 "currentOrders": [1, 2, 3],
                 "matches": [6, 4],
@@ -782,7 +780,7 @@ class TestOrderBookRunner(unittest.TestCase):
             },
         ]
         self.order_book_runner = OrderBookRunner(
-            "1.123", **{"id": 1, "ml": [], "mb": [], "uo": uo}
+            "1.123", 123, **{"id": 1, "ml": [], "mb": [], "uo": uo}
         )
 
     def test_init(self):
@@ -812,7 +810,8 @@ class TestOrderBookRunner(unittest.TestCase):
                 "status": "EC",
             }
         ]
-        self.order_book_runner.update_unmatched(unmatched_orders)
+        self.order_book_runner.update_unmatched(123, unmatched_orders)
+        self.assertEqual(self.order_book_runner.unmatched_orders[1].publish_time, 123)
         self.assertEqual(self.order_book_runner.unmatched_orders[1].status, "E")
         self.assertEqual(self.order_book_runner.unmatched_orders[2].status, "EC")
         self.assertEqual(
@@ -847,11 +846,8 @@ class TestOrderBookRunner(unittest.TestCase):
         )
 
     def test_serialise_orders(self):
-        mock_order = mock.Mock()
-        mock_order.id = 123
-        mock_order_two = mock.Mock()
-        mock_order_two.id = 456
-
+        mock_order = mock.Mock(id=123, publish_time=123)
+        mock_order_two = mock.Mock(id=456, publish_time=456)
         unmatched_orders = {
             mock_order.id: mock_order,
             mock_order_two.id: mock_order_two,
@@ -863,8 +859,8 @@ class TestOrderBookRunner(unittest.TestCase):
             return
 
         mock_order_two.serialise = mock_serialise
-
-        assert len(self.order_book_runner.serialise_orders()), 2
+        assert len(self.order_book_runner.serialise_orders(None)), 2
+        assert len(self.order_book_runner.serialise_orders(123)), 1
 
     def test_serialise_matches(self):
         self.assertEqual(
@@ -897,9 +893,10 @@ class TestUnmatchedOrder(unittest.TestCase):
             "md": 4,
             "cd": 18,
         }
-        self.unmatched_order = UnmatchedOrder(**order)
+        self.unmatched_order = UnmatchedOrder(123, **order)
 
     def test_init(self):
+        assert self.unmatched_order.publish_time == 123
         assert self.unmatched_order.bet_id == 1
         assert self.unmatched_order.price == 2
         assert self.unmatched_order.size == 3
