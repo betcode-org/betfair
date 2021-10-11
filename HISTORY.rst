@@ -14,7 +14,7 @@ Release History
 
 **Bug Fixes**
 
--
+- #429 update `create_req` typing
 
 **Dependencies**
 
