@@ -58,7 +58,7 @@ class BaseListenerTest(unittest.TestCase):
         self.assertEqual(self.base_listener.stream.unique_id, 987)
 
     def test_on_data(self):
-        self.base_listener.on_data({})
+        self.base_listener.on_data("{}")
 
     @mock.patch("betfairlightweight.streaming.listener.RaceStream", return_value=789)
     @mock.patch("betfairlightweight.streaming.listener.OrderStream", return_value=456)
@@ -123,6 +123,7 @@ class StreamListenerTest(unittest.TestCase):
         self.assertTrue(self.stream_listener.update_clk)
         self.assertFalse(self.stream_listener.calculate_market_tv)
         self.assertFalse(self.stream_listener.cumulative_runner_tv)
+        self.assertFalse(self.stream_listener.order_updates_only)
 
     @mock.patch("betfairlightweight.streaming.listener.StreamListener._on_connection")
     @mock.patch("betfairlightweight.streaming.listener.StreamListener._on_status")

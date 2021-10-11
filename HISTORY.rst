@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - #426 minor calculate tv imp
+- #428 OrderStream with no caching using `listener.order_updates_only` flag
 - `debug` param deprecated and handled explicitly
 
 **Bug Fixes**

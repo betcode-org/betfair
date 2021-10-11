@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from ..resources import (
     BaseResource,
@@ -353,7 +353,10 @@ class MarketBookCache(BaseResource):
         return runner
 
     def create_resource(
-        self, unique_id: int, snap: bool = False
+        self,
+        unique_id: int,
+        snap: bool = False,
+        publish_time: Optional[int] = None,
     ) -> Union[dict, MarketBook]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
@@ -411,6 +414,7 @@ class MarketBookCache(BaseResource):
 class UnmatchedOrder:
     def __init__(
         self,
+        publish_time: int,
         id: str,
         p: float,
         s: float,
@@ -436,6 +440,7 @@ class UnmatchedOrder:
         cd: int = None,
         **kwargs
     ):
+        self.publish_time = publish_time
         self.bet_id = id
         self.price = p
         self.size = s
@@ -501,6 +506,7 @@ class OrderBookRunner:
     def __init__(
         self,
         market_id: str,
+        publish_time: int,
         id: int,
         fullImage: dict = None,
         ml: list = None,
@@ -517,17 +523,24 @@ class OrderBookRunner:
         self.unmatched_orders = {}  # {betId: UnmatchedOrder..
         self.handicap = hc
         self.strategy_matches = smc
-        self.update_unmatched(uo or [])
+        self.update_unmatched(publish_time, uo or [])
 
-    def update_unmatched(self, unmatched_orders: list) -> None:
+    def update_unmatched(self, publish_time: int, unmatched_orders: list) -> None:
         for unmatched_order in unmatched_orders:
-            order = UnmatchedOrder(**unmatched_order)
+            order = UnmatchedOrder(publish_time, **unmatched_order)
             order.serialise(self.market_id, self.selection_id, self.handicap)
             self.unmatched_orders[order.bet_id] = order
 
-    def serialise_orders(self) -> list:
+    def serialise_orders(self, publish_time: Optional[int]) -> list:
         orders = list(self.unmatched_orders.values())  # order may be added (#232)
-        return [order.serialised for order in orders]
+        if publish_time:
+            return [
+                order.serialised
+                for order in orders
+                if order.publish_time == publish_time
+            ]
+        else:
+            return [order.serialised for order in orders]
 
     def serialise_matches(self) -> dict:
         return {
@@ -561,19 +574,24 @@ class OrderBookCache(BaseResource):
             _lookup = (selection_id, handicap)
             runner = self.runners.get(_lookup)
             if full_image or runner is None:
-                self.runners[_lookup] = OrderBookRunner(self.market_id, **order_changes)
+                self.runners[_lookup] = OrderBookRunner(
+                    self.market_id, publish_time, **order_changes
+                )
             else:
                 if "ml" in order_changes:
                     runner.matched_lays.update(order_changes["ml"])
                 if "mb" in order_changes:
                     runner.matched_backs.update(order_changes["mb"])
                 if "uo" in order_changes:
-                    runner.update_unmatched(order_changes["uo"])
+                    runner.update_unmatched(publish_time, order_changes["uo"])
 
     def create_resource(
-        self, unique_id: int, snap: bool = False
+        self,
+        unique_id: int,
+        snap: bool = False,
+        publish_time: Optional[int] = None,
     ) -> Union[dict, CurrentOrders]:
-        data = self.serialise
+        data = self.serialise(publish_time)
         data["streaming_unique_id"] = unique_id
         data["streaming_snap"] = snap
         if self.lightweight:
@@ -581,12 +599,11 @@ class OrderBookCache(BaseResource):
         else:
             return CurrentOrders(publish_time=self.publish_time, **data)
 
-    @property
-    def serialise(self) -> dict:
+    def serialise(self, publish_time: Optional[int]) -> dict:
         runners = list(self.runners.values())  # runner may be added
         orders, matches = [], []
         for runner in runners:
-            orders.extend(runner.serialise_orders())
+            orders.extend(runner.serialise_orders(publish_time))
             matches.append(runner.serialise_matches())
         return {
             "currentOrders": orders,
@@ -621,7 +638,12 @@ class RaceCache(BaseResource):
             for runner_update in update["rrc"]:
                 self.rrc[runner_update["id"]] = runner_update
 
-    def create_resource(self, unique_id: int, snap: bool = False) -> Union[dict, Race]:
+    def create_resource(
+        self,
+        unique_id: int,
+        snap: bool = False,
+        publish_time: Optional[int] = None,
+    ) -> Union[dict, Race]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
         data["streaming_snap"] = snap
