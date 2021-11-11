@@ -58,7 +58,7 @@ class Going:
     :type key: unicode
     """
 
-    def __init__(self, abbr, full, key):
+    def __init__(self, abbr=None, full=None, key=None):
         self.abbr = abbr
         self.full = full
         self.key = key
