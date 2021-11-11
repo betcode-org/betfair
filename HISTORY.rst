@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.15.1 (2021-11-11)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Handle missing values in Going resource
+
+**Dependencies**
+
+- python 3.10 testing added
+- black upgraded to 21.10b0
+
 2.15.0 (2021-10-11)
 +++++++++++++++++++
 
