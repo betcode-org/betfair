@@ -582,9 +582,9 @@ class OrderBookCache(BaseResource):
                 )
             else:
                 if "ml" in order_changes:
-                    runner.matched_lays.update(order_changes["ml"])
+                    runner.matched_lays.update(order_changes["ml"], self.active)
                 if "mb" in order_changes:
-                    runner.matched_backs.update(order_changes["mb"])
+                    runner.matched_backs.update(order_changes["mb"], self.active)
                 if "uo" in order_changes:
                     runner.update_unmatched(publish_time, order_changes["uo"])
 

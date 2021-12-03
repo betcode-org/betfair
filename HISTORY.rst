@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.15.2 (2021-12-03)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- #438 cache missing argument 'active' (@kwassmuss)
+
+**Dependencies**
+
+- black upgraded to 21.11b1
+
 2.15.1 (2021-11-11)
 +++++++++++++++++++
 
