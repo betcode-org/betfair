@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.15.3 (2022-01-04)
++++++++++++++++++++
+
+**Improvements**
+
+- GBP min bet update
+
+**Dependencies**
+
+- black upgraded to 22.1.0
+- orjson upgraded to 3.6.6
+
 2.15.2 (2021-12-03)
 +++++++++++++++++++
 

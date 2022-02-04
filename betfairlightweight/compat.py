@@ -25,7 +25,6 @@ try:
         except ValueError:
             return
 
-
 except ImportError:
 
     def parse_datetime(datetime_string: str) -> Optional[datetime]:
