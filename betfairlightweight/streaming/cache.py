@@ -665,3 +665,11 @@ class RaceCache(BaseResource):
             "rrc": list(self.rrc.values()),
             "streaming_update": self.streaming_update,
         }
+
+
+class CricketMatchCache(BaseResource):
+    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+        super(CricketMatchCache, self).__init__()
+        self.market_id = market_id
+        self.publish_time = publish_time
+        self.lightweight = lightweight

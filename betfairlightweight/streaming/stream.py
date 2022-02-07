@@ -3,7 +3,7 @@ import logging
 import time
 from typing import Optional
 
-from .cache import MarketBookCache, OrderBookCache, RaceCache
+from .cache import CricketMatchCache, MarketBookCache, OrderBookCache, RaceCache
 
 logger = logging.getLogger(__name__)
 
