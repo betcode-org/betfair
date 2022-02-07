@@ -2,7 +2,7 @@ import logging
 import queue
 from typing import Optional
 
-from .stream import BaseStream, MarketStream, OrderStream, RaceStream
+from .stream import BaseStream, CricketStream, MarketStream, OrderStream, RaceStream
 from ..compat import json
 
 logger = logging.getLogger(__name__)
@@ -73,6 +73,8 @@ class BaseListener:
             return OrderStream(self, unique_id)
         elif operation == "raceSubscription":
             return RaceStream(self, unique_id)
+        elif operation == "cricketSubscription":
+            return CricketStream(self, unique_id)
 
     def __str__(self) -> str:
         return "{0}".format(self.__class__.__name__)
