@@ -3,7 +3,14 @@
 Release History
 ---------------
 
-2.15.3 (2022-01-07)
+2.15.4 (2022-02-07)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Add HISTORY.rst to MANIFEST.in to fix broken release test (@synapticarbors)
+
+2.15.3 (2022-02-07)
 +++++++++++++++++++
 
 **Improvements**
