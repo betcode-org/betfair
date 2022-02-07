@@ -8,7 +8,7 @@ Release History
 
 **Improvements**
 
-- GBP min bet update
+- GBP min bet / EUR min bsp liability update
 
 **Dependencies**
 
