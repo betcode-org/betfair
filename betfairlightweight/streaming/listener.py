@@ -140,7 +140,7 @@ class StreamListener(BaseListener):
             self._on_connection(data, unique_id)
         elif operation == "status":
             self._on_status(data, unique_id)
-        elif operation in ["mcm", "ocm", "rcm"]:
+        elif operation in ["mcm", "ocm", "rcm", "ccm"]:
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 0]:
                 logger.warning(
