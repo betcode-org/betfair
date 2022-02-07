@@ -7,6 +7,7 @@ from ..resources import (
     CurrentOrders,
     MarketDefinition,
     Race,
+    CricketMatch
 )
 from ..enums import (
     StreamingOrderType,
@@ -668,8 +669,59 @@ class RaceCache(BaseResource):
 
 
 class CricketMatchCache(BaseResource):
-    def __init__(self, market_id: str, publish_time: int, lightweight: bool):
+    def __init__(self, market_id: str, event_id: str, publish_time: int, lightweight: bool):
         super(CricketMatchCache, self).__init__()
         self.market_id = market_id
+        self.event_id = event_id
         self.publish_time = publish_time
         self.lightweight = lightweight
+        self.fixture_info = None
+        self.home_team = None
+        self.away_team = None
+        self.match_stats = None
+        self.incident_list_wrapper = None
+
+    def update_cache(self, cricket_change_message: dict, publish_time: int) -> None:
+        self.streaming_update = cricket_change_message
+        self.publish_time = publish_time
+
+        if "fixtureInfo" in cricket_change_message:
+            self.fixture_info = cricket_change_message["fixtureInfo"]
+
+        if "homeTeam" in cricket_change_message:
+            self.home_team = cricket_change_message["homeTeam"]
+
+        if "awayTeam" in cricket_change_message:
+            self.away_team = cricket_change_message["awayTeam"]
+
+        if "matchStats" in cricket_change_message:
+            self.match_stats = cricket_change_message["matchStats"]
+
+        if "incidentListWrapper" in cricket_change_message:
+            self.incident_list_wrapper = cricket_change_message["incidentListWrapper"]
+
+    def create_resource(
+            self,
+            unique_id: int,
+            snap: bool = False,
+            publish_time: Optional[int] = None,
+    ) -> Union[dict, CricketMatch]:
+        data = self.serialise
+        data["streaming_unique_id"] = unique_id
+        data["streaming_snap"] = snap
+        if self.lightweight:
+            return data
+        else:
+            return CricketMatch(**data)
+
+    @property
+    def serialise(self):
+        return {
+            "eventId": self.event_id,
+            "marketId": self.market_id,
+            "fixtureInfo": self.fixture_info,
+            "homeTeam": self.home_team,
+            "awayTeam": self.away_team,
+            "matchStats": self.match_stats,
+            "incidentListWrapper": self.incident_list_wrapper
+        }

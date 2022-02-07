@@ -38,4 +38,4 @@ from .racecardresources import RaceCard
 
 from .inplayserviceresources import EventTimeline, Scores
 
-from .streamingresources import MarketDefinition, MarketDefinitionRunner, Race
+from .streamingresources import CricketMatch, MarketDefinition, MarketDefinitionRunner, Race

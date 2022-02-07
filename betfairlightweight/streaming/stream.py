@@ -265,11 +265,12 @@ class CricketStream(BaseStream):
         caches, img = [], False
         for cricket_change_message in cricket_change_messages:
             market_id = cricket_change_message["marketId"]
+            event_id = cricket_change_message["eventId"]
             cricket_match_cache = self._caches.get(market_id)
 
             if cricket_match_cache is None:
                 cricket_match_cache = CricketMatchCache(
-                    market_id, publish_time, self._lightweight
+                    market_id, event_id, publish_time, self._lightweight
                 )
                 self._caches[market_id] = cricket_match_cache
                 logger.info(

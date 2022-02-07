@@ -242,3 +242,142 @@ class RaceChange:
         self.speed = kwargs.get("spd")
         self.progress = kwargs.get("prg")
         self.stride_frequency = kwargs.get("sfq")  # in Hz
+
+
+class CricketFixtureInfo:
+    def __init__(self, **kwargs):
+        self.home_team = kwargs.get("homeTeam")
+        self.away_team = kwargs.get("awayTeam")
+        self.expected_start_time = kwargs.get("expectedStartTime")
+        self.fixture_status = kwargs.get("fixtureStatus")
+        self.event_description = kwargs.get("eventDescription")
+        self.max_overs = kwargs.get("maxOvers")
+        self.event_status = kwargs.get("eventStatus")
+
+
+class CricketTeamInfo:
+    def __init__(self, **kwargs):
+        self.name = kwargs.get("name")
+        self.players = [
+            CricketPlayerInfo(**player) for player in kwargs.get("players") or []
+        ]
+        self.selection_id = kwargs.get("selectionId")
+
+
+class CricketPlayerInfo:
+    def __init__(self, **kwargs):
+        self.name = kwargs.get("name")
+        self.is_captain = kwargs.get("isCaptain")
+        self.is_wicket_keeper = kwargs.get("isWicketKeeper")
+
+
+class CricketMatchStats:
+    def __init__(self, **kwargs):
+        self.current_innings = kwargs.get("currentInnings")
+        self.toss_result = kwargs.get("tossResult")
+        self.innings_stats = [
+            CricketInningsStats(**innings)
+            for innings in kwargs.get("inningsStats") or []
+        ]
+        self.batting_team_stats = (
+            CricketBattingTeamStats(**kwargs["battingTeamStats"])
+            if kwargs.get("battingTeamStats")
+            else None
+        )
+        self.bowling_team_stats = (
+            CricketBowlingTeamStats(**kwargs["bowlingTeamStats"])
+            if kwargs.get("bowlingTeamStats")
+            else None
+        )
+
+
+class CricketInningsStats:
+    def __init__(self, **kwargs):
+        self.innings_num = kwargs.get("inningsNum")
+        self.batting_team = kwargs.get("battingTeam")
+        self.bowling_team = kwargs.get("bowlingTeam")
+        self.inningsRuns = kwargs.get("inningsRuns")
+        self.inningsOvers = kwargs.get("inningsOvers")
+        self.inningsWickets = kwargs.get("inningsWickets")
+
+
+class CricketBattingTeamStats:
+    def __init__(self, **kwargs):
+        self.team_name = kwargs.get("teamName")
+        self.bat_1_name = kwargs.get("bat1Name")
+        self.bat_1_runs = kwargs.get("bat1Runs")
+        self.bat_1_balls = kwargs.get("bat1Balls")
+        self.bat_1_fours = kwargs.get("bat1Fours")
+        self.bat_1_sixes = kwargs.get("bat1Sixes")
+        self.bat_1_strike = kwargs.get("bat1Strike")
+        self.bat_2_name = kwargs.get("bat2Name")
+        self.bat_2_runs = kwargs.get("bat2Runs")
+        self.bat_2_balls = kwargs.get("bat2Balls")
+        self.bat_2_fours = kwargs.get("bat2Fours")
+        self.bat_2_sixes = kwargs.get("bat2Sixes")
+        self.bat_2_strike = kwargs.get("bat2Strike")
+
+
+class CricketBowlingTeamStats:
+    def __init__(self, **kwargs):
+        self.team_name = kwargs.get("teamName")
+        self.bowl_1_name = kwargs.get("bowl1Name")
+        self.bowl_1_overs = kwargs.get("bowl1Overs")
+        self.bowl_1_runs = kwargs.get("bowl1Runs")
+        self.bowl_1_maidens = kwargs.get("bowl1Maidens")
+        self.bowl_1_wickets = kwargs.get("bowl1Wickets")
+        self.bowl_2_name = kwargs.get("bowl2Name")
+        self.bowl_2_overs = kwargs.get("bowl2Overs")
+        self.bowl_2_runs = kwargs.get("bowl2Runs")
+        self.bowl_2_maidens = kwargs.get("bowl2Maidens")
+        self.bowl_2_wickets = kwargs.get("bowl2Wickets")
+
+
+class IncidentListWrapper:
+    def __init__(self, **kwargs):
+        self.incident_list = [
+            CricketIncident(**incident) for incident in kwargs.get("incidentList") or []
+        ]
+
+
+class CricketIncident:
+    def __init__(self, **kwargs):
+        self.participant_ref = kwargs.get("participantRef")
+        self.incident_type = kwargs.get("incidentType")
+        self.value = kwargs.get("value")
+        self.innings = kwargs.get("innings")
+        self.overs = kwargs.get("overs")
+        self.actual_time = kwargs.get("actualTime")
+
+
+class CricketMatch(BaseResource):
+    def __init__(self, **kwargs):
+        self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
+        self.streaming_update = kwargs.pop("streaming_update", None)
+        self.streaming_snap = kwargs.pop("streaming_snap", False)
+        self.publish_time_epoch = kwargs.get("pt")
+        self.publish_time = self.strip_datetime(kwargs.get("pt"))
+        super(CricketMatch, self).__init__(**kwargs)
+        self.event_id = kwargs.get("eventId")
+        self.market_id = kwargs.get("marketId")
+        self.fixture_info = (
+            CricketFixtureInfo(**kwargs["fixtureInfo"])
+            if kwargs.get("fixtureInfo")
+            else None
+        )
+        self.home_team = (
+            CricketTeamInfo(**kwargs["homeTeam"]) if kwargs.get("homeTeam") else None
+        )
+        self.away_team = (
+            CricketTeamInfo(**kwargs["awayTeam"]) if kwargs.get("awayTeam") else None
+        )
+        self.match_stats = (
+            CricketMatchStats(**kwargs["matchStats"])
+            if kwargs.get("matchStats")
+            else None
+        )
+        self.incident_list_wrapper = (
+            IncidentListWrapper(**kwargs["incidentListWrapper"])
+            if kwargs.get("incidentListWrapper")
+            else None
+        )
