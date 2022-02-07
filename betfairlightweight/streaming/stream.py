@@ -264,7 +264,7 @@ class CricketStream(BaseStream):
     def _process(self, cricket_change_messages: list, publish_time: int) -> bool:
         caches, img = [], False
         for cricket_change_message in cricket_change_messages:
-            market_id = cricket_change_message["mid"]
+            market_id = cricket_change_message["marketId"]
             cricket_match_cache = self._caches.get(market_id)
 
             if cricket_match_cache is None:
