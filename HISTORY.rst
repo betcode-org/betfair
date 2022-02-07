@@ -3,7 +3,7 @@
 Release History
 ---------------
 
-2.15.3 (2022-01-04)
+2.15.3 (2022-01-07)
 +++++++++++++++++++
 
 **Improvements**
@@ -12,6 +12,7 @@ Release History
 
 **Dependencies**
 
+- requests upgraded to <2.28.0
 - black upgraded to 22.1.0
 - orjson upgraded to 3.6.6
 
