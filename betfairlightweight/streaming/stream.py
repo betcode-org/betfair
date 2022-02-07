@@ -255,3 +255,30 @@ class RaceStream(BaseStream):
             self._updates_processed += 1
         self.on_process(caches)
         return img
+
+
+class CricketStream(BaseStream):
+    _lookup = "cc"
+    _name = "CricketStream"
+
+    def _process(self, cricket_change_messages: list, publish_time: int) -> bool:
+        caches, img = [], False
+        for cricket_change_message in cricket_change_messages:
+            market_id = cricket_change_message["mid"]
+            cricket_match_cache = self._caches.get(market_id)
+
+            if cricket_match_cache is None:
+                cricket_match_cache = CricketMatchCache(
+                    market_id, publish_time, self._lightweight
+                )
+                self._caches[market_id] = cricket_match_cache
+                logger.info(
+                    "[%s: %s]: %s added, %s markets in cache"
+                    % (self, self.unique_id, market_id, len(self._caches))
+                )
+
+            cricket_match_cache.update_cache(cricket_change_message, publish_time)
+            caches.append(cricket_match_cache)
+            self._updates_processed += 1
+        self.on_process(caches)
+        return img
