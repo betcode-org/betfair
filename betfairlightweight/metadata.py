@@ -59,8 +59,8 @@ Currency Parameters
 """
 
 currency_parameters = {
-    "GBP": {"min_bet_size": 2, "min_bet_payout": 10, "min_bsp_liability": 10},
-    "EUR": {"min_bet_size": 1, "min_bet_payout": 20, "min_bsp_liability": 20},
+    "GBP": {"min_bet_size": 1, "min_bet_payout": 10, "min_bsp_liability": 10},
+    "EUR": {"min_bet_size": 1, "min_bet_payout": 20, "min_bsp_liability": 10},
     "USD": {"min_bet_size": 3, "min_bet_payout": 20, "min_bsp_liability": 20},
     "HKD": {"min_bet_size": 25, "min_bet_payout": 125, "min_bsp_liability": 125},
     "AUD": {"min_bet_size": 5, "min_bet_payout": 30, "min_bsp_liability": 30},

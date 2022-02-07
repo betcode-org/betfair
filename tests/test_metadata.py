@@ -67,11 +67,11 @@ class MetadataTest(unittest.TestCase):
                 "EUR": {
                     "min_bet_payout": 20,
                     "min_bet_size": 1,
-                    "min_bsp_liability": 20,
+                    "min_bsp_liability": 10,
                 },
                 "GBP": {
                     "min_bet_payout": 10,
-                    "min_bet_size": 2,
+                    "min_bet_size": 1,
                     "min_bsp_liability": 10,
                 },
                 "GEL": {
