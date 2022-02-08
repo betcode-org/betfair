@@ -245,6 +245,16 @@ class RaceChange:
 
 
 class CricketFixtureInfo:
+    """
+    :type home_team: unicode
+    :type away_team: unicode
+    :type expected_start_time: unicode
+    :type fixture_status: unicode
+    :type event_description: unicode
+    :type max_overs: int
+    :type event_status: unicode
+    """
+
     def __init__(self, **kwargs):
         self.home_team = kwargs.get("homeTeam")
         self.away_team = kwargs.get("awayTeam")
@@ -256,6 +266,12 @@ class CricketFixtureInfo:
 
 
 class CricketTeamInfo:
+    """
+    :type name: unicode
+    :type players: list[CricketPlayerInfo]
+    :type selection_id: int
+    """
+
     def __init__(self, **kwargs):
         self.name = kwargs.get("name")
         self.players = [
@@ -265,6 +281,12 @@ class CricketTeamInfo:
 
 
 class CricketPlayerInfo:
+    """
+    :type name: unicode
+    :type is_captain: bool
+    :type is_wicket_keeper: bool
+    """
+
     def __init__(self, **kwargs):
         self.name = kwargs.get("name")
         self.is_captain = kwargs.get("isCaptain")
@@ -272,6 +294,14 @@ class CricketPlayerInfo:
 
 
 class CricketMatchStats:
+    """
+    :type current_innings: int
+    :type toss_result: unicode
+    :type innings_stats: list[CricketInningsStats]
+    :type batting_team_stats: CricketBattingTeamStats
+    :type bowling_team_stats: CricketBowlingTeamStats
+    """
+
     def __init__(self, **kwargs):
         self.current_innings = kwargs.get("currentInnings")
         self.toss_result = kwargs.get("tossResult")
@@ -292,6 +322,15 @@ class CricketMatchStats:
 
 
 class CricketInningsStats:
+    """
+    :type innings_num: int
+    :type batting_team: unicode
+    :type bowling_team: unicode
+    :type innings_runs: int
+    :type innings_overs: unicode
+    :type innings_wickets: int
+    """
+
     def __init__(self, **kwargs):
         self.innings_num = kwargs.get("inningsNum")
         self.batting_team = kwargs.get("battingTeam")
@@ -302,6 +341,22 @@ class CricketInningsStats:
 
 
 class CricketBattingTeamStats:
+    """
+    :type team_name: unicode
+    :type bat_1_name: int
+    :type bat_1_runs: int
+    :type bat_1_balls: int
+    :type bat_1_fours: int
+    :type bat_1_sixes: int
+    :type bat_1_strike: int
+    :type bat_2_name: int
+    :type bat_2_runs: int
+    :type bat_2_balls: int
+    :type bat_2_fours: int
+    :type bat_2_sixes: int
+    :type bat_2_strike: int
+    """
+
     def __init__(self, **kwargs):
         self.team_name = kwargs.get("teamName")
         self.bat_1_name = kwargs.get("bat1Name")
@@ -319,6 +374,20 @@ class CricketBattingTeamStats:
 
 
 class CricketBowlingTeamStats:
+    """
+    :type team_name
+    :type bowl_1_name: unicode
+    :type bowl_1_overs: unicode
+    :type bowl_1_runs: int
+    :type bowl_1_maidens: int
+    :type bowl_1_wickets: int
+    :type bowl_2_name: unicode
+    :type bowl_2_overs: unicode
+    :type bowl_2_runs: int
+    :type bowl_2_maidens: int
+    :type bowl_2_wickets: int
+    """
+
     def __init__(self, **kwargs):
         self.team_name = kwargs.get("teamName")
         self.bowl_1_name = kwargs.get("bowl1Name")
@@ -334,6 +403,10 @@ class CricketBowlingTeamStats:
 
 
 class IncidentListWrapper:
+    """
+    :type incident_list: list[CricketIncident]
+    """
+
     def __init__(self, **kwargs):
         self.incident_list = [
             CricketIncident(**incident) for incident in kwargs.get("incidentList") or []
@@ -341,6 +414,15 @@ class IncidentListWrapper:
 
 
 class CricketIncident:
+    """
+    :type participant_ref: unicode
+    :type incident_type: unicode
+    :type value: unicode
+    :type innings: int
+    :type overs: unicode
+    :type actual_time: int
+    """
+
     def __init__(self, **kwargs):
         self.participant_ref = kwargs.get("participantRef")
         self.incident_type = kwargs.get("incidentType")
@@ -351,6 +433,16 @@ class CricketIncident:
 
 
 class CricketMatch(BaseResource):
+    """
+    :type event_id: unicode
+    :type market_id: unicode
+    :type fixture_info: CricketFixtureInfo
+    :type home_team: CricketTeamInfo
+    :type away_team: CricketTeamInfo
+    :type match_stats: CricketMatchStats
+    :type incident_list_wrapper: IncidentListWrapper
+    """
+
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
         self.streaming_update = kwargs.pop("streaming_update", None)
