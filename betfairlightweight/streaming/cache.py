@@ -7,7 +7,7 @@ from ..resources import (
     CurrentOrders,
     MarketDefinition,
     Race,
-    CricketMatch
+    CricketMatch,
 )
 from ..enums import (
     StreamingOrderType,
@@ -669,7 +669,9 @@ class RaceCache(BaseResource):
 
 
 class CricketMatchCache(BaseResource):
-    def __init__(self, market_id: str, event_id: str, publish_time: int, lightweight: bool):
+    def __init__(
+        self, market_id: str, event_id: str, publish_time: int, lightweight: bool
+    ):
         super(CricketMatchCache, self).__init__()
         self.market_id = market_id
         self.event_id = event_id
@@ -701,10 +703,10 @@ class CricketMatchCache(BaseResource):
             self.incident_list_wrapper = cricket_change_message["incidentListWrapper"]
 
     def create_resource(
-            self,
-            unique_id: int,
-            snap: bool = False,
-            publish_time: Optional[int] = None,
+        self,
+        unique_id: int,
+        snap: bool = False,
+        publish_time: Optional[int] = None,
     ) -> Union[dict, CricketMatch]:
         data = self.serialise
         data["streaming_unique_id"] = unique_id
@@ -723,5 +725,5 @@ class CricketMatchCache(BaseResource):
             "homeTeam": self.home_team,
             "awayTeam": self.away_team,
             "matchStats": self.match_stats,
-            "incidentListWrapper": self.incident_list_wrapper
+            "incidentListWrapper": self.incident_list_wrapper,
         }
