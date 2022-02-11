@@ -673,6 +673,7 @@ class CricketMatchCache(BaseResource):
         self, market_id: str, event_id: str, publish_time: int, lightweight: bool
     ):
         super(CricketMatchCache, self).__init__()
+        self.active = True
         self.market_id = market_id
         self.event_id = event_id
         self.publish_time = publish_time
