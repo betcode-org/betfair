@@ -1,6 +1,7 @@
 import unittest
 
 from betfairlightweight.resources.streamingresources import (
+    CricketMatch,
     MarketDefinition,
     MarketDefinitionRunner,
     Race,
@@ -104,3 +105,108 @@ class TestRaceChange(unittest.TestCase):
         assert self.race_change.speed == 17.8
         assert self.race_change.progress == 2051
         assert self.race_change.stride_frequency == 2.07
+
+
+class TestCricketMatch0(unittest.TestCase):
+    def setUp(self):
+        self.mock_response = create_mock_json("tests/resources/ccms/ccm0.json")
+        self.cricket_match = CricketMatch(**self.mock_response.json()["cc"][0])
+
+    def test_init(self):
+        assert self.cricket_match.event_id == "30610310"
+        assert self.cricket_match.market_id == "1.179676557"
+        assert self.cricket_match.fixture_info.expected_start_time == 1643295600000
+        assert self.cricket_match.fixture_info.fixture_status == "IN_RUNNING"
+        assert (
+            self.cricket_match.fixture_info.event_description
+            == "Karachi Kings v Multan Sultans, Pakistan Super League Match 1, from National Stadium"
+        )
+        assert self.cricket_match.fixture_info.max_overs == 20
+        assert self.cricket_match.fixture_info.event_status == "BALL_IN_PROGRESS"
+        assert self.cricket_match.home_team is None
+        assert self.cricket_match.away_team is None
+        assert self.cricket_match.match_stats.current_innings == 1
+        assert self.cricket_match.match_stats.innings_stats[0].innings_num == 1
+        assert (
+            self.cricket_match.match_stats.innings_stats[0].batting_team
+            == "Karachi Kings"
+        )
+        assert (
+            self.cricket_match.match_stats.innings_stats[0].bowling_team
+            == "Multan Sultans"
+        )
+        assert self.cricket_match.match_stats.innings_stats[0].innings_runs == 80
+        assert self.cricket_match.match_stats.innings_stats[0].innings_overs == "12.5"
+        assert self.cricket_match.match_stats.innings_stats[0].innings_wickets == 2
+        assert (
+            self.cricket_match.match_stats.batting_team_stats.team_name
+            == "Karachi Kings"
+        )
+        assert self.cricket_match.match_stats.batting_team_stats.bat_1_name is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_1_runs == 4
+        assert self.cricket_match.match_stats.batting_team_stats.bat_1_balls is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_1_fours is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_1_sixes is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_1_strike == 0
+        assert self.cricket_match.match_stats.batting_team_stats.bat_2_name is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_2_runs == 8
+        assert self.cricket_match.match_stats.batting_team_stats.bat_2_balls is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_2_fours is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_2_sixes is None
+        assert self.cricket_match.match_stats.batting_team_stats.bat_2_strike == 1
+        assert (
+            self.cricket_match.match_stats.bowling_team_stats.team_name
+            == "Multan Sultans"
+        )
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_1_name is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_1_overs is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_1_runs is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_1_maidens is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_1_wickets is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_name is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_overs is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_runs is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_maidens is None
+        assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_wickets is None
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].participant_ref
+            is None
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].incident_type
+            == "RUNS"
+        )
+        assert self.cricket_match.incident_list_wrapper.incident_list[0].value == "1"
+        assert self.cricket_match.incident_list_wrapper.incident_list[0].overs == "12.5"
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].actual_time
+            == 1643299013861
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].participant_ref
+            is None
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].incident_type
+            == "RUNS"
+        )
+        assert self.cricket_match.incident_list_wrapper.incident_list[1].value == "1"
+        assert self.cricket_match.incident_list_wrapper.incident_list[1].overs == "12.4"
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].actual_time
+            == 1643298990238
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].participant_ref
+            is None
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].incident_type
+            == "RUNS"
+        )
+        assert self.cricket_match.incident_list_wrapper.incident_list[2].value == "1"
+        assert self.cricket_match.incident_list_wrapper.incident_list[2].overs == "12.3"
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].actual_time
+            == 1643298961522
+        )
