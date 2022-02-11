@@ -335,9 +335,9 @@ class CricketInningsStats:
         self.innings_num = kwargs.get("inningsNum")
         self.batting_team = kwargs.get("battingTeam")
         self.bowling_team = kwargs.get("bowlingTeam")
-        self.inningsRuns = kwargs.get("inningsRuns")
-        self.inningsOvers = kwargs.get("inningsOvers")
-        self.inningsWickets = kwargs.get("inningsWickets")
+        self.innings_runs = kwargs.get("inningsRuns")
+        self.innings_overs = kwargs.get("inningsOvers")
+        self.innings_wickets = kwargs.get("inningsWickets")
 
 
 class CricketBattingTeamStats:
