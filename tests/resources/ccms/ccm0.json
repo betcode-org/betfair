@@ -13,7 +13,7 @@
       "fixtureInfo": {
         "expectedStartTime": 1643295600000,
         "fixtureStatus": "IN_RUNNING",
-        "eventDescription": "Karachi Kings v Multan Sultans, PakistanSuper League Match 1, from National Stadium",
+        "eventDescription": "Karachi Kings v Multan Sultans, Pakistan Super League Match 1, from National Stadium",
         "maxOvers": 20,
         "eventStatus": "BALL_IN_PROGRESS"
       },
@@ -23,7 +23,7 @@
           {
             "inningsNum": 1,
             "battingTeam": "Karachi Kings",
-            "bowlingTeam": "MultanSultans",
+            "bowlingTeam": "Multan Sultans",
             "inningsRuns": 80,
             "inningsOvers": "12.5",
             "inningsWickets": 2
@@ -37,7 +37,7 @@
           "bat2Strike": 1
         },
         "bowlingTeamStats": {
-          "teamName": "MultanSultans"
+          "teamName": "Multan Sultans"
         }
       },
       "incidentListWrapper": {
