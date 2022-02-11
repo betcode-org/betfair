@@ -87,3 +87,48 @@ class HistoricalRaceStreamTest(unittest.TestCase):
             expected_data = load(f)
 
         assert expected_data == data
+
+
+class HistoricalCricketStreamTest(unittest.TestCase):
+    def test_historical_stream(self):
+        trading = betfairlightweight.APIClient("username", "password", app_key="appKey")
+        stream = trading.streaming.create_historical_stream(
+            file_path="tests/resources/historicaldata/CRICKET-1.179676557",
+            listener=StreamListener(),
+            operation="cricketSubscription",
+        )
+        stream.start()
+
+        for cache in stream.listener.stream._caches.values():
+            cache.create_resource(1, False)
+
+        assert stream.listener.stream_type == "cricketSubscription"
+        assert stream.listener.stream_unique_id == 0
+
+        assert stream.listener.stream._updates_processed == 3
+        assert len(stream.listener.stream._caches) == 1
+
+        market = stream.listener.stream._caches.get("1.179676557")
+        assert market is not None
+
+        assert stream._running is False
+
+    def test_historical_generator_stream(self):
+        # assert that data is processed correctly (regression testing)
+        trading = betfairlightweight.APIClient("username", "password", app_key="appKey")
+        stream = trading.streaming.create_historical_generator_stream(
+            file_path="tests/resources/historicaldata/CRICKET-1.179676557",
+            listener=StreamListener(lightweight=True),
+            operation="cricketSubscription",
+        )
+        gen = stream.get_generator()
+        data = [i[0] for i in gen()]
+
+        print(data)
+
+        with open(
+                "tests/resources/historicaldata/CRICKET-1.179676557-processed.json", "r"
+        ) as f:
+            expected_data = load(f)
+
+        assert expected_data == data
