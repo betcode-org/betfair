@@ -1,0 +1,67 @@
+{
+  "op": "ccm",
+  "initialClk": "40697906",
+  "clk": "40697906",
+  "conflateMs": 0,
+  "heartbeatMs": 5000,
+  "pt": 1643365211908,
+  "ct": "SUB_IMAGE",
+  "cc": [
+    {
+      "eventId": "30610280",
+      "marketId": "1.179668557",
+      "fixtureInfo": {
+        "expectedStartTime": 1643359200000,
+        "fixtureStatus": "IN_RUNNING",
+        "eventDescription": "TRAINING: Perth Scorchers v Sydney Sixers,Big Bash League Final, from Docklands Stadium",
+        "maxOvers": 20,
+        "eventStatus": "BALL_IN_PROGRESS"
+      },
+      "matchStats": {
+        "currentInnings": 1,
+        "inningsStats": [
+          {
+            "inningsNum": 1,
+            "battingTeam": "Perth Scorchers",
+            "bowlingTeam": "SydneySixers",
+            "inningsRuns": 169,
+            "inningsOvers": "19.5",
+            "inningsWickets": 6
+          }
+        ],
+        "battingTeamStats": {
+          "teamName": "PerthScorchers",
+          "bat1Runs": 74,
+          "bat1Strike": 1,
+          "bat2Runs": 1,
+          "bat2Strike": 0
+        },
+        "bowlingTeamStats": {
+          "teamName": "SydneySixers"
+        }
+      },
+      "incidentListWrapper": {
+        "incidentList": [
+          {
+            "incidentType": "RUNS",
+            "value": "2",
+            "overs": "19.5",
+            "actualTime": 1643365137339
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "19.4",
+            "actualTime": 1643365102771
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "19.3",
+            "actualTime": 1643365029126
+          }
+        ]
+      }
+    }
+  ]
+}

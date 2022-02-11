@@ -1,0 +1,66 @@
+{
+  "op": "ccm",
+  "initialClk": "37093382",
+  "clk": "37093382",
+  "conflateMs": 0,
+  "heartbeatMs": 5000,
+  "pt": 1643298372186,
+  "ct": "SUB_IMAGE",
+  "cc": [
+    {
+      "eventId": "30610359",
+      "marketId": "1.179676556",
+      "fixtureInfo": {
+        "expectedStartTime": 1643293800000,
+        "fixtureStatus": "IN_RUNNING",
+        "eventDescription": "World Giants v India Maharajas, LegendsCricket League Match 6, from Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)",
+        "maxOvers": 20,
+        "eventStatus": "BALL_IN_PROGRESS"
+      },
+      "matchStats": {
+        "currentInnings": 1,
+        "inningsStats": [
+          {
+            "inningsNum": 1,
+            "battingTeam": "World Giants",
+            "bowlingTeam": "India Maharajas",
+            "inningsRuns": 186,
+            "inningsOvers": "15.5",
+            "inningsWickets": 3
+          }
+        ],
+        "battingTeamStats": {
+          "teamName": "World Giants",
+          "bat1Runs": 83,
+          "bat1Strike": 0,
+          "bat2Runs": 0,
+          "bat2Strike": 1
+        },
+        "bowlingTeamStats": {
+          "teamName": "India Maharajas"
+        }
+      },
+      "incidentListWrapper": {
+        "incidentList": [
+          {
+            "incidentType": "OUT",
+            "overs": "15.5",
+            "actualTime": 1643298137862
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "15.4",
+            "actualTime": 1643298112170
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "15.3",
+            "actualTime": 1643298085471
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "op": "ccm",
+  "clk": "37093389",
+  "pt": 1643299040434,
+  "cc": [
+    {
+      "eventId": "30610310",
+      "marketId": "1.179676557",
+      "fixtureInfo": {
+        "expectedStartTime": 1643295600000,
+        "fixtureStatus": "IN_RUNNING",
+        "eventDescription": "Karachi Kings vMultan Sultans, Pakistan Super League Match 1, from National Stadium",
+        "maxOvers": 20,
+        "eventStatus": "RUNS_LIKELY"
+      }
+    }
+  ]
+}
