@@ -683,24 +683,24 @@ class CricketMatchCache(BaseResource):
         self.match_stats = None
         self.incident_list_wrapper = None
 
-    def update_cache(self, cricket_change_message: dict, publish_time: int) -> None:
-        self.streaming_update = cricket_change_message
+    def update_cache(self, cricket_change: dict, publish_time: int) -> None:
+        self.streaming_update = cricket_change
         self.publish_time = publish_time
 
-        if "fixtureInfo" in cricket_change_message:
-            self.fixture_info = cricket_change_message["fixtureInfo"]
+        if "fixtureInfo" in cricket_change:
+            self.fixture_info = cricket_change["fixtureInfo"]
 
-        if "homeTeam" in cricket_change_message:
-            self.home_team = cricket_change_message["homeTeam"]
+        if "homeTeam" in cricket_change:
+            self.home_team = cricket_change["homeTeam"]
 
-        if "awayTeam" in cricket_change_message:
-            self.away_team = cricket_change_message["awayTeam"]
+        if "awayTeam" in cricket_change:
+            self.away_team = cricket_change["awayTeam"]
 
-        if "matchStats" in cricket_change_message:
-            self.match_stats = cricket_change_message["matchStats"]
+        if "matchStats" in cricket_change:
+            self.match_stats = cricket_change["matchStats"]
 
-        if "incidentListWrapper" in cricket_change_message:
-            self.incident_list_wrapper = cricket_change_message["incidentListWrapper"]
+        if "incidentListWrapper" in cricket_change:
+            self.incident_list_wrapper = cricket_change["incidentListWrapper"]
 
     def create_resource(
         self,

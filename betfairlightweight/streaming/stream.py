@@ -261,11 +261,11 @@ class CricketStream(BaseStream):
     _lookup = "cc"
     _name = "CricketStream"
 
-    def _process(self, cricket_change_messages: list, publish_time: int) -> bool:
+    def _process(self, cricket_changes: list, publish_time: int) -> bool:
         caches, img = [], False
-        for cricket_change_message in cricket_change_messages:
-            market_id = cricket_change_message["marketId"]
-            event_id = cricket_change_message["eventId"]
+        for cricket_change in cricket_changes:
+            market_id = cricket_change["marketId"]
+            event_id = cricket_change["eventId"]
             cricket_match_cache = self._caches.get(market_id)
 
             if cricket_match_cache is None:
@@ -278,7 +278,7 @@ class CricketStream(BaseStream):
                     % (self, self.unique_id, market_id, len(self._caches))
                 )
 
-            cricket_match_cache.update_cache(cricket_change_message, publish_time)
+            cricket_match_cache.update_cache(cricket_change, publish_time)
             caches.append(cricket_match_cache)
             self._updates_processed += 1
         self.on_process(caches)
