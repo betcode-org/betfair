@@ -25,7 +25,7 @@ class BetfairStream:
         lambda: "stream-api.betfair.com",
         integration="stream-api-integration.betfair.com",
         race="sports-data-stream-api.betfair.com",
-        cricket="sports-data-stream-api.betfair.com",
+        sports_data="sports-data-stream-api.betfair.com",
     )
 
     def __init__(
