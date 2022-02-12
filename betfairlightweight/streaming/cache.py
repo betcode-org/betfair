@@ -728,4 +728,5 @@ class CricketMatchCache(BaseResource):
             "awayTeam": self.away_team,
             "matchStats": self.match_stats,
             "incidentListWrapper": self.incident_list_wrapper,
+            "streaming_update": self.streaming_update,
         }
