@@ -683,6 +683,7 @@ class CricketMatchCache(BaseResource):
         self.away_team = None
         self.match_stats = None
         self.incident_list_wrapper = None
+        self.streaming_update = None
 
     def update_cache(self, cricket_change: dict, publish_time: int) -> None:
         self.streaming_update = cricket_change
