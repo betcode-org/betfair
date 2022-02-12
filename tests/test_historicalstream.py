@@ -127,7 +127,7 @@ class HistoricalCricketStreamTest(unittest.TestCase):
         print(data)
 
         with open(
-                "tests/resources/historicaldata/CRICKET-1.179676557-processed.json", "r"
+            "tests/resources/historicaldata/CRICKET-1.179676557-processed.json", "r"
         ) as f:
             expected_data = load(f)
 

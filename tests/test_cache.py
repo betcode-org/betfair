@@ -1041,7 +1041,7 @@ class TestCricketMatchCache(unittest.TestCase):
                 "fixtureStatus": "IN_RUNNING",
                 "eventDescription": "a vs b",
                 "maxOvers": 50,
-                "eventStatus": "BALL_IN_PROGRESS"
+                "eventStatus": "BALL_IN_PROGRESS",
             }
         }
         publish_time = 5678
