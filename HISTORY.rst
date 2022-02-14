@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - Cricket Stream added (@mberk)
+- `race` depreciation warning added
 - PYPI secret update and deploy environment added
 - slack group invite updated
 

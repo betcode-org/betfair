@@ -1,6 +1,7 @@
 import socket
 import ssl
 import logging
+import warnings
 import datetime
 import collections
 from typing import Optional
@@ -44,6 +45,11 @@ class BetfairStream:
         self.session_token = session_token
         self.timeout = timeout
         self.buffer_size = buffer_size
+        if host == "race":
+            warnings.warn(
+                "`race` host to be depreciated for `sports_data` from v2.17.0",
+                DeprecationWarning,
+            )
         self.host = self.HOSTS[host]
         self.receive_count = 0
         self.datetime_last_received = None
