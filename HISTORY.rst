@@ -3,6 +3,16 @@
 Release History
 ---------------
 
+2.16.0 (2022-02-14)
++++++++++++++++++++
+
+**Improvements**
+
+- Cricket Stream added (@mberk)
+- `race` depreciation warning added
+- PYPI secret update and deploy environment added
+- slack group invite updated
+
 2.15.4 (2022-02-07)
 +++++++++++++++++++
 

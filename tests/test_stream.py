@@ -3,6 +3,7 @@ from unittest import mock
 
 from betfairlightweight.streaming.stream import (
     BaseStream,
+    CricketStream,
     MarketStream,
     OrderStream,
     RaceStream,
@@ -362,3 +363,29 @@ class RaceStreamTest(unittest.TestCase):
 
     def test_repr(self):
         assert repr(self.stream) == "<RaceStream [0]>"
+
+
+class CricketStreamTest(unittest.TestCase):
+    def setUp(self):
+        self.listener = mock.Mock()
+        self.stream = CricketStream(self.listener, 123)
+
+    def test_init(self):
+        assert self.stream._lookup == "cc"
+        assert self.stream._name == "CricketStream"
+
+    @mock.patch("betfairlightweight.streaming.stream.CricketMatchCache")
+    @mock.patch("betfairlightweight.streaming.stream.CricketStream.on_process")
+    def test_process(self, mock_on_process, mock_cricket_cache):
+        update = [{"marketId": "1.234567", "eventId": "1234567"}]
+        publish_time = 1234
+        self.assertFalse(self.stream._process(update, publish_time))
+        assert self.stream._caches["1.234567"] == mock_cricket_cache()
+        mock_cricket_cache().update_cache.assert_called_with(update[0], publish_time)
+        mock_on_process.assert_called_with([mock_cricket_cache()])
+
+    def test_str(self):
+        assert str(self.stream) == "CricketStream"
+
+    def test_repr(self):
+        assert repr(self.stream) == "<CricketStream [0]>"

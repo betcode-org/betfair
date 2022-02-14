@@ -51,6 +51,14 @@ class BaseListenerTest(unittest.TestCase):
         mock_add_stream.assert_called_with(2, "raceSubscription")
         assert self.base_listener.stream == 123
 
+        self.base_listener.register_stream(2, "cricketSubscription")
+        mock_add_stream.assert_called_with(2, "cricketSubscription")
+        assert self.base_listener.stream == 123
+
+        self.base_listener.register_stream(2, "cricketSubscription")
+        mock_add_stream.assert_called_with(2, "cricketSubscription")
+        assert self.base_listener.stream == 123
+
     def test_update_unique_id(self):
         self.base_listener.stream = mock.Mock()
         self.base_listener.update_unique_id(987)
@@ -60,10 +68,17 @@ class BaseListenerTest(unittest.TestCase):
     def test_on_data(self):
         self.base_listener.on_data("{}")
 
+    @mock.patch("betfairlightweight.streaming.listener.CricketStream", return_value=321)
     @mock.patch("betfairlightweight.streaming.listener.RaceStream", return_value=789)
     @mock.patch("betfairlightweight.streaming.listener.OrderStream", return_value=456)
     @mock.patch("betfairlightweight.streaming.listener.MarketStream", return_value=123)
-    def test_add_stream(self, mock_market_stream, mock_order_stream, mock_race_stream):
+    def test_add_stream(
+        self,
+        mock_market_stream,
+        mock_order_stream,
+        mock_race_stream,
+        mock_cricket_stream,
+    ):
         new_stream = self.base_listener._add_stream(1, "marketSubscription")
         assert new_stream == 123
         mock_market_stream.assert_called_with(self.base_listener, 1)
@@ -74,6 +89,10 @@ class BaseListenerTest(unittest.TestCase):
 
         new_stream = self.base_listener._add_stream(1, "raceSubscription")
         assert new_stream == 789
+        mock_race_stream.assert_called_with(self.base_listener, 1)
+
+        new_stream = self.base_listener._add_stream(1, "cricketSubscription")
+        assert new_stream == 321
         mock_race_stream.assert_called_with(self.base_listener, 1)
 
     def test_snap(self):
@@ -249,6 +268,11 @@ class StreamListenerTest(unittest.TestCase):
 
         # race
         mock_response = create_mock_json("tests/resources/streaming_rcm.json")
+        self.stream_listener._on_change_message(mock_response.json(), 1)
+        stream.on_update.assert_called_with(mock_response.json())
+
+        # cricket
+        mock_response = create_mock_json("tests/resources/ccms/ccm4.json")
         self.stream_listener._on_change_message(mock_response.json(), 1)
         stream.on_update.assert_called_with(mock_response.json())
 

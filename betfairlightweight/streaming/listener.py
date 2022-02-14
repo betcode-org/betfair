@@ -2,7 +2,7 @@ import logging
 import queue
 from typing import Optional
 
-from .stream import BaseStream, MarketStream, OrderStream, RaceStream
+from .stream import BaseStream, CricketStream, MarketStream, OrderStream, RaceStream
 from ..compat import json
 
 logger = logging.getLogger(__name__)
@@ -73,6 +73,8 @@ class BaseListener:
             return OrderStream(self, unique_id)
         elif operation == "raceSubscription":
             return RaceStream(self, unique_id)
+        elif operation == "cricketSubscription":
+            return CricketStream(self, unique_id)
 
     def __str__(self) -> str:
         return "{0}".format(self.__class__.__name__)
@@ -140,7 +142,7 @@ class StreamListener(BaseListener):
             self._on_connection(data, unique_id)
         elif operation == "status":
             self._on_status(data, unique_id)
-        elif operation in ["mcm", "ocm", "rcm"]:
+        elif operation in ["mcm", "ocm", "rcm", "ccm"]:
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 0]:
                 logger.warning(

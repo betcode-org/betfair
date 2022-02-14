@@ -1,6 +1,7 @@
 import socket
 import ssl
 import logging
+import warnings
 import datetime
 import collections
 from typing import Optional
@@ -25,6 +26,7 @@ class BetfairStream:
         lambda: "stream-api.betfair.com",
         integration="stream-api-integration.betfair.com",
         race="sports-data-stream-api.betfair.com",
+        sports_data="sports-data-stream-api.betfair.com",
     )
 
     def __init__(
@@ -43,6 +45,11 @@ class BetfairStream:
         self.session_token = session_token
         self.timeout = timeout
         self.buffer_size = buffer_size
+        if host == "race":
+            warnings.warn(
+                "`race` host to be depreciated for `sports_data` from v2.17.0",
+                DeprecationWarning,
+            )
         self.host = self.HOSTS[host]
         self.receive_count = 0
         self.datetime_last_received = None
@@ -182,6 +189,13 @@ class BetfairStream:
         unique_id = self.new_unique_id()
         message = {"op": "raceSubscription", "id": unique_id}
         self.listener.register_stream(unique_id, "raceSubscription")
+        self._send(message)
+        return unique_id
+
+    def subscribe_to_cricket_matches(self) -> int:
+        unique_id = self.new_unique_id()
+        message = {"op": "cricketSubscription", "id": unique_id}
+        self.listener.register_stream(unique_id, "cricketSubscription")
         self._send(message)
         return unique_id
 
