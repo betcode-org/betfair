@@ -70,6 +70,8 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    environment:
+      name: deploy
     if: github.ref == 'refs/heads/master'
 
     steps:
