@@ -1,0 +1,71 @@
+{
+  "op": "ccm",
+  "clk": "37093394",
+  "pt": 1643299044853,
+  "cc": [
+    {
+      "eventId": "30610310",
+      "marketId": "1.179676557",
+      "fixtureInfo": {
+        "expectedStartTime": 1643295600000,
+        "fixtureStatus": "IN_RUNNING",
+        "eventDescription": "Karachi Kings vMultan Sultans, Pakistan Super League Match 1, from National Stadium",
+        "maxOvers": 20,
+        "eventStatus": "MATCH_STABLE"
+      },
+      "matchStats": {
+        "currentInnings": 1,
+        "inningsStats": [
+          {
+            "inningsNum": 1,
+            "battingTeam": "Karachi Kings",
+            "bowlingTeam": "Multan Sultans",
+            "inningsRuns": 81,
+            "inningsOvers": "13.0",
+            "inningsWickets": 2
+          }
+        ],
+        "battingTeamStats": {
+          "teamName": "Karachi Kings",
+          "bat1Runs": 4,
+          "bat1Strike": 0,
+          "bat2Runs": 9,
+          "bat2Strike": 1
+        },
+        "bowlingTeamStats": {
+          "teamName": "Multan Sultans"
+        }
+      },
+      "incidentListWrapper": {
+        "incidentList": [
+          {
+            "participantRef": "Joe Clarke",
+            "incidentType": "RUNS",
+            "value": "1",
+            "innings": 1,
+            "overs": "12.6",
+            "actualTime": 1643299035671
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "12.5",
+            "actualTime": 1643299013861
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "12.4",
+            "actualTime": 1643298990238
+          },
+          {
+            "incidentType": "RUNS",
+            "value": "1",
+            "overs": "12.3",
+            "actualTime": 1643298961522
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ from betfairlightweight.streaming.cache import (
     RunnerBookCache,
     Available,
     RaceCache,
+    CricketMatchCache,
 )
 from tests.tools import create_mock_json
 
@@ -1008,5 +1009,66 @@ class TestRaceCache(unittest.TestCase):
             "id": self.race_id,
             "rpc": {"test": 123},
             "rrc": [{"test": "me"}],
+            "streaming_update": None,
+        }
+
+
+class TestCricketMatchCache(unittest.TestCase):
+    def setUp(self):
+        self.market_id = "1.12"
+        self.event_id = "123"
+        self.publish_time = 123
+        self.cricket_match_cache = CricketMatchCache(
+            self.market_id, self.event_id, self.publish_time, True
+        )
+
+    def test_init(self):
+        self.assertEqual(self.cricket_match_cache.market_id, self.market_id)
+        self.assertEqual(self.cricket_match_cache.publish_time, self.publish_time)
+        self.assertEqual(self.cricket_match_cache.event_id, self.event_id)
+        self.assertTrue(self.cricket_match_cache.lightweight)
+        self.assertIsNone(self.cricket_match_cache.fixture_info)
+        self.assertIsNone(self.cricket_match_cache.home_team)
+        self.assertIsNone(self.cricket_match_cache.away_team)
+        self.assertIsNone(self.cricket_match_cache.match_stats)
+        self.assertIsNone(self.cricket_match_cache.incident_list_wrapper)
+        self.assertIsNone(self.cricket_match_cache.streaming_update)
+
+    def test_update(self):
+        update = {
+            "fixtureInfo": {
+                "expectedStartTime": 1234,
+                "fixtureStatus": "IN_RUNNING",
+                "eventDescription": "a vs b",
+                "maxOvers": 50,
+                "eventStatus": "BALL_IN_PROGRESS",
+            }
+        }
+        publish_time = 5678
+        self.cricket_match_cache.update_cache(update, publish_time)
+
+        assert self.cricket_match_cache._datetime_updated is not None
+        assert self.cricket_match_cache.publish_time == publish_time
+        assert self.cricket_match_cache.fixture_info == update["fixtureInfo"]
+        assert self.cricket_match_cache.home_team is None
+        assert self.cricket_match_cache.away_team is None
+        assert self.cricket_match_cache.match_stats is None
+        assert self.cricket_match_cache.incident_list_wrapper is None
+        assert self.cricket_match_cache.streaming_update == update
+
+    @mock.patch("betfairlightweight.streaming.cache.CricketMatchCache.serialise")
+    def test_create_resource_lightweight(self, mock_serialise):
+        assert self.cricket_match_cache.create_resource(12, True) == mock_serialise
+
+    def test_serialise(self):
+        self.cricket_match_cache.publish_time = 12
+        assert self.cricket_match_cache.serialise == {
+            "marketId": "1.12",
+            "eventId": "123",
+            "fixtureInfo": None,
+            "homeTeam": None,
+            "awayTeam": None,
+            "matchStats": None,
+            "incidentListWrapper": None,
             "streaming_update": None,
         }

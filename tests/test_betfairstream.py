@@ -244,6 +244,17 @@ class BetfairStreamTest(unittest.TestCase):
             self.betfair_stream._unique_id, "raceSubscription"
         )
 
+    @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._send")
+    def test_subscribe_to_cricket_matches(self, mock_send):
+        self.betfair_stream.subscribe_to_cricket_matches()
+
+        mock_send.assert_called_with(
+            {"op": "cricketSubscription", "id": self.betfair_stream._unique_id}
+        )
+        assert not self.mock_listener.register_stream.assert_called_with(
+            self.betfair_stream._unique_id, "cricketSubscription"
+        )
+
     @mock.patch("ssl.wrap_socket")
     @mock.patch("socket.socket")
     def test_create_socket(self, mock_socket, mock_wrap_socket):
