@@ -124,8 +124,6 @@ class HistoricalCricketStreamTest(unittest.TestCase):
         gen = stream.get_generator()
         data = [i[0] for i in gen()]
 
-        print(data)
-
         with open(
             "tests/resources/historicaldata/CRICKET-1.179676557-processed.json", "r"
         ) as f:
