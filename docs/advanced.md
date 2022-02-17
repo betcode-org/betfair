@@ -171,7 +171,6 @@ listener = betfairlightweight.StreamListener(
     max_latency=None,  # ignore latency errors
     output_queue=None,  # use generator rather than a queue (faster)
     lightweight=True,  # lightweight mode is faster
-    debug=False,  # prevent logging calls on each update (slow)
     update_clk=False,  # do not update clk on updates (not required when backtesting)
 )
 ```
