@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.16.1 (2022-02-17)
++++++++++++++++++++
+
+**Improvements**
+
+- order cache optimisation to create resources once (5s->0.2s)
+
+**Dependencies**
+
+- orjson upgraded to 3.6.7
+
 2.16.0 (2022-02-14)
 +++++++++++++++++++
 

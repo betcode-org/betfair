@@ -694,7 +694,10 @@ class TestOrderBookCache(unittest.TestCase):
 
             for order_changes in order_book.get("orc"):
                 mock_order_book_runner.assert_called_with(
-                    self.order_book_cache.market_id, 1234, **order_changes
+                    self.order_book_cache.market_id,
+                    1234,
+                    self.order_book_cache.lightweight,
+                    **order_changes
                 )
 
     def test_update_cache_closed(self):
@@ -712,15 +715,21 @@ class TestOrderBookCache(unittest.TestCase):
     def test_create_resource(self, mock_current_orders, mock_serialise):
         # lightweight
         current_orders = self.order_book_cache.create_resource(123, True)
-        assert current_orders == mock_serialise()
-        assert current_orders == {
-            "streaming_unique_id": 123,
-            "streaming_snap": True,
-        }
+        self.assertEqual(current_orders, mock_serialise())
+        self.assertEqual(
+            current_orders,
+            {
+                "streaming_unique_id": 123,
+                "streaming_snap": True,
+            },
+        )
         # not lightweight
+        mock_order = mock.Mock()
+        mock_serialise.return_value = {"currentOrders": [mock_order]}
         self.order_book_cache.lightweight = False
         current_orders = self.order_book_cache.create_resource(123, True)
-        assert current_orders == mock_current_orders()
+        self.assertEqual(current_orders, mock_current_orders())
+        self.assertEqual(current_orders.orders, [mock_order])
 
     def test_serialise(self):
         mock_runner_one = mock.Mock()
@@ -737,6 +746,30 @@ class TestOrderBookCache(unittest.TestCase):
             self.order_book_cache.serialise(None),
             {
                 "currentOrders": [1, 2, 3],
+                "matches": [6, 4],
+                "moreAvailable": False,
+                "streaming_update": None,
+            },
+        )
+
+    def test_serialise_lightweight_false(self):
+        self.order_book_cache.lightweight = False
+        mock_order_one = mock.Mock(publish_time=123)
+        mock_order_two = mock.Mock()
+        mock_runner_one = mock.Mock(
+            unmatched_orders={1: mock_order_one, 2: mock_order_two}
+        )
+        mock_runner_one.serialise_matches.return_value = 6
+        mock_runner_two = mock.Mock(unmatched_orders={})
+        mock_runner_two.serialise_matches.return_value = 4
+        self.order_book_cache.runners = {
+            (123, 0): mock_runner_one,
+            (123, 1): mock_runner_two,
+        }
+        self.assertEqual(
+            self.order_book_cache.serialise(123),
+            {
+                "currentOrders": [mock_order_one.resource],
                 "matches": [6, 4],
                 "moreAvailable": False,
                 "streaming_update": None,
@@ -781,12 +814,13 @@ class TestOrderBookRunner(unittest.TestCase):
             },
         ]
         self.order_book_runner = OrderBookRunner(
-            "1.123", 123, **{"id": 1, "ml": [], "mb": [], "uo": uo}
+            "1.123", 123, lightweight=True, **{"id": 1, "ml": [], "mb": [], "uo": uo}
         )
 
     def test_init(self):
         self.assertEqual(self.order_book_runner.market_id, "1.123")
         self.assertEqual(self.order_book_runner.selection_id, 1)
+        self.assertTrue(self.order_book_runner.lightweight)
         self.assertEqual(self.order_book_runner.handicap, 0)
         self.assertIsNone(self.order_book_runner.full_image)
         self.assertIsNone(self.order_book_runner.strategy_matches)
@@ -917,9 +951,10 @@ class TestUnmatchedOrder(unittest.TestCase):
         assert self.unmatched_order.lapse_status_reason_code == 17
         assert self.unmatched_order.cancelled_date == BaseResource.strip_datetime(18)
         assert self.unmatched_order.serialised == {}
+        self.assertIsNone(self.unmatched_order.resource)
 
     def test_serialise(self):
-        self.unmatched_order.serialise("1.23", 12345, 0)
+        self.unmatched_order.serialise(True, "1.23", 12345, 0)
         self.assertEqual(
             self.unmatched_order.serialised,
             {
@@ -950,6 +985,39 @@ class TestUnmatchedOrder(unittest.TestCase):
                 "cancelledDate": "1970-01-01T00:00:00.018000Z",
             },
         )
+        self.assertIsNone(self.unmatched_order.resource)
+
+    @mock.patch("betfairlightweight.streaming.cache.CurrentOrder")
+    def test_serialise_resource(self, mock_current_order):
+        self.unmatched_order.serialise(False, "1.23", 12345, 0)
+        mock_current_order.assert_called_with(
+            averagePriceMatched=0.0,
+            betId=1,
+            bspLiability=None,
+            handicap=0,
+            marketId="1.23",
+            matchedDate="1970-01-01T00:00:00.004000Z",
+            orderType="LIMIT",
+            persistenceType="LAPSE",
+            placedDate="1970-01-01T00:00:00.008000Z",
+            priceSize={"price": 2, "size": 3},
+            regulatorAuthCode=None,
+            regulatorCode=None,
+            selectionId=12345,
+            side="LAY",
+            sizeCancelled=12,
+            sizeLapsed=11,
+            sizeMatched=9,
+            sizeRemaining=10,
+            sizeVoided=13,
+            status="EXECUTABLE",
+            customerStrategyRef=15,
+            customerOrderRef=14,
+            lapsedDate="1970-01-01T00:00:00.016000Z",
+            lapseStatusReasonCode=17,
+            cancelledDate="1970-01-01T00:00:00.018000Z",
+        )
+        self.assertEqual(self.unmatched_order.resource, mock_current_order())
 
 
 class TestRaceCache(unittest.TestCase):

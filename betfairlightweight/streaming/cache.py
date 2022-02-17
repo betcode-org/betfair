@@ -9,6 +9,7 @@ from ..resources import (
     Race,
     CricketMatch,
 )
+from ..resources.bettingresources import CurrentOrder
 from ..enums import (
     StreamingOrderType,
     StreamingPersistenceType,
@@ -473,8 +474,11 @@ class UnmatchedOrder:
         self.cancelled_date = BaseResource.strip_datetime(cd)
         self._cancelled_date_string = create_date_string(self.cancelled_date)
         self.serialised = {}  # cache is king
+        self.resource = None
 
-    def serialise(self, market_id: str, selection_id: int, handicap: int):
+    def serialise(
+        self, lightweight: bool, market_id: str, selection_id: int, handicap: int
+    ):
         self.serialised = {
             "averagePriceMatched": self.average_price_matched or 0.0,
             "betId": self.bet_id,
@@ -504,6 +508,8 @@ class UnmatchedOrder:
             "lapseStatusReasonCode": self.lapse_status_reason_code,
             "cancelledDate": self._cancelled_date_string,
         }
+        if lightweight is False:  # cache resource
+            self.resource = CurrentOrder(**self.serialised)
 
 
 class OrderBookRunner:
@@ -511,6 +517,7 @@ class OrderBookRunner:
         self,
         market_id: str,
         publish_time: int,
+        lightweight: bool,
         id: int,
         fullImage: dict = None,
         ml: list = None,
@@ -520,6 +527,7 @@ class OrderBookRunner:
         smc: dict = None,
     ):
         self.market_id = market_id
+        self.lightweight = lightweight
         self.selection_id = id
         self.full_image = fullImage
         self.matched_lays = Available(ml, 1)
@@ -532,7 +540,9 @@ class OrderBookRunner:
     def update_unmatched(self, publish_time: int, unmatched_orders: list) -> None:
         for unmatched_order in unmatched_orders:
             order = UnmatchedOrder(publish_time, **unmatched_order)
-            order.serialise(self.market_id, self.selection_id, self.handicap)
+            order.serialise(
+                self.lightweight, self.market_id, self.selection_id, self.handicap
+            )
             self.unmatched_orders[order.bet_id] = order
 
     def serialise_orders(self, publish_time: Optional[int]) -> list:
@@ -579,7 +589,7 @@ class OrderBookCache(BaseResource):
             runner = self.runners.get(_lookup)
             if full_image or runner is None:
                 self.runners[_lookup] = OrderBookRunner(
-                    self.market_id, publish_time, **order_changes
+                    self.market_id, publish_time, self.lightweight, **order_changes
                 )
             else:
                 if "ml" in order_changes:
@@ -601,13 +611,31 @@ class OrderBookCache(BaseResource):
         if self.lightweight:
             return data
         else:
-            return CurrentOrders(publish_time=self.publish_time, **data)
+            _current_orders = data.pop("currentOrders")
+            current_orders = CurrentOrders(
+                publish_time=self.publish_time, currentOrders=[], **data
+            )
+            current_orders.orders = _current_orders
+            return current_orders
 
     def serialise(self, publish_time: Optional[int]) -> dict:
         runners = list(self.runners.values())  # runner may be added
         orders, matches = [], []
         for runner in runners:
-            orders.extend(runner.serialise_orders(publish_time))
+            if self.lightweight:
+                orders.extend(runner.serialise_orders(publish_time))
+            else:
+                _unmatched_orders = list(runner.unmatched_orders.values())
+                if publish_time:
+                    orders.extend(
+                        [
+                            order.resource
+                            for order in _unmatched_orders
+                            if order.publish_time == publish_time
+                        ]
+                    )
+                else:
+                    orders.extend([order.resource for order in _unmatched_orders])
             matches.append(runner.serialise_matches())
         return {
             "currentOrders": orders,
