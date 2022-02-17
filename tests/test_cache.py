@@ -754,7 +754,7 @@ class TestOrderBookCache(unittest.TestCase):
 
     def test_serialise_lightweight_false(self):
         self.order_book_cache.lightweight = False
-        mock_order_one = mock.Mock()
+        mock_order_one = mock.Mock(publish_time=123)
         mock_order_two = mock.Mock()
         mock_runner_one = mock.Mock(
             unmatched_orders={1: mock_order_one, 2: mock_order_two}
@@ -767,9 +767,9 @@ class TestOrderBookCache(unittest.TestCase):
             (123, 1): mock_runner_two,
         }
         self.assertEqual(
-            self.order_book_cache.serialise(None),
+            self.order_book_cache.serialise(123),
             {
-                "currentOrders": [mock_order_one.resource, mock_order_two.resource],
+                "currentOrders": [mock_order_one.resource],
                 "matches": [6, 4],
                 "moreAvailable": False,
                 "streaming_update": None,

@@ -626,7 +626,16 @@ class OrderBookCache(BaseResource):
                 orders.extend(runner.serialise_orders(publish_time))
             else:
                 _unmatched_orders = list(runner.unmatched_orders.values())
-                orders.extend([order.resource for order in _unmatched_orders])
+                if publish_time:
+                    orders.extend(
+                        [
+                            order.resource
+                            for order in _unmatched_orders
+                            if order.publish_time == publish_time
+                        ]
+                    )
+                else:
+                    orders.extend([order.resource for order in _unmatched_orders])
             matches.append(runner.serialise_matches())
         return {
             "currentOrders": orders,
