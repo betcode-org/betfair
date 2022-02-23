@@ -22,12 +22,12 @@ listener = betfairlightweight.StreamListener(output_queue=output_queue)
 # create stream
 stream = trading.streaming.create_stream(listener=listener, host="sports_data")
 
+# subscribe
+streaming_unique_id = stream.subscribe_to_cricket_matches()
+
 # start stream in a new thread (in production would need err handling)
 t = threading.Thread(target=stream.start, daemon=True)
 t.start()
-
-# subscribe
-streaming_unique_id = stream.subscribe_to_cricket_matches()
 
 # check for updates in output queue
 while True:
