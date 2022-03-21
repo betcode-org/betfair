@@ -215,7 +215,7 @@ If you have lost connection and need to resubscribe (prevents a full image being
 
 When used in production it is recommended not to start the stream in a new thread and forgot about it, it will break, errors need to be caught. 
 
-Please see the example [examplestreamingerrhandling.py](https://github.com/liampauling/betfair/blob/master/examples/examplestreamingerrhandling.py)
+Please see the example [examplestreamingerrhandling.py](https://github.com/betcode-org/betfair/tree/master/examples/examplestreamingerrhandling.py)
 
 Sometimes betfair will suspend the stream via the use of a status=503 update, more info [here](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Exchange+Stream+API#ExchangeStreamAPI-StreamAPIStatus-latency), when the stream is receiving this update the `listener.status` will be updated:
 
