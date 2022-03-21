@@ -3,6 +3,14 @@
 Release History
 ---------------
 
+2.16.2 (2022-03-21)
++++++++++++++++++++
+
+**Improvements**
+
+- betcode-org transfer/renames
+- Cricket stream example (@mberk)
+
 2.16.1 (2022-02-17)
 +++++++++++++++++++
 

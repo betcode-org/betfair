@@ -1,13 +1,13 @@
 
 # betfairlightweight
 
-![Build Status](https://github.com/liampauling/betfair/workflows/test/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight) [![Downloads](https://pepy.tech/badge/betfairlightweight)](https://pepy.tech/project/betfairlightweight)
+![Build Status](https://github.com/betcode-org/betfair/actions/workflows/test.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight) [![Downloads](https://pepy.tech/badge/betfairlightweight)](https://pepy.tech/project/betfairlightweight)
 
-Lightweight, super fast (uses C and Rust libraries) pythonic wrapper for [Betfair API-NG](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and account operations, see [examples](https://github.com/liampauling/betfair/tree/master/examples).
+Lightweight, super fast (uses C and Rust libraries) pythonic wrapper for [Betfair API-NG](https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni) allowing all betting operations (including market and order streaming) and account operations, see [examples](https://github.com/betcode-org/betfair/tree/master/examples).
 
-[docs](https://liampauling.github.io/betfair/)
+[docs](https://betcode-org.github.io/betfair/)
 
-[join slack group](https://join.slack.com/t/betfairlightweight/shared_invite/zt-h0ato238-PPbfU_T7Ji0ORjz0ESIJkg)
+[join slack group](https://join.slack.com/t/betcode-org/shared_invite/zt-h0ato238-PPbfU_T7Ji0ORjz0ESIJkg)
 
 Currently tested on Python 3.6, 3.7, 3.8, 3.9 and 3.10.
 
@@ -125,7 +125,7 @@ trading.historic.get_my_data()
 [{'plan': 'Basic Plan', 'purchaseItemId': 1343, 'sport': 'Cricket', 'forDate': '2017-06-01T00:00:00'}]
 ```
 
-Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see [examples](https://github.com/liampauling/betfair/tree/master/examples)).
+Taking advantage of the streaming code lightweight can parse/output historical data in the same way it process streaming data allowing backtesting or with a custom listener, csv creation (see [examples](https://github.com/betcode-org/betfair/tree/master/examples)).
 
 [Historic Data](https://historicdata.betfair.com/#/home)
 

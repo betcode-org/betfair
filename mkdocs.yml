@@ -8,8 +8,8 @@ theme:
       primary: 'blue grey'
       accent: 'amber'
 
-repo_name: liampauling/betfair
-repo_url: https://github.com/liampauling/betfair
+repo_name: betcode-org/betfair
+repo_url: https://github.com/betcode-org/betfair
 edit_uri: ""
 
 nav:

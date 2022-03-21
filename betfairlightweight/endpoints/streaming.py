@@ -34,7 +34,7 @@ class Streaming:
         :param resources.Listener listener:  Listener class to use
         :param float timeout: Socket timeout
         :param int buffer_size: Socket buffer size
-        :param str host: Host endpoint (prod (default), integration or race)
+        :param str host: Host endpoint (prod (default), integration or sports_data)
 
         :rtype: BetfairStream
         """
