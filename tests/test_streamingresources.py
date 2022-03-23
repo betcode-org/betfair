@@ -174,6 +174,10 @@ class TestCricketMatch0(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[0].value == "1"
@@ -307,6 +311,10 @@ class TestCricketMatch1(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[2].value == "1"
@@ -502,6 +510,10 @@ class TestCricketMatch3(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].incident_type
+            == "NO_BALL"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[0].value == "2"
@@ -516,6 +528,10 @@ class TestCricketMatch3(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].incident_type
+            == "WIDE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[1].value == "1"
