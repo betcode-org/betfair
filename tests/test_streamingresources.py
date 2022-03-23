@@ -192,6 +192,10 @@ class TestCricketMatch0(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[1].value == "1"
@@ -206,6 +210,10 @@ class TestCricketMatch0(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].incident_type
+            == "WIDE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[2].value == "1"
@@ -228,7 +236,7 @@ class TestCricketMatch1(unittest.TestCase):
         assert self.cricket_match.fixture_info.fixture_status == "IN_RUNNING"
         assert (
             self.cricket_match.fixture_info.event_description
-            == "World Giants v India Maharajas, LegendsCricket League Match 6, from Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)"
+            == "World Giants v India Maharajas, Legends Cricket League Match 6, from Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)"
         )
         assert self.cricket_match.fixture_info.max_overs == 20
         assert self.cricket_match.fixture_info.event_status == "BALL_IN_PROGRESS"
@@ -285,6 +293,10 @@ class TestCricketMatch1(unittest.TestCase):
             self.cricket_match.incident_list_wrapper.incident_list[0].incident_type
             == "OUT"
         )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].qualifier_type
+            is None
+        )
         assert self.cricket_match.incident_list_wrapper.incident_list[0].value is None
         assert self.cricket_match.incident_list_wrapper.incident_list[0].overs == "15.5"
         assert (
@@ -297,9 +309,13 @@ class TestCricketMatch1(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].qualifier_type
             == "RUNS"
         )
-        assert self.cricket_match.incident_list_wrapper.incident_list[1].value == "1"
+        assert self.cricket_match.incident_list_wrapper.incident_list[1].value == "0"
         assert self.cricket_match.incident_list_wrapper.incident_list[1].overs == "15.4"
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].actual_time
@@ -404,6 +420,10 @@ class TestCricketMatch2(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[0].value == "0"
@@ -421,6 +441,10 @@ class TestCricketMatch2(unittest.TestCase):
             self.cricket_match.incident_list_wrapper.incident_list[1].incident_type
             == "OUT"
         )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].qualifier_type
+            is None
+        )
         assert self.cricket_match.incident_list_wrapper.incident_list[1].value is None
         assert self.cricket_match.incident_list_wrapper.incident_list[1].overs == "1.3"
         assert (
@@ -433,6 +457,10 @@ class TestCricketMatch2(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[2].value == "1"
@@ -546,6 +574,10 @@ class TestCricketMatch3(unittest.TestCase):
         )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].incident_type
+            == "STRIKE"
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].qualifier_type
             == "RUNS"
         )
         assert self.cricket_match.incident_list_wrapper.incident_list[2].value == "1"
