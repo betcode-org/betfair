@@ -54,7 +54,8 @@
             "actualTime": 1643298112170
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "15.3",
             "actualTime": 1643298085471

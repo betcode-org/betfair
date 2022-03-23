@@ -9,7 +9,7 @@
       "fixtureInfo": {
         "expectedStartTime": 1643359200000,
         "fixtureStatus": "IN_RUNNING",
-        "eventDescription": "Perth Scorchersv Sydney Sixers, Big Bash League Final, from Docklands Stadium",
+        "eventDescription": "Perth Scorchers v Sydney Sixers, Big Bash League Final, from Docklands Stadium",
         "maxOvers": 20,
         "eventStatus": "MATCH_STABLE"
       },
@@ -48,16 +48,18 @@
         "incidentList": [
           {
             "participantRef": "Daniel Hughes",
-            "incidentType": "RUNS",
-            "value": "0",
-            "innings": 2,
+            "incidentType": "OUT",
+            "qualifierType": "WICKET",
             "overs": "1.4",
-            "actualTime": 1643366603847
+            "actualTime": 1643366467184
           },
           {
-            "incidentType": "OUT",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
+            "value": "0",
+            "innings": 2,
             "overs": "1.3",
-            "actualTime": 1643366467184
+            "actualTime": 1643366603847
           },
           {
             "incidentType": "RUNS",

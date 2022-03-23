@@ -43,13 +43,15 @@
       "incidentListWrapper": {
         "incidentList": [
           {
-            "incidentType": "RUNS",
+            "incidentType": "NO_BALL",
+            "qualifierType": "RUNS",
             "value": "2",
             "overs": "19.5",
             "actualTime": 1643365137339
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "WIDE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "19.4",
             "actualTime": 1643365102771
