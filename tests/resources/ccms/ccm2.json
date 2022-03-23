@@ -52,7 +52,8 @@
         "incidentList": [
           {
             "participantRef": "Daniel Hughes",
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "0",
             "innings": 2,
             "overs": "1.4",
@@ -64,7 +65,8 @@
             "actualTime": 1643366467184
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "1.2",
             "actualTime": 1643366432553
