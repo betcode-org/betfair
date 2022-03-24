@@ -1,5 +1,10 @@
 ![Logo](docs/images/logo-full.png?raw=true "Logo")
 
+
+<p align="center">
+  <img src="docs/images/logo-full.png" width="350" title="betcode-org">
+</p>
+
 # betfairlightweight
 
 ![Build Status](https://github.com/betcode-org/betfair/actions/workflows/test.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/liampauling/betfair/badge.svg?branch=master)](https://coveralls.io/github/liampauling/betfair?branch=master) [![PyPI version](https://badge.fury.io/py/betfairlightweight.svg)](https://pypi.python.org/pypi/betfairlightweight) [![Downloads](https://pepy.tech/badge/betfairlightweight)](https://pepy.tech/project/betfairlightweight)
