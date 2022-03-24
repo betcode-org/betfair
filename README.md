@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="docs/images/logo-full.png" width="500" title="betcode-org">
+  <a href="https://github.com/betcode-org">
+    <img src="docs/images/logo-full.png" title="betcode-org">
+  </a>
 </p>
 
 # betfairlightweight
