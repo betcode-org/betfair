@@ -9,7 +9,7 @@
       "fixtureInfo": {
         "expectedStartTime": 1643295600000,
         "fixtureStatus": "IN_RUNNING",
-        "eventDescription": "Karachi Kings vMultan Sultans, Pakistan Super League Match 1, from National Stadium",
+        "eventDescription": "Karachi Kings v Multan Sultans, Pakistan Super League Match 1, from National Stadium",
         "maxOvers": 20,
         "eventStatus": "MATCH_STABLE"
       },
@@ -37,29 +37,34 @@
         }
       },
       "incidentListWrapper": {
-        "incidentList": [
+        "incidentList":
+        [
           {
             "participantRef": "Joe Clarke",
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "1",
             "innings": 1,
             "overs": "12.6",
             "actualTime": 1643299035671
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.5",
             "actualTime": 1643299013861
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "LEG_BYE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.4",
             "actualTime": 1643298990238
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "BYE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.3",
             "actualTime": 1643298961522
