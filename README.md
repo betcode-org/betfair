@@ -1,3 +1,4 @@
+![Logo](docs/images/logo-full.png?raw=true "Logo"|width=200px)
 
 # betfairlightweight
 

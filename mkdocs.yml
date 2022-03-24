@@ -3,6 +3,8 @@ site_description: Lightweight, super fast (uses c libraries) pythonic wrapper fo
 
 theme:
     name: 'material'
+    logo: images/logo.png
+    favicon: images/logo.png
 
     palette:
       primary: 'blue grey'
