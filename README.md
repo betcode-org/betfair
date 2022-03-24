@@ -1,8 +1,5 @@
-![Logo](docs/images/logo-full.png?raw=true "Logo")
-
-
 <p align="center">
-  <img src="docs/images/logo-full.png" width="350" title="betcode-org">
+  <img src="docs/images/logo-full.png" width="500" title="betcode-org">
 </p>
 
 # betfairlightweight
