@@ -241,7 +241,7 @@ class MarketBookCache(BaseResource):
         if "marketDefinition" in market_change:
             self._process_market_definition(market_change["marketDefinition"])
 
-        if "tv" in market_change:
+        if "tv" in market_change and not self.calculate_market_tv:
             self.total_matched = market_change["tv"]
 
         if "rc" in market_change:
