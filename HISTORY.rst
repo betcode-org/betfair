@@ -9,6 +9,7 @@ Release History
 **Improvements**
 
 - #460 cricket breaking changes
+- betcode logo added
 
 **Bug Fixes**
 
