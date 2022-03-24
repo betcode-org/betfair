@@ -417,6 +417,7 @@ class CricketIncident:
     """
     :type participant_ref: unicode
     :type incident_type: unicode
+    :type qualifier_type: unicode
     :type value: unicode
     :type innings: int
     :type overs: unicode
@@ -426,6 +427,7 @@ class CricketIncident:
     def __init__(self, **kwargs):
         self.participant_ref = kwargs.get("participantRef")
         self.incident_type = kwargs.get("incidentType")
+        self.qualifier_type = kwargs.get("qualifierType")
         self.value = kwargs.get("value")
         self.innings = kwargs.get("innings")
         self.overs = kwargs.get("overs")

@@ -43,19 +43,22 @@
       "incidentListWrapper": {
         "incidentList": [
           {
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.5",
             "actualTime": 1643299013861
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "STRIKE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.4",
             "actualTime": 1643298990238
           },
           {
-            "incidentType": "RUNS",
+            "incidentType": "WIDE",
+            "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.3",
             "actualTime": 1643298961522

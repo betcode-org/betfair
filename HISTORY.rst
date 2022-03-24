@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.16.3 (2022-03-24)
++++++++++++++++++++
+
+**Improvements**
+
+- #460 cricket breaking changes
+- betcode logo added
+
+**Bug Fixes**
+
+- #458 handle currupt betfair pro data
+
 2.16.2 (2022-03-21)
 +++++++++++++++++++
 
