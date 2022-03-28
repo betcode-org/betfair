@@ -302,6 +302,10 @@ class BetfairStream:
             self.stop()
             raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
 
+    @property
+    def running(self) -> bool:
+        return self._running
+
     def __str__(self) -> str:
         return "<BetfairStream [%s]>" % ("running" if self._running else "not running")
 

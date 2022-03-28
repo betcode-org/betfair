@@ -3,6 +3,15 @@
 Release History
 ---------------
 
+2.16.4 (2022-03-28)
++++++++++++++++++++
+
+**Improvements**
+
+- #464 Change of Minimum Stake - Multiple Currencies
+- streaming `running` property added
+- Long description added to setup.py
+
 2.16.3 (2022-03-24)
 +++++++++++++++++++
 

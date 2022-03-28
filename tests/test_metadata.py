@@ -51,17 +51,17 @@ class MetadataTest(unittest.TestCase):
                 },
                 "BRL": {
                     "min_bet_payout": 50,
-                    "min_bet_size": 10,
+                    "min_bet_size": 5,
                     "min_bsp_liability": 50,
                 },
                 "CAD": {
                     "min_bet_payout": 30,
-                    "min_bet_size": 6,
+                    "min_bet_size": 2,
                     "min_bsp_liability": 30,
                 },
                 "DKK": {
                     "min_bet_payout": 150,
-                    "min_bet_size": 30,
+                    "min_bet_size": 15,
                     "min_bsp_liability": 150,
                 },
                 "EUR": {
@@ -81,12 +81,12 @@ class MetadataTest(unittest.TestCase):
                 },
                 "HKD": {
                     "min_bet_payout": 125,
-                    "min_bet_size": 25,
+                    "min_bet_size": 10,
                     "min_bsp_liability": 125,
                 },
                 "HUF": {
                     "min_bet_payout": 4000,
-                    "min_bet_size": 800,
+                    "min_bet_size": 400,
                     "min_bsp_liability": 4000,
                 },
                 "ISK": {
@@ -96,12 +96,12 @@ class MetadataTest(unittest.TestCase):
                 },
                 "MXN": {
                     "min_bet_payout": 300,
-                    "min_bet_size": 60,
+                    "min_bet_size": 30,
                     "min_bsp_liability": 300,
                 },
                 "NOK": {
                     "min_bet_payout": 150,
-                    "min_bet_size": 30,
+                    "min_bet_size": 10,
                     "min_bsp_liability": 150,
                 },
                 "NZD": {
@@ -111,27 +111,27 @@ class MetadataTest(unittest.TestCase):
                 },
                 "PEN": {
                     "min_bet_payout": 50,
-                    "min_bet_size": 10,
+                    "min_bet_size": 5,
                     "min_bsp_liability": 50,
                 },
                 "RON": {
                     "min_bet_payout": 50,
-                    "min_bet_size": 10,
+                    "min_bet_size": 5,
                     "min_bsp_liability": 50,
                 },
                 "SEK": {
                     "min_bet_payout": 150,
-                    "min_bet_size": 30,
+                    "min_bet_size": 15,
                     "min_bsp_liability": 150,
                 },
                 "SGD": {
                     "min_bet_payout": 30,
-                    "min_bet_size": 6,
+                    "min_bet_size": 2,
                     "min_bsp_liability": 30,
                 },
                 "USD": {
                     "min_bet_payout": 20,
-                    "min_bet_size": 3,
+                    "min_bet_size": 1,
                     "min_bsp_liability": 20,
                 },
             },
