@@ -397,6 +397,11 @@ class BetfairStreamTest(unittest.TestCase):
             self.betfair_stream._send(message)
         mock_stop.assert_called_with()
 
+    def test_running(self):
+        self.assertFalse(self.betfair_stream.running)
+        self.betfair_stream._running = True
+        self.assertTrue(self.betfair_stream.running)
+
     def test_repr(self):
         assert repr(self.betfair_stream) == "<BetfairStream>"
 

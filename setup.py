@@ -16,6 +16,9 @@ about = {}
 with open(os.path.join(here, "betfairlightweight", "__version__.py"), "r") as f:
     exec(f.read(), about)
 
+with open("README.md", "r") as f:
+    LONG_DESCRIPTION = f.read()
+
 setup(
     name=about["__title__"],
     version=about["__version__"],
@@ -33,6 +36,7 @@ setup(
     author=about["__author__"],
     author_email="a@unknown.invalid",
     description=about["__description__"],
+    long_description=LONG_DESCRIPTION,
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
