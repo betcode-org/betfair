@@ -37,6 +37,7 @@ setup(
     author_email="a@unknown.invalid",
     description=about["__description__"],
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
