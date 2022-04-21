@@ -19,10 +19,7 @@ class PasswordError(BetfairError):
         self.username = username
 
     def __str__(self):
-        return (
-            "Password not found in .bashprofile for %s, add or pass to APIClient"
-            % self.username
-        )
+        return f"Password not found in .bashprofile for {self.username}, add or pass to APIClient"
 
 
 class AppKeyError(BetfairError):
@@ -35,10 +32,7 @@ class AppKeyError(BetfairError):
         self.username = username
 
     def __str__(self):
-        return (
-            "AppKey not found in .bashprofile for %s, add or pass to APIClient"
-            % self.username
-        )
+        return f"AppKey not found in .bashprofile for {self.username}, add or pass to APIClient"
 
 
 class CertsError(BetfairError):
@@ -64,7 +58,7 @@ class StatusCodeError(BetfairError):
         self.status_code = status_code
 
     def __str__(self):
-        return "Status code error: %s" % self.status_code
+        return f"Status code error: {self.status_code}"
 
 
 class InvalidResponse(BetfairError):
@@ -78,7 +72,7 @@ class InvalidResponse(BetfairError):
         self.response = response
 
     def __str__(self):
-        return "Invalid response received: %s" % self.response
+        return f"Invalid response received: {self.response}"
 
 
 class LoginError(BetfairError):
@@ -94,7 +88,7 @@ class LoginError(BetfairError):
         login_status = self.response.get("loginStatus")
         if login_status is None:  # different response when interactive login requested
             login_status = self.response.get("error", "UNKNOWN")
-        return "API login: %s" % login_status
+        return f"API login: {login_status}"
 
 
 class KeepAliveError(BetfairError):
@@ -109,7 +103,7 @@ class KeepAliveError(BetfairError):
     def __str__(self):
         keep_alive_status = self.response.get("status", "UNKNOWN")
         keep_alive_error = self.response.get("error")
-        return "API keepAlive %s: %s" % (keep_alive_status, keep_alive_error)
+        return f"API keepAlive {keep_alive_status}: {keep_alive_error}"
 
 
 class APIError(BetfairError):
@@ -131,21 +125,20 @@ class APIError(BetfairError):
         self.exception = exception
 
     def __str__(self):
-        if self.response:
-            error_data = self.response.get("error")
-            return "%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s" % (
-                self.method,
-                self.params,
-                self.exception,
-                error_data,
-                self.response,
-            )
-        else:
+        if not self.response:
             return "%s \nParams: %s \nException: %s" % (
                 self.method,
                 self.params,
                 self.exception,
             )
+        error_data = self.response.get("error")
+        return "%s \nParams: %s \nException: %s \nError: %s \nFull Response: %s" % (
+            self.method,
+            self.params,
+            self.exception,
+            error_data,
+            self.response,
+        )
 
 
 class LogoutError(BetfairError):
@@ -160,7 +153,7 @@ class LogoutError(BetfairError):
     def __str__(self):
         logout_status = self.response.get("status", "UNKNOWN")
         logout_error = self.response.get("error")
-        return "API logout %s: %s" % (logout_status, logout_error)
+        return f"API logout {logout_status}: {logout_error}"
 
 
 class SocketError(BetfairError):
@@ -187,7 +180,7 @@ class ListenerError(BetfairError):
         self.data = data
 
     def __str__(self):
-        return "connection_id: %s, data: %s" % (self.connection_id, self.data)
+        return f"connection_id: {self.connection_id}, data: {self.data}"
 
 
 class CacheError(BetfairError):

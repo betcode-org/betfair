@@ -68,4 +68,4 @@ class KeepAlive(BaseEndpoint):
 
     @property
     def url(self) -> str:
-        return "%s%s" % (self.client.identity_uri, "keepAlive")
+        return f"{self.client.identity_uri}keepAlive"

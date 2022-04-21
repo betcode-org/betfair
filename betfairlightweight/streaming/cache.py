@@ -251,9 +251,8 @@ class MarketBookCache(BaseResource):
                 if runner:
                     if "ltp" in new_data:
                         runner.last_price_traded = new_data["ltp"]
-                    if "tv" in new_data:  # if runner removed tv: 0 is returned
-                        if not self.cumulative_runner_tv:
-                            runner.total_matched = new_data["tv"]
+                    if "tv" in new_data and not self.cumulative_runner_tv:
+                        runner.total_matched = new_data["tv"]
                     if "spn" in new_data:
                         runner.starting_price_near = new_data["spn"]
                     if "spf" in new_data:
@@ -262,9 +261,12 @@ class MarketBookCache(BaseResource):
                         runner.update_traded(new_data["trd"], active)
                         if self.cumulative_runner_tv:
                             runner.total_matched = round(
-                                sum([vol["size"] for vol in runner.traded.serialised]),
+                                sum(
+                                    vol["size"] for vol in runner.traded.serialised
+                                ),
                                 2,
                             )
+
                         calculate_tv = True
                     if "atb" in new_data:
                         runner.available_to_back.update(new_data["atb"], active)
@@ -368,21 +370,17 @@ class MarketBookCache(BaseResource):
         data["streaming_snap"] = snap
         if self.lightweight:
             return data
-        else:
-            _runners = data.pop("runners", [])
-            market_book = MarketBook(
-                market_definition=self._market_definition_resource, runners=[], **data
-            )
-            market_book.runners = [r.resource for r in self.runners]
-            market_book._data["runners"] = _runners
-            return market_book
+        _runners = data.pop("runners", [])
+        market_book = MarketBook(
+            market_definition=self._market_definition_resource, runners=[], **data
+        )
+        market_book.runners = [r.resource for r in self.runners]
+        market_book._data["runners"] = _runners
+        return market_book
 
     @property
     def closed(self) -> bool:
-        if self._definition_status == "CLOSED":
-            return True
-        else:
-            return False
+        return self._definition_status == "CLOSED"
 
     @property
     def serialise(self) -> dict:
@@ -508,7 +506,7 @@ class UnmatchedOrder:
             "lapseStatusReasonCode": self.lapse_status_reason_code,
             "cancelledDate": self._cancelled_date_string,
         }
-        if lightweight is False:  # cache resource
+        if not lightweight:  # cache resource
             self.resource = CurrentOrder(**self.serialised)
 
 
@@ -610,13 +608,12 @@ class OrderBookCache(BaseResource):
         data["streaming_snap"] = snap
         if self.lightweight:
             return data
-        else:
-            _current_orders = data.pop("currentOrders")
-            current_orders = CurrentOrders(
-                publish_time=self.publish_time, currentOrders=[], **data
-            )
-            current_orders.orders = _current_orders
-            return current_orders
+        _current_orders = data.pop("currentOrders")
+        current_orders = CurrentOrders(
+            publish_time=self.publish_time, currentOrders=[], **data
+        )
+        current_orders.orders = _current_orders
+        return current_orders
 
     def serialise(self, publish_time: Optional[int]) -> dict:
         runners = list(self.runners.values())  # runner may be added
@@ -679,10 +676,7 @@ class RaceCache(BaseResource):
         data = self.serialise
         data["streaming_unique_id"] = unique_id
         data["streaming_snap"] = snap
-        if self.lightweight:
-            return data
-        else:
-            return Race(**data)
+        return data if self.lightweight else Race(**data)
 
     @property
     def serialise(self) -> dict:
@@ -741,10 +735,7 @@ class CricketMatchCache(BaseResource):
         data = self.serialise
         data["streaming_unique_id"] = unique_id
         data["streaming_snap"] = snap
-        if self.lightweight:
-            return data
-        else:
-            return CricketMatch(**data)
+        return data if self.lightweight else CricketMatch(**data)
 
     @property
     def serialise(self):

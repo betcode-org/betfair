@@ -101,8 +101,6 @@ class BaseEndpoint:
 
         if lightweight:
             return result
-        elif self.client.lightweight and lightweight is not False:
-            return result
         elif isinstance(result, list):
             try:
                 return [resource(elapsed_time=elapsed_time, **x) for x in result]
@@ -116,4 +114,4 @@ class BaseEndpoint:
 
     @property
     def url(self) -> str:
-        return "%s%s" % (self.client.api_uri, "betting/json-rpc/v1")
+        return f"{self.client.api_uri}betting/json-rpc/v1"

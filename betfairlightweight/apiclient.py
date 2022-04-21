@@ -56,7 +56,7 @@ class APIClient(BaseClient):
         self.historic = endpoints.Historic(self)
 
     def __repr__(self) -> str:
-        return "<APIClient [%s]>" % self.username
+        return f"<APIClient [{self.username}]>"
 
     def __str__(self) -> str:
         return "APIClient"

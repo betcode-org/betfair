@@ -81,7 +81,7 @@ class BaseClient:
         self.cert_files = cert_files
         self.lightweight = lightweight
 
-        self.session = session if session else requests
+        self.session = session or requests
         self._login_time = None
         self.session_token = None
         self.identity_uri = self.IDENTITY_URLS[locale]
@@ -108,8 +108,8 @@ class BaseClient:
         for self.username+'password'.
         """
         if self.password is None:
-            if os.environ.get(self.username + "password"):
-                self.password = os.environ.get(self.username + "password")
+            if os.environ.get(f"{self.username}password"):
+                self.password = os.environ.get(f"{self.username}password")
             else:
                 raise PasswordError(self.username)
         return self.password
@@ -139,12 +139,9 @@ class BaseClient:
         Returns True if login_time not set or seconds since
         login time is greater half session timeout.
         """
-        if not self._login_time or time.time() - self._login_time > (
+        return not self._login_time or time.time() - self._login_time > (
             self.session_timeout / 2
-        ):
-            return True
-        else:
-            return False
+        )
 
     @property
     def cert(self) -> Union[Tuple[str], str]:

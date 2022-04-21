@@ -73,7 +73,4 @@ class ScoresTest(unittest.TestCase):
         assert all(isinstance(event, resources.Incidents) for event in response)
 
     def test_url(self):
-        assert self.scores.url == "%s%s" % (
-            self.scores.client.api_uri,
-            "scores/json-rpc/v1",
-        )
+        assert self.scores.url == f"{self.scores.client.api_uri}scores/json-rpc/v1"

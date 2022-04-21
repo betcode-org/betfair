@@ -166,12 +166,13 @@ class Historic(BaseEndpoint):
             local_filename = os.path.join(store_directory, local_filename)
         session = session or self.client.session
         r = session.get(
-            "%s%s" % (self.url, "DownloadFile"),
+            f"{self.url}DownloadFile",
             params={"filePath": file_path},
             headers=self.headers,
             stream=True,
             timeout=(self.connect_timeout, self.read_timeout),
         )
+
         with open(local_filename, "wb") as f:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
@@ -190,11 +191,12 @@ class Historic(BaseEndpoint):
         time_sent = time.time()
         try:
             response = session.post(
-                "%s%s" % (self.url, method),
+                f"{self.url}{method}",
                 data=json.dumps(params),
                 headers=self.headers,
                 timeout=(self.connect_timeout, self.read_timeout),
             )
+
         except requests.ConnectionError as e:
             raise APIError(None, method, params, e)
         except Exception as e:

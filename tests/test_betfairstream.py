@@ -278,7 +278,7 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream._running = True
         threading.Thread(target=self.betfair_stream._read_loop).start()
 
-        for i in range(0, 2):
+        for _ in range(2):
             time.sleep(0.1)
         self.betfair_stream._running = False
         time.sleep(0.1)
@@ -433,7 +433,7 @@ class HistoricalStreamTest(unittest.TestCase):
     def test_stop(self):
         self.stream._running = True
         self.stream.stop()
-        assert self.stream._running is False
+        assert not self.stream._running
 
     @mock.patch("betfairlightweight.streaming.betfairstream.HistoricalStream.stop")
     def test__read_loop(self, mock_stop):
@@ -471,7 +471,7 @@ class HistoricalGeneratorStreamTest(unittest.TestCase):
         "betfairlightweight.streaming.betfairstream.HistoricalGeneratorStream.stop"
     )
     def test__read_loop(self, mock_stop):
-        data = [i for i in self.stream._read_loop()]
+        data = list(self.stream._read_loop())
         self.assertEqual(len(data), 480)
         self.assertEqual(self.listener.on_data.call_count, 480)
         self.listener.on_data.snap()

@@ -279,7 +279,7 @@ class RunnerCatalogue(BettingResource):
         self.metadata = kwargs.get("metadata")
 
     def __str__(self):
-        return "RunnerCatalogue: %s" % self.selection_id
+        return f"RunnerCatalogue: {self.selection_id}"
 
     def __repr__(self):
         return "<RunnerCatalogue>"
@@ -354,7 +354,7 @@ class PriceSize(Slotable, BettingResource):
         self.size = size
 
     def __str__(self):
-        return "Price: %s Size: %s" % (self.price, self.size)
+        return f"Price: {self.price} Size: {self.size}"
 
 
 class RunnerBookSP(BettingResource):
@@ -528,7 +528,7 @@ class RunnerBook(BettingResource):
         self.matches_by_strategy = matchesByStrategy
 
     def __str__(self):
-        return "RunnerBook: %s" % self.selection_id
+        return f"RunnerBook: {self.selection_id}"
 
     def __repr__(self):
         return "<RunnerBook>"

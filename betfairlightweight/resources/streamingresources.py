@@ -32,7 +32,7 @@ class MarketDefinitionRunner:
         self.name = name  # historic data only
 
     def __str__(self):
-        return "MarketDefinitionRunner: %s" % self.selection_id
+        return f"MarketDefinitionRunner: {self.selection_id}"
 
     def __repr__(self):
         return "<MarketDefinitionRunner>"

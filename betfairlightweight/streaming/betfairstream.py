@@ -245,21 +245,17 @@ class BetfairStream:
             except (socket.timeout, socket.error) as e:
                 if self._running:
                     self.stop()
-                    raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
+                    raise SocketError(f"[Connect: {self._unique_id}]: Socket {e}")
                 else:
                     return  # 133, prevents error if stop is called mid recv
 
             # an empty string indicates the server shutdown the socket
             if len(part) == 0:
-                if self._running:
-                    self.stop()
-                    raise SocketError(
-                        "[Connect: %s]: Connection closed by server"
-                        % (self._unique_id,)
-                    )
-                else:
+                if not self._running:
                     return  # 165, prevents error if stop is called mid recv
 
+                self.stop()
+                raise SocketError(f"[Connect: {self._unique_id}]: Connection closed by server")
             data += part.decode(self.__encoding)
         return data
 
@@ -294,20 +290,21 @@ class BetfairStream:
         message_dumped += crlf
 
         logger.debug(
-            "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
+            f"[Subscription: {self._unique_id}] Sending: {repr(message_dumped)}"
         )
+
         try:
             self._socket.sendall(message_dumped)
         except (socket.timeout, socket.error) as e:
             self.stop()
-            raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
+            raise SocketError(f"[Connect: {self._unique_id}]: Socket {e}")
 
     @property
     def running(self) -> bool:
         return self._running
 
     def __str__(self) -> str:
-        return "<BetfairStream [%s]>" % ("running" if self._running else "not running")
+        return f'<BetfairStream [{"running" if self._running else "not running"}]>'
 
     def __repr__(self) -> str:
         return "<BetfairStream>"
@@ -374,10 +371,8 @@ class HistoricalGeneratorStream(HistoricalStream):
                     raise ListenerError("HISTORICAL", update)
                 if not self._running:
                     break
-                else:
-                    data = self.listener.snap()
-                    if data:  # can return empty list
-                        yield data
+                if data := self.listener.snap():
+                    yield data
             else:
                 # if f has finished, also stop the stream
                 self.stop()

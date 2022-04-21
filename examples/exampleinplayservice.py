@@ -28,8 +28,9 @@ for score in scores:
         score,
         score.description,
         score.status,
-        "%s-%s" % (score.score.home.score, score.score.away.score),
-    )  # view resources or debug to see all values available
+        f"{score.score.home.score}-{score.score.away.score}",
+    )
+
 
 
 # timeline request (single)

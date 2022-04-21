@@ -72,7 +72,7 @@ class Login(BaseEndpoint):
 
     @property
     def url(self) -> str:
-        return "%s%s" % (self.client.identity_cert_uri, "certlogin")
+        return f"{self.client.identity_cert_uri}certlogin"
 
     @property
     def data(self) -> dict:

@@ -43,8 +43,7 @@ class BaseStream:
         if self._lookup in data:
             self._process(data[self._lookup], publish_time)
         logger.info(
-            "[%s: %s]: %s %s added"
-            % (self, self.unique_id, len(self._caches), self._lookup)
+            f"[{self}: {self.unique_id}]: {len(self._caches)} {self._lookup} added"
         )
 
     def on_heartbeat(self, data: dict) -> None:
@@ -53,8 +52,7 @@ class BaseStream:
     def on_resubscribe(self, data: dict) -> None:
         self.on_update(data)
         logger.info(
-            "[%s: %s]: %s %s resubscribed"
-            % (self, self.unique_id, len(self._caches), self._lookup)
+            f"[{self}: {self.unique_id}]: {len(self._caches)} {self._lookup} resubscribed"
         )
 
     def on_update(self, data: dict) -> None:
@@ -65,9 +63,7 @@ class BaseStream:
         if self._max_latency:
             latency = self._calc_latency(publish_time)
             if latency > self._max_latency:
-                logger.warning(
-                    "[%s: %s]: Latency high: %s" % (self, self.unique_id, latency)
-                )
+                logger.warning(f"[{self}: {self.unique_id}]: Latency high: {latency}")
 
         if self._lookup in data:
             img = self._process(data[self._lookup], publish_time)
@@ -80,18 +76,19 @@ class BaseStream:
         self._caches.clear()
 
     def clear_stale_cache(self, publish_time: int) -> None:
-        _to_remove = []
-        for cache in self._caches.values():
+        _to_remove = [
+            cache.market_id
+            for cache in self._caches.values()
             if (
                 cache.closed
                 and (publish_time - cache.publish_time) / 1e3 > MAX_CACHE_AGE
-            ):
-                _to_remove.append(cache.market_id)
+            )
+        ]
+
         for market_id in _to_remove:
             del self._caches[market_id]
             logger.info(
-                "[%s: %s]: %s removed, %s markets in cache"
-                % (self, self.unique_id, market_id, len(self._caches))
+                f"[{self}: {self.unique_id}]: {market_id} removed, {len(self._caches)} markets in cache"
             )
 
     def snap(self, market_ids: list = None, publish_time: Optional[int] = None) -> list:
@@ -172,9 +169,9 @@ class MarketStream(BaseStream):
                 )
                 self._caches[market_id] = market_book_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
+
 
             market_book_cache.update_cache(market_book, publish_time, True)
             caches.append(market_book_cache)
@@ -202,9 +199,9 @@ class OrderStream(BaseStream):
                 )
                 self._caches[market_id] = order_book_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
+
 
             order_book_cache.update_cache(order_book, publish_time)
             caches.append(order_book_cache)
@@ -246,9 +243,9 @@ class RaceStream(BaseStream):
                 )
                 self._caches[market_id] = race_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
+
 
             race_cache.update_cache(update, publish_time)
             caches.append(race_cache)
@@ -274,9 +271,9 @@ class CricketStream(BaseStream):
                 )
                 self._caches[market_id] = cricket_match_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
+
 
             cricket_match_cache.update_cache(cricket_change, publish_time)
             caches.append(cricket_match_cache)

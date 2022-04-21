@@ -20,19 +20,21 @@ class BaseListener:
         self.connections_available = None  # connection throttling
 
     def register_stream(self, unique_id: int, operation: str) -> None:
-        logger.info("[Register: %s]: %s" % (unique_id, operation))
+        logger.info(f"[Register: {unique_id}]: {operation}")
         if self.stream is not None:
             logger.warning(
-                "[Listener: %s]: stream already registered, replacing data" % unique_id
+                f"[Listener: {unique_id}]: stream already registered, replacing data"
             )
+
         self.stream_unique_id = unique_id
         self.stream_type = operation
         self.stream = self._add_stream(unique_id, operation)
 
     def update_unique_id(self, unique_id: int) -> None:
         logger.info(
-            "[Register: %s]: Unique id updated on listener and stream" % unique_id
+            f"[Register: {unique_id}]: Unique id updated on listener and stream"
         )
+
         self.stream_unique_id = unique_id
         self.stream.unique_id = unique_id
 
@@ -46,10 +48,7 @@ class BaseListener:
         :param list market_ids: Market ids to return
         :return: Return List of resources
         """
-        if self.stream_type:  # quicker than self.stream due to __len__ call
-            return self.stream.snap(market_ids)
-        else:
-            return []
+        return self.stream.snap(market_ids) if self.stream_type else []
 
     @property
     def updates_processed(self) -> int:
@@ -128,7 +127,7 @@ class StreamListener(BaseListener):
         try:
             data = json.loads(raw_data)
         except ValueError:
-            logger.error("value error: %s" % raw_data)
+            logger.error(f"value error: {raw_data}")
             return
 
         self.status = data.get("status")
@@ -146,9 +145,9 @@ class StreamListener(BaseListener):
             # historic data does not contain unique_id
             if self.stream_unique_id not in [unique_id, 0]:
                 logger.warning(
-                    "Unwanted data received from uniqueId: %s, expecting: %s"
-                    % (unique_id, self.stream_unique_id)
+                    f"Unwanted data received from uniqueId: {unique_id}, expecting: {self.stream_unique_id}"
                 )
+
                 return
             self._on_change_message(data, unique_id)
 
@@ -161,7 +160,7 @@ class StreamListener(BaseListener):
             unique_id = self.stream_unique_id
         self.connection_id = data.get("connectionId")
         logger.info(
-            "[%s: %s]: connection_id: %s" % (self.stream, unique_id, self.connection_id)
+            f"[{self.stream}: {unique_id}]: connection_id: {self.connection_id}"
         )
 
     def _on_status(self, data: dict, unique_id: int) -> None:
@@ -170,21 +169,17 @@ class StreamListener(BaseListener):
         :param data: Received data
         """
         status_code = data.get("statusCode")
-        connections_available = data.get("connectionsAvailable")
-        if connections_available:
+        if connections_available := data.get("connectionsAvailable"):
             self.connections_available = data.get("connectionsAvailable")
         logger.info(
-            "[%s: %s]: %s (%s connections available)"
-            % (self.stream, unique_id, status_code, self.connections_available)
+            f"[{self.stream}: {unique_id}]: {status_code} ({self.connections_available} connections available)"
         )
 
     def _on_change_message(self, data: dict, unique_id: int) -> None:
         change_type = data.get("ct", "UPDATE")
 
         if self.debug:
-            logger.debug(  # very slow call due to data dict
-                "[%s: %s]: %s: %s" % (self.stream, unique_id, change_type, data)
-            )
+            logger.debug(f"[{self.stream}: {unique_id}]: {change_type}: {data}")
 
         if change_type == "SUB_IMAGE":
             self.stream.on_subscribe(data)
@@ -204,19 +199,12 @@ class StreamListener(BaseListener):
         """
         if data.get("statusCode") == "FAILURE":
             logger.error(
-                "[%s: %s]: %s: %s"
-                % (
-                    self.stream,
-                    unique_id,
-                    data.get("errorCode"),
-                    data.get("errorMessage"),
-                )
+                f'[{self.stream}: {unique_id}]: {data.get("errorCode")}: {data.get("errorMessage")}'
             )
+
             if data.get("connectionClosed"):
                 return True
         if self.status:
             # Clients shouldn't disconnect if status 503 is returned; when the stream
             # recovers updates will be sent containing the latest data
-            logger.warning(
-                "[%s: %s]: status: %s" % (self.stream, unique_id, self.status)
-            )
+            logger.warning(f"[{self.stream}: {unique_id}]: status: {self.status}")

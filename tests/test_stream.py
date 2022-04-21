@@ -131,7 +131,7 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._caches = {1: "abc"}
         self.stream.clear_cache()
 
-        assert self.stream._caches == {}
+        assert not self.stream._caches
 
     def test_clear_stale_cache(self):
         market_a = mock.Mock(market_id="1.23", publish_time=123, closed=False)
@@ -172,7 +172,7 @@ class BaseStreamTest(unittest.TestCase):
         mock_cache.market_id = "1.1"
 
         def _change_dict(*_, **__):
-            self.stream._caches["1.{}".format(len(self.stream._caches))] = mock_cache
+            self.stream._caches[f"1.{len(self.stream._caches)}"] = mock_cache
 
         mock_cache.create_resource = _change_dict
         self.stream._caches = {"1.{}".format(i): mock_cache for i in range(2)}

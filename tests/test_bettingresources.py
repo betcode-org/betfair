@@ -836,7 +836,7 @@ class BettingResourcesTest(unittest.TestCase):
             update_orders.get("instructionReports")
         )
 
-        for order in update_orders.get("instructionReports"):
+        for _ in update_orders.get("instructionReports"):
             pass
 
         assert resource.market_id == resource["marketId"]

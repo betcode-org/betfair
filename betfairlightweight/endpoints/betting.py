@@ -33,7 +33,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.EventTypeResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listEventTypes")
+        method = f"{self.URI}listEventTypes"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -61,7 +61,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.CompetitionResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listCompetitions")
+        method = f"{self.URI}listCompetitions"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -91,7 +91,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.TimeRangeResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listTimeRanges")
+        method = f"{self.URI}listTimeRanges"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -119,7 +119,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.EventResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listEvents")
+        method = f"{self.URI}listEvents"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.EventResult, elapsed_time, lightweight
@@ -144,7 +144,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.MarketTypeResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listMarketTypes")
+        method = f"{self.URI}listMarketTypes"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -172,7 +172,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.CountryResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listCountries")
+        method = f"{self.URI}listCountries"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.CountryResult, elapsed_time, lightweight
@@ -197,7 +197,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.VenueResult]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listVenues")
+        method = f"{self.URI}listVenues"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.VenueResult, elapsed_time, lightweight
@@ -229,7 +229,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.MarketCatalogue]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listMarketCatalogue")
+        method = f"{self.URI}listMarketCatalogue"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -279,7 +279,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.MarketBook]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listMarketBook")
+        method = f"{self.URI}listMarketBook"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.MarketBook, elapsed_time, lightweight
@@ -330,7 +330,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.MarketBook]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listRunnerBook")
+        method = f"{self.URI}listRunnerBook"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -378,7 +378,7 @@ class Betting(BaseEndpoint):
         :rtype: resources.CurrentOrders
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listCurrentOrders")
+        method = f"{self.URI}listCurrentOrders"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.CurrentOrders, elapsed_time, lightweight
@@ -430,7 +430,7 @@ class Betting(BaseEndpoint):
         :rtype: resources.ClearedOrders
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listClearedOrders")
+        method = f"{self.URI}listClearedOrders"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.ClearedOrders, elapsed_time, lightweight
@@ -459,7 +459,7 @@ class Betting(BaseEndpoint):
         :rtype: list[resources.MarketProfitLoss]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listMarketProfitAndLoss")
+        method = f"{self.URI}listMarketProfitAndLoss"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json,
@@ -498,7 +498,7 @@ class Betting(BaseEndpoint):
         :rtype: resources.PlaceOrders
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "placeOrders")
+        method = f"{self.URI}placeOrders"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.PlaceOrders, elapsed_time, lightweight
@@ -526,7 +526,7 @@ class Betting(BaseEndpoint):
         :rtype: resources.CancelOrders
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "cancelOrders")
+        method = f"{self.URI}cancelOrders"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.CancelOrders, elapsed_time, lightweight
@@ -553,7 +553,7 @@ class Betting(BaseEndpoint):
         :rtype: resources.UpdateOrders
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "updateOrders")
+        method = f"{self.URI}updateOrders"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.UpdateOrders, elapsed_time, lightweight
@@ -588,7 +588,7 @@ class Betting(BaseEndpoint):
         :rtype: resources.ReplaceOrders
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "replaceOrders")
+        method = f"{self.URI}replaceOrders"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.ReplaceOrders, elapsed_time, lightweight
