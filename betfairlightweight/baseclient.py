@@ -47,7 +47,7 @@ class BaseClient:
         italy=NAVIGATION.format(tld=".it", locale="it"),
     )
 
-    SESSION_TIMEOUT = collections.defaultdict(lambda: 24 * 60 * 60, italy=20 * 60)
+    SESSION_TIMEOUT = collections.defaultdict(lambda: 12 * 60 * 60, italy=20 * 60)
 
     def __init__(
         self,
