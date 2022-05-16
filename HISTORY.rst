@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.16.5 (2022-05-16)
++++++++++++++++++++
+
+**Improvements**
+
+- Change to Login Session Expiry Time (24 to 12 hours)
+
+**Dependencies**
+
+- orjson upgraded to 3.6.8
+- black upgraded to 22.3.0
+
 2.16.4 (2022-03-28)
 +++++++++++++++++++
 
