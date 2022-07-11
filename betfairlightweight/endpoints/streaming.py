@@ -1,3 +1,5 @@
+import os
+
 from ..baseclient import BaseClient
 from ..streaming import (
     BaseListener,
@@ -5,6 +7,7 @@ from ..streaming import (
     BetfairStream,
     HistoricalStream,
     HistoricalGeneratorStream,
+    HistoricalGeneratorStreamBz2
 )
 
 
@@ -77,6 +80,7 @@ class Streaming:
         listener: BaseListener = None,
         operation: str = "marketSubscription",
         unique_id: int = 0,
+        compression: str = None
     ) -> HistoricalGeneratorStream:
         """
         Uses generator listener/cache to parse betfair
@@ -91,4 +95,11 @@ class Streaming:
         :rtype: HistoricalGeneratorStream
         """
         listener = listener if listener else StreamListener()
-        return HistoricalGeneratorStream(file_path, listener, operation, unique_id)
+        if compression == "bz2" or os.path.splitext(file_path)[1] == ".bz2":
+            return HistoricalGeneratorStreamBz2(
+                file_path, listener, operation, unique_id
+                )
+        else:
+            return HistoricalGeneratorStream(
+                file_path, listener, operation, unique_id
+                )

@@ -5,6 +5,7 @@ import warnings
 import datetime
 import collections
 from typing import Optional
+import bz2
 
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
@@ -367,6 +368,34 @@ class HistoricalGeneratorStream(HistoricalStream):
         self._running = True
         self.listener.register_stream(self.unique_id, self.operation)
         with open(self.file_path, "r") as f:
+            for update in f:
+                if self.listener.on_data(update) is False:
+                    # if on_data returns an error stop the stream and raise error
+                    self.stop()
+                    raise ListenerError("HISTORICAL", update)
+                if not self._running:
+                    break
+                else:
+                    data = self.listener.snap()
+                    if data:  # can return empty list
+                        yield data
+            else:
+                # if f has finished, also stop the stream
+                self.stop()
+
+
+class HistoricalGeneratorStreamBz2(HistoricalStream):
+    """Copy of 'Betfair Stream' for parsing historical data (no threads)
+    from bz2 compressed files.
+    """
+
+    def get_generator(self):
+        return self._read_loop
+
+    def _read_loop(self) -> dict:
+        self._running = True
+        self.listener.register_stream(self.unique_id, self.operation)
+        with bz2.open(self.file_path, "rb") as f:
             for update in f:
                 if self.listener.on_data(update) is False:
                     # if on_data returns an error stop the stream and raise error
