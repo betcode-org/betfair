@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.16.6 (2022-07-13)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Missing pt added to cricket stream output
+
+**Dependencies**
+
+- orjson upgraded to 3.7.7
+- black upgraded to 22.6.0
+- requests upgraded to <2.29.0
+
 2.16.5 (2022-05-16)
 +++++++++++++++++++
 

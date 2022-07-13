@@ -749,6 +749,7 @@ class CricketMatchCache(BaseResource):
     @property
     def serialise(self):
         return {
+            "pt": self.publish_time,
             "eventId": self.event_id,
             "marketId": self.market_id,
             "fixtureInfo": self.fixture_info,
