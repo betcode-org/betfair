@@ -1131,6 +1131,7 @@ class TestCricketMatchCache(unittest.TestCase):
     def test_serialise(self):
         self.cricket_match_cache.publish_time = 12
         assert self.cricket_match_cache.serialise == {
+            "pt": 12,
             "marketId": "1.12",
             "eventId": "123",
             "fixtureInfo": None,
