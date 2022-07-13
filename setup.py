@@ -34,7 +34,7 @@ setup(
     url=about["__url__"],
     license=about["__license__"],
     author=about["__author__"],
-    author_email="a@unknown.invalid",
+    author_email="a@unknown.com",
     description=about["__description__"],
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
