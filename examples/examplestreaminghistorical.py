@@ -6,6 +6,8 @@ from betfairlightweight import StreamListener
 """
 Data needs to be downloaded from:
     https://historicdata.betfair.com
+    
+smart-open library recommended for opening bz2/gz files
 """
 
 # setup logging
