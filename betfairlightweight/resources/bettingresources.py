@@ -1,19 +1,5 @@
-import re
-
 from .baseresource import BaseResource
-
-CAMEL_CASE_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
-
-
-def camel_case_to_snake_case(camel_case_str: str) -> str:
-    """
-    Utility function for converting a CamelCase formatted string to a snake_case one. Taken from https://stackoverflow.com/a/1176023/2798232
-
-    :param camel_case_str: A string written in CamelCase
-    :return: The string rewritten in snake_case
-    """
-    snake_case_str = CAMEL_CASE_PATTERN.sub("_", camel_case_str).lower()
-    return snake_case_str
+from ..utils import to_snake_case
 
 
 class BettingResource:
@@ -21,7 +7,7 @@ class BettingResource:
 
     def __getitem__(self, item):
         attribute_name = self._item_name_to_attribute_name_overrides.get(
-            item, camel_case_to_snake_case(item)
+            item, to_snake_case(item)
         )
         return self.__getattribute__(attribute_name)
 
