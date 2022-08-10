@@ -1,7 +1,38 @@
+import re
+
 from .baseresource import BaseResource
 
+CAMEL_CASE_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
 
-class EventType:
+
+def camel_case_to_snake_case(camel_case_str: str) -> str:
+    """
+    Utility function for converting a CamelCase formatted string to a snake_case one. Taken from https://stackoverflow.com/a/1176023/2798232
+
+    :param camel_case_str: A string written in CamelCase
+    :return: The string rewritten in snake_case
+    """
+    snake_case_str = CAMEL_CASE_PATTERN.sub("_", camel_case_str).lower()
+    return snake_case_str
+
+
+class BettingResource:
+    _item_name_to_attribute_name_overrides = {}
+
+    def __getitem__(self, item):
+        attribute_name = self._item_name_to_attribute_name_overrides.get(
+            item, camel_case_to_snake_case(item)
+        )
+        return self.__getattribute__(attribute_name)
+
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except AttributeError:
+            return default
+
+
+class EventType(BettingResource):
     """
     :type id: unicode
     :type name: unicode
@@ -12,7 +43,7 @@ class EventType:
         self.name = name
 
 
-class EventTypeResult(BaseResource):
+class EventTypeResult(BaseResource, BettingResource):
     """
     :type event_type: EventType
     :type market_count: int
@@ -24,7 +55,7 @@ class EventTypeResult(BaseResource):
         self.event_type = EventType(**kwargs.get("eventType"))
 
 
-class Competition:
+class Competition(BettingResource):
     """
     :type id: unicode
     :type name: unicode
@@ -35,7 +66,7 @@ class Competition:
         self.name = name
 
 
-class CompetitionResult(BaseResource):
+class CompetitionResult(BaseResource, BettingResource):
     """
     :type competition: Competition
     :type competition_region: unicode
@@ -49,18 +80,20 @@ class CompetitionResult(BaseResource):
         self.competition = Competition(**kwargs.get("competition"))
 
 
-class TimeRange:
+class TimeRange(BettingResource):
     """
     :type _from: datetime.datetime
     :type to: datetime.datetime
     """
+
+    _item_name_to_attribute_name_overrides = {"from": "_from"}
 
     def __init__(self, **kwargs):
         self._from = BaseResource.strip_datetime(kwargs.get("from"))
         self.to = BaseResource.strip_datetime(kwargs.get("to"))
 
 
-class TimeRangeResult(BaseResource):
+class TimeRangeResult(BaseResource, BettingResource):
     """
     :type market_count: int
     :type time_range: TimeRange
@@ -72,7 +105,7 @@ class TimeRangeResult(BaseResource):
         self.time_range = TimeRange(**kwargs.get("timeRange"))
 
 
-class Event:
+class Event(BettingResource):
     """
     :type country_code: unicode
     :type id: unicode
@@ -81,6 +114,8 @@ class Event:
     :type time_zone: unicode
     :type venue: unicode
     """
+
+    _item_name_to_attribute_name_overrides = {"timezone": "time_zone"}
 
     def __init__(
         self,
@@ -99,7 +134,7 @@ class Event:
         self.venue = venue
 
 
-class EventResult(BaseResource):
+class EventResult(BaseResource, BettingResource):
     """
     :type event: Event
     :type market_count: int
@@ -111,7 +146,7 @@ class EventResult(BaseResource):
         self.event = Event(**kwargs.get("event"))
 
 
-class MarketTypeResult(BaseResource):
+class MarketTypeResult(BaseResource, BettingResource):
     """
     :type market_count: int
     :type market_type: unicode
@@ -123,7 +158,7 @@ class MarketTypeResult(BaseResource):
         self.market_type = kwargs.get("marketType")
 
 
-class CountryResult(BaseResource):
+class CountryResult(BaseResource, BettingResource):
     """
     :type country_code: unicode
     :type market_count: int
@@ -135,7 +170,7 @@ class CountryResult(BaseResource):
         self.country_code = kwargs.get("countryCode")
 
 
-class VenueResult(BaseResource):
+class VenueResult(BaseResource, BettingResource):
     """
     :type market_count: int
     :type venue: unicode
@@ -147,7 +182,7 @@ class VenueResult(BaseResource):
         self.venue = kwargs.get("venue")
 
 
-class LineRangeInfo:
+class LineRangeInfo(BettingResource):
     """
     :type marketUnit: unicode
     :type interval: float
@@ -164,7 +199,7 @@ class LineRangeInfo:
         self.max_unit_value = maxUnitValue
 
 
-class PriceLadderDescription:
+class PriceLadderDescription(BettingResource):
     """
     :type type: unicode
     """
@@ -176,7 +211,7 @@ class PriceLadderDescription:
         return {"type": self.type}
 
 
-class MarketCatalogueDescription:
+class MarketCatalogueDescription(BettingResource):
     """
     :type betting_type: unicode
     :type bsp_market: bool
@@ -241,7 +276,7 @@ class MarketCatalogueDescription:
         self.race_type = raceType
 
 
-class RunnerCatalogue:
+class RunnerCatalogue(BettingResource):
     """
     :type handicap: float
     :type metadata: dict
@@ -264,7 +299,7 @@ class RunnerCatalogue:
         return "<RunnerCatalogue>"
 
 
-class MarketCatalogue(BaseResource):
+class MarketCatalogue(BaseResource, BettingResource):
     """
     :type competition: Competition
     :type description: MarketCatalogueDescription
@@ -320,7 +355,7 @@ class Slotable:
             setattr(self, slot, d[slot])
 
 
-class PriceSize(Slotable):
+class PriceSize(Slotable, BettingResource):
     """
     :type price: float
     :type size: float
@@ -336,7 +371,7 @@ class PriceSize(Slotable):
         return "Price: %s Size: %s" % (self.price, self.size)
 
 
-class RunnerBookSP:
+class RunnerBookSP(BettingResource):
     """
     :type actual_sp: float
     :type back_stake_taken: list[PriceSize]
@@ -360,7 +395,7 @@ class RunnerBookSP:
         self.lay_liability_taken = [PriceSize(**i) for i in layLiabilityTaken]
 
 
-class RunnerBookEX:
+class RunnerBookEX(BettingResource):
     """
     :type available_to_back: list[PriceSize]
     :type available_to_lay: list[PriceSize]
@@ -378,7 +413,7 @@ class RunnerBookEX:
         self.traded_volume = [PriceSize(**i) for i in tradedVolume]
 
 
-class RunnerBookOrder:
+class RunnerBookOrder(BettingResource):
     """
     :type avg_price_matched: float
     :type bet_id: unicode
@@ -436,7 +471,7 @@ class RunnerBookOrder:
         self.customer_order_ref = customerOrderRef
 
 
-class RunnerBookMatch:
+class RunnerBookMatch(BettingResource):
     """
     :type bet_id: unicode
     :type match_date: datetime.datetime
@@ -463,7 +498,7 @@ class RunnerBookMatch:
         self.match_date = BaseResource.strip_datetime(matchDate)
 
 
-class RunnerBook:
+class RunnerBook(BettingResource):
     """
     :type adjustment_factor: float
     :type ex: RunnerBookEX
@@ -513,7 +548,7 @@ class RunnerBook:
         return "<RunnerBook>"
 
 
-class KeyLine:
+class KeyLine(BettingResource):
     def __init__(self, **kwargs):
         if "keyLine" in kwargs:
             self.key_line = [KeyLineSelection(**i) for i in kwargs["keyLine"]]
@@ -521,7 +556,7 @@ class KeyLine:
             self.key_line = [KeyLineSelection(**i) for i in kwargs["kl"]]
 
 
-class KeyLineSelection:
+class KeyLineSelection(BettingResource):
     """
     :type selectionId: int
     :type handicap: float
@@ -539,7 +574,7 @@ class KeyLineSelection:
             self.handicap = kwargs["hc"]
 
 
-class MarketBook(BaseResource):
+class MarketBook(BaseResource, BettingResource):
     """
     :type bet_delay: int
     :type bsp_reconciled: bool
@@ -598,12 +633,12 @@ class MarketBook(BaseResource):
         )
 
 
-class CurrentItemDescription:
+class CurrentItemDescription(BettingResource):
     def __init__(self, marketVersion: dict):
         self.market_version = marketVersion
 
 
-class CurrentOrder:
+class CurrentOrder(BettingResource):
     """
     :type average_price_matched: float
     :type bet_id: unicode
@@ -691,18 +726,20 @@ class CurrentOrder:
         )
 
 
-class Match:
+class Match(BettingResource):
     def __init__(self, selectionId: int, matchedLays: list, matchedBacks: list):
         self.selection_id = selectionId
         self.matched_lays = [PriceSize(**m) for m in matchedLays]
         self.matched_backs = [PriceSize(**m) for m in matchedBacks]
 
 
-class CurrentOrders(BaseResource):
+class CurrentOrders(BaseResource, BettingResource):
     """
     :type more_available: bool
     :type orders: list[CurrentOrder]
     """
+
+    _item_name_to_attribute_name_overrides = {"currentOrders": "orders"}
 
     def __init__(self, **kwargs):
         self.streaming_unique_id = kwargs.pop("streaming_unique_id", None)
@@ -715,7 +752,7 @@ class CurrentOrders(BaseResource):
         self.matches = [Match(**i) for i in kwargs.get("matches", [])]
 
 
-class ItemDescription:
+class ItemDescription(BettingResource):
     """
     :type event_desc: unicode
     :type event_type_desc: unicode
@@ -748,7 +785,7 @@ class ItemDescription:
         self.each_way_divisor = eachWayDivisor
 
 
-class ClearedOrder:
+class ClearedOrder(BettingResource):
     """
     :type bet_count: int
     :type bet_id: unicode
@@ -809,11 +846,13 @@ class ClearedOrder:
         )
 
 
-class ClearedOrders(BaseResource):
+class ClearedOrders(BaseResource, BettingResource):
     """
     :type more_available: bool
     :type orders: list[ClearedOrder]
     """
+
+    _item_name_to_attribute_name_overrides = {"clearedOrders": "orders"}
 
     def __init__(self, **kwargs):
         super(ClearedOrders, self).__init__(**kwargs)
@@ -821,7 +860,7 @@ class ClearedOrders(BaseResource):
         self.orders = [ClearedOrder(**i) for i in kwargs.get("clearedOrders")]
 
 
-class ProfitAndLosses:
+class ProfitAndLosses(BettingResource):
     """
     :type if_lose: float
     :type if_place: float
@@ -842,7 +881,7 @@ class ProfitAndLosses:
         self.if_place = ifPlace
 
 
-class MarketProfitLoss(BaseResource):
+class MarketProfitLoss(BaseResource, BettingResource):
     """
     :type commission_applied: float
     :type market_id: unicode
@@ -858,7 +897,7 @@ class MarketProfitLoss(BaseResource):
         ]
 
 
-class LimitOrder:
+class LimitOrder(BettingResource):
     """
     :type bet_target_size: float
     :type bet_target_type: unicode
@@ -888,7 +927,7 @@ class LimitOrder:
         self.bet_target_size = betTargetSize
 
 
-class LimitOnCloseOrder:
+class LimitOnCloseOrder(BettingResource):
     """
     :type liability: float
     :type price: float
@@ -899,7 +938,7 @@ class LimitOnCloseOrder:
         self.price = price
 
 
-class MarketOnCloseOrder:
+class MarketOnCloseOrder(BettingResource):
     """
     :type liability: float
     """
@@ -908,7 +947,7 @@ class MarketOnCloseOrder:
         self.liability = liability
 
 
-class PlaceOrderInstruction:
+class PlaceOrderInstruction(BettingResource):
     """
     :type customer_order_ref: unicode
     :type handicap: float
@@ -943,7 +982,7 @@ class PlaceOrderInstruction:
         )
 
 
-class PlaceOrderInstructionReports:
+class PlaceOrderInstructionReports(BettingResource):
     """
     :type average_price_matched: float
     :type bet_id: unicode
@@ -976,7 +1015,7 @@ class PlaceOrderInstructionReports:
         self.error_code = errorCode
 
 
-class PlaceOrders(BaseResource):
+class PlaceOrders(BaseResource, BettingResource):
     """
     :type customer_ref: unicode
     :type error_code: str
@@ -984,6 +1023,10 @@ class PlaceOrders(BaseResource):
     :type place_instruction_reports: list[PlaceOrderInstructionReports]
     :type status: unicode
     """
+
+    _item_name_to_attribute_name_overrides = {
+        "instructionReports": "place_instruction_reports"
+    }
 
     def __init__(self, **kwargs):
         super(PlaceOrders, self).__init__(**kwargs)
@@ -996,7 +1039,7 @@ class PlaceOrders(BaseResource):
         ]
 
 
-class CancelOrderInstruction:
+class CancelOrderInstruction(BettingResource):
     """
     :type bet_id: unicode
     :type size_reduction: float
@@ -1007,7 +1050,7 @@ class CancelOrderInstruction:
         self.size_reduction = sizeReduction
 
 
-class CancelOrderInstructionReports:
+class CancelOrderInstructionReports(BettingResource):
     """
     :type cancelled_date: datetime.datetime
     :type error_code: str
@@ -1031,7 +1074,7 @@ class CancelOrderInstructionReports:
         self.error_code = errorCode
 
 
-class CancelOrders(BaseResource):
+class CancelOrders(BaseResource, BettingResource):
     """
     :type cancel_instruction_reports: list[CancelOrderInstructionReports]
     :type customer_ref: unicode
@@ -1039,6 +1082,10 @@ class CancelOrders(BaseResource):
     :type market_id: unicode
     :type status: unicode
     """
+
+    _item_name_to_attribute_name_overrides = {
+        "instructionReports": "cancel_instruction_reports"
+    }
 
     def __init__(self, **kwargs):
         super(CancelOrders, self).__init__(**kwargs)
@@ -1051,7 +1098,7 @@ class CancelOrders(BaseResource):
         ]
 
 
-class UpdateOrderInstruction:
+class UpdateOrderInstruction(BettingResource):
     """
     :type bet_id: unicode
     :type new_persistence_type: unicode
@@ -1062,7 +1109,7 @@ class UpdateOrderInstruction:
         self.new_persistence_type = newPersistenceType
 
 
-class UpdateOrderInstructionReports:
+class UpdateOrderInstructionReports(BettingResource):
     """
     :type error_code: str
     :type instruction: UpdateOrderInstruction
@@ -1075,7 +1122,7 @@ class UpdateOrderInstructionReports:
         self.error_code = errorCode
 
 
-class UpdateOrders(BaseResource):
+class UpdateOrders(BaseResource, BettingResource):
     """
     :type customer_ref: unicode
     :type error_code: str
@@ -1083,6 +1130,10 @@ class UpdateOrders(BaseResource):
     :type status: unicode
     :type update_instruction_reports: list[UpdateOrderInstructionReports]
     """
+
+    _item_name_to_attribute_name_overrides = {
+        "instructionReports": "update_instruction_reports"
+    }
 
     def __init__(self, **kwargs):
         super(UpdateOrders, self).__init__(**kwargs)
@@ -1095,7 +1146,7 @@ class UpdateOrders(BaseResource):
         ]
 
 
-class ReplaceOrderInstructionReports:
+class ReplaceOrderInstructionReports(BettingResource):
     """
     :type cancel_instruction_reports: CancelOrderInstructionReports
     :type error_code: str
@@ -1120,7 +1171,7 @@ class ReplaceOrderInstructionReports:
         self.error_code = errorCode
 
 
-class ReplaceOrders(BaseResource):
+class ReplaceOrders(BaseResource, BettingResource):
     """
     :type customer_ref: unicode
     :type error_code: str
