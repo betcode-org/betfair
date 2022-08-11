@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.16.7 (2022-08-11)
++++++++++++++++++++
+
+**Improvements**
+
+- Add __getitem__ to betting resources
+
 2.16.6 (2022-07-13)
 +++++++++++++++++++
 
