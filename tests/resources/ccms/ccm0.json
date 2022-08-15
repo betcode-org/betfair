@@ -47,21 +47,24 @@
             "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.5",
-            "actualTime": 1643299013861
+            "actualTime": 1643299013861,
+            "modified": false
           },
           {
             "incidentType": "STRIKE",
             "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.4",
-            "actualTime": 1643298990238
+            "actualTime": 1643298990238,
+            "modified": false
           },
           {
             "incidentType": "WIDE",
             "qualifierType": "RUNS",
             "value": "1",
             "overs": "12.3",
-            "actualTime": 1643298961522
+            "actualTime": 1643298961522,
+            "modified": true
           }
         ]
       }
