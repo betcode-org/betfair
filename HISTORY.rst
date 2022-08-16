@@ -3,12 +3,17 @@
 Release History
 ---------------
 
-2.16.7 (2022-08-11)
+2.16.7 (2022-08-16)
 +++++++++++++++++++
 
 **Improvements**
 
-- Add __getitem__ to betting resources
+- Implement __getitem__ for bettingresources (@mberk)
+- Add "modified" field to CricketIncident (@mberk)
+
+**Dependencies**
+
+- orjson upgraded to 3.7.12
 
 2.16.6 (2022-07-13)
 +++++++++++++++++++
