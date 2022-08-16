@@ -187,6 +187,9 @@ class TestCricketMatch0(unittest.TestCase):
             == 1643299013861
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].participant_ref
             is None
         )
@@ -205,6 +208,9 @@ class TestCricketMatch0(unittest.TestCase):
             == 1643298990238
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].participant_ref
             is None
         )
@@ -221,6 +227,9 @@ class TestCricketMatch0(unittest.TestCase):
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].actual_time
             == 1643298961522
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].modified is True
         )
 
 
@@ -304,6 +313,9 @@ class TestCricketMatch1(unittest.TestCase):
             == 1643298137862
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].participant_ref
             is None
         )
@@ -322,6 +334,9 @@ class TestCricketMatch1(unittest.TestCase):
             == 1643298112170
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].participant_ref
             is None
         )
@@ -338,6 +353,9 @@ class TestCricketMatch1(unittest.TestCase):
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].actual_time
             == 1643298085471
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].modified is False
         )
 
 
@@ -434,6 +452,9 @@ class TestCricketMatch2(unittest.TestCase):
             == 1643366603847
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].participant_ref
             is None
         )
@@ -452,6 +473,9 @@ class TestCricketMatch2(unittest.TestCase):
             == 1643366467184
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].participant_ref
             is None
         )
@@ -468,6 +492,9 @@ class TestCricketMatch2(unittest.TestCase):
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].actual_time
             == 1643366432553
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].modified is False
         )
 
 
@@ -551,6 +578,9 @@ class TestCricketMatch3(unittest.TestCase):
             == 1643365137339
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[0].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[1].participant_ref
             is None
         )
@@ -569,6 +599,9 @@ class TestCricketMatch3(unittest.TestCase):
             == 1643365102771
         )
         assert (
+            self.cricket_match.incident_list_wrapper.incident_list[1].modified is False
+        )
+        assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].participant_ref
             is None
         )
@@ -585,4 +618,7 @@ class TestCricketMatch3(unittest.TestCase):
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[2].actual_time
             == 1643365029126
+        )
+        assert (
+            self.cricket_match.incident_list_wrapper.incident_list[2].modified is False
         )

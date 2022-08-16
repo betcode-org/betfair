@@ -51,7 +51,8 @@
             "incidentType": "OUT",
             "qualifierType": "WICKET",
             "overs": "1.4",
-            "actualTime": 1643366467184
+            "actualTime": 1643366467184,
+            "modified": false
           },
           {
             "incidentType": "STRIKE",
@@ -59,14 +60,16 @@
             "value": "0",
             "innings": 2,
             "overs": "1.3",
-            "actualTime": 1643366603847
+            "actualTime": 1643366603847,
+            "modified": false
           },
           {
             "incidentType": "STRIKE",
             "qualifierType": "RUNS",
             "value": "1",
             "overs": "1.2",
-            "actualTime": 1643366432553
+            "actualTime": 1643366432553,
+            "modified": true
           }
         ]
       }

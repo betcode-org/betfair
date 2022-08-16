@@ -30,6 +30,10 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.event_type.id == event_type["eventType"]["id"]
             assert resource.event_type.name == event_type["eventType"]["name"]
 
+            assert resource.market_count == resource["marketCount"]
+            assert resource.event_type.id == resource["eventType"]["id"]
+            assert resource.event_type.name == resource["eventType"]["name"]
+
     def test_competition_result(self):
         mock_response = create_mock_json("tests/resources/list_competitions.json")
         competitions = mock_response.json().get("result")
@@ -44,6 +48,11 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.competition_region == competition["competitionRegion"]
             assert resource.competition.id == competition["competition"]["id"]
             assert resource.competition.name == competition["competition"]["name"]
+
+            assert resource.market_count == resource["marketCount"]
+            assert resource.competition_region == resource["competitionRegion"]
+            assert resource.competition.id == resource["competition"]["id"]
+            assert resource.competition.name == resource["competition"]["name"]
 
     def test_time_range_result(self):
         mock_response = create_mock_json("tests/resources/list_time_ranges.json")
@@ -62,6 +71,10 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.time_range.to == datetime.datetime.strptime(
                 time_range["timeRange"]["to"], BETFAIR_DATE_FORMAT
             )
+
+            assert resource.market_count == resource["marketCount"]
+            assert resource.time_range._from == resource["timeRange"]["from"]
+            assert resource.time_range.to == resource["timeRange"]["to"]
 
     def test_event_result(self):
         mock_response = create_mock_json("tests/resources/list_events.json")
@@ -83,6 +96,14 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.event.name == event_result["event"]["name"]
             assert resource.event.venue == event_result["event"]["venue"]
 
+            assert resource.market_count == resource["marketCount"]
+            assert resource.event.id == resource["event"]["id"]
+            assert resource.event.open_date == resource["event"]["openDate"]
+            assert resource.event.time_zone == resource["event"]["timezone"]
+            assert resource.event.country_code == resource["event"]["countryCode"]
+            assert resource.event.name == resource["event"]["name"]
+            assert resource.event.venue == resource["event"]["venue"]
+
     def test_market_type_result(self):
         mock_response = create_mock_json("tests/resources/list_market_types.json")
         market_type_results = mock_response.json().get("result")
@@ -95,6 +116,9 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.elapsed_time == self.ELAPSED_TIME
             assert resource.market_count == market_type_result["marketCount"]
             assert resource.market_type == market_type_result["marketType"]
+
+            assert resource.market_count == resource["marketCount"]
+            assert resource.market_type == resource["marketType"]
 
     def test_country_result(self):
         mock_response = create_mock_json("tests/resources/list_countries.json")
@@ -109,6 +133,9 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.market_count == countries_result["marketCount"]
             assert resource.country_code == countries_result["countryCode"]
 
+            assert resource.market_count == resource["marketCount"]
+            assert resource.country_code == resource["countryCode"]
+
     def test_venue_result(self):
         mock_response = create_mock_json("tests/resources/list_venues.json")
         venue_results = mock_response.json().get("result")
@@ -121,6 +148,9 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.elapsed_time == self.ELAPSED_TIME
             assert resource.market_count == venue_result["marketCount"]
             assert resource.venue == venue_result["venue"]
+
+            assert resource.market_count == resource["marketCount"]
+            assert resource.venue == resource["venue"]
 
     def test_market_catalogue(self):
         mock_response = create_mock_json("tests/resources/list_market_catalogue.json")
@@ -229,12 +259,103 @@ class BettingResourcesTest(unittest.TestCase):
                 == market_catalogue["description"]["priceLadderDescription"].get("type")
             )
 
+            assert resource.market_id == resource["marketId"]
+            assert resource.market_name == resource["marketName"]
+            assert resource.total_matched == resource["totalMatched"]
+            assert resource.market_start_time == resource["marketStartTime"]
+
+            assert resource.competition.id == resource["competition"]["id"]
+            assert resource.competition.name == resource["competition"]["name"]
+
+            assert resource.event.id == resource["event"]["id"]
+            assert resource.event.open_date == resource["event"]["openDate"]
+            assert resource.event.time_zone == resource["event"]["timezone"]
+            assert resource.event.country_code == resource["event"]["countryCode"]
+            assert resource.event.name == resource["event"]["name"]
+            assert resource.event.venue == resource["event"].get("venue")
+
+            assert resource.event_type.id == resource["eventType"]["id"]
+            assert resource.event_type.name == resource["eventType"]["name"]
+
+            assert (
+                resource.description.betting_type
+                == resource["description"]["bettingType"]
+            )
+            assert (
+                resource.description.bsp_market == resource["description"]["bspMarket"]
+            )
+            assert (
+                resource.description.discount_allowed
+                == resource["description"]["discountAllowed"]
+            )
+            assert (
+                resource.description.market_base_rate
+                == resource["description"]["marketBaseRate"]
+            )
+            assert (
+                resource.description.market_time
+                == resource["description"]["marketTime"]
+            )
+            assert (
+                resource.description.market_type
+                == resource["description"]["marketType"]
+            )
+            assert (
+                resource.description.persistence_enabled
+                == resource["description"]["persistenceEnabled"]
+            )
+            assert (
+                resource.description.regulator == resource["description"]["regulator"]
+            )
+            assert resource.description.rules == resource["description"]["rules"]
+            assert (
+                resource.description.rules_has_date
+                == resource["description"]["rulesHasDate"]
+            )
+            assert (
+                resource.description.suspend_time
+                == resource["description"]["suspendTime"]
+            )
+            assert (
+                resource.description.turn_in_play_enabled
+                == resource["description"]["turnInPlayEnabled"]
+            )
+            assert resource.description.wallet == resource["description"]["wallet"]
+            assert resource.description.each_way_divisor == resource["description"].get(
+                "eachWayDivisor"
+            )
+            assert resource.description.clarifications == resource["description"].get(
+                "clarifications"
+            )
+            assert resource.description.line_range_info.interval == resource[
+                "description"
+            ]["lineRangeInfo"].get("interval")
+            assert resource.description.line_range_info.market_unit == resource[
+                "description"
+            ]["lineRangeInfo"].get("marketUnit")
+            assert resource.description.line_range_info.min_unit_value == resource[
+                "description"
+            ]["lineRangeInfo"].get("minUnitValue")
+            assert resource.description.line_range_info.max_unit_value == resource[
+                "description"
+            ]["lineRangeInfo"].get("maxUnitValue")
+            assert resource.description.price_ladder_description.type == resource[
+                "description"
+            ]["priceLadderDescription"].get("type")
+
             assert len(resource.runners) == 10
             assert resource.runners[6].handicap == 0.0
             assert resource.runners[6].runner_name == "SCR Altach"
             assert resource.runners[6].selection_id == 872710
             assert resource.runners[6].sort_priority == 7
             assert resource.runners[6].metadata == {"runnerId": "872710"}
+
+            assert len(resource["runners"]) == 10
+            assert resource["runners"][6]["handicap"] == 0.0
+            assert resource["runners"][6]["runnerName"] == "SCR Altach"
+            assert resource["runners"][6]["selectionId"] == 872710
+            assert resource["runners"][6]["sortPriority"] == 7
+            assert resource["runners"][6]["metadata"] == {"runnerId": "872710"}
 
     def test_market_catalogue_no_ero_data(self):
         mock_response = create_mock_json(
@@ -280,8 +401,41 @@ class BettingResourcesTest(unittest.TestCase):
 
             assert len(resource.runners) == len(market_book["runners"])
 
+            assert resource.market_id == resource["marketId"]
+            assert resource.bet_delay == resource["betDelay"]
+            assert resource.bsp_reconciled == resource["bspReconciled"]
+            assert resource.complete == resource["complete"]
+            assert resource.cross_matching == resource["crossMatching"]
+            assert resource.inplay == resource["inplay"]
+            assert resource.is_market_data_delayed == resource["isMarketDataDelayed"]
+            assert resource.last_match_time == resource["lastMatchTime"]
+            assert (
+                resource.number_of_active_runners == resource["numberOfActiveRunners"]
+            )
+            assert resource.number_of_runners == resource["numberOfRunners"]
+            assert resource.number_of_winners == resource["numberOfWinners"]
+            assert resource.runners_voidable == resource["runnersVoidable"]
+            assert resource.status == resource["status"]
+            assert resource.total_available == resource["totalAvailable"]
+            assert resource.total_matched == resource["totalMatched"]
+            assert resource.version == resource["version"]
+
+            assert len(resource.runners) == len(resource["runners"])
+
             for i, key_line in enumerate(
                 market_book["keyLineDescription"].get("keyLine", [])
+            ):
+                assert (
+                    key_line["handicap"]
+                    == resource.key_line_description.key_line[i].handicap
+                )
+                assert (
+                    key_line["selectionId"]
+                    == resource.key_line_description.key_line[i].selection_id
+                )
+
+            for i, key_line in enumerate(
+                resource["keyLineDescription"].get("keyLine", [])
             ):
                 assert (
                     key_line["handicap"]
@@ -325,11 +479,30 @@ class BettingResourcesTest(unittest.TestCase):
                 # # print(resource_runner.matches)
                 # # todo complete
 
+            for i, runner in enumerate(resource["runners"]):
+                resource_runner = resource.runners[i]
+                assert resource_runner.selection_id == runner["selectionId"]
+                assert resource_runner.status == runner["status"]
+                assert resource_runner.total_matched == runner.get("totalMatched")
+                assert resource_runner.adjustment_factor == runner.get(
+                    "adjustmentFactor"
+                )
+                assert resource_runner.handicap == runner["handicap"]
+                assert resource_runner.last_price_traded == runner.get(
+                    "lastPriceTraded"
+                )
+
+                if runner.get("removalDate"):
+                    assert resource_runner.removal_date == runner["removalDate"]
+
     def test_price_size(self):
         price_size = PriceSize(**{"price": 1.01, "size": 2048})
         self.assertEqual(price_size.price, 1.01)
         self.assertEqual(price_size.size, 2048)
         self.assertEqual(str(price_size), "Price: 1.01 Size: 2048")
+
+        self.assertEqual(price_size["price"], 1.01)
+        self.assertEqual(price_size["size"], 2048)
 
     def test_match(self):
         match = {
@@ -343,6 +516,11 @@ class BettingResourcesTest(unittest.TestCase):
         self.assertEqual(resource.matched_lays[0].price, 1.01)
         self.assertEqual(resource.matched_lays[0].size, 2.00)
 
+        self.assertEqual(resource["selectionId"], 123)
+        self.assertEqual(resource["matchedBacks"], [])
+        self.assertEqual(resource["matchedLays"][0].price, 1.01)
+        self.assertEqual(resource["matchedLays"][0].size, 2.00)
+
     def test_current_orders(self):
         mock_response = create_mock_json("tests/resources/list_current_orders.json")
         current_orders = mock_response.json().get("result")
@@ -352,6 +530,10 @@ class BettingResourcesTest(unittest.TestCase):
         assert resource.elapsed_time == self.ELAPSED_TIME
         assert len(resource.orders) == len(current_orders.get("currentOrders"))
         for current_order in current_orders.get("currentOrders"):
+            assert resource.orders[0].bet_id == current_order["betId"]
+
+        assert len(resource.orders) == len(resource.get("currentOrders"))
+        for current_order in resource.get("currentOrders"):
             assert resource.orders[0].bet_id == current_order["betId"]
 
     def test_current_orders_description(self):
@@ -367,6 +549,10 @@ class BettingResourcesTest(unittest.TestCase):
         for current_order in current_orders.get("currentOrders"):
             assert resource.orders[0].bet_id == current_order["betId"]
 
+        assert len(resource.orders) == len(resource.get("currentOrders"))
+        for current_order in resource.get("currentOrders"):
+            assert resource.orders[0].bet_id == current_order["betId"]
+
     def test_cleared_orders(self):
         mock_response = create_mock_json("tests/resources/list_cleared_orders.json")
         cleared_orders = mock_response.json().get("result")
@@ -377,6 +563,12 @@ class BettingResourcesTest(unittest.TestCase):
         assert len(resource.orders) == len(cleared_orders.get("clearedOrders"))
 
         for cleared_order in cleared_orders.get("clearedOrders"):
+            assert resource.orders[0].bet_id == cleared_order["betId"]
+            # todo complete
+
+        assert len(resource.orders) == len(resource.get("clearedOrders"))
+
+        for cleared_order in resource.get("clearedOrders"):
             assert resource.orders[0].bet_id == cleared_order["betId"]
             # todo complete
 
@@ -400,6 +592,11 @@ class BettingResourcesTest(unittest.TestCase):
             )
             # todo complete
 
+            assert resource.market_id == resource["marketId"]
+            assert resource.commission_applied == resource.get("commissionApplied")
+
+            assert len(resource.profit_and_losses) == len(resource["profitAndLosses"])
+
     def test_limit_order(self):
         limit_order = LimitOrder(
             1.01,
@@ -418,14 +615,26 @@ class BettingResourcesTest(unittest.TestCase):
         assert limit_order.bet_target_type == "BACKERS_PROFIT"
         assert limit_order.bet_target_size == 3
 
+        assert limit_order["price"] == 1.01
+        assert limit_order["size"] == 12
+        assert limit_order["persistenceType"] == "LIMIT"
+        assert limit_order["timeInForce"] is True
+        assert limit_order["minFillSize"] == 2
+        assert limit_order["betTargetType"] == "BACKERS_PROFIT"
+        assert limit_order["betTargetSize"] == 3
+
     def test_limit_on_close_order(self):
         limit_on_close_order = LimitOnCloseOrder(liability=12, price=100)
         assert limit_on_close_order.liability == 12
         assert limit_on_close_order.price == 100
 
+        assert limit_on_close_order["liability"] == 12
+        assert limit_on_close_order["price"] == 100
+
     def test_market_on_close_order(self):
         market_on_close_order = MarketOnCloseOrder(liability=12)
         assert market_on_close_order.liability == 12
+        assert market_on_close_order["liability"] == 12
 
     def test_place_orders(self):
         mock_response = create_mock_json("tests/resources/place_orders.json")
@@ -455,6 +664,64 @@ class BettingResourcesTest(unittest.TestCase):
                 0
             ].placed_date == datetime.datetime.strptime(
                 order["placedDate"], BETFAIR_DATE_FORMAT
+            )
+            assert resource.place_instruction_reports[0].error_code == order.get(
+                "errorCode"
+            )
+
+            assert (
+                resource.place_instruction_reports[0].instruction.selection_id
+                == order["instruction"]["selectionId"]
+            )
+            assert (
+                resource.place_instruction_reports[0].instruction.side
+                == order["instruction"]["side"]
+            )
+            assert (
+                resource.place_instruction_reports[0].instruction.order_type
+                == order["instruction"]["orderType"]
+            )
+            assert (
+                resource.place_instruction_reports[0].instruction.handicap
+                == order["instruction"]["handicap"]
+            )
+
+            assert (
+                resource.place_instruction_reports[
+                    0
+                ].instruction.limit_order.persistence_type
+                == order["instruction"]["limitOrder"]["persistenceType"]
+            )
+            assert (
+                resource.place_instruction_reports[0].instruction.limit_order.price
+                == order["instruction"]["limitOrder"]["price"]
+            )
+            assert (
+                resource.place_instruction_reports[0].instruction.limit_order.size
+                == order["instruction"]["limitOrder"]["size"]
+            )
+
+        assert resource.market_id == resource["marketId"]
+        assert resource.status == resource["status"]
+        assert resource.customer_ref == resource.get("customerRef")
+        assert resource.error_code == resource.get("errorCode")
+        assert len(resource.place_instruction_reports) == len(
+            resource.get("instructionReports")
+        )
+
+        for order in resource.get("instructionReports"):
+            assert (
+                resource.place_instruction_reports[0].size_matched
+                == order["sizeMatched"]
+            )
+            assert resource.place_instruction_reports[0].status == order["status"]
+            assert resource.place_instruction_reports[0].bet_id == order["betId"]
+            assert (
+                resource.place_instruction_reports[0].average_price_matched
+                == order["averagePriceMatched"]
+            )
+            assert (
+                resource.place_instruction_reports[0].placed_date == order["placedDate"]
             )
             assert resource.place_instruction_reports[0].error_code == order.get(
                 "errorCode"
@@ -527,6 +794,33 @@ class BettingResourcesTest(unittest.TestCase):
                 0
             ].instruction.size_reduction == order["instruction"].get("sizeReduction")
 
+        assert resource.market_id == resource["marketId"]
+        assert resource.status == resource["status"]
+        assert resource.customer_ref == resource.get("customerRef")
+        assert resource.error_code == resource.get("errorCode")
+        assert len(resource.cancel_instruction_reports) == len(
+            resource.get("instructionReports")
+        )
+
+        for order in resource.get("instructionReports"):
+            assert (
+                resource.cancel_instruction_reports[0].size_cancelled
+                == order["sizeCancelled"]
+            )
+            assert resource.cancel_instruction_reports[0].status == order["status"]
+            assert (
+                resource.cancel_instruction_reports[0].cancelled_date
+                == order["cancelledDate"]
+            )
+
+            assert (
+                resource.cancel_instruction_reports[0].instruction.bet_id
+                == order["instruction"]["betId"]
+            )
+            assert resource.cancel_instruction_reports[
+                0
+            ].instruction.size_reduction == order["instruction"].get("sizeReduction")
+
     def test_update_orders(self):
         mock_response = create_mock_json("tests/resources/update_orders.json")
         update_orders = mock_response.json().get("result")
@@ -545,6 +839,17 @@ class BettingResourcesTest(unittest.TestCase):
         for order in update_orders.get("instructionReports"):
             pass
 
+        assert resource.market_id == resource["marketId"]
+        assert resource.status == resource["status"]
+        assert resource.customer_ref == resource.get("customerRef")
+        assert resource.error_code == resource.get("errorCode")
+        assert len(resource.update_instruction_reports) == len(
+            resource.get("instructionReports")
+        )
+
+        for order in resource.get("instructionReports"):
+            pass
+
     def test_replace_orders(self):
         mock_response = create_mock_json("tests/resources/replace_orders.json")
         replace_orders = mock_response.json().get("result")
@@ -557,3 +862,8 @@ class BettingResourcesTest(unittest.TestCase):
         assert resource.customer_ref == replace_orders.get("customerRef")
         assert resource.error_code == replace_orders.get("errorCode")
         # assert len(resource.instruction_reports) == len(replace_orders.get('instructionReports'))
+
+        assert resource.market_id == resource["marketId"]
+        assert resource.status == resource["status"]
+        assert resource.customer_ref == resource.get("customerRef")
+        assert resource.error_code == resource.get("errorCode")

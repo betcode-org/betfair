@@ -422,6 +422,7 @@ class CricketIncident:
     :type innings: int
     :type overs: unicode
     :type actual_time: int
+    :type modified: bool
     """
 
     def __init__(self, **kwargs):
@@ -432,6 +433,7 @@ class CricketIncident:
         self.innings = kwargs.get("innings")
         self.overs = kwargs.get("overs")
         self.actual_time = kwargs.get("actualTime")
+        self.modified = kwargs.get("modified")
 
 
 class CricketMatch(BaseResource):
