@@ -1,3 +1,5 @@
+import re
+
 import requests
 import datetime
 from typing import Optional
@@ -6,6 +8,7 @@ from .compat import BETFAIR_DATE_FORMAT
 from .exceptions import StatusCodeError
 from .__version__ import __title__, __version__
 
+CAMEL_CASE_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
 TICK_SIZES = {
     1.0: 0.01,
     2.0: 0.02,
@@ -61,6 +64,17 @@ def to_camel_case(snake_str: str) -> str:
     """
     components = snake_str.split("_")
     return components[0] + "".join(x.title() for x in components[1:])
+
+
+def to_snake_case(camel_case_str: str) -> str:
+    """
+    Utility function for converting a CamelCase formatted string to a snake_case one. The inverse of to_camel_case. Taken from https://stackoverflow.com/a/1176023/2798232
+
+    :param camel_case_str: A string written in CamelCase
+    :return: The string rewritten in snake_case
+    """
+    snake_case_str = CAMEL_CASE_PATTERN.sub("_", camel_case_str).lower()
+    return snake_case_str
 
 
 def default_user_agent():
