@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.17.0 (2022-10-21)
++++++++++++++++++++
+
+**Improvements**
+
+- #498 cricket API updates
+
+**Dependencies**
+
+- python 3.6 removed
+- orjson upgraded to 3.8.0
+- black upgraded to 22.10.0
+
 2.16.7 (2022-08-16)
 +++++++++++++++++++
 

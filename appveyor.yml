@@ -2,9 +2,6 @@ build: off
 
 environment:
   matrix:
-    - PYTHON: "C:\\Python36"
-      PYTHON_VERSION: "3.6.x"
-
     - PYTHON: "C:\\Python37"
       PYTHON_VERSION: "3.7.x"
 
