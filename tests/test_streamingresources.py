@@ -168,6 +168,11 @@ class TestCricketMatch0(unittest.TestCase):
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_runs is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_maidens is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_wickets is None
+        assert self.cricket_match.match_stats.winner == "NA"
+        assert (
+            self.cricket_match.match_stats.scoreboard_status
+            == "Match in Progress - Ball in Progress (est.latency:3 seconds)"
+        )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].participant_ref
             is None
@@ -294,6 +299,11 @@ class TestCricketMatch1(unittest.TestCase):
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_runs is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_maidens is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_wickets is None
+        assert self.cricket_match.match_stats.winner == "NA"
+        assert (
+            self.cricket_match.match_stats.scoreboard_status
+            == "Match in Progress - Ball in Progress (est.latency:3 seconds)"
+        )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].participant_ref
             is None
@@ -432,6 +442,11 @@ class TestCricketMatch2(unittest.TestCase):
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_runs is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_maidens is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_wickets is None
+        assert self.cricket_match.match_stats.winner == "NA"
+        assert (
+            self.cricket_match.match_stats.scoreboard_status
+            == "Match in Progress - Ball in Progress (est.latency:3 seconds)"
+        )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].participant_ref
             == "Daniel Hughes"
@@ -559,6 +574,11 @@ class TestCricketMatch3(unittest.TestCase):
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_runs is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_maidens is None
         assert self.cricket_match.match_stats.bowling_team_stats.bowl_2_wickets is None
+        assert self.cricket_match.match_stats.winner == "NA"
+        assert (
+            self.cricket_match.match_stats.scoreboard_status
+            == "Match in Progress - Ball in Progress (est.latency:3 seconds)"
+        )
         assert (
             self.cricket_match.incident_list_wrapper.incident_list[0].participant_ref
             is None

@@ -300,6 +300,8 @@ class CricketMatchStats:
     :type innings_stats: list[CricketInningsStats]
     :type batting_team_stats: CricketBattingTeamStats
     :type bowling_team_stats: CricketBowlingTeamStats
+    :type winner: unicode
+    :type scoreboard_status: unicode
     """
 
     def __init__(self, **kwargs):
@@ -319,6 +321,8 @@ class CricketMatchStats:
             if kwargs.get("bowlingTeamStats")
             else None
         )
+        self.winner = kwargs.get("winner")
+        self.scoreboard_status = kwargs.get("scoreboardStatus")
 
 
 class CricketInningsStats:
