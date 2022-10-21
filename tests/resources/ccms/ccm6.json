@@ -42,7 +42,9 @@
         },
         "bowlingTeamStats": {
           "teamName": "Perth Scorchers"
-        }
+        },
+        "winner":"NA",
+        "scoreboardStatus":"Match in Progress - Ball in Progress (est.latency:3 seconds)"
       },
       "incidentListWrapper": {
         "incidentList": [
