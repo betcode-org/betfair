@@ -14,7 +14,7 @@ class APIClient(BaseClient):
         app_key: str = None,
         certs: str = None,
         locale: str = None,
-        cert_files: Union[Tuple[str], str, None] = None,
+        cert_files: Union[Tuple[str, str], str, None] = None,
         lightweight: bool = False,
         session: requests.Session = None,
     ):

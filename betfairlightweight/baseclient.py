@@ -56,7 +56,7 @@ class BaseClient:
         app_key: str = None,
         certs: str = None,
         locale: str = None,
-        cert_files: Union[Tuple[str], str, None] = None,
+        cert_files: Union[Tuple[str, str], str, None] = None,
         lightweight: bool = False,
         session: requests.Session = None,
     ):
@@ -147,7 +147,7 @@ class BaseClient:
             return False
 
     @property
-    def cert(self) -> Union[Tuple[str], str]:
+    def cert(self) -> Union[Tuple[str, str], str]:
         """
         The betfair certificates, by default it looks for the
         certificates in /certs/.
