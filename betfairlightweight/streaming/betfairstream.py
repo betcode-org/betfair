@@ -9,6 +9,7 @@ from typing import Optional
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
 from .listener import BaseListener
+from ..utils import stream_reader
 
 logger = logging.getLogger(__name__)
 
@@ -322,7 +323,7 @@ class HistoricalStream:
         self, file_path: str, listener: BaseListener, operation: str, unique_id: int
     ):
         """
-        :param str file_path: Directory of betfair data
+        :param str file_path: path to betfair stream data - .gz and .bz2 extensions are transparently handled
         :param BaseListener listener: Listener object
         :param str operation: Operation type
         :param int unique_id: Stream id (added to updates)
@@ -342,7 +343,7 @@ class HistoricalStream:
 
     def _read_loop(self) -> None:
         self.listener.register_stream(self.unique_id, self.operation)
-        with open(self.file_path, "r") as f:
+        with stream_reader(self.file_path) as f:
             for update in f:
                 if self.listener.on_data(update) is False:
                     # if on_data returns an error stop the stream and raise error
@@ -366,7 +367,7 @@ class HistoricalGeneratorStream(HistoricalStream):
     def _read_loop(self) -> dict:
         self._running = True
         self.listener.register_stream(self.unique_id, self.operation)
-        with open(self.file_path, "r") as f:
+        with stream_reader(self.file_path) as f:
             for update in f:
                 if self.listener.on_data(update) is False:
                     # if on_data returns an error stop the stream and raise error

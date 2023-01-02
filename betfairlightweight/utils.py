@@ -1,8 +1,12 @@
+import bz2
+import gzip
+import io
+import os
 import re
 
 import requests
 import datetime
-from typing import Optional
+from typing import Optional, TextIO
 
 from .compat import BETFAIR_DATE_FORMAT
 from .exceptions import StatusCodeError
@@ -88,3 +92,23 @@ def create_date_string(date: datetime.datetime) -> Optional[str]:
     """
     if date:
         return date.strftime(BETFAIR_DATE_FORMAT)
+
+
+def stream_reader(path: str) -> TextIO:
+    """Return a text reader for the given path, transparently handling compression inferred by the filename.
+
+    Generally used by methods which read stored streams.
+    """
+    # this is true when builtins.open is patched, e.g. `with unittest.mock.patch("builtins.open", smart_open.open):`
+    if open is not io.open:
+        return open(path, "rt")
+
+    _, ext = os.path.splitext(path)
+    if ext == ".bz2":
+        # as seen in the betfair historical data API
+        return bz2.open(path, "rt")
+    if ext == ".gz":
+        # as seen in example flumine stream recorder
+        return gzip.open(path, "rt")
+    # as seen in example flumine stream recorder, and unpacked tars from historical data API
+    return open(path, "r")

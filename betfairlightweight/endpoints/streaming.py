@@ -61,7 +61,7 @@ class Streaming:
         historical data:
             https://historicdata.betfair.com/#/home
 
-        :param str file_path: Path to historic betfair file
+        :param str file_path: Path to historic betfair file - .gz and .bz2 extensions are transparently handled
         :param BaseListener listener: Listener object
         :param str operation: Operation type
         :param int unique_id: Stream id (added to updates)
@@ -83,7 +83,7 @@ class Streaming:
         historical data:
             https://historicdata.betfair.com/#/home
 
-        :param str file_path: Path to historic betfair file
+        :param str file_path: Path to historic betfair file - .gz and .bz2 extensions are transparently handled
         :param BaseListener listener: Listener object
         :param str operation: Operation type
         :param int unique_id: Stream id (added to updates)
