@@ -232,7 +232,7 @@ class MarketBookCache(BaseResource):
         self._number_of_runners = 0
 
     def update_cache(
-        self, market_change: dict, publish_time: int, active: bool
+        self, market_change: dict, publish_time: int, active: bool = True
     ) -> None:
         self.active = active
         self.streaming_update = market_change

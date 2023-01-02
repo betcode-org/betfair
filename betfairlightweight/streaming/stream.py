@@ -1,22 +1,32 @@
 import datetime
 import logging
 import time
-from typing import Optional
+import typing
+from typing import Optional, Generic, TypeVar, List, ClassVar
 
 from .cache import CricketMatchCache, MarketBookCache, OrderBookCache, RaceCache
+from ..resources import BaseResource
+
+if typing.TYPE_CHECKING:
+    from . import StreamListener
 
 logger = logging.getLogger(__name__)
 
 MAX_CACHE_AGE = 60 * 60 * 8  # 8hrs
 
 
-class BaseStream:
+T = TypeVar("T", bound=BaseResource)
+
+
+class BaseStream(Generic[T]):
     """Separate stream class to hold market/order caches"""
 
     _lookup = "mc"
     _name = "Stream"
+    MARKET_ID_FIELD: ClassVar[str]
+    IS_IMAGE_FIELD: ClassVar[Optional[str]]
 
-    def __init__(self, listener: object, unique_id: int):
+    def __init__(self, listener: "StreamListener", unique_id: int):
         self._listener = listener
         self.unique_id = unique_id
         self.output_queue = listener.output_queue
@@ -25,7 +35,9 @@ class BaseStream:
         self._lightweight = listener.lightweight
         self._calculate_market_tv = listener.calculate_market_tv
         self._cumulative_runner_tv = listener.cumulative_runner_tv
-        self._order_updates_only = listener.order_updates_only
+        if not hasattr(self, "_updates_only"):
+            # set the member if it is not already defined at the class level - only relevant for OrderStream
+            self._updates_only = listener.order_updates_only
 
         self._initial_clk = None
         self._clk = None
@@ -94,7 +106,9 @@ class BaseStream:
                 % (self, self.unique_id, market_id, len(self._caches))
             )
 
-    def snap(self, market_ids: list = None, publish_time: Optional[int] = None) -> list:
+    def snap(
+        self, market_ids: list = None, publish_time: Optional[int] = None
+    ) -> List[T]:
         return [
             cache.create_resource(self.unique_id, snap=True, publish_time=publish_time)
             for cache in list(self._caches.values())
@@ -114,9 +128,44 @@ class BaseStream:
     def _on_creation(self) -> None:
         logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
 
+    def _new_cache_for_update(
+        self, market_id: str, publish_time: int, update: dict
+    ) -> T:
+        """Return a new cache instance for."""
+        raise NotImplemented()
+
     def _process(self, data: list, publish_time: int) -> bool:
-        # Return True if new img within data
-        pass
+        """Return True if new img within data"""
+        new_image = False
+        caches = []
+        for item in data:
+            market_id = item[self.MARKET_ID_FIELD]
+            is_image = item.get(self.IS_IMAGE_FIELD, False)
+            cached_object = self._caches.get(market_id)
+
+            if is_image or cached_object is None:
+                new_image = True
+                cached_object = self._new_cache_for_update(
+                    market_id, publish_time, item
+                )
+                self._caches[market_id] = cached_object
+                logger.info(
+                    "[%s: %s]: %s added, %s markets in cache",
+                    self,
+                    self.unique_id,
+                    market_id,
+                    len(self._caches),
+                )
+
+            cached_object.update_cache(item, publish_time)
+            caches.append(cached_object)
+            self._updates_processed += 1
+
+        if self._updates_only:
+            self.on_process(caches, publish_time)
+        else:
+            self.on_process(caches)
+        return self.IS_IMAGE_FIELD is not None and new_image
 
     def _update_clk(self, data: dict) -> None:
         (initial_clk, clk) = (data.get("initialClk"), data.get("clk"))
@@ -140,91 +189,64 @@ class BaseStream:
         return "<{0} [{1}]>".format(self._name, len(self))
 
 
-class MarketStream(BaseStream):
-
+class MarketStream(BaseStream[MarketBookCache]):
+    _updates_only = False
     _lookup = "mc"
     _name = "MarketStream"
 
-    def _process(self, data: list, publish_time: int) -> bool:
-        caches, img = [], False
-        for market_book in data:
-            market_id = market_book["id"]
-            full_image = market_book.get("img", False)
-            market_book_cache = self._caches.get(market_id)
+    MARKET_ID_FIELD = "id"
+    IS_IMAGE_FIELD = "img"
 
-            if (
-                full_image or market_book_cache is None
-            ):  # historic data does not contain img
-                img = True
-                if "marketDefinition" not in market_book:
-                    logger.warning(
-                        "[%s: %s]: Missing marketDefinition on market %s resulting "
-                        "in potential missing data in the MarketBook (make sure "
-                        "EX_MARKET_DEF is requested)"
-                        % (self, self.unique_id, market_id)
-                    )
-                market_book_cache = MarketBookCache(
-                    market_id,
-                    publish_time,
-                    self._lightweight,
-                    self._calculate_market_tv,
-                    self._cumulative_runner_tv,
-                )
-                self._caches[market_id] = market_book_cache
-                logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
-                )
-
-            market_book_cache.update_cache(market_book, publish_time, True)
-            caches.append(market_book_cache)
-            self._updates_processed += 1
-        self.on_process(caches)
-        return img
+    def _new_cache_for_update(
+        self, market_id: str, publish_time: int, update: dict
+    ) -> MarketBookCache:
+        if "marketDefinition" not in update:
+            logger.warning(
+                "[%s: %s]: Missing marketDefinition on market %s resulting "
+                "in potential missing data in the MarketBook (make sure "
+                "EX_MARKET_DEF is requested)" % (self, self.unique_id, market_id)
+            )
+        return MarketBookCache(
+            market_id,
+            publish_time,
+            self._lightweight,
+            self._calculate_market_tv,
+            self._cumulative_runner_tv,
+        )
 
 
-class OrderStream(BaseStream):
+class OrderStream(BaseStream[OrderBookCache]):
 
     _lookup = "oc"
     _name = "OrderStream"
 
-    def _process(self, data: list, publish_time: int) -> bool:
-        caches, img = [], False
-        for order_book in data:
-            market_id = order_book["id"]
-            full_image = order_book.get("fullImage", False)
-            order_book_cache = self._caches.get(market_id)
+    MARKET_ID_FIELD = "id"
+    IS_IMAGE_FIELD = "fullImage"
 
-            if full_image or order_book_cache is None:
-                img = True
-                order_book_cache = OrderBookCache(
-                    market_id, publish_time, self._lightweight
-                )
-                self._caches[market_id] = order_book_cache
-                logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
-                )
-
-            order_book_cache.update_cache(order_book, publish_time)
-            caches.append(order_book_cache)
-            self._updates_processed += 1
-        if self._order_updates_only:
-            self.on_process(caches, publish_time)
-        else:
-            self.on_process(caches)
-        return img
+    def _new_cache_for_update(
+        self, market_id: str, publish_time: int, update: dict
+    ) -> OrderBookCache:
+        return OrderBookCache(market_id, publish_time, self._lightweight)
 
 
-class RaceStream(BaseStream):
+class RaceStream(BaseStream[RaceCache]):
 
     """
     Cache contains latest update:
         marketId: RaceCache
     """
 
+    _updates_only = False
     _lookup = "rc"
     _name = "RaceStream"
+
+    MARKET_ID_FIELD = "mid"
+    IS_IMAGE_FIELD = None
+
+    def _new_cache_for_update(
+        self, market_id: str, publish_time: int, update: dict
+    ) -> RaceCache:
+        return RaceCache(market_id, publish_time, update.get("id"), self._lightweight)
 
     def on_subscribe(self, data: dict) -> None:
         """The initial message returned after
@@ -233,53 +255,18 @@ class RaceStream(BaseStream):
         do in the future"""
         pass
 
-    def _process(self, race_updates: list, publish_time: int) -> bool:
-        caches, img = [], False  # todo cache.closed / img=True
-        for update in race_updates:
-            market_id = update["mid"]
-            race_cache = self._caches.get(market_id)
 
-            if race_cache is None:
-                race_id = update.get("id")
-                race_cache = RaceCache(
-                    market_id, publish_time, race_id, self._lightweight
-                )
-                self._caches[market_id] = race_cache
-                logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
-                )
-
-            race_cache.update_cache(update, publish_time)
-            caches.append(race_cache)
-            self._updates_processed += 1
-        self.on_process(caches)
-        return img
-
-
-class CricketStream(BaseStream):
+class CricketStream(BaseStream[CricketMatchCache]):
+    _updates_only = False
     _lookup = "cc"
     _name = "CricketStream"
 
-    def _process(self, cricket_changes: list, publish_time: int) -> bool:
-        caches, img = [], False
-        for cricket_change in cricket_changes:
-            market_id = cricket_change["marketId"]
-            event_id = cricket_change["eventId"]
-            cricket_match_cache = self._caches.get(market_id)
+    MARKET_ID_FIELD = "marketId"
+    IS_IMAGE_FIELD = None
 
-            if cricket_match_cache is None:
-                cricket_match_cache = CricketMatchCache(
-                    market_id, event_id, publish_time, self._lightweight
-                )
-                self._caches[market_id] = cricket_match_cache
-                logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
-                )
-
-            cricket_match_cache.update_cache(cricket_change, publish_time)
-            caches.append(cricket_match_cache)
-            self._updates_processed += 1
-        self.on_process(caches)
-        return img
+    def _new_cache_for_update(
+        self, market_id: str, publish_time: int, update: dict
+    ) -> CricketMatchCache:
+        return CricketMatchCache(
+            market_id, update["eventId"], publish_time, self._lightweight
+        )

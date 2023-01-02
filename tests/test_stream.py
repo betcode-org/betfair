@@ -31,9 +31,7 @@ class BaseStreamTest(unittest.TestCase):
         self.assertEqual(
             self.stream._cumulative_runner_tv, self.listener.cumulative_runner_tv
         )
-        self.assertEqual(
-            self.stream._order_updates_only, self.listener.order_updates_only
-        )
+        self.assertEqual(self.stream._updates_only, self.listener.order_updates_only)
         self.assertIsNone(self.stream._initial_clk)
         self.assertIsNone(self.stream._clk)
         self.assertEqual(self.stream._caches, {})
@@ -182,9 +180,6 @@ class BaseStreamTest(unittest.TestCase):
     def test_on_creation(self):
         self.stream._on_creation()
 
-    def test_process(self):
-        self.stream._process(None, None)
-
     def test_on_process(self):
         mock_cache_one = mock.Mock()
         mock_cache_two = mock.Mock()
@@ -263,7 +258,7 @@ class MarketStreamTest(unittest.TestCase):
         self.stream._caches = {data[0]["id"]: mock_market_cache}
         self.assertFalse(self.stream._process(data, 123))
         self.assertEqual(len(self.stream), len(data))
-        mock_market_cache.update_cache.assert_called_with(data[0], 123, True)
+        mock_market_cache.update_cache.assert_called_with(data[0], 123)
 
     def test_str(self):
         assert str(self.stream) == "MarketStream"
@@ -302,7 +297,7 @@ class OrderStreamTest(unittest.TestCase):
     @mock.patch("betfairlightweight.streaming.stream.OrderBookCache")
     @mock.patch("betfairlightweight.streaming.stream.OrderStream.on_process")
     def test_process_order_updates(self, mock_on_process, mock_cache):
-        self.stream._order_updates_only = True
+        self.stream._updates_only = True
         sub_image = create_mock_json("tests/resources/streaming_ocm_FULL_IMAGE.json")
         data = sub_image.json()["oc"]
         self.assertTrue(self.stream._process(data, 123))

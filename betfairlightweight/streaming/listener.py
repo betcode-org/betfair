@@ -1,25 +1,34 @@
+import enum
 import logging
 import queue
-from typing import Optional
+from typing import Optional, Generic, List
 
-from .stream import BaseStream, CricketStream, MarketStream, OrderStream, RaceStream
+from .stream import BaseStream, CricketStream, MarketStream, OrderStream, RaceStream, T
 from ..compat import json
 
 logger = logging.getLogger(__name__)
 
 
-class BaseListener:
+class SubscriptionEnum(str, enum.Enum):
+    MARKET = "marketSubscription"
+    ORDER = "orderSubscription"
+    RACE = "raceSubscription"
+    CRICKET = "cricketSubscription"
+
+
+class BaseListener(Generic[T]):
     def __init__(self, max_latency: Optional[float] = 0.5):
         self.max_latency = max_latency
 
         self.connection_id = None
         self.status = None
-        self.stream = None
+        self.stream: Optional[BaseStream[T]] = None
         self.stream_type = None  # marketSubscription/orderSubscription/raceSubscription
         self.stream_unique_id = None
         self.connections_available = None  # connection throttling
 
     def register_stream(self, unique_id: int, operation: str) -> None:
+        """Set the stream for this listener."""
         logger.info("[Register: %s]: %s" % (unique_id, operation))
         if self.stream is not None:
             logger.warning(
@@ -39,7 +48,7 @@ class BaseListener:
     def on_data(self, raw_data: str) -> None:
         logger.info(raw_data)
 
-    def snap(self, market_ids: list = None) -> list:
+    def snap(self, market_ids: list = None) -> List[T]:
         """Returns a 'snap' of the current cache
         data.
 
@@ -66,14 +75,15 @@ class BaseListener:
         if self.stream is not None:
             return self.stream._clk
 
-    def _add_stream(self, unique_id: int, operation: str) -> BaseStream:
-        if operation == "marketSubscription":
+    def _add_stream(self, unique_id: int, operation: str) -> BaseStream[T]:
+        # Typing is a bit off here, it may be simpler to merge BaseListener into StreamListener
+        if operation == SubscriptionEnum.MARKET:
             return MarketStream(self, unique_id)
-        elif operation == "orderSubscription":
+        elif operation == SubscriptionEnum.ORDER:
             return OrderStream(self, unique_id)
-        elif operation == "raceSubscription":
+        elif operation == SubscriptionEnum.RACE:
             return RaceStream(self, unique_id)
-        elif operation == "cricketSubscription":
+        elif operation == SubscriptionEnum.CRICKET:
             return CricketStream(self, unique_id)
 
     def __str__(self) -> str:
