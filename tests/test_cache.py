@@ -326,19 +326,12 @@ class TestMarketBookCache(unittest.TestCase):
     #         assert self.market_book_cache.total_matched == book.get('tv')
 
     def test_refresh_cache(self):
+        """Refresh calls refresh on all runners."""
         mock_runner = mock.Mock()
         self.market_book_cache.runners = [mock_runner]
         self.market_book_cache.refresh_cache()
-        mock_runner.traded.refresh.assert_called()
-        mock_runner.available_to_back.refresh.assert_called()
-        mock_runner.available_to_lay.refresh.assert_called()
-        mock_runner.best_available_to_back.refresh.assert_called()
-        mock_runner.best_available_to_lay.refresh.assert_called()
-        mock_runner.best_display_available_to_back.refresh.assert_called()
-        mock_runner.best_display_available_to_lay.refresh.assert_called()
-        mock_runner.starting_price_back.refresh.assert_called()
-        mock_runner.starting_price_lay.refresh.assert_called()
-        mock_runner.serialise.assert_called()
+        mock_runner.refresh.assert_called()
+
 
     @mock.patch(
         "betfairlightweight.streaming.cache.MarketBookCache.serialise",
@@ -504,6 +497,32 @@ class TestMarketBookCacheCalculate(unittest.TestCase):
 class TestRunnerBookCache(unittest.TestCase):
     def setUp(self):
         self.runner_book = RunnerBookCache(lightweight=True, **{"id": 123})
+
+    @mock.patch("betfairlightweight.streaming.cache.RunnerBookCache.serialise")
+    def test_refresh(self, mock_serialise):
+        """Refresh calls refresh on all refreshable members, and also calls the serialise method."""
+        # refreshable members are those which are instances of Available
+        refreshable_attrs = [k for k, v in vars(self.runner_book).items()
+                             if isinstance(v, Available)]
+
+        # sanity check that there are refreshable attributes
+        self.assertGreater(len(refreshable_attrs), 0)
+
+        # replace all the refreshable attributes with mocks
+        mocks = {}
+        for attr in refreshable_attrs:
+            m = mock.Mock()
+            mocks[attr] = m
+            setattr(self.runner_book, attr, m)
+
+        # trigger the refresh
+        self.runner_book.refresh()
+
+        # make sure the refreshes were called
+        for attr, m in mocks.items():
+            self.assertEqual(m.refresh.call_count, 1, msg=f"runner.{attr}.refresh() was not called")
+        # make sure the serialise method was called
+        mock_serialise.assert_called_once()
 
     def test_init(self):
         self.assertEqual(self.runner_book.selection_id, 123)

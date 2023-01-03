@@ -136,6 +136,20 @@ class RunnerBookCache:
         self.serialised = {}  # cache is king
         self.resource = None
 
+    def refresh(self):
+        """Refresh all refreshable properties and then serialise."""
+        # refresh all members which are instances of Available
+        self.traded.refresh()
+        self.available_to_back.refresh()
+        self.available_to_lay.refresh()
+        self.best_available_to_back.refresh()
+        self.best_available_to_lay.refresh()
+        self.best_display_available_to_back.refresh()
+        self.best_display_available_to_lay.refresh()
+        self.starting_price_back.refresh()
+        self.starting_price_lay.refresh()
+        self.serialise()
+
     def update_definition(self, definition: dict) -> None:
         self.definition = definition
         # cache values used in serialisation to prevent duplicate <get>
@@ -300,16 +314,7 @@ class MarketBookCache(BaseResource):
 
     def refresh_cache(self) -> None:
         for runner in self.runners:
-            runner.traded.refresh()
-            runner.available_to_back.refresh()
-            runner.available_to_lay.refresh()
-            runner.best_available_to_back.refresh()
-            runner.best_available_to_lay.refresh()
-            runner.best_display_available_to_back.refresh()
-            runner.best_display_available_to_lay.refresh()
-            runner.starting_price_back.refresh()
-            runner.starting_price_lay.refresh()
-            runner.serialise()
+            runner.refresh()
 
     def _process_market_definition(self, market_definition: dict) -> None:
         self.market_definition = market_definition
