@@ -139,12 +139,7 @@ class BaseClient:
         Returns True if login_time not set or seconds since
         login time is greater half session timeout.
         """
-        if not self._login_time or time.time() - self._login_time > (
-            self.session_timeout / 2
-        ):
-            return True
-        else:
-            return False
+        return not self._login_time or time.time() - self._login_time > (self.session_timeout / 2)
 
     @property
     def cert(self) -> Union[Tuple[str], str]:

@@ -388,10 +388,7 @@ class MarketBookCache(BaseResource):
 
     @property
     def closed(self) -> bool:
-        if self._definition_status == "CLOSED":
-            return True
-        else:
-            return False
+        return self._definition_status == "CLOSED"
 
     @property
     def serialise(self) -> dict:
