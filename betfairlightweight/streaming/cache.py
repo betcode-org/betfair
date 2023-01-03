@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, List, Tuple, Dict
 
 from ..resources import (
     BaseResource,
@@ -241,8 +241,8 @@ class MarketBookCache(BaseResource):
         self._definition_price_ladder_definition = None
         self._definition_key_line_description = None
         self.streaming_update = None
-        self.runners = []
-        self.runner_dict = {}
+        self.runners: List[RunnerBookCache] = []
+        self.runner_dict: Dict[Tuple[int, int], RunnerBookCache] = {}
         self._number_of_runners = 0
 
     def update_cache(
@@ -261,49 +261,58 @@ class MarketBookCache(BaseResource):
         if "rc" in market_change:
             calculate_tv = False
             for new_data in market_change["rc"]:
+                # get or create the runner
                 runner = self.runner_dict.get((new_data["id"], new_data.get("hc", 0)))
-                if runner:
-                    if "ltp" in new_data:
-                        runner.last_price_traded = new_data["ltp"]
-                    if "tv" in new_data:  # if runner removed tv: 0 is returned
-                        if not self.cumulative_runner_tv:
-                            runner.total_matched = new_data["tv"]
-                    if "spn" in new_data:
-                        runner.starting_price_near = new_data["spn"]
-                    if "spf" in new_data:
-                        runner.starting_price_far = new_data["spf"]
-                    if "trd" in new_data:
-                        runner.update_traded(new_data["trd"], active)
-                        if self.cumulative_runner_tv:
-                            runner.total_matched = round(
-                                sum([vol["size"] for vol in runner.traded.serialised]),
-                                2,
-                            )
-                        calculate_tv = True
-                    if "atb" in new_data:
-                        runner.available_to_back.update(new_data["atb"], active)
-                    if "atl" in new_data:
-                        runner.available_to_lay.update(new_data["atl"], active)
-                    if "batb" in new_data:
-                        runner.best_available_to_back.update(new_data["batb"], active)
-                    if "batl" in new_data:
-                        runner.best_available_to_lay.update(new_data["batl"], active)
-                    if "bdatb" in new_data:
-                        runner.best_display_available_to_back.update(
-                            new_data["bdatb"], active
-                        )
-                    if "bdatl" in new_data:
-                        runner.best_display_available_to_lay.update(
-                            new_data["bdatl"], active
-                        )
-                    if "spb" in new_data:
-                        runner.starting_price_back.update(new_data["spb"], active)
-                    if "spl" in new_data:
-                        runner.starting_price_lay.update(new_data["spl"], active)
-                else:
+                if runner is None:
                     runner = self._add_new_runner(**new_data)
+                    if active:
+                        runner.serialise()
+                    # no updates are needed as we have initial state, so we can continue
+                    continue
+
+                # update the properties of the runner
+                if "ltp" in new_data:
+                    runner.last_price_traded = new_data["ltp"]
+                if "tv" in new_data:  # if runner removed tv: 0 is returned
+                    if not self.cumulative_runner_tv:
+                        runner.total_matched = new_data["tv"]
+                if "spn" in new_data:
+                    runner.starting_price_near = new_data["spn"]
+                if "spf" in new_data:
+                    runner.starting_price_far = new_data["spf"]
+                if "trd" in new_data:
+                    runner.update_traded(new_data["trd"], active)
+                    if self.cumulative_runner_tv:
+                        runner.total_matched = round(
+                            sum([vol["size"] for vol in runner.traded.serialised]),
+                            2,
+                        )
+                    calculate_tv = True
+                if "atb" in new_data:
+                    runner.available_to_back.update(new_data["atb"], active)
+                if "atl" in new_data:
+                    runner.available_to_lay.update(new_data["atl"], active)
+                if "batb" in new_data:
+                    runner.best_available_to_back.update(new_data["batb"], active)
+                if "batl" in new_data:
+                    runner.best_available_to_lay.update(new_data["batl"], active)
+                if "bdatb" in new_data:
+                    runner.best_display_available_to_back.update(
+                        new_data["bdatb"], active
+                    )
+                if "bdatl" in new_data:
+                    runner.best_display_available_to_lay.update(
+                        new_data["bdatl"], active
+                    )
+                if "spb" in new_data:
+                    runner.starting_price_back.update(new_data["spb"], active)
+                if "spl" in new_data:
+                    runner.starting_price_lay.update(new_data["spl"], active)
+
                 if active:
                     runner.serialise()
+
+            # update the total volume matched if configured and needed
             if self.calculate_market_tv and calculate_tv:
                 self.total_matched = round(
                     sum(
