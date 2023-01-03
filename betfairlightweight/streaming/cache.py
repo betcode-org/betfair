@@ -1,3 +1,4 @@
+import math
 from typing import Union, Optional, List, Tuple, Dict
 
 from ..resources import (
@@ -283,10 +284,7 @@ class MarketBookCache(BaseResource):
                 if "trd" in new_data:
                     runner.update_traded(new_data["trd"], active)
                     if self.cumulative_runner_tv:
-                        runner.total_matched = round(
-                            sum([vol["size"] for vol in runner.traded.serialised]),
-                            2,
-                        )
+                        runner.total_matched = math.fsum(vol["size"] for vol in runner.traded.serialised)
                     calculate_tv = True
                 if "atb" in new_data:
                     runner.available_to_back.update(new_data["atb"], active)
@@ -314,11 +312,8 @@ class MarketBookCache(BaseResource):
 
             # update the total volume matched if configured and needed
             if self.calculate_market_tv and calculate_tv:
-                self.total_matched = round(
-                    sum(
-                        vol["size"] for r in self.runners for vol in r.traded.serialised
-                    ),
-                    2,
+                self.total_matched = math.fsum(
+                    vol["size"] for r in self.runners for vol in r.traded.serialised
                 )
 
     def refresh_cache(self) -> None:
