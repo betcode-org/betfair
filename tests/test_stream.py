@@ -200,7 +200,7 @@ class BaseStreamTest(unittest.TestCase):
         self.stream._update_clk({"clk": 123})
         assert self.stream._clk == 123
 
-    @mock.patch("time.time", return_value=1485554805.107185)
+    @mock.patch("time.monotonic", return_value=1485554805.107185)
     def test_calc_latency(self, mock_time):
         pt = 1485554796455
         assert self.stream._calc_latency(pt) is not None

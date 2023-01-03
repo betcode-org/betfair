@@ -128,7 +128,7 @@ class BaseStream:
 
     @staticmethod
     def _calc_latency(publish_time: int) -> float:
-        return time.time() - publish_time / 1e3
+        return time.monotonic() - publish_time / 1e3
 
     def __len__(self) -> int:
         return len(self._caches)

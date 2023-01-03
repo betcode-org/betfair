@@ -100,7 +100,7 @@ class BaseClient:
         :param str session_token: Session token from request.
         """
         self.session_token = session_token
-        self._login_time = time.time()
+        self._login_time = time.monotonic()
 
     def get_password(self) -> str:
         """
@@ -139,7 +139,7 @@ class BaseClient:
         Returns True if login_time not set or seconds since
         login time is greater half session timeout.
         """
-        return not self._login_time or time.time() - self._login_time > (self.session_timeout / 2)
+        return not self._login_time or time.monotonic() - self._login_time > (self.session_timeout / 2)
 
     @property
     def cert(self) -> Union[Tuple[str], str]:

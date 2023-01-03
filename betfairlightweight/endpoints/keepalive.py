@@ -37,7 +37,7 @@ class KeepAlive(BaseEndpoint):
         self, method: str = None, params: dict = None, session: requests.Session = None
     ) -> (dict, float):
         session = session or self.client.session
-        time_sent = time.time()
+        time_sent = time.monotonic()
         try:
             response = session.post(
                 self.url,
@@ -48,7 +48,7 @@ class KeepAlive(BaseEndpoint):
             raise APIError(None, exception=e)
         except Exception as e:
             raise APIError(None, exception=e)
-        elapsed_time = time.time() - time_sent
+        elapsed_time = time.monotonic() - time_sent
 
         check_status_code(response)
         try:
