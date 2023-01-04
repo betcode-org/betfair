@@ -1,13 +1,10 @@
-import re
-import time
 import requests
 from typing import Union, List
 
-from ..exceptions import APIError, RaceCardError, InvalidResponse
-from ..utils import check_status_code
+from ..exceptions import RaceCardError, InvalidResponse
+from ..utils import request
 from .baseendpoint import BaseEndpoint
 from .. import resources
-from ..compat import json
 
 
 class RaceCard(BaseEndpoint):
@@ -23,20 +20,19 @@ class RaceCard(BaseEndpoint):
 
         :param requests.session session: Requests session object
         """
-        session = session or self.client.session
         try:
-            response = session.get(self.login_url)
-        except requests.ConnectionError as e:
-            raise APIError(None, self.login_url, None, e)
-        except Exception as e:
-            raise APIError(None, self.login_url, None, e)
-        app_key = re.findall(
-            r'''"appKey":\s"(.*?)"''', response.content.decode("utf-8")
-        )
-        if app_key:
-            self.app_key = app_key[0]
-        else:
-            raise RaceCardError("Unable to find appKey")
+            response, data, duration = request(
+                session=session or self.client.session,
+                method="get",
+                url=self.url,
+                connect_timeout=self.connect_timeout,
+                read_timeout=self.read_timeout)
+            if "appKey" in data:
+                return data["appKey"]
+        except InvalidResponse:
+            pass
+        # the response was not JSON or did not contain an app key
+        raise RaceCardError("Unable to find appKey")
 
     def get_race_card(
         self,
@@ -99,29 +95,14 @@ class RaceCard(BaseEndpoint):
     def request(
         self, method: str = None, params: dict = None, session: requests.Session = None
     ) -> (dict, float):
-        session = session or self.client.session
-        time_sent = time.monotonic()
-        url = "%s%s" % (self.url, method)
-        try:
-            response = session.get(
-                url,
-                params=params,
-                headers=self.headers,
-                timeout=(self.connect_timeout, self.read_timeout),
-            )
-        except requests.ConnectionError as e:
-            raise APIError(None, method, params, e)
-        except Exception as e:
-            raise APIError(None, method, params, e)
-        elapsed_time = time.monotonic() - time_sent
-
-        check_status_code(response)
-        try:
-            response_json = json.loads(response.content.decode("utf-8"))
-        except ValueError:
-            raise InvalidResponse(response.text)
-
-        return response, response_json, elapsed_time
+        return request(
+            session=session or self.client.session,
+            method="get",
+            url=self.url + self.method,
+            params=params,
+            headers=self.headers,
+            connect_timeout=self.connect_timeout, read_timeout=self.read_timeout,
+        )
 
     @staticmethod
     def create_race_card_req(market_ids: list, data_entries: str) -> dict:

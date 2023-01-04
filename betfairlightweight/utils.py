@@ -1,11 +1,12 @@
 import re
+import time
 
 import requests
 import datetime
-from typing import Optional
+from typing import Optional, Tuple, Union
 
 from .compat import BETFAIR_DATE_FORMAT
-from .exceptions import StatusCodeError
+from .exceptions import StatusCodeError, APIError, InvalidResponse
 from .__version__ import __title__, __version__
 
 CAMEL_CASE_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
@@ -88,3 +89,47 @@ def create_date_string(date: datetime.datetime) -> Optional[str]:
     """
     if date:
         return date.strftime(BETFAIR_DATE_FORMAT)
+
+
+def request(
+        session: requests.Session,
+        method: str,
+        url: str,
+        connect_timeout: float,
+        read_timeout: float,
+        headers: dict = None,
+        data: Union[dict, str] = None,
+        params: dict = None,
+        json: dict = None,
+        cert: Union[str, Tuple[str, str]] = None,
+) -> Tuple[requests.Response, dict, float]:
+    """
+    Make an API request and return the response, json response, and request duration.
+
+    This is essentially a wrapper for `session.request(...)`.
+
+    Raises `APIError` if the `session.request(...)` fails for any reason, or an `InvalidResponse`
+    if the response is not JSON.
+    """
+    # TODO: look at refactoring this into "BaseEndpoint.api_request(...)"
+    start = time.monotonic()
+    try:
+        response = session.request(
+            method=method,
+            url=url,
+            params=params,
+            json=json,
+            data=data,
+            headers=headers,
+            timeout=(connect_timeout, read_timeout),
+            cert=cert,
+        )
+    except Exception as e:
+        raise APIError(None, method, params, e) from e
+    duration = time.monotonic() - start
+
+    check_status_code(response)
+    try:
+        return response, response.json(), duration
+    except ValueError:
+        raise InvalidResponse(response.text)

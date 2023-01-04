@@ -1,11 +1,8 @@
 import os
-import time
 import requests
 
-from ..exceptions import APIError, InvalidResponse
-from ..compat import json
 from .baseendpoint import BaseEndpoint
-from ..utils import clean_locals, check_status_code
+from ..utils import clean_locals, request
 
 
 class Historic(BaseEndpoint):
@@ -186,28 +183,12 @@ class Historic(BaseEndpoint):
         :param dict params: Params to be used in request
         :param Session session: Requests session to be used, reduces latency.
         """
-        session = session or self.client.session
-        time_sent = time.monotonic()
-        try:
-            response = session.post(
-                "%s%s" % (self.url, method),
-                data=json.dumps(params),
-                headers=self.headers,
-                timeout=(self.connect_timeout, self.read_timeout),
-            )
-        except requests.ConnectionError as e:
-            raise APIError(None, method, params, e)
-        except Exception as e:
-            raise APIError(None, method, params, e)
-        elapsed_time = time.monotonic() - time_sent
-
-        check_status_code(response)
-        try:
-            response_json = json.loads(response.content.decode("utf-8"))
-        except ValueError:
-            raise InvalidResponse(response.text)
-
-        return response, response_json, elapsed_time
+        return request(session=session or self.client.session,
+                       method="post",
+                       url=self.url + method,
+                       json=params,
+                       headers=self.headers,
+                       connect_timeout=self.connect_timeout, read_timeout=self.read_timeout)
 
     @property
     def headers(self) -> dict:

@@ -1,10 +1,9 @@
-import time
 import requests
-from typing import Union, Type
+from typing import Union, Type, Tuple
 
 from ..baseclient import BaseClient
 from ..exceptions import APIError, InvalidResponse
-from ..utils import check_status_code
+from ..utils import request
 from ..compat import json
 from ..resources import BaseResource
 
@@ -23,40 +22,29 @@ class BaseEndpoint:
 
     def request(
         self, method: str, params: dict, session: requests.Session
-    ) -> (dict, float):
+    ) -> Tuple[requests.Response, dict, float]:
         """
         :param str method: Betfair api-ng method to be used.
         :param dict params: Params to be used in request
         :param Session session: Requests session to be used, reduces latency.
         """
-        session = session or self.client.session
-        request = self.create_req(method, params)
-        time_sent = time.monotonic()
-        try:
-            response = session.post(
-                self.url,
-                data=request,
-                headers=self.client.request_headers,
-                timeout=(self.connect_timeout, self.read_timeout),
-            )
-        except requests.ConnectionError as e:
-            raise APIError(None, method, params, e)
-        except Exception as e:
-            raise APIError(None, method, params, e)
-        elapsed_time = time.monotonic() - time_sent
 
-        check_status_code(response)
-        try:
-            response_json = json.loads(response.content.decode("utf-8"))
-        except ValueError:
-            raise InvalidResponse(response.text)
-
+        response, data, duration = request(
+            session=session or self.client.session,
+            method="post",
+            url=self.url,
+            # TODO: factor out create_req, the dict can be passed as the json parameter here
+            data=self.create_req(method, params),
+            headers=self.client.request_headers,
+            connect_timeout=self.connect_timeout,
+            read_timeout=self.read_timeout)
         if self._error_handler:
-            self._error_handler(response_json, method, params)
-        return response, response_json, elapsed_time
+            self._error_handler(data)
+
+        return response, data, duration
 
     @staticmethod
-    def create_req(method: str, params: dict) -> Union[str, bytes]:
+    def create_req(method: str, params: dict) -> str:
         """
         :param method: Betfair api-ng method to be used.
         :param params: Params to be used in request.

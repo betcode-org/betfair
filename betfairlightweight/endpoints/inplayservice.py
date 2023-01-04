@@ -1,12 +1,9 @@
-import time
 import requests
-from typing import Union, List
+from typing import Union, List, Tuple
 
-from ..exceptions import APIError, InvalidResponse
-from ..utils import check_status_code
+from ..utils import request
 from .baseendpoint import BaseEndpoint
 from .. import resources
-from ..compat import json
 
 
 class InPlayService(BaseEndpoint):
@@ -106,29 +103,15 @@ class InPlayService(BaseEndpoint):
         params: dict = None,
         session: requests.Session = None,
         url: str = None,
-    ) -> (dict, float):
-        session = session or self.client.session
-        time_sent = time.monotonic()
-        try:
-            response = session.get(
-                url,
-                params=params,
-                headers=self.headers,
-                timeout=(self.connect_timeout, self.read_timeout),
-            )
-        except requests.ConnectionError as e:
-            raise APIError(None, method, params, e)
-        except Exception as e:
-            raise APIError(None, method, params, e)
-        elapsed_time = time.monotonic() - time_sent
-
-        check_status_code(response)
-        try:
-            response_json = json.loads(response.content.decode("utf-8"))
-        except ValueError:
-            raise InvalidResponse(response.text)
-
-        return response, response_json, elapsed_time
+    ) -> Tuple[requests.Response, dict, float]:
+        return request(
+            session=session or self.client.session,
+            method="get",
+            url=self.url,
+            params=params,
+            headers=self.headers,
+            connect_timeout=self.connect_timeout,
+            read_timeout=self.read_timeout)
 
     @property
     def headers(self) -> dict:

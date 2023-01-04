@@ -1,12 +1,10 @@
-import time
 import requests
-from typing import Union
+from typing import Union, Tuple
 
 from .baseendpoint import BaseEndpoint
 from ..resources import LoginResource
-from ..exceptions import LoginError, APIError, InvalidResponse
-from ..utils import check_status_code
-from ..compat import json
+from ..exceptions import LoginError
+from ..utils import request
 
 
 class Login(BaseEndpoint):
@@ -37,32 +35,20 @@ class Login(BaseEndpoint):
 
     def request(
         self, method: str = None, params: dict = None, session: requests.Session = None
-    ) -> (dict, float):
-        session = session or self.client.session
-        time_sent = time.monotonic()
-        try:
-            response = session.post(
-                self.url,
-                data=self.data,
-                headers=self.client.login_headers,
-                cert=self.client.cert,
-                timeout=(self.connect_timeout, self.read_timeout),
-            )
-        except requests.ConnectionError as e:
-            raise APIError(None, exception=e)
-        except Exception as e:
-            raise APIError(None, exception=e)
-        elapsed_time = time.monotonic() - time_sent
-
-        check_status_code(response)
-        try:
-            response_json = json.loads(response.content.decode("utf-8"))
-        except ValueError:
-            raise InvalidResponse(response.text)
-
+    ) -> Tuple[requests.Response, dict, float]:
+        response, data, duration = request(
+            session=session or self.client.session,
+            method="post",
+            url=self.url,
+            data=self.data,
+            headers=self.client.login_headers,
+            cert=self.client.cert,
+            connect_timeout=self.connect_timeout,
+            read_timeout=self.read_timeout)
         if self._error_handler:
-            self._error_handler(response_json)
-        return response, response_json, elapsed_time
+            self._error_handler(data)
+
+        return response, data, duration
 
     def _error_handler(
         self, response: dict, method: str = None, params: dict = None
