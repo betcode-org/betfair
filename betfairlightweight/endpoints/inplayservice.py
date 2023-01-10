@@ -111,7 +111,8 @@ class InPlayService(BaseEndpoint):
             params=params,
             headers=self.headers,
             connect_timeout=self.connect_timeout,
-            read_timeout=self.read_timeout)
+            read_timeout=self.read_timeout,
+        )
 
     @property
     def headers(self) -> dict:

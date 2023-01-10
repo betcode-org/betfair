@@ -44,7 +44,8 @@ class Login(BaseEndpoint):
             headers=self.client.login_headers,
             cert=self.client.cert,
             connect_timeout=self.connect_timeout,
-            read_timeout=self.read_timeout)
+            read_timeout=self.read_timeout,
+        )
         if self._error_handler:
             self._error_handler(data)
 

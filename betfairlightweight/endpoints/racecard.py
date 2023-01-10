@@ -26,7 +26,8 @@ class RaceCard(BaseEndpoint):
                 method="get",
                 url=self.url,
                 connect_timeout=self.connect_timeout,
-                read_timeout=self.read_timeout)
+                read_timeout=self.read_timeout,
+            )
             if "appKey" in data:
                 return data["appKey"]
         except InvalidResponse:
@@ -101,7 +102,8 @@ class RaceCard(BaseEndpoint):
             url=self.url + self.method,
             params=params,
             headers=self.headers,
-            connect_timeout=self.connect_timeout, read_timeout=self.read_timeout,
+            connect_timeout=self.connect_timeout,
+            read_timeout=self.read_timeout,
         )
 
     @staticmethod

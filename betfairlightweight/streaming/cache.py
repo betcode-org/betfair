@@ -284,7 +284,9 @@ class MarketBookCache(BaseResource):
                 if "trd" in new_data:
                     runner.update_traded(new_data["trd"], active)
                     if self.cumulative_runner_tv:
-                        runner.total_matched = math.fsum(vol["size"] for vol in runner.traded.serialised)
+                        runner.total_matched = math.fsum(
+                            vol["size"] for vol in runner.traded.serialised
+                        )
                     calculate_tv = True
                 if "atb" in new_data:
                     runner.available_to_back.update(new_data["atb"], active)

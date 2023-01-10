@@ -43,7 +43,8 @@ class LoginInteractive(BaseEndpoint):
             data=self.data,
             headers=self.client.login_headers,
             connect_timeout=self.connect_timeout,
-            read_timeout=self.read_timeout)
+            read_timeout=self.read_timeout,
+        )
         if self._error_handler:
             self._error_handler(data)
 

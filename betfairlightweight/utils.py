@@ -92,16 +92,16 @@ def create_date_string(date: datetime.datetime) -> Optional[str]:
 
 
 def request(
-        session: requests.Session,
-        method: str,
-        url: str,
-        connect_timeout: float,
-        read_timeout: float,
-        headers: dict = None,
-        data: Union[dict, str] = None,
-        params: dict = None,
-        json: dict = None,
-        cert: Union[str, Tuple[str, str]] = None,
+    session: requests.Session,
+    method: str,
+    url: str,
+    connect_timeout: float,
+    read_timeout: float,
+    headers: dict = None,
+    data: Union[dict, str] = None,
+    params: dict = None,
+    json: dict = None,
+    cert: Union[str, Tuple[str, str]] = None,
 ) -> Tuple[requests.Response, dict, float]:
     """
     Make an API request and return the response, json response, and request duration.

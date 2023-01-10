@@ -183,12 +183,15 @@ class Historic(BaseEndpoint):
         :param dict params: Params to be used in request
         :param Session session: Requests session to be used, reduces latency.
         """
-        return request(session=session or self.client.session,
-                       method="post",
-                       url=self.url + method,
-                       json=params,
-                       headers=self.headers,
-                       connect_timeout=self.connect_timeout, read_timeout=self.read_timeout)
+        return request(
+            session=session or self.client.session,
+            method="post",
+            url=self.url + method,
+            json=params,
+            headers=self.headers,
+            connect_timeout=self.connect_timeout,
+            read_timeout=self.read_timeout,
+        )
 
     @property
     def headers(self) -> dict:

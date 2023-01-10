@@ -332,7 +332,6 @@ class TestMarketBookCache(unittest.TestCase):
         self.market_book_cache.refresh_cache()
         mock_runner.refresh.assert_called()
 
-
     @mock.patch(
         "betfairlightweight.streaming.cache.MarketBookCache.serialise",
         new_callable=mock.PropertyMock,
@@ -502,8 +501,9 @@ class TestRunnerBookCache(unittest.TestCase):
     def test_refresh(self, mock_serialise):
         """Refresh calls refresh on all refreshable members, and also calls the serialise method."""
         # refreshable members are those which are instances of Available
-        refreshable_attrs = [k for k, v in vars(self.runner_book).items()
-                             if isinstance(v, Available)]
+        refreshable_attrs = [
+            k for k, v in vars(self.runner_book).items() if isinstance(v, Available)
+        ]
 
         # sanity check that there are refreshable attributes
         self.assertGreater(len(refreshable_attrs), 0)
@@ -520,7 +520,9 @@ class TestRunnerBookCache(unittest.TestCase):
 
         # make sure the refreshes were called
         for attr, m in mocks.items():
-            self.assertEqual(m.refresh.call_count, 1, msg=f"runner.{attr}.refresh() was not called")
+            self.assertEqual(
+                m.refresh.call_count, 1, msg=f"runner.{attr}.refresh() was not called"
+            )
         # make sure the serialise method was called
         mock_serialise.assert_called_once()
 
@@ -716,7 +718,7 @@ class TestOrderBookCache(unittest.TestCase):
                     self.order_book_cache.market_id,
                     1234,
                     self.order_book_cache.lightweight,
-                    **order_changes
+                    **order_changes,
                 )
 
     def test_update_cache_closed(self):

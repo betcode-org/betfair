@@ -40,7 +40,8 @@ class Logout(BaseEndpoint):
             url=self.url,
             headers=self.client.keep_alive_headers,
             connect_timeout=self.connect_timeout,
-            read_timeout=self.read_timeout)
+            read_timeout=self.read_timeout,
+        )
         if self._error_handler:
             self._error_handler(data)
         return response, data, duration

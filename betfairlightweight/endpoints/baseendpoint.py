@@ -37,7 +37,8 @@ class BaseEndpoint:
             data=self.create_req(method, params),
             headers=self.client.request_headers,
             connect_timeout=self.connect_timeout,
-            read_timeout=self.read_timeout)
+            read_timeout=self.read_timeout,
+        )
         if self._error_handler:
             self._error_handler(data)
 

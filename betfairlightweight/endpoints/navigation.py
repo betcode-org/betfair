@@ -24,11 +24,14 @@ class Navigation(BaseEndpoint):
     def request(
         self, method: str = None, params: dict = None, session: requests.Session = None
     ) -> dict:
-        return request(session=session or self.client.session,
-                       method="get",
-                       url=self.url,
-                       headers=self.client.request_headers,
-                       read_timeout=self.read_timeout, connect_timeout=self.connect_timeout)[1]
+        return request(
+            session=session or self.client.session,
+            method="get",
+            url=self.url,
+            headers=self.client.request_headers,
+            read_timeout=self.read_timeout,
+            connect_timeout=self.connect_timeout,
+        )[1]
 
     @property
     def url(self) -> str:
