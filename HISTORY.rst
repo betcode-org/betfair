@@ -3,6 +3,15 @@
 Release History
 ---------------
 
+2.17.1 (2023-02-08)
++++++++++++++++++++
+
+**Dependencies**
+
+- add python 3.11 to tests
+- ciso8601 upgraded to 2.3.0
+- orjson upgraded to 3.8.5
+
 2.17.0 (2022-10-21)
 +++++++++++++++++++
 
