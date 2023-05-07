@@ -6,8 +6,6 @@ class BetfairError(Exception):
     Base class for Betfair Errors.
     """
 
-    pass
-
 
 class PasswordError(BetfairError):
     """
@@ -39,13 +37,6 @@ class CertsError(BetfairError):
     """
     Exception raised if certs not found.
     """
-
-    def __init__(self, message: str = None):
-        super().__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
 
 
 class StatusCodeError(BetfairError):
@@ -156,13 +147,6 @@ class SocketError(BetfairError):
     Exception raised if error with socket.
     """
 
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
 
 class ListenerError(BetfairError):
     """
@@ -183,22 +167,8 @@ class CacheError(BetfairError):
     Exception raised if error with cache.
     """
 
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
 
 class RaceCardError(BetfairError):
     """
     Exception raised if error with race card request.
     """
-
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
