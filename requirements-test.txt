@@ -1,6 +1,9 @@
 # Tests & Linting
-black==22.10.0
+black>=22.10.0, <24.0
 coverage
+
+# Examples
+tenacity>=8.2, <9.0
 
 # Documentation
 mkdocs
