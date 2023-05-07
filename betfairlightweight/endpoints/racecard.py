@@ -30,12 +30,12 @@ class RaceCard(BaseEndpoint):
             raise APIError(None, self.login_url, None, e)
         except Exception as e:
             raise APIError(None, self.login_url, None, e)
-        if app_key := re.findall(
+        app_key = re.findall(
             r'''"appKey":\s"(.*?)"''', response.content.decode("utf-8")
-        ):
-            self.app_key = app_key[0]
-        else:
+        )
+        if not app_key:
             raise RaceCardError("Unable to find appKey")
+        self.app_key = app_key[0]
 
     def get_race_card(
         self,

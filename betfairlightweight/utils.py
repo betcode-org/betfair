@@ -77,7 +77,13 @@ def to_snake_case(camel_case_str: str) -> str:
     return snake_case_str
 
 
-def camel_case_dict(data: dict[str]) -> dict[str]:
+def camel_case_dict(data: dict) -> dict:
+    """
+    Converts all keys of a dictionary from snake_string to camelCase
+
+    :param dict data:
+    :returns: dict
+    """
     return {to_camel_case(k): v for k, v in data.items() if v is not None}
 
 

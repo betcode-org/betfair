@@ -169,7 +169,8 @@ class StreamListener(BaseListener):
         :param data: Received data
         """
         status_code = data.get("statusCode")
-        if connections_available := data.get("connectionsAvailable"):
+        connections_available = data.get("connectionsAvailable")
+        if connections_available:
             self.connections_available = data.get("connectionsAvailable")
         logger.info(
             f"[{self.stream}: {unique_id}]: {status_code} ({self.connections_available} connections available)"
