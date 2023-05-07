@@ -78,7 +78,7 @@ def to_snake_case(camel_case_str: str) -> str:
 
 
 def default_user_agent():
-    return "{0}/{1}".format(__title__, __version__)
+    return f"{__title__}/{__version__}"
 
 
 def create_date_string(date: datetime.datetime) -> Optional[str]:

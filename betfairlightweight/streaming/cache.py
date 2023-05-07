@@ -204,7 +204,7 @@ class MarketBookCache(BaseResource):
         calculate_market_tv: bool,
         cumulative_runner_tv: bool,
     ):
-        super(MarketBookCache, self).__init__()
+        super().__init__()
         self.active = True
         self.market_id = market_id
         self.publish_time = publish_time
@@ -562,7 +562,7 @@ class OrderBookRunner:
 
 class OrderBookCache(BaseResource):
     def __init__(self, market_id: str, publish_time: int, lightweight: bool):
-        super(OrderBookCache, self).__init__()
+        super().__init__()
         self.active = True
         self.market_id = market_id
         self.publish_time = publish_time
@@ -644,7 +644,7 @@ class RaceCache(BaseResource):
     def __init__(
         self, market_id: str, publish_time: int, race_id: str, lightweight: bool
     ):
-        super(RaceCache, self).__init__()
+        super().__init__()
         self.active = True
         self.market_id = market_id
         self.publish_time = publish_time
@@ -692,7 +692,7 @@ class CricketMatchCache(BaseResource):
     def __init__(
         self, market_id: str, event_id: str, publish_time: int, lightweight: bool
     ):
-        super(CricketMatchCache, self).__init__()
+        super().__init__()
         self.active = True
         self.market_id = market_id
         self.event_id = event_id

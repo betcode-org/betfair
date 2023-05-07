@@ -175,7 +175,7 @@ class BaseClient:
             return (cert, key)
         if pem:
             return pem
-        msg = "Certificates not found in directory: '%s'" % ssl_path
+        msg = f"Certificates not found in directory: '{ssl_path}'"
         hint = " (make sure .crt and .key pair or a single .pem is present)"
         raise CertsError(msg + hint)
 

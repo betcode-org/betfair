@@ -76,10 +76,10 @@ class BaseListener:
             return CricketStream(self, unique_id)
 
     def __str__(self) -> str:
-        return "{0}".format(self.__class__.__name__)
+        return self.__class__.__name__
 
     def __repr__(self) -> str:
-        return "<{0}>".format(self.__class__.__name__)
+        return f"<{self.__class__.__name__}>"
 
 
 class StreamListener(BaseListener):
@@ -107,7 +107,7 @@ class StreamListener(BaseListener):
         :param bool cumulative_runner_tv: Cumulative runner traded volume (should be True if using betfair purchased data)
         :param bool order_updates_only: Output updated orders through queue only on process
         """
-        super(StreamListener, self).__init__(max_latency)
+        super().__init__(max_latency)
         self.output_queue = output_queue
         self.lightweight = lightweight
         self.debug = logger.isEnabledFor(logging.DEBUG)

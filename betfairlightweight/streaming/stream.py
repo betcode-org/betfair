@@ -109,7 +109,7 @@ class BaseStream:
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
-        logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
+        logger.info(f'[{self}: {self.unique_id}]: "{self}" created')
 
     def _process(self, data: list, publish_time: int) -> bool:
         # Return True if new img within data
@@ -131,10 +131,10 @@ class BaseStream:
         return len(self._caches)
 
     def __str__(self) -> str:
-        return "{0}".format(self._name)
+        return self._name
 
     def __repr__(self) -> str:
-        return "<{0} [{1}]>".format(self._name, len(self))
+        return f"<{self._name} [{len(self)}]>"
 
 
 class MarketStream(BaseStream):
@@ -154,10 +154,9 @@ class MarketStream(BaseStream):
                 img = True
                 if "marketDefinition" not in market_book:
                     logger.warning(
-                        "[%s: %s]: Missing marketDefinition on market %s resulting "
+                        f"[{self}: {self.unique_id}]: Missing marketDefinition on market {market_id} resulting "
                         "in potential missing data in the MarketBook (make sure "
                         "EX_MARKET_DEF is requested)"
-                        % (self, self.unique_id, market_id)
                     )
                 market_book_cache = MarketBookCache(
                     market_id,

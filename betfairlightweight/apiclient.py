@@ -31,7 +31,7 @@ class APIClient(BaseClient):
         :param bool lightweight: If True endpoints will return dict not a resource (22x faster)
         :param requests.Session session: Pass requests session object, defaults to a new request each request
         """
-        super(APIClient, self).__init__(
+        super().__init__(
             username,
             password,
             app_key=app_key,

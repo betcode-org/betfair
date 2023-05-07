@@ -116,7 +116,7 @@ class UpdateDetail:
 
 class EventTimeline(BaseResource):
     def __init__(self, **kwargs):
-        super(EventTimeline, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.event_id = kwargs.get("eventId")
         self.elapsed_regular_time = kwargs.get("elapsedRegularTime")
         self.event_type_id = kwargs.get("eventTypeId")
@@ -174,7 +174,7 @@ class StateOfBall:
 
 class Scores(BaseResource):
     def __init__(self, **kwargs):
-        super(Scores, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.event_id = kwargs.get("eventId")
         self.elapsed_regular_time = kwargs.get("elapsedRegularTime")
         self.elapsed_added_time = kwargs.get("elapsedAddedTime")

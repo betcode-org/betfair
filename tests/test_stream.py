@@ -175,7 +175,7 @@ class BaseStreamTest(unittest.TestCase):
             self.stream._caches[f"1.{len(self.stream._caches)}"] = mock_cache
 
         mock_cache.create_resource = _change_dict
-        self.stream._caches = {"1.{}".format(i): mock_cache for i in range(2)}
+        self.stream._caches = {f"1.{i}": mock_cache for i in range(2)}
 
         self.stream.snap()
 

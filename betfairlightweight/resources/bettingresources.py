@@ -36,7 +36,7 @@ class EventTypeResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(EventTypeResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.event_type = EventType(**kwargs.get("eventType"))
 
@@ -60,7 +60,7 @@ class CompetitionResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(CompetitionResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.competition_region = kwargs.get("competitionRegion")
         self.competition = Competition(**kwargs.get("competition"))
@@ -86,7 +86,7 @@ class TimeRangeResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(TimeRangeResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.time_range = TimeRange(**kwargs.get("timeRange"))
 
@@ -127,7 +127,7 @@ class EventResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(EventResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.event = Event(**kwargs.get("event"))
 
@@ -139,7 +139,7 @@ class MarketTypeResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(MarketTypeResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.market_type = kwargs.get("marketType")
 
@@ -151,7 +151,7 @@ class CountryResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(CountryResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.country_code = kwargs.get("countryCode")
 
@@ -163,7 +163,7 @@ class VenueResult(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(VenueResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_count = kwargs.get("marketCount")
         self.venue = kwargs.get("venue")
 
@@ -299,7 +299,7 @@ class MarketCatalogue(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(MarketCatalogue, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.market_name = kwargs.get("marketName")
         self.total_matched = kwargs.get("totalMatched")
@@ -587,7 +587,7 @@ class MarketBook(BaseResource, BettingResource):
         self.streaming_update = kwargs.pop("streaming_update", None)
         self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.market_definition = kwargs.pop("market_definition", None)
-        super(MarketBook, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.bet_delay = kwargs.get("betDelay")
         self.bsp_reconciled = kwargs.get("bspReconciled")
@@ -732,7 +732,7 @@ class CurrentOrders(BaseResource, BettingResource):
         self.streaming_update = kwargs.pop("streaming_update", None)
         self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.publish_time = kwargs.pop("publish_time", None)
-        super(CurrentOrders, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.more_available = kwargs.get("moreAvailable")
         self.orders = [CurrentOrder(**i) for i in kwargs.get("currentOrders")]
         self.matches = [Match(**i) for i in kwargs.get("matches", [])]
@@ -841,7 +841,7 @@ class ClearedOrders(BaseResource, BettingResource):
     _item_name_to_attribute_name_overrides = {"clearedOrders": "orders"}
 
     def __init__(self, **kwargs):
-        super(ClearedOrders, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.more_available = kwargs.get("moreAvailable")
         self.orders = [ClearedOrder(**i) for i in kwargs.get("clearedOrders")]
 
@@ -875,7 +875,7 @@ class MarketProfitLoss(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(MarketProfitLoss, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.commission_applied = kwargs.get("commissionApplied")
         self.profit_and_losses = [
@@ -1015,7 +1015,7 @@ class PlaceOrders(BaseResource, BettingResource):
     }
 
     def __init__(self, **kwargs):
-        super(PlaceOrders, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.status = kwargs.get("status")
         self.customer_ref = kwargs.get("customerRef")
@@ -1074,7 +1074,7 @@ class CancelOrders(BaseResource, BettingResource):
     }
 
     def __init__(self, **kwargs):
-        super(CancelOrders, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.status = kwargs.get("status")
         self.customer_ref = kwargs.get("customerRef")
@@ -1122,7 +1122,7 @@ class UpdateOrders(BaseResource, BettingResource):
     }
 
     def __init__(self, **kwargs):
-        super(UpdateOrders, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.status = kwargs.get("status")
         self.customer_ref = kwargs.get("customerRef")
@@ -1167,7 +1167,7 @@ class ReplaceOrders(BaseResource, BettingResource):
     """
 
     def __init__(self, **kwargs):
-        super(ReplaceOrders, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.status = kwargs.get("status")
         self.customer_ref = kwargs.get("customerRef")

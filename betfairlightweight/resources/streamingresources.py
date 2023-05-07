@@ -186,7 +186,7 @@ class Race(BaseResource):
         self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.publish_time_epoch = kwargs.get("pt")
         self.publish_time = self.strip_datetime(kwargs.get("pt"))
-        super(Race, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.market_id = kwargs.get("mid")
         self.race_id = kwargs.get("id")
         self.race_progress = (
@@ -457,7 +457,7 @@ class CricketMatch(BaseResource):
         self.streaming_snap = kwargs.pop("streaming_snap", False)
         self.publish_time_epoch = kwargs.get("pt")
         self.publish_time = self.strip_datetime(kwargs.get("pt"))
-        super(CricketMatch, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.event_id = kwargs.get("eventId")
         self.market_id = kwargs.get("marketId")
         self.fixture_info = (

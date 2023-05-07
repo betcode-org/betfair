@@ -47,9 +47,7 @@ for market_books in gen():
             for runner in market_book.runners:
                 if runner.status == "WINNER":
                     print(
-                        "{0}: {1} with sp of {2}".format(
-                            runner.status, runner.selection_id, runner.sp.actual_sp
-                        )
+                        f"{runner.status}: {runner.selection_id} with sp of {runner.sp.actual_sp}"
                     )
 
 # record prices to a file
@@ -69,13 +67,6 @@ for market_books in gen():
                 runner_def = runners_dict.get((runner.selection_id, runner.handicap))
 
                 output.write(
-                    "%s,%s,%s,%s,%s,%s\n"
-                    % (
-                        market_book.publish_time,
-                        market_book.market_id,
-                        market_book.status,
-                        market_book.inplay,
-                        runner.selection_id,
-                        runner.last_price_traded or "",
-                    )
+                    f"{market_book.publish_time},{market_book.market_id},{market_book.status},"
+                    f"{market_book.inplay},{runner.selection_id},{runner.last_price_traded or ''}\n"
                 )
