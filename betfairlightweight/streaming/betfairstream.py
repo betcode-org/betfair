@@ -255,7 +255,9 @@ class BetfairStream:
                     return  # 165, prevents error if stop is called mid recv
 
                 self.stop()
-                raise SocketError(f"[Connect: {self._unique_id}]: Connection closed by server")
+                raise SocketError(
+                    f"[Connect: {self._unique_id}]: Connection closed by server"
+                )
             data += part.decode(self.__encoding)
         return data
 

@@ -13,7 +13,6 @@ from tests.tools import create_mock_json
 
 
 class BettingResourcesTest(unittest.TestCase):
-
     ELAPSED_TIME = 1.2
 
     def test_event_type_result(self):

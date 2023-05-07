@@ -32,7 +32,6 @@ for score in scores:
     )
 
 
-
 # timeline request (single)
 timeline = trading.in_play_service.get_event_timeline(event_id=event_ids[0])
 print(timeline)

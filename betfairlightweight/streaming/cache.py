@@ -261,9 +261,7 @@ class MarketBookCache(BaseResource):
                         runner.update_traded(new_data["trd"], active)
                         if self.cumulative_runner_tv:
                             runner.total_matched = round(
-                                sum(
-                                    vol["size"] for vol in runner.traded.serialised
-                                ),
+                                sum(vol["size"] for vol in runner.traded.serialised),
                                 2,
                             )
 

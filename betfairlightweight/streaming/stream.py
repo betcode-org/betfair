@@ -138,7 +138,6 @@ class BaseStream:
 
 
 class MarketStream(BaseStream):
-
     _lookup = "mc"
     _name = "MarketStream"
 
@@ -172,7 +171,6 @@ class MarketStream(BaseStream):
                     f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
 
-
             market_book_cache.update_cache(market_book, publish_time, True)
             caches.append(market_book_cache)
             self._updates_processed += 1
@@ -181,7 +179,6 @@ class MarketStream(BaseStream):
 
 
 class OrderStream(BaseStream):
-
     _lookup = "oc"
     _name = "OrderStream"
 
@@ -201,7 +198,6 @@ class OrderStream(BaseStream):
                 logger.info(
                     f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
-
 
             order_book_cache.update_cache(order_book, publish_time)
             caches.append(order_book_cache)
@@ -246,7 +242,6 @@ class RaceStream(BaseStream):
                     f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
 
-
             race_cache.update_cache(update, publish_time)
             caches.append(race_cache)
             self._updates_processed += 1
@@ -273,7 +268,6 @@ class CricketStream(BaseStream):
                 logger.info(
                     f"[{self}: {self.unique_id}]: {market_id} added, {len(self._caches)} markets in cache"
                 )
-
 
             cricket_match_cache.update_cache(cricket_change, publish_time)
             caches.append(cricket_match_cache)
