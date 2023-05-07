@@ -77,6 +77,10 @@ def to_snake_case(camel_case_str: str) -> str:
     return snake_case_str
 
 
+def camel_case_dict(data: dict[str]) -> dict[str]:
+    return {to_camel_case(k): v for k, v in data.items() if v is not None}
+
+
 def default_user_agent():
     return f"{__title__}/{__version__}"
 

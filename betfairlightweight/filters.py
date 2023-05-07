@@ -1,6 +1,6 @@
 import datetime
 from typing import Union
-from .utils import to_camel_case
+from .utils import camel_case_dict
 
 
 def streaming_market_filter(
@@ -29,8 +29,7 @@ def streaming_market_filter(
 
     :return: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def streaming_market_data_filter(
@@ -43,8 +42,7 @@ def streaming_market_data_filter(
 
     :return: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def streaming_order_filter(
@@ -61,8 +59,7 @@ def streaming_order_filter(
 
     :return: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def time_range(
@@ -88,8 +85,7 @@ def time_range(
         elif not isinstance(to, str):
             raise TypeError("The 'to' value must be string or datetime (not date)")
 
-    args = locals().copy()
-    return {k.replace("_", ""): v for k, v in args.items()}
+    return {k.replace("_", ""): v for k, v in locals().items()}
 
 
 def market_filter(
@@ -128,8 +124,7 @@ def market_filter(
 
     :return: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def price_data(
@@ -150,8 +145,7 @@ def price_data(
     :returns: string values of all args specified as True.
     :rtype: list
     """
-    args = locals().copy()
-    return [k.upper() for k, v in args.items() if v is True]
+    return [k.upper() for k, v in locals().items() if v is True]
 
 
 def ex_best_offers_overrides(
@@ -178,9 +172,7 @@ def ex_best_offers_overrides(
     :returns: parameters for inclusion in market data requests.
     :rtype: dict
     """
-
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def price_projection(
@@ -204,8 +196,8 @@ def price_projection(
         price_data = []
     if ex_best_offers_overrides is None:
         ex_best_offers_overrides = {}
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+
+    return camel_case_dict(locals())
 
 
 def place_instruction(
@@ -232,9 +224,7 @@ def place_instruction(
     :return: orders to place.
     :rtype: dict
     """
-
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def limit_order(
@@ -261,8 +251,7 @@ def limit_order(
     :returns: Order information to place a limit order.
     :rtype: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def limit_on_close_order(liability: float, price: float) -> dict:
@@ -274,7 +263,7 @@ def limit_on_close_order(liability: float, price: float) -> dict:
     :returns: Order information to place a limit on close order.
     :rtype: dict
     """
-    return locals().copy()
+    return locals()
 
 
 def market_on_close_order(liability: float) -> dict:
@@ -285,7 +274,7 @@ def market_on_close_order(liability: float) -> dict:
     :returns: Order information to place a market on close order.
     :rtype: dict
     """
-    return locals().copy()
+    return locals()
 
 
 def cancel_instruction(bet_id: str, size_reduction: float = None) -> dict:
@@ -297,8 +286,7 @@ def cancel_instruction(bet_id: str, size_reduction: float = None) -> dict:
     :returns: cancellation report detailing status, cancellation requested and actual cancellation details.
     :rtype: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def replace_instruction(bet_id: str, new_price: float) -> dict:
@@ -311,8 +299,7 @@ def replace_instruction(bet_id: str, new_price: float) -> dict:
     :returns: replace report detailing status, replace requested and actual replace details.
     :rtype: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
 
 
 def update_instruction(bet_id: str, new_persistence_type: str) -> dict:
@@ -324,5 +311,4 @@ def update_instruction(bet_id: str, new_persistence_type: str) -> dict:
     :returns: update report detailing status, update requested and update details.
     :rtype: dict
     """
-    args = locals().copy()
-    return {to_camel_case(k): v for k, v in args.items() if v is not None}
+    return camel_case_dict(locals())
