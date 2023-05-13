@@ -31,7 +31,10 @@ class UtilsTest(unittest.TestCase):
         assert utils.to_camel_case("async_") == "async"
 
     def test_camel_case_dict(self):
-        assert utils.camel_case_dict({"hello_world": 10, "async_": 10}) == {"helloWorld": 10, "async": 10}
+        assert utils.camel_case_dict({"hello_world": 10, "async_": 10}) == {
+            "helloWorld": 10,
+            "async": 10,
+        }
 
     def test_default_user_agent(self):
         assert utils.default_user_agent()
