@@ -1,5 +1,5 @@
 # Tests & Linting
-black==22.10.0
+black==23.1.0
 coverage
 
 # Documentation
