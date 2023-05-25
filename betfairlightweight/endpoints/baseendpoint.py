@@ -10,7 +10,6 @@ from ..resources import BaseResource
 
 
 class BaseEndpoint:
-
     connect_timeout = 3.05
     read_timeout = 16
     _error = APIError

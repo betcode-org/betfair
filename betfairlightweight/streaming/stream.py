@@ -141,7 +141,6 @@ class BaseStream:
 
 
 class MarketStream(BaseStream):
-
     _lookup = "mc"
     _name = "MarketStream"
 
@@ -184,7 +183,6 @@ class MarketStream(BaseStream):
 
 
 class OrderStream(BaseStream):
-
     _lookup = "oc"
     _name = "OrderStream"
 
