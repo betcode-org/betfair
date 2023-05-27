@@ -14,7 +14,7 @@ class BaseClientInit(unittest.TestCase):
         assert client.password == "password"
         assert client.app_key == "app_key"
         assert client.lightweight is True
-        assert client.certs is None
+        assert client.certs == "/certs"
         assert client.locale is None
         assert client._login_time is None
         assert client.session_token is None
@@ -198,13 +198,13 @@ class BaseClientRelativePathTest(unittest.TestCase):
             [".DS_Store", "client-2048.crt", "client-2048.key"]
         )
         assert self.client.cert == normpaths(
-            ["../fail/client-2048.crt", "../fail/client-2048.key"]
+            ["fail/client-2048.crt", "fail/client-2048.key"]
         )
 
     @mock.patch("betfairlightweight.baseclient.os.listdir")
     def test_client_single_file_cert_mocked(self, mock_listdir):
         mock_listdir.return_value = normpaths([".DS_Store", "client-2048.pem"])
-        assert self.client.cert == os.path.normpath("../fail/client-2048.pem")
+        assert self.client.cert == os.path.normpath("fail/client-2048.pem")
 
     @mock.patch("betfairlightweight.baseclient.os.listdir")
     def test_client_crt_key_preferred_over_pem_mocked(self, mock_listdir):
@@ -212,7 +212,7 @@ class BaseClientRelativePathTest(unittest.TestCase):
             [".DS_Store", "client-2048.crt", "client-2048.key", "client-2048.pem"]
         )
         assert self.client.cert == normpaths(
-            ["../fail/client-2048.crt", "../fail/client-2048.key"]
+            ["fail/client-2048.crt", "fail/client-2048.key"]
         )
 
 
