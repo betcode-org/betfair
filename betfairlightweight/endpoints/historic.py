@@ -180,7 +180,7 @@ class Historic(BaseEndpoint):
 
     def request(
         self, method: str = None, params: dict = None, session: requests.Session = None
-    ) -> (dict, float):
+    ) -> tuple[dict, float]:
         """
         :param str method: Betfair api-ng method to be used.
         :param dict params: Params to be used in request
