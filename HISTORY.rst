@@ -3,6 +3,17 @@
 Release History
 ---------------
 
+2.17.3 (2023-07-24)
++++++++++++++++++++
+
+**Improvements**
+
+- #279 Stop prepending pardir to certs path (@mzaja)
+
+**Dependencies**
+
+- orjson upgraded to 3.9.2
+
 2.17.2 (2023-05-25)
 +++++++++++++++++++
 
@@ -13,7 +24,6 @@ Release History
 **Dependencies**
 
 - black upgraded to 23.1.0
-- orjson upgraded to 3.8.7
 
 2.17.1 (2023-02-08)
 +++++++++++++++++++
