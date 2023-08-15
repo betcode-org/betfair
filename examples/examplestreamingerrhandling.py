@@ -67,7 +67,7 @@ class Streaming(threading.Thread):
         except Exception:
             logger.critical("MarketStreaming run error", exc_info=True)
             raise
-        logger.info("Stopped MarketStreaming {0}".format(self.streaming_unique_id))
+        logger.info("Stopped MarketStreaming %s", self.streaming_unique_id)
 
     def stop(self) -> None:
         if self.stream:
