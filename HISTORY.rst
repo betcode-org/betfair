@@ -12,6 +12,7 @@ Release History
 
 **Dependencies**
 
+- Remove python 3.7
 - requests upgraded to <2.32.0
 - orjson upgraded to 3.9.4
 - black upgraded to 23.7.0
