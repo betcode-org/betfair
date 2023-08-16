@@ -97,7 +97,7 @@ class BaseStream:
     def snap(self, market_ids: list = None, publish_time: Optional[int] = None) -> list:
         return [
             cache.create_resource(self.unique_id, snap=True, publish_time=publish_time)
-            for cache in list(self._caches.values())
+            for cache in self._caches.values()
             if cache.active and (market_ids is None or cache.market_id in market_ids)
         ]
 
