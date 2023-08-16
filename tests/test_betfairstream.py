@@ -70,22 +70,27 @@ class BetfairStreamTest(unittest.TestCase):
         mock_connect.assert_called_with()
         mock_authenticate.assert_called_with()
 
+    @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._data")
+    @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._receive_all")
     @mock.patch(
         "betfairlightweight.streaming.betfairstream.BetfairStream._create_socket"
     )
-    def test_connect(self, mock_create_socket):
+    def test_connect(self, mock_create_socket, mock__receive_all, mock__data):
         self.betfair_stream._connect()
-
-        assert self.betfair_stream._running is True
+        self.assertTrue(self.betfair_stream._running)
         mock_create_socket.assert_called_with()
+        mock__receive_all.assert_called()
+        mock__data.assert_called_with(mock__receive_all.return_value)
 
     def test_stop(self):
         self.betfair_stream.stop()
         assert self.betfair_stream._running is False
         assert self.betfair_stream._socket is None
 
+    @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._data")
+    @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._receive_all")
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._send")
-    def test_authenticate(self, mock_send):
+    def test_authenticate(self, mock_send, mock__receive_all, mock__data):
         self.betfair_stream.authenticate()
         mock_send.assert_called_with(
             {
@@ -95,16 +100,8 @@ class BetfairStreamTest(unittest.TestCase):
                 "op": "authentication",
             }
         )
-
-        self.betfair_stream.authenticate()
-        mock_send.assert_called_with(
-            {
-                "id": self.betfair_stream._unique_id,
-                "appKey": self.app_key,
-                "session": self.session_token,
-                "op": "authentication",
-            }
-        )
+        mock__receive_all.assert_called()
+        mock__data.assert_called_with(mock__receive_all.return_value)
 
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream._send")
     def test_heartbeat(self, mock_send):
