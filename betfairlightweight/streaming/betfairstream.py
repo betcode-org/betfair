@@ -55,6 +55,7 @@ class BetfairStream:
         self.datetime_last_received = None
 
         self._socket = None
+        self._socket_file = None
         self._running = False
 
     def start(self) -> None:
@@ -72,6 +73,11 @@ class BetfairStream:
 
         if self._socket is None:
             return
+        try:
+            self._socket_file.close()
+        except socket.error:
+            pass
+
         # attempt graceful shutdown
         try:
             self._socket.shutdown(socket.SHUT_RDWR)
@@ -216,52 +222,51 @@ class BetfairStream:
         s = ssl.wrap_socket(s)
         s.settimeout(self.timeout)
         s.connect((self.host, self.__port))
+        self._socket_file = s.makefile(
+            "rb",
+            buffering=self.buffer_size,
+            newline=bytes(self.__CRLF, encoding=self.__encoding),
+        )
         return s
 
     def _read_loop(self) -> None:
-        """Read loop, splits by CRLF and pushes received data
-        to _data.
-        """
+        """Read loop, pushes received data to _data."""
         while self._running:
-            received_data_raw = self._receive_all()
+            received_data = self._receive_all()
             if self._running:
                 self.receive_count += 1
                 self.datetime_last_received = datetime.datetime.utcnow()
-                received_data_split = received_data_raw.split(self.__CRLF)
-                for received_data in received_data_split:
-                    if received_data:
-                        self._data(received_data)
+                self._data(received_data)
 
     def _receive_all(self) -> Optional[str]:
         """Whilst socket is running receives data from socket,
         till CRLF is detected.
         """
-        (data, part) = ("", "")
-        crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
+        if not self._running:
+            return
 
-        while self._running and part[-2:] != crlf_bytes:
-            try:
-                part = self._socket.recv(self.buffer_size)
-            except (socket.timeout, socket.error) as e:
-                if self._running:
-                    self.stop()
-                    raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
-                else:
-                    return  # 133, prevents error if stop is called mid recv
+        try:
+            message = self._socket_file.readline()
+        except (socket.timeout, socket.error) as e:
+            if self._running:
+                self.stop()
+                raise SocketError("[Connect: %s]: Socket %s" % (self._unique_id, e))
+            else:
+                return  # 133, prevents error if stop is called mid recv
 
-            # an empty string indicates the server shutdown the socket
-            if len(part) == 0:
-                if self._running:
-                    self.stop()
-                    raise SocketError(
-                        "[Connect: %s]: Connection closed by server"
-                        % (self._unique_id,)
-                    )
-                else:
-                    return  # 165, prevents error if stop is called mid recv
+        # an empty string indicates the server shutdown the socket
+        if len(message) == 0:
+            if self._running:
+                self.stop()
+                raise SocketError(
+                    "[Connect: %s]: Connection closed by server" % (self._unique_id,)
+                )
+            else:
+                return  # 165, prevents error if stop is called mid recv
 
-            data += part.decode(self.__encoding)
-        return data
+        # strip off trailing \r\n without allocating new bytearray
+        view = memoryview(message)
+        return str(view[0:-2], self.__encoding)
 
     def _data(self, received_data: str) -> None:
         """Sends data to listener, if False is returned; socket
