@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.19.0b0 (2023-09-07)
++++++++++++++++++++
+
+**Improvements**
+
+- Improve performance of socket code @petedmarsh
+- Improve performance of BaseStream.snap @petedmarsh
+- Lazily evaluate log message parameters @petedmarsh
+
+**Dependencies**
+
+- orjson upgraded to 3.9.5
+
 2.18.0 (2023-08-16)
 +++++++++++++++++++
 
