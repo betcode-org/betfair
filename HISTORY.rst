@@ -14,7 +14,7 @@ Release History
 
 **Dependencies**
 
-- orjson upgraded to 3.9.5
+- orjson upgraded to 3.9.7
 
 2.18.0 (2023-08-16)
 +++++++++++++++++++
