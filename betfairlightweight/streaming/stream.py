@@ -43,8 +43,11 @@ class BaseStream:
         if self._lookup in data:
             self._process(data[self._lookup], publish_time)
         logger.info(
-            "[%s: %s]: %s %s added"
-            % (self, self.unique_id, len(self._caches), self._lookup)
+            "[%s: %s]: %s %s added",
+            self,
+            self.unique_id,
+            len(self._caches),
+            self._lookup,
         )
 
     def on_heartbeat(self, data: dict) -> None:
@@ -53,8 +56,11 @@ class BaseStream:
     def on_resubscribe(self, data: dict) -> None:
         self.on_update(data)
         logger.info(
-            "[%s: %s]: %s %s resubscribed"
-            % (self, self.unique_id, len(self._caches), self._lookup)
+            "[%s: %s]: %s %s resubscribed",
+            self,
+            self.unique_id,
+            len(self._caches),
+            self._lookup,
         )
 
     def on_update(self, data: dict) -> None:
@@ -66,7 +72,7 @@ class BaseStream:
             latency = self._calc_latency(publish_time)
             if latency > self._max_latency:
                 logger.warning(
-                    "[%s: %s]: Latency high: %s" % (self, self.unique_id, latency)
+                    "[%s: %s]: Latency high: %s", self, self.unique_id, latency
                 )
 
         if self._lookup in data:
@@ -90,8 +96,11 @@ class BaseStream:
         for market_id in _to_remove:
             del self._caches[market_id]
             logger.info(
-                "[%s: %s]: %s removed, %s markets in cache"
-                % (self, self.unique_id, market_id, len(self._caches))
+                "[%s: %s]: %s removed, %s markets in cache",
+                self,
+                self.unique_id,
+                market_id,
+                len(self._caches),
             )
 
     def snap(self, market_ids: list = None, publish_time: Optional[int] = None) -> list:
@@ -126,7 +135,7 @@ class BaseStream:
             self.output_queue.put(output)
 
     def _on_creation(self) -> None:
-        logger.info('[%s: %s]: "%s" created' % (self, self.unique_id, self))
+        logger.info('[%s: %s]: "%s" created', self, self.unique_id, self)
 
     def _process(self, data: list, publish_time: int) -> bool:
         # Return True if new img within data
@@ -173,8 +182,10 @@ class MarketStream(BaseStream):
                     logger.warning(
                         "[%s: %s]: Missing marketDefinition on market %s resulting "
                         "in potential missing data in the MarketBook (make sure "
-                        "EX_MARKET_DEF is requested)"
-                        % (self, self.unique_id, market_id)
+                        "EX_MARKET_DEF is requested)",
+                        self,
+                        self.unique_id,
+                        market_id,
                     )
                 market_book_cache = MarketBookCache(
                     market_id,
@@ -185,8 +196,11 @@ class MarketStream(BaseStream):
                 )
                 self._caches[market_id] = market_book_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    "[%s: %s]: %s added, %s markets in cache",
+                    self,
+                    self.unique_id,
+                    market_id,
+                    len(self._caches),
                 )
 
             market_book_cache.update_cache(market_book, publish_time, True)
@@ -214,8 +228,11 @@ class OrderStream(BaseStream):
                 )
                 self._caches[market_id] = order_book_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    "[%s: %s]: %s added, %s markets in cache",
+                    self,
+                    self.unique_id,
+                    market_id,
+                    len(self._caches),
                 )
 
             order_book_cache.update_cache(order_book, publish_time)
@@ -258,8 +275,11 @@ class RaceStream(BaseStream):
                 )
                 self._caches[market_id] = race_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    "[%s: %s]: %s added, %s markets in cache",
+                    self,
+                    self.unique_id,
+                    market_id,
+                    len(self._caches),
                 )
 
             race_cache.update_cache(update, publish_time)
@@ -286,8 +306,11 @@ class CricketStream(BaseStream):
                 )
                 self._caches[market_id] = cricket_match_cache
                 logger.info(
-                    "[%s: %s]: %s added, %s markets in cache"
-                    % (self, self.unique_id, market_id, len(self._caches))
+                    "[%s: %s]: %s added, %s markets in cache",
+                    self,
+                    self.unique_id,
+                    market_id,
+                    len(self._caches),
                 )
 
             cricket_match_cache.update_cache(cricket_change, publish_time)
