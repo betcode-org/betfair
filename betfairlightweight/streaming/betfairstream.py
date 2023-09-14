@@ -222,9 +222,10 @@ class BetfairStream:
         s.settimeout(self.timeout)
         s.connect((self.host, self.__port))
         self._socket_file = s.makefile(
-            "rb",
+            "r",
             buffering=self.buffer_size,
-            newline=bytes(self.__CRLF, encoding=self.__encoding),
+            newline=self.__CRLF,
+            encoding=self.__encoding,
         )
         return s
 
@@ -263,9 +264,7 @@ class BetfairStream:
             else:
                 return  # 165, prevents error if stop is called mid recv
 
-        # strip off trailing \r\n without allocating new bytearray
-        view = memoryview(message)
-        return str(view[0:-2], self.__encoding)
+        return message
 
     def _data(self, received_data: str) -> None:
         """Sends data to listener, if False is returned; socket

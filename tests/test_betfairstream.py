@@ -287,7 +287,7 @@ class BetfairStreamTest(unittest.TestCase):
 
     def test_receive_all(self):
         mock_socket_file = mock.Mock()
-        data_return_value = b'{"op":"status"}\r\n'
+        data_return_value = '{"op":"status"}'
         mock_socket_file.readline.return_value = data_return_value
         self.betfair_stream._socket_file = mock_socket_file
 
@@ -297,7 +297,7 @@ class BetfairStreamTest(unittest.TestCase):
         self.betfair_stream._running = True
         data = self.betfair_stream._receive_all()
         mock_socket_file.readline.assert_called_with()
-        assert data == data_return_value.decode("utf-8").strip()
+        assert data == data_return_value
 
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream.stop")
     def test_receive_all_closed(self, mock_stop):
