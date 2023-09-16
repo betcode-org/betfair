@@ -3,6 +3,42 @@
 Release History
 ---------------
 
+2.18.0 (2023-08-16)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- Prevent race condition on connect/auth by reading response off socket first
+
+**Dependencies**
+
+- Remove python 3.7
+- requests upgraded to <2.32.0
+- orjson upgraded to 3.9.4
+- black upgraded to 23.7.0
+
+2.17.3 (2023-07-24)
++++++++++++++++++++
+
+**Improvements**
+
+- #279 Stop prepending pardir to certs path (@mzaja)
+
+**Dependencies**
+
+- orjson upgraded to 3.9.2
+
+2.17.2 (2023-05-25)
++++++++++++++++++++
+
+**Bug Fixes**
+
+- RaceCard missing data handling
+
+**Dependencies**
+
+- black upgraded to 23.1.0
+
 2.17.1 (2023-02-08)
 +++++++++++++++++++
 

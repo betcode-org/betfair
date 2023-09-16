@@ -1,5 +1,5 @@
 # Tests & Linting
-black>=22.10.0, <24.0
+black==23.7.0, <24.0
 coverage
 
 # Examples

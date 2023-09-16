@@ -8,7 +8,7 @@ class RaceType:
     :type key: unicode
     """
 
-    def __init__(self, abbr, full, key):
+    def __init__(self, abbr=None, full=None, key=None):
         self.abbr = abbr
         self.full = full
         self.key = key
@@ -154,7 +154,7 @@ class InPlayHint:
     :type hint_value: unicode
     """
 
-    def __init__(self, hintName, hintValue):
+    def __init__(self, hintName=None, hintValue=None):
         self.hint_name = hintName
         self.hint_value = hintValue
 
@@ -165,7 +165,7 @@ class DaysSinceLastRun:
     :type type: unicode
     """
 
-    def __init__(self, days, type):
+    def __init__(self, days=None, type=None):
         self.days = days
         self.type = type
 
@@ -176,7 +176,7 @@ class Jockey:
     :type name: unicode
     """
 
-    def __init__(self, jockeyId, name, allowance=None):
+    def __init__(self, jockeyId=None, name=None, allowance=None):
         self.jockey_id = jockeyId
         self.name = name
         self.allowance = allowance
@@ -203,7 +203,7 @@ class Trainer:
     :type trainer_id: unicode
     """
 
-    def __init__(self, location, name, trainerId):
+    def __init__(self, location=None, name=None, trainerId=None):
         self.location = location
         self.name = name
         self.trainer_id = trainerId
@@ -216,7 +216,7 @@ class Wearing:
     :type key: unicode
     """
 
-    def __init__(self, abbr, full, key):
+    def __init__(self, abbr=None, full=None, key=None):
         self.abbr = abbr
         self.full = full
         self.key = key

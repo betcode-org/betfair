@@ -85,4 +85,4 @@ or to use C/Rust libraries install with
 $ pip install betfairlightweight[speed]
 ```
 
-betfairlightweight requires Python 3.7+
+betfairlightweight requires Python 3.8+

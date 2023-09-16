@@ -1,7 +1,6 @@
 import socket
 import ssl
 import logging
-import warnings
 import datetime
 import collections
 from typing import Optional
@@ -25,7 +24,6 @@ class BetfairStream:
     HOSTS = collections.defaultdict(
         lambda: "stream-api.betfair.com",
         integration="stream-api-integration.betfair.com",
-        race="sports-data-stream-api.betfair.com",
         sports_data="sports-data-stream-api.betfair.com",
     )
 
@@ -45,11 +43,6 @@ class BetfairStream:
         self.session_token = session_token
         self.timeout = timeout
         self.buffer_size = buffer_size
-        if host == "race":
-            warnings.warn(
-                "`race` host to be depreciated for `sports_data` from v2.17.0",
-                DeprecationWarning,
-            )
         self.host = self.HOSTS[host]
         self.receive_count = 0
         self.datetime_last_received = None
@@ -94,6 +87,9 @@ class BetfairStream:
             "session": self.session_token,
         }
         self._send(message)
+        # wait for response
+        received_data = self._receive_all()
+        self._data(received_data)
         return unique_id
 
     def heartbeat(self) -> int:
@@ -207,6 +203,9 @@ class BetfairStream:
         """Creates socket and sets running to True."""
         self._socket = self._create_socket()
         self._running = True
+        # wait for response
+        received_data = self._receive_all()
+        self._data(received_data)
 
     def _create_socket(self) -> socket.socket:
         """Creates ssl socket, connects to stream api and
