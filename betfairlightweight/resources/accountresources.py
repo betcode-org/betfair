@@ -3,7 +3,7 @@ from .baseresource import BaseResource
 
 class AccountFunds(BaseResource):
     def __init__(self, **kwargs):
-        super(AccountFunds, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.available_to_bet_balance = kwargs.get("availableToBetBalance")
         self.discount_rate = kwargs.get("discountRate")
         self.exposure = kwargs.get("exposure")
@@ -15,7 +15,7 @@ class AccountFunds(BaseResource):
 
 class AccountDetails(BaseResource):
     def __init__(self, **kwargs):
-        super(AccountDetails, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.country_code = kwargs.get("countryCode")
         self.currency_code = kwargs.get("currencyCode")
         self.discount_rate = kwargs.get("discountRate")
@@ -90,7 +90,7 @@ class AccountStatement:
 
 class AccountStatementResult(BaseResource):
     def __init__(self, **kwargs):
-        super(AccountStatementResult, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.more_available = kwargs.get("moreAvailable")
         self.account_statement = [
             AccountStatement(**i) for i in kwargs.get("accountStatement")
@@ -99,12 +99,12 @@ class AccountStatementResult(BaseResource):
 
 class CurrencyRate(BaseResource):
     def __init__(self, **kwargs):
-        super(CurrencyRate, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.currency_code = kwargs.get("currencyCode")
         self.rate = kwargs.get("rate")
 
 
 class TransferFunds(BaseResource):
     def __init__(self, **kwargs):
-        super(TransferFunds, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.transaction_id = kwargs.get("transactionId")

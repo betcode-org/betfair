@@ -33,10 +33,9 @@ class RaceCard(BaseEndpoint):
         app_key = re.findall(
             r'''"appKey":\s"(.*?)"''', response.content.decode("utf-8")
         )
-        if app_key:
-            self.app_key = app_key[0]
-        else:
+        if not app_key:
             raise RaceCardError("Unable to find appKey")
+        self.app_key = app_key[0]
 
     def get_race_card(
         self,
@@ -101,7 +100,7 @@ class RaceCard(BaseEndpoint):
     ) -> (dict, float):
         session = session or self.client.session
         time_sent = time.time()
-        url = "%s%s" % (self.url, method)
+        url = f"{self.url}{method}"
         try:
             response = session.get(
                 url,

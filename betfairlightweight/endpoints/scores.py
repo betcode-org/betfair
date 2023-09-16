@@ -34,7 +34,7 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.RaceDetails]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listRaceDetails")
+        method = f"{self.URI}listRaceDetails"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.RaceDetails, elapsed_time, lightweight
@@ -62,7 +62,7 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.AvailableEvent]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listAvailableEvents")
+        method = f"{self.URI}listAvailableEvents"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.AvailableEvent, elapsed_time, lightweight
@@ -85,7 +85,7 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.Score]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listScores")
+        method = f"{self.URI}listScores"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.Score, elapsed_time, lightweight
@@ -108,7 +108,7 @@ class Scores(BaseEndpoint):
         :rtype: list[resources.Incidents]
         """
         params = clean_locals(locals())
-        method = "%s%s" % (self.URI, "listIncidents")
+        method = f"{self.URI}listIncidents"
         (response, response_json, elapsed_time) = self.request(method, params, session)
         return self.process_response(
             response_json, resources.Incidents, elapsed_time, lightweight
@@ -116,4 +116,4 @@ class Scores(BaseEndpoint):
 
     @property
     def url(self) -> str:
-        return "%s%s" % (self.client.api_uri, "scores/json-rpc/v1")
+        return f"{self.client.api_uri}scores/json-rpc/v1"

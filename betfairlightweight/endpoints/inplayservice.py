@@ -26,7 +26,7 @@ class InPlayService(BaseEndpoint):
 
         :rtype: resources.EventTimeline
         """
-        url = "%s%s" % (self.url, "eventTimeline")
+        url = f"{self.url}eventTimeline"
         params = {
             "eventId": event_id,
             "alt": "json",
@@ -56,7 +56,7 @@ class InPlayService(BaseEndpoint):
 
         :rtype: list[resources.EventTimeline]
         """
-        url = "%s%s" % (self.url, "eventTimelines")
+        url = f"{self.url}eventTimelines"
         params = {
             "eventIds": ",".join(str(x) for x in event_ids),
             "alt": "json",
@@ -86,7 +86,7 @@ class InPlayService(BaseEndpoint):
 
         :rtype: list[resources.Scores]
         """
-        url = "%s%s" % (self.url, "scores")
+        url = f"{self.url}scores"
         params = {
             "eventIds": ",".join(str(x) for x in event_ids),
             "alt": "json",

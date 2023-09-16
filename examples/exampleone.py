@@ -35,7 +35,7 @@ for event_type in horse_racing_event_type_id:
         max_results=1,
     )
 
-    print("%s market catalogues returned" % len(market_catalogues))
+    print(f"{len(market_catalogues)} market catalogues returned")
 
     for market_catalogue in market_catalogues:
         # prints market id, market name and market start time

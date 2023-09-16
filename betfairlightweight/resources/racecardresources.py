@@ -118,7 +118,7 @@ class Race(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        super(Race, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.betfair_meeting_id = kwargs.get("betfairMeetingId")
         self.distance = kwargs.get("distance")
         self.eligibility = kwargs.get("eligibility")
@@ -360,7 +360,7 @@ class RaceCard(BaseResource):
     """
 
     def __init__(self, **kwargs):
-        super(RaceCard, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.betting_forecast_text = kwargs.get("bettingForecastText")
         self.comment = kwargs.get("comment")
         self.minimum_weight = kwargs.get("minimumWeight")

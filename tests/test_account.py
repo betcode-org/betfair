@@ -85,7 +85,4 @@ class AccountTest(unittest.TestCase):
             self.account.transfer_funds()
 
     def test_url(self):
-        assert self.account.url == "%s%s" % (
-            self.account.client.api_uri,
-            "account/json-rpc/v1",
-        )
+        assert self.account.url == f"{self.account.client.api_uri}account/json-rpc/v1"

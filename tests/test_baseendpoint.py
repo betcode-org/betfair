@@ -167,7 +167,7 @@ class BaseEndPointTest(unittest.TestCase):
             self.base_endpoint.process_response(response_list, mock_resource, 0, False)
 
     def test_base_endpoint_url(self):
-        assert self.base_endpoint.url == "%s%s" % (
-            self.base_endpoint.client.api_uri,
-            "betting/json-rpc/v1",
+        assert (
+            self.base_endpoint.url
+            == f"{self.base_endpoint.client.api_uri}betting/json-rpc/v1"
         )

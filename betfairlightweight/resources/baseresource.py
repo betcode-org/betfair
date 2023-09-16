@@ -36,7 +36,7 @@ class BaseResource:
                 return
 
     def __repr__(self) -> str:
-        return "<%s>" % self.__class__.__name__
+        return f"<{self.__class__.__name__}>"
 
     def __str__(self) -> str:
         return self.__class__.__name__

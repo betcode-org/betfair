@@ -29,8 +29,7 @@ def place_order():
     print(place_orders.status)
     for order in place_orders.place_instruction_reports:
         print(
-            "Status: %s, BetId: %s, Average Price Matched: %s "
-            % (order.status, order.bet_id, order.average_price_matched)
+            f"Status: {order.status}, BetId: {order.bet_id}, Average Price Matched: {order.average_price_matched} "
         )
 
 
@@ -45,7 +44,7 @@ def update_order(bet_id):
 
     print(update_order.status)
     for order in update_order.update_instruction_reports:
-        print("Status: %s" % order.status)
+        print(f"Status: {order.status}")
 
 
 def replace_order(bet_id):
@@ -60,8 +59,7 @@ def replace_order(bet_id):
         place_report = order.place_instruction_reports
         cancel_report = order.cancel_instruction_reports
         print(
-            "Status: %s, New BetId: %s, Average Price Matched: %s "
-            % (order.status, place_report.bet_id, place_report.average_price_matched)
+            f"Status: {order.status}, New BetId: {place_report.bet_id}, Average Price Matched: {place_report.average_price_matched} "
         )
 
 
@@ -75,6 +73,5 @@ def cancel_order(bet_id):
     print(cancel_order.status)
     for cancel in cancel_order.cancel_instruction_reports:
         print(
-            "Status: %s, Size Cancelled: %s, Cancelled Date: %s"
-            % (cancel.status, cancel.size_cancelled, cancel.cancelled_date)
+            f"Status: {cancel.status}, Size Cancelled: {cancel.size_cancelled}, Cancelled Date: {cancel.cancelled_date}"
         )

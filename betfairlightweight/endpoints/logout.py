@@ -68,4 +68,4 @@ class Logout(BaseEndpoint):
 
     @property
     def url(self) -> str:
-        return "%s%s" % (self.client.identity_uri, "logout")
+        return f"{self.client.identity_uri}logout"

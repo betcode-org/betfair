@@ -71,7 +71,7 @@ class LoginInteractive(BaseEndpoint):
 
     @property
     def url(self) -> str:
-        return "%s%s" % (self.client.identity_uri, "login")
+        return f"{self.client.identity_uri}login"
 
     @property
     def data(self) -> dict:
