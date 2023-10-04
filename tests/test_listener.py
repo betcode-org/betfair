@@ -138,7 +138,6 @@ class StreamListenerTest(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.stream_listener.output_queue, self.output_queue)
         self.assertEqual(self.stream_listener.max_latency, self.max_latency)
-        self.assertFalse(self.stream_listener.debug)
         self.assertTrue(self.stream_listener.update_clk)
         self.assertFalse(self.stream_listener.calculate_market_tv)
         self.assertFalse(self.stream_listener.cumulative_runner_tv)

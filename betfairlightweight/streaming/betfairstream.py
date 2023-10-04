@@ -293,7 +293,7 @@ class BetfairStream:
         message_dumped += crlf
 
         logger.debug(
-            "[Subscription: %s] Sending: %s" % (self._unique_id, repr(message_dumped))
+            "[Subscription: %s] Sending: %s", self._unique_id, repr(message_dumped)
         )
         try:
             self._socket.sendall(message_dumped)
