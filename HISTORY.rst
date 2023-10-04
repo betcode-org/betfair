@@ -3,12 +3,11 @@
 Release History
 ---------------
 
-2.19.0b0 (2023-09-07)
+2.19.0 (2023-10-04)
 +++++++++++++++++++
 
 **Improvements**
 
-- Improve performance of socket code @petedmarsh
 - Improve performance of BaseStream.snap @petedmarsh
 - Lazily evaluate log message parameters @petedmarsh
 
