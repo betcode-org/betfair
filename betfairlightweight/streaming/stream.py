@@ -104,11 +104,25 @@ class BaseStream:
             )
 
     def snap(self, market_ids: list = None, publish_time: Optional[int] = None) -> list:
-        return [
-            cache.create_resource(self.unique_id, snap=True, publish_time=publish_time)
-            for cache in list(self._caches.values())
-            if cache.active and (market_ids is None or cache.market_id in market_ids)
-        ]
+        # yes you can avoid the if and have fewer lines of code but it's faster
+        # to treat these cases separately as you can avoid list(...) and some
+        # conditionals!
+        if market_ids:
+            return [
+                cache.create_resource(
+                    self.unique_id, snap=True, publish_time=publish_time
+                )
+                for market_id in market_ids
+                if (cache := self._caches.get(market_id)) is not None and cache.active
+            ]
+        else:
+            return [
+                cache.create_resource(
+                    self.unique_id, snap=True, publish_time=publish_time
+                )
+                for cache in list(self._caches.values())
+                if cache.active
+            ]
 
     def on_process(self, caches: list, publish_time: Optional[int] = None) -> None:
         if self.output_queue:
