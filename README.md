@@ -12,7 +12,7 @@ Lightweight, super fast (uses C and Rust libraries) pythonic wrapper for [Betfai
 
 [docs](https://betcode-org.github.io/betfair/)
 
-[join betcode slack group](https://join.slack.com/t/betcode-org/shared_invite/zt-h0ato238-PPbfU_T7Ji0ORjz0ESIJkg)
+[join betcode slack group](https://join.slack.com/t/betcode-org/shared_invite/zt-25yz6dt1y-LHya5VzHLOzN3RZEQrSnrA)
 
 Currently tested on Python 3.8, 3.9, 3.10 and 3.11.
 
