@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.19.1 (2023-11-06)
++++++++++++++++++++
+
+**Improvements**
+
+- Slack link expires
+
+**Dependencies**
+
+- orjson upgraded to 3.9.9
+- black upgraded to 23.10.0
+
 2.19.0 (2023-10-04)
 +++++++++++++++++++
 
