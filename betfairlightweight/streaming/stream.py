@@ -33,8 +33,8 @@ class BaseStream:
         self._updates_processed = 0
         self._on_creation()
 
-        self.time_created = datetime.datetime.utcnow()
-        self.time_updated = datetime.datetime.utcnow()
+        self.time_created = datetime.datetime.now(tz=datetime.timezone.utc)
+        self.time_updated = datetime.datetime.now(tz=datetime.timezone.utc)
 
     def on_subscribe(self, data: dict) -> None:
         self._update_clk(data)
@@ -147,7 +147,7 @@ class BaseStream:
             self._initial_clk = initial_clk
         if clk:
             self._clk = clk
-        self.time_updated = datetime.datetime.utcnow()
+        self.time_updated = datetime.datetime.now(tz=datetime.timezone.utc)
 
     @staticmethod
     def _calc_latency(publish_time: int) -> float:
@@ -246,7 +246,6 @@ class OrderStream(BaseStream):
 
 
 class RaceStream(BaseStream):
-
     """
     Cache contains latest update:
         marketId: RaceCache

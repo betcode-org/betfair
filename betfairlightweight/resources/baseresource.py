@@ -10,7 +10,7 @@ class BaseResource:
 
     def __init__(self, **kwargs):
         self.elapsed_time = kwargs.pop("elapsed_time", None)
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(tz=datetime.timezone.utc)
         self._datetime_created = now
         self._datetime_updated = now
         self._data = kwargs
@@ -31,7 +31,9 @@ class BaseResource:
                 return
         elif isinstance(value, integer_types):
             try:
-                return datetime.datetime.utcfromtimestamp(value / 1e3)
+                return datetime.datetime.fromtimestamp(
+                    value / 1e3, tz=datetime.timezone.utc
+                )
             except (ValueError, OverflowError, OSError):
                 return
 

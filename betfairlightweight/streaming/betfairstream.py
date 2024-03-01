@@ -225,7 +225,9 @@ class BetfairStream:
             received_data_raw = self._receive_all()
             if self._running:
                 self.receive_count += 1
-                self.datetime_last_received = datetime.datetime.utcnow()
+                self.datetime_last_received = datetime.datetime.now(
+                    tz=datetime.timezone.utc
+                )
                 received_data_split = received_data_raw.split(self.__CRLF)
                 for received_data in received_data_split:
                     if received_data:
