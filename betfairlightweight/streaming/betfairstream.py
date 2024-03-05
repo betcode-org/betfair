@@ -7,6 +7,7 @@ from typing import Optional
 
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
+from ..utils import utcnow
 from .listener import BaseListener
 
 logger = logging.getLogger(__name__)
@@ -225,9 +226,7 @@ class BetfairStream:
             received_data_raw = self._receive_all()
             if self._running:
                 self.receive_count += 1
-                self.datetime_last_received = datetime.datetime.now(
-                    tz=datetime.timezone.utc
-                )
+                self.datetime_last_received = utcnow()
                 received_data_split = received_data_raw.split(self.__CRLF)
                 for received_data in received_data_split:
                     if received_data:
