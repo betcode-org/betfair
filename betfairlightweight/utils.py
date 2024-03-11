@@ -88,3 +88,14 @@ def create_date_string(date: datetime.datetime) -> Optional[str]:
     """
     if date:
         return date.strftime(BETFAIR_DATE_FORMAT)
+
+
+def utcnow():
+    """return timezone naive now"""
+    return datetime.datetime.now(tz=datetime.timezone.utc).replace(tzinfo=None)
+
+
+def utcfromtimestamp(ts):
+    return datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc).replace(
+        tzinfo=None
+    )

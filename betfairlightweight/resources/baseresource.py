@@ -3,6 +3,7 @@ import datetime
 from typing import Union, Optional
 
 from ..compat import basestring, integer_types, json, parse_datetime
+from ..utils import utcfromtimestamp, utcnow
 
 
 class BaseResource:
@@ -10,7 +11,7 @@ class BaseResource:
 
     def __init__(self, **kwargs):
         self.elapsed_time = kwargs.pop("elapsed_time", None)
-        now = datetime.datetime.utcnow()
+        now = utcnow()
         self._datetime_created = now
         self._datetime_updated = now
         self._data = kwargs
@@ -31,7 +32,7 @@ class BaseResource:
                 return
         elif isinstance(value, integer_types):
             try:
-                return datetime.datetime.utcfromtimestamp(value / 1e3)
+                return utcfromtimestamp(value / 1e3)
             except (ValueError, OverflowError, OSError):
                 return
 
