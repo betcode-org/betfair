@@ -27,11 +27,11 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 speed = [
-    "ciso8601==2.3.0",
-    "orjson==3.9.9",
+    "ciso8601==2.3.1",
+    "orjson==3.9.13",
 ]
 test = [
-    "black==23.10.0",
+    "black==24.2.0",
     "coverage",
     "mkdocs",
     "mkdocs-material",
