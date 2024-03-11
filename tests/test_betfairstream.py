@@ -1,6 +1,7 @@
 import unittest
 import socket
 import time
+import ssl
 import threading
 from unittest import mock
 
@@ -252,13 +253,23 @@ class BetfairStreamTest(unittest.TestCase):
             self.betfair_stream._unique_id, "cricketSubscription"
         )
 
-    @mock.patch("ssl.wrap_socket")
+    @mock.patch("ssl.SSLContext")
     @mock.patch("socket.socket")
-    def test_create_socket(self, mock_socket, mock_wrap_socket):
+    def test_create_socket(self, mock_socket, mock_ssl_context):
         self.betfair_stream._create_socket()
 
         mock_socket.assert_called_with(socket.AF_INET, socket.SOCK_STREAM)
-        assert mock_wrap_socket.call_count == 1
+        self.assertEqual(mock_ssl_context.call_count, 1)
+        mock_ssl_context.assert_called_with(ssl.PROTOCOL_TLS)
+        mock_ssl_context.return_value.wrap_socket.assert_called_with(
+            mock_socket.return_value, server_hostname="stream-api.betfair.com"
+        )
+        mock_ssl_context.return_value.wrap_socket.return_value.settimeout.assert_called_with(
+            6
+        )
+        mock_ssl_context.return_value.wrap_socket.return_value.connect.assert_called_with(
+            ("stream-api.betfair.com", 443)
+        )
 
     @mock.patch(
         "betfairlightweight.streaming.betfairstream.BetfairStream._data",

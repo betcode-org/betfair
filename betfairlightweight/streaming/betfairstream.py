@@ -211,8 +211,11 @@ class BetfairStream:
         """Creates ssl socket, connects to stream api and
         sets timeout.
         """
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s = ssl.wrap_socket(s)
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+        context.verify_mode = ssl.CERT_NONE
+        s = context.wrap_socket(
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM), server_hostname=self.host
+        )
         s.settimeout(self.timeout)
         s.connect((self.host, self.__port))
         return s

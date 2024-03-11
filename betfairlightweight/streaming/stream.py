@@ -246,7 +246,6 @@ class OrderStream(BaseStream):
 
 
 class RaceStream(BaseStream):
-
     """
     Cache contains latest update:
         marketId: RaceCache

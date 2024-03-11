@@ -240,7 +240,7 @@ class SeasonMasterRating:
         surface=None,
         ratingSymbol=None,
         ratingvalue=None,
-        **kwargs
+        **kwargs,
     ):
         self.racing_type = racingType
         self.surface = surface
@@ -303,7 +303,7 @@ class Runner:
         preRaceMasterRating=None,
         preRaceWeightAdjustedMasterRating=None,
         seasonMasterRating=None,
-        **kwargs
+        **kwargs,
     ):
         self.age = age
         self.comment = comment
