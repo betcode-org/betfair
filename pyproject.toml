@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "betfairlightweight"
+description = "Lightweight python wrapper for Betfair API-NG"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+authors = [
+    { name = "Liam Pauling", email = "a@unknown.com" },
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "requests<2.32.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+speed = [
+    "ciso8601==2.3.1",
+    "orjson==3.9.13",
+]
+test = [
+    "black==24.2.0",
+    "coverage",
+    "mkdocs",
+    "mkdocs-material",
+    "twine",
+    "wheel",
+]
+
+[project.urls]
+Homepage = "https://github.com/betcode-org"
+Documentation = "https://betcode-org.github.io/betfair/"
+Repository = "https://github.com/betcode-org/betfair.git"
+"Bug Tracker" = "https://github.com/betcode-org/betfair/issues"
+Changelog = "https://github.com/betcode-org/betfair/blob/master/HISTORY.rst"
+
+[tool.hatch.version]
+path = "betfairlightweight/__version__.py"

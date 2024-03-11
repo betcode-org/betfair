@@ -443,7 +443,7 @@ class UnmatchedOrder:
         rc: str = None,
         lsrc: str = None,
         cd: int = None,
-        **kwargs
+        **kwargs,
     ):
         self.publish_time = publish_time
         self.bet_id = id
@@ -487,9 +487,11 @@ class UnmatchedOrder:
             "marketId": market_id,
             "matchedDate": self._matched_date_string,
             "orderType": StreamingOrderType[self.order_type].value,
-            "persistenceType": StreamingPersistenceType[self.persistence_type].value
-            if self.persistence_type
-            else None,
+            "persistenceType": (
+                StreamingPersistenceType[self.persistence_type].value
+                if self.persistence_type
+                else None
+            ),
             "placedDate": self._placed_date_string,
             "priceSize": {"price": self.price, "size": self.size},
             "regulatorAuthCode": self.regulator_auth_code,

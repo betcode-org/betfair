@@ -7,6 +7,7 @@ from typing import Optional
 
 from ..exceptions import SocketError, ListenerError
 from ..compat import json
+from ..utils import utcnow
 from .listener import BaseListener
 
 logger = logging.getLogger(__name__)
@@ -211,8 +212,11 @@ class BetfairStream:
         """Creates ssl socket, connects to stream api and
         sets timeout.
         """
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s = ssl.wrap_socket(s)
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+        context.verify_mode = ssl.CERT_NONE
+        s = context.wrap_socket(
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM), server_hostname=self.host
+        )
         s.settimeout(self.timeout)
         s.connect((self.host, self.__port))
         return s
@@ -225,7 +229,7 @@ class BetfairStream:
             received_data_raw = self._receive_all()
             if self._running:
                 self.receive_count += 1
-                self.datetime_last_received = datetime.datetime.utcnow()
+                self.datetime_last_received = utcnow()
                 received_data_split = received_data_raw.split(self.__CRLF)
                 for received_data in received_data_split:
                     if received_data:
