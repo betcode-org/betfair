@@ -3,6 +3,20 @@
 Release History
 ---------------
 
+2.20.0 (2024-03-11)
++++++++++++++++++++
+
+**Improvements**
+
+- #550 update create socket for py3.12
+- #562 Fix utcnow deprecation for python3.12 (@synapticarbors)
+- toml file added
+
+**Dependencies**
+
+- python 3.12 added
+- black upgraded to 24.2.0
+
 2.19.1 (2023-11-06)
 +++++++++++++++++++
 
