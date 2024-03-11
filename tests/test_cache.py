@@ -697,7 +697,7 @@ class TestOrderBookCache(unittest.TestCase):
                     self.order_book_cache.market_id,
                     1234,
                     self.order_book_cache.lightweight,
-                    **order_changes
+                    **order_changes,
                 )
 
     def test_update_cache_closed(self):
