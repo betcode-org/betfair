@@ -18,6 +18,7 @@ Release History
 - ciso8601 upgraded to 2.3.1
 - orjson upgraded to 3.9.13
 - black upgraded to 24.2.0
+- build added as test dependency
 
 2.19.1 (2023-11-06)
 +++++++++++++++++++

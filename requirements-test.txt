@@ -7,5 +7,5 @@ mkdocs
 mkdocs-material
 
 # Packaging
+build
 twine
-wheel
