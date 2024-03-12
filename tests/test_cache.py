@@ -246,7 +246,7 @@ class TestMarketBookCache(unittest.TestCase):
         self.market_book_cache = MarketBookCache("1.2345", 12345, True, False, False)
 
     def test_init(self):
-        self.assertTrue(self.market_book_cache.active)
+        self.assertFalse(self.market_book_cache.active)
         self.assertEqual(self.market_book_cache.market_id, "1.2345")
         self.assertEqual(self.market_book_cache.publish_time, 12345)
         self.assertTrue(self.market_book_cache.lightweight)

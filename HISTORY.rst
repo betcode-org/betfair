@@ -3,6 +3,18 @@
 Release History
 ---------------
 
+2.20.1 (2024-03-12)
++++++++++++++++++++
+
+**Improvements**
+
+- toml improvements
+- repo cleanup
+
+**Bug Fixes**
+
+- Prevent race condition on snap when market cache has not finished populating
+
 2.20.0 (2024-03-11)
 +++++++++++++++++++
 

@@ -1,9 +1,0 @@
-include LICENSE 
-include README.md 
-include requirements.txt 
-include requirements-speed.txt
-include HISTORY.rst
-
-graft tests
-
-global-exclude *.py[co] .DS_Store
