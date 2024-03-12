@@ -24,7 +24,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-        pip install -r requirements-test.txt
 
     - name: Black fmt
       run: |
@@ -57,7 +56,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r requirements-speed.txt
-          pip install -r requirements-test.txt
 
       - name: Unittest
         run: |
@@ -81,7 +79,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-        pip install -r requirements-test.txt
 
     - name: Build package and docs
       run: |

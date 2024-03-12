@@ -35,8 +35,8 @@ test = [
     "coverage",
     "mkdocs",
     "mkdocs-material",
+    "build",
     "twine",
-    "wheel",
 ]
 
 [project.urls]
@@ -48,3 +48,11 @@ Changelog = "https://github.com/betcode-org/betfair/blob/master/HISTORY.rst"
 
 [tool.hatch.version]
 path = "betfairlightweight/__version__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/betfairlightweight",
+    "/HISTORY.rst",
+    "/README.md",
+    "/tests",
+]

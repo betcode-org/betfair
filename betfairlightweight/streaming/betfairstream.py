@@ -1,7 +1,6 @@
 import socket
 import ssl
 import logging
-import datetime
 import collections
 from typing import Optional
 

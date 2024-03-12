@@ -205,7 +205,7 @@ class MarketBookCache(BaseResource):
         cumulative_runner_tv: bool,
     ):
         super(MarketBookCache, self).__init__()
-        self.active = True
+        self.active = False
         self.market_id = market_id
         self.publish_time = publish_time
         self.lightweight = lightweight
@@ -234,7 +234,6 @@ class MarketBookCache(BaseResource):
     def update_cache(
         self, market_change: dict, publish_time: int, active: bool
     ) -> None:
-        self.active = active
         self.streaming_update = market_change
         self.publish_time = publish_time
 
@@ -297,6 +296,7 @@ class MarketBookCache(BaseResource):
                     ),
                     2,
                 )
+        self.active = active
 
     def refresh_cache(self) -> None:
         for runner in self.runners:
