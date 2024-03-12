@@ -15,6 +15,10 @@ Release History
 
 - Prevent race condition on snap when market cache has not finished populating
 
+**Dependencies**
+
+- orjson upgraded to 3.9.15
+
 2.20.0 (2024-03-11)
 +++++++++++++++++++
 
