@@ -21,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "requests<2.32.0",
+    "requests<2.33.0",
 ]
 dynamic = ["version"]
 
