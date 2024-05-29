@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.20.2 (2024-05-29)
++++++++++++++++++++
+
+**Improvements**
+
+-
+
+**Dependencies**
+
+- requests upgraded to <2.33.0
+- orjson upgraded to 3.10.3
+- black upgraded to 24.4.2
+
 2.20.1 (2024-03-12)
 +++++++++++++++++++
 
