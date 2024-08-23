@@ -75,6 +75,17 @@ class BaseStream:
                     "[%s: %s]: Latency high: %s", self, self.unique_id, latency
                 )
 
+        if (
+            data.get('con')
+            and (
+                self._listener.conflate_ms is None
+                or self._listener.conflate_ms == 0
+            )
+        ):
+            logger.warning(
+                "[%s: %s]: unexpected conflation", self, self.unique_id
+            )
+
         if self._lookup in data:
             img = self._process(data[self._lookup], publish_time)
 
