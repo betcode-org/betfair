@@ -127,6 +127,27 @@ class BaseStreamTest(unittest.TestCase):
         mock_calc_latency.assert_called_with(data.get("pt"))
         mock_process.assert_called_with(data.get("mc"), data.get("pt"))
 
+    @mock.patch("betfairlightweight.streaming.stream.logger.warning")
+    def test_on_update_conflation(self, mock_warning):
+        self.stream.update_clk = False
+        self.stream._max_latency = None
+        self.stream._lookup = ''
+
+        data = {"pt": 12345, "con": True}
+
+        self.stream._listener.conflate_ms = 10000
+        self.stream.on_update(data)
+        mock_warning.assert_not_called()
+
+        self.stream._listener.conflate_ms = None
+        self.stream.on_update(data)
+        mock_warning.assert_called_once_with("[%s: %s]: unexpected conflation", self.stream, 123)
+
+        self.stream._listener.conflate_ms = 0
+        mock_warning.reset_mock()
+        self.stream.on_update(data)
+        mock_warning.assert_called_once_with("[%s: %s]: unexpected conflation", self.stream, 123)
+
     def test_clear_cache(self):
         self.stream._caches = {1: "abc"}
         self.stream.clear_cache()
