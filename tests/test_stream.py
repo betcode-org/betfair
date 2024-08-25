@@ -131,7 +131,7 @@ class BaseStreamTest(unittest.TestCase):
     def test_on_update_conflation(self, mock_warning):
         self.stream.update_clk = False
         self.stream._max_latency = None
-        self.stream._lookup = ''
+        self.stream._lookup = ""
 
         data = {"pt": 12345, "con": True}
 
@@ -141,12 +141,16 @@ class BaseStreamTest(unittest.TestCase):
 
         self.stream._listener.conflate_ms = None
         self.stream.on_update(data)
-        mock_warning.assert_called_once_with("[%s: %s]: unexpected conflation", self.stream, 123)
+        mock_warning.assert_called_once_with(
+            "[%s: %s]: unexpected conflation", self.stream, 123
+        )
 
         self.stream._listener.conflate_ms = 0
         mock_warning.reset_mock()
         self.stream.on_update(data)
-        mock_warning.assert_called_once_with("[%s: %s]: unexpected conflation", self.stream, 123)
+        mock_warning.assert_called_once_with(
+            "[%s: %s]: unexpected conflation", self.stream, 123
+        )
 
     def test_clear_cache(self):
         self.stream._caches = {1: "abc"}
