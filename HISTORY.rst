@@ -3,12 +3,20 @@
 Release History
 ---------------
 
-2.20.2 (2024-05-29)
+2.20.3 (2024-09-03)
 +++++++++++++++++++
 
-**Improvements**
+**Bug Fixes**
 
--
+- RaceCard appKey regex update
+
+**Dependencies**
+
+- orjson upgraded to 3.10.7
+- black upgraded to 24.8.0
+
+2.20.2 (2024-05-29)
++++++++++++++++++++
 
 **Dependencies**
 

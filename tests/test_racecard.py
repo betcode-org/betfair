@@ -21,7 +21,7 @@ class RaceCardTest(unittest.TestCase):
     def test_login(self):
         mock_session = mock.Mock()
         mock_response = mock.Mock()
-        mock_response.content = '"appKey": "1234",'.encode("utf-8")
+        mock_response.content = '"default": {"EDSKey": "1234",},'.encode("utf-8")
         mock_session.get.return_value = mock_response
         self.race_card.login(mock_session)
 
