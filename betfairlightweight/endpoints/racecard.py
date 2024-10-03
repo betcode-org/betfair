@@ -30,9 +30,8 @@ class RaceCard(BaseEndpoint):
             raise APIError(None, self.login_url, None, e)
         except Exception as e:
             raise APIError(None, self.login_url, None, e)
-        app_key = re.findall(
-            r'''"appKey":\s"(.*?)"''', response.content.decode("utf-8")
-        )
+        pattern = r'"default":\s*{\s*"EDSKey":\s*"([^"]+)"'
+        app_key = re.findall(pattern, response.content.decode("utf-8"))
         if app_key:
             self.app_key = app_key[0]
         else:
