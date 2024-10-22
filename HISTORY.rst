@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.20.4 (2024-10-23)
++++++++++++++++++++
+
+**Improvements**
+
+- adds warn field to RaceProgress
+
 2.20.3 (2024-09-03)
 +++++++++++++++++++
 
