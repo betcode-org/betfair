@@ -90,6 +90,7 @@ class TestRaceProgress(unittest.TestCase):
             6395118,
             8706072,
         ]
+        assert self.race_progress.warn == 0
 
 
 class TestRaceChange(unittest.TestCase):

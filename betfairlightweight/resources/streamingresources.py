@@ -218,6 +218,7 @@ class RaceProgress:
         self.progress = kwargs.get("prg")
         self.order = kwargs.get("ord")
         self.jumps = kwargs.get("J")
+        self.warn = kwargs.get("warn")
 
 
 class RaceChange:
