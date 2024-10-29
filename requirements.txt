@@ -1,7 +1,7 @@
 requests<2.33.0
 
 # Tests & Linting
-black==24.8.0
+black==24.10.0
 coverage
 
 # Documentation
