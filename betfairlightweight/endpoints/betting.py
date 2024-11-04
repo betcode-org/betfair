@@ -1,5 +1,5 @@
 import requests
-from typing import Union, List
+from typing import Optional, Union, List
 
 from .baseendpoint import BaseEndpoint
 from .. import resources
@@ -17,9 +17,9 @@ class Betting(BaseEndpoint):
     def list_event_types(
         self,
         filter: dict = market_filter(),
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.EventTypeResult]]:
         """
         Returns a list of Event Types (i.e. Sports) associated with the markets
@@ -45,9 +45,9 @@ class Betting(BaseEndpoint):
     def list_competitions(
         self,
         filter: dict = market_filter(),
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.CompetitionResult]]:
         """
         Returns a list of Competitions (i.e., World Cup 2013) associated with
@@ -74,8 +74,8 @@ class Betting(BaseEndpoint):
         self,
         filter: dict = market_filter(),
         granularity: str = "DAYS",
-        session: requests.Session = None,
-        lightweight: bool = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.TimeRangeResult]]:
         """
         Returns a list of time ranges in the granularity specified in the
@@ -103,9 +103,9 @@ class Betting(BaseEndpoint):
     def list_events(
         self,
         filter: dict = market_filter(),
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.EventResult]]:
         """
         Returns a list of Events (i.e, Reading vs. Man United) associated with
@@ -128,9 +128,9 @@ class Betting(BaseEndpoint):
     def list_market_types(
         self,
         filter: dict = market_filter(),
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.MarketTypeResult]]:
         """
         Returns a list of market types (i.e. MATCH_ODDS, NEXT_GOAL) associated with
@@ -156,9 +156,9 @@ class Betting(BaseEndpoint):
     def list_countries(
         self,
         filter: dict = market_filter(),
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.CountryResult]]:
         """
         Returns a list of Countries associated with the markets selected by
@@ -181,9 +181,9 @@ class Betting(BaseEndpoint):
     def list_venues(
         self,
         filter: dict = market_filter(),
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.VenueResult]]:
         """
         Returns a list of Venues (i.e. Cheltenham, Ascot) associated with
@@ -206,12 +206,12 @@ class Betting(BaseEndpoint):
     def list_market_catalogue(
         self,
         filter: dict = market_filter(),
-        market_projection: list = None,
-        sort: str = None,
+        market_projection: Optional[list] = None,
+        sort: Optional[str] = None,
         max_results: int = 1,
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.MarketCatalogue]]:
         """
         Returns a list of information about published (ACTIVE/SUSPENDED) markets
@@ -241,18 +241,18 @@ class Betting(BaseEndpoint):
     def list_market_book(
         self,
         market_ids: list,
-        price_projection: dict = None,
-        order_projection: str = None,
-        match_projection: str = None,
-        include_overall_position: bool = None,
-        partition_matched_by_strategy_ref: bool = None,
-        customer_strategy_refs: list = None,
-        currency_code: str = None,
-        matched_since: str = None,
-        bet_ids: list = None,
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        price_projection: Optional[dict] = None,
+        order_projection: Optional[str] = None,
+        match_projection: Optional[str] = None,
+        include_overall_position: Optional[bool] = None,
+        partition_matched_by_strategy_ref: Optional[bool] = None,
+        customer_strategy_refs: Optional[list] = None,
+        currency_code: Optional[str] = None,
+        matched_since: Optional[str] = None,
+        bet_ids: Optional[list] = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.MarketBook]]:
         """
         Returns a list of dynamic data about markets. Dynamic data includes prices,
@@ -289,19 +289,19 @@ class Betting(BaseEndpoint):
         self,
         market_id: str,
         selection_id: int,
-        handicap: float = None,
-        price_projection: dict = None,
-        order_projection: str = None,
-        match_projection: str = None,
-        include_overall_position: bool = None,
-        partition_matched_by_strategy_ref: bool = None,
-        customer_strategy_refs: list = None,
-        currency_code: str = None,
-        matched_since: str = None,
-        bet_ids: list = None,
-        locale: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        handicap: Optional[float] = None,
+        price_projection: Optional[dict] = None,
+        order_projection: Optional[str] = None,
+        match_projection: Optional[str] = None,
+        include_overall_position: Optional[bool] = None,
+        partition_matched_by_strategy_ref: Optional[bool] = None,
+        customer_strategy_refs: Optional[list] = None,
+        currency_code: Optional[str] = None,
+        matched_since: Optional[str] = None,
+        bet_ids: Optional[list] = None,
+        locale: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.MarketBook]]:
         """
         Returns a list of dynamic data about a market and a specified runner.
@@ -341,19 +341,19 @@ class Betting(BaseEndpoint):
 
     def list_current_orders(
         self,
-        bet_ids: list = None,
-        market_ids: list = None,
-        order_projection: str = None,
-        customer_order_refs: list = None,
-        customer_strategy_refs: list = None,
+        bet_ids: Optional[list] = None,
+        market_ids: Optional[list] = None,
+        order_projection: Optional[str] = None,
+        customer_order_refs: Optional[list] = None,
+        customer_strategy_refs: Optional[list] = None,
         date_range: dict = time_range(),
-        order_by: str = None,
-        sort_dir: str = None,
-        from_record: int = None,
-        record_count: int = None,
-        include_item_description: bool = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        order_by: Optional[str] = None,
+        sort_dir: Optional[str] = None,
+        from_record: Optional[int] = None,
+        record_count: Optional[int] = None,
+        include_item_description: Optional[bool] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[dict, resources.CurrentOrders]:
         """
         Returns a list of your current orders.
@@ -387,22 +387,22 @@ class Betting(BaseEndpoint):
     def list_cleared_orders(
         self,
         bet_status: str = "SETTLED",
-        event_type_ids: list = None,
-        event_ids: list = None,
-        market_ids: list = None,
-        runner_ids: list = None,
-        bet_ids: list = None,
-        customer_order_refs: list = None,
-        customer_strategy_refs: list = None,
-        side: str = None,
+        event_type_ids: Optional[list] = None,
+        event_ids: Optional[list] = None,
+        market_ids: Optional[list] = None,
+        runner_ids: Optional[list] = None,
+        bet_ids: Optional[list] = None,
+        customer_order_refs: Optional[list] = None,
+        customer_strategy_refs: Optional[list] = None,
+        side: Optional[str] = None,
         settled_date_range: dict = time_range(),
-        group_by: str = None,
-        include_item_description: bool = None,
-        locale: str = None,
-        from_record: int = None,
-        record_count: int = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        group_by: Optional[str] = None,
+        include_item_description: Optional[bool] = None,
+        locale: Optional[str] = None,
+        from_record: Optional[int] = None,
+        record_count: Optional[int] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[dict, resources.ClearedOrders]:
         """
         Returns a list of settled bets based on the bet status,
@@ -439,11 +439,11 @@ class Betting(BaseEndpoint):
     def list_market_profit_and_loss(
         self,
         market_ids: list,
-        include_settled_bets: bool = None,
-        include_bsp_bets: bool = None,
-        net_of_commission: bool = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        include_settled_bets: Optional[bool] = None,
+        include_bsp_bets: Optional[bool] = None,
+        net_of_commission: Optional[bool] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[list, List[resources.MarketProfitLoss]]:
         """
         Retrieve profit and loss for a given list of OPEN markets.
@@ -472,12 +472,12 @@ class Betting(BaseEndpoint):
         self,
         market_id: str,
         instructions: list,
-        customer_ref: str = None,
-        market_version: dict = None,
-        customer_strategy_ref: str = None,
-        async_: bool = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        customer_ref: Optional[str] = None,
+        market_version: Optional[dict] = None,
+        customer_strategy_ref: Optional[str] = None,
+        async_: Optional[bool] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[dict, resources.PlaceOrders]:
         """
         Place new orders into market.
@@ -507,10 +507,10 @@ class Betting(BaseEndpoint):
     def cancel_orders(
         self,
         market_id: str = None,
-        instructions: list = None,
-        customer_ref: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        instructions: Optional[list] = None,
+        customer_ref: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[dict, resources.CancelOrders]:
         """
         Cancel all bets OR cancel all bets on a market OR fully or partially
@@ -534,11 +534,11 @@ class Betting(BaseEndpoint):
 
     def update_orders(
         self,
-        market_id: str = None,
-        instructions: list = None,
-        customer_ref: str = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        market_id: Optional[str] = None,
+        instructions: Optional[list] = None,
+        customer_ref: Optional[str] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[dict, resources.UpdateOrders]:
         """
         Update non-exposure changing field.
@@ -563,11 +563,11 @@ class Betting(BaseEndpoint):
         self,
         market_id: str,
         instructions: list,
-        customer_ref: str = None,
-        market_version: dict = None,
-        async_: bool = None,
-        session: requests.Session = None,
-        lightweight: bool = None,
+        customer_ref: Optional[str] = None,
+        market_version: Optional[dict] = None,
+        async_: Optional[bool] = None,
+        session: Optional[requests.Session] = None,
+        lightweight: Optional[bool] = None,
     ) -> Union[dict, resources.ReplaceOrders]:
         """
         This operation is logically a bulk cancel followed by a bulk place.
