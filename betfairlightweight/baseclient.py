@@ -28,7 +28,7 @@ class BaseClient:
         italy=IDENTITY.format(tld=".it"),
         romania=IDENTITY.format(tld=".ro"),
         sweden=IDENTITY.format(tld=".se"),
-        australia=IDENTITY.format(tld=".com.au"),
+        new_zealand=IDENTITY.format(tld=".com.au"),
     )
 
     IDENTITY_CERT_URLS = collections.defaultdict(
@@ -41,7 +41,7 @@ class BaseClient:
 
     API_URLS = collections.defaultdict(
         lambda: API.format(tld=".com"),
-        australia=API.format(tld=".com.au"),
+        new_zealand=API.format(tld=".com.au"),
     )
 
     NAVIGATION_URLS = collections.defaultdict(
