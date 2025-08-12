@@ -30,6 +30,14 @@ class TestMarketDefinition(unittest.TestCase):
         market_definition = MarketDefinition(**response_json)
         assert market_definition.open_date is None
 
+    def test_extra_data(self):
+        mock_response = create_mock_json(
+            "tests/resources/streaming_market_definition.json"
+        )
+        mock_response_json = mock_response.json()
+        mock_response_json["bando"] = "bill"
+        assert MarketDefinition(**mock_response_json)
+
 
 class TestMarketDefinitionRunner(unittest.TestCase):
     def setUp(self):

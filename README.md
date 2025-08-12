@@ -14,7 +14,7 @@ Lightweight, super fast (uses C and Rust libraries) pythonic wrapper for [Betfai
 
 [join betcode slack group](https://join.slack.com/t/betcode-org/shared_invite/zt-2uer9n451-w1QOehxDcG_JXqQfjoMvQA)
 
-Currently tested on Python 3.8, 3.9, 3.10, 3.11 and 3.12.
+Currently tested on Python 3.9, 3.10, 3.11 and 3.12.
 
 # installation
 
