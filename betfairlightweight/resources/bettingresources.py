@@ -513,6 +513,8 @@ class RunnerBook(BettingResource):
         orders: list = None,
         matches: list = None,
         matchesByStrategy: list = None,
+        suspendReason: str = None,
+        **kwargs,
     ):
         self.selection_id = selectionId
         self.status = status
@@ -526,6 +528,7 @@ class RunnerBook(BettingResource):
         self.orders = [RunnerBookOrder(**i) for i in orders] if orders else []
         self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
         self.matches_by_strategy = matchesByStrategy
+        self.suspend_reason = suspendReason
 
     def __str__(self):
         return "RunnerBook: %s" % self.selection_id
@@ -601,6 +604,7 @@ class MarketBook(BaseResource, BettingResource):
         self.number_of_winners = kwargs.get("numberOfWinners")
         self.runners_voidable = kwargs.get("runnersVoidable")
         self.status = kwargs.get("status")
+        self.suspend_reason = kwargs.get("suspendReason")
         self.total_available = kwargs.get("totalAvailable")
         self.total_matched = kwargs.get("totalMatched")
         self.version = kwargs.get("version")

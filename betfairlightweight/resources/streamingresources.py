@@ -125,6 +125,8 @@ class MarketDefinition:
         priceLadderDefinition: dict = None,
         keyLineDefinition: dict = None,
         raceType: str = None,
+        suspendReason: str = None,
+        **kwargs,
     ):
         self.bet_delay = betDelay
         self.betting_type = bettingType
@@ -167,6 +169,7 @@ class MarketDefinition:
             MarketDefinitionKeyLine(**keyLineDefinition) if keyLineDefinition else None
         )
         self.race_type = raceType
+        self.suspend_reason = suspendReason
 
         self.name = name  # historic data only
         self.event_name = eventName  # historic data only

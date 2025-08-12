@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.21.0 (2025-08-12)
++++++++++++++++++++
+
+**Improvements**
+
+- suspendReason added to MB, RB and MD
+
+**Dependencies**
+
+- ciso8601 upgraded to 2.3.2
+- orjson upgraded to 3.11.1
+- black upgraded to 25.1.0
+
 2.20.4 (2024-10-23)
 +++++++++++++++++++
 
