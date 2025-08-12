@@ -12,6 +12,7 @@ Release History
 
 **Dependencies**
 
+- Remove python 3.8
 - ciso8601 upgraded to 2.3.2
 - orjson upgraded to 3.11.1
 - black upgraded to 25.1.0
