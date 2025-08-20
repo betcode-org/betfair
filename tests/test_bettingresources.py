@@ -383,6 +383,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.cross_matching == market_book["crossMatching"]
             assert resource.inplay == market_book["inplay"]
             assert resource.is_market_data_delayed == market_book["isMarketDataDelayed"]
+            assert resource.bet_delay_models == market_book["betDelayModels"]
             assert resource.last_match_time == datetime.datetime.strptime(
                 market_book["lastMatchTime"], BETFAIR_DATE_FORMAT
             )
