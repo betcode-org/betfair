@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.21.1 (2025-08-20)
++++++++++++++++++++
+
+**Improvements**
+
+- betDelayModels added to MB and RB
+
 2.21.0 (2025-08-12)
 +++++++++++++++++++
 

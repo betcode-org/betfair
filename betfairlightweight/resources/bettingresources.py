@@ -514,6 +514,7 @@ class RunnerBook(BettingResource):
         matches: list = None,
         matchesByStrategy: list = None,
         suspendReason: str = None,
+        betDelayModels: list = None,
         **kwargs,
     ):
         self.selection_id = selectionId
@@ -529,6 +530,7 @@ class RunnerBook(BettingResource):
         self.matches = [RunnerBookMatch(**i) for i in matches] if matches else []
         self.matches_by_strategy = matchesByStrategy
         self.suspend_reason = suspendReason
+        self.bet_delay_models = betDelayModels
 
     def __str__(self):
         return "RunnerBook: %s" % self.selection_id
@@ -593,6 +595,7 @@ class MarketBook(BaseResource, BettingResource):
         super(MarketBook, self).__init__(**kwargs)
         self.market_id = kwargs.get("marketId")
         self.bet_delay = kwargs.get("betDelay")
+        self.bet_delay_models = kwargs.get("betDelayModels")
         self.bsp_reconciled = kwargs.get("bspReconciled")
         self.complete = kwargs.get("complete")
         self.cross_matching = kwargs.get("crossMatching")
