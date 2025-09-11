@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.21.2 (2025-09-11)
++++++++++++++++++++
+
+**Improvements**
+
+- betDelayModels added to streaming MD (fuck you betfair)
+
 2.21.1 (2025-08-20)
 +++++++++++++++++++
 
