@@ -126,6 +126,7 @@ class MarketDefinition:
         keyLineDefinition: dict = None,
         raceType: str = None,
         suspendReason: str = None,
+        betDelayModels: list = None,
         **kwargs,
     ):
         self.bet_delay = betDelay
@@ -170,6 +171,7 @@ class MarketDefinition:
         )
         self.race_type = raceType
         self.suspend_reason = suspendReason
+        self.bet_delay_models = betDelayModels
 
         self.name = name  # historic data only
         self.event_name = eventName  # historic data only
