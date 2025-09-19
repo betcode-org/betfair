@@ -30,7 +30,7 @@ speed = [
     "orjson==3.11.1",
 ]
 test = [
-    "black==25.1.0",
+    "black==25.9.0",
     "coverage",
     "mkdocs",
     "mkdocs-material",
