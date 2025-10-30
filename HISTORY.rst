@@ -3,6 +3,22 @@
 Release History
 ---------------
 
+2.22.0 (2025-10-30)
++++++++++++++++++++
+
+**Improvements**
+
+- #582 Log warning on unexpected conflation in stream (@agberk)
+- Support Australia and New Zealand (@xjxckk)
+- Typing fixes (@Code0x58 / @nunnsy)
+
+**Dependencies**
+
+- Add python 3.13 & 3.14
+- ciso8601 upgraded to 2.3.3
+- orjson upgraded to 3.11.4
+- black upgraded to 25.9.0
+
 2.21.2 (2025-09-11)
 +++++++++++++++++++
 

@@ -138,6 +138,7 @@ class BetfairStream:
             self.listener.update_unique_id(unique_id)
         else:
             self.listener.register_stream(unique_id, "marketSubscription")
+        self.listener.conflate_ms = conflate_ms
         self._send(message)
         return unique_id
 
@@ -177,6 +178,7 @@ class BetfairStream:
             self.listener.update_unique_id(unique_id)
         else:
             self.listener.register_stream(unique_id, "orderSubscription")
+        self.listener.conflate_ms = conflate_ms
         self._send(message)
         return unique_id
 

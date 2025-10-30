@@ -18,6 +18,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "requests<2.33.0",
@@ -26,11 +28,11 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 speed = [
-    "ciso8601==2.3.2",
-    "orjson==3.11.1",
+    "ciso8601==2.3.3",
+    "orjson==3.11.4",
 ]
 test = [
-    "black==25.1.0",
+    "black==25.9.0",
     "coverage",
     "mkdocs",
     "mkdocs-material",

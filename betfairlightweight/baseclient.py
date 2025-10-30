@@ -10,7 +10,7 @@ from .utils import default_user_agent
 
 IDENTITY = "https://identitysso.betfair{tld}/api/"
 IDENTITY_CERT = "https://identitysso-cert.betfair{tld}/api/"
-API = "https://api.betfair.com/exchange/"
+API = "https://api.betfair{tld}/exchange/"
 NAVIGATION = (
     "https://api.betfair{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
 )
@@ -28,7 +28,7 @@ class BaseClient:
         italy=IDENTITY.format(tld=".it"),
         romania=IDENTITY.format(tld=".ro"),
         sweden=IDENTITY.format(tld=".se"),
-        australia=IDENTITY.format(tld=".com.au"),
+        new_zealand=IDENTITY.format(tld=".com.au"),
     )
 
     IDENTITY_CERT_URLS = collections.defaultdict(
@@ -39,7 +39,10 @@ class BaseClient:
         sweden=IDENTITY_CERT.format(tld=".se"),
     )
 
-    API_URLS = collections.defaultdict(lambda: API)
+    API_URLS = collections.defaultdict(
+        lambda: API.format(tld=".com"),
+        new_zealand=API.format(tld=".com.au"),
+    )
 
     NAVIGATION_URLS = collections.defaultdict(
         lambda: NAVIGATION.format(tld=".com", locale="en"),
@@ -56,7 +59,7 @@ class BaseClient:
         app_key: str = None,
         certs: str = None,
         locale: str = None,
-        cert_files: Union[Tuple[str], str, None] = None,
+        cert_files: Union[Tuple[str, str], str, None] = None,
         lightweight: bool = False,
         session: requests.Session = None,
     ):
@@ -147,7 +150,7 @@ class BaseClient:
             return False
 
     @property
-    def cert(self) -> Union[Tuple[str], str]:
+    def cert(self) -> Union[Tuple[str, str], str]:
         """
         The betfair certificates, by default it looks for the
         certificates in /certs/.

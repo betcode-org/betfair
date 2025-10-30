@@ -22,7 +22,7 @@ class BaseClientInit(unittest.TestCase):
     def test_vars(self):
         assert IDENTITY == "https://identitysso.betfair{tld}/api/"
         assert IDENTITY_CERT == "https://identitysso-cert.betfair{tld}/api/"
-        assert API == "https://api.betfair.com/exchange/"
+        assert API == "https://api.betfair{tld}/exchange/"
         assert (
             NAVIGATION
             == "https://api.betfair{tld}/exchange/betting/rest/v1/{locale}/navigation/menu.json"
@@ -39,10 +39,10 @@ class BaseClientInit(unittest.TestCase):
         )
         assert client.identity_cert_uri == "https://identitysso-cert.betfair.com/api/"
 
-        client = APIClient("bf_username", "password", "app_key", locale="australia")
-        assert client.locale == "australia"
+        client = APIClient("bf_username", "password", "app_key", locale="new_zealand")
+        assert client.locale == "new_zealand"
         assert client.identity_uri == "https://identitysso.betfair.com.au/api/"
-        assert client.api_uri == "https://api.betfair.com/exchange/"
+        assert client.api_uri == "https://api.betfair.com.au/exchange/"
         assert (
             client.navigation_uri
             == "https://api.betfair.com/exchange/betting/rest/v1/en/navigation/menu.json"

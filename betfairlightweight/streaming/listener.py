@@ -19,6 +19,8 @@ class BaseListener:
         self.stream_unique_id = None
         self.connections_available = None  # connection throttling
 
+        self.conflate_ms = None
+
     def register_stream(self, unique_id: int, operation: str) -> None:
         logger.info("[Register: %s]: %s", unique_id, operation)
         if self.stream is not None:
