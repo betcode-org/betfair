@@ -9,6 +9,9 @@ Release History
 **Dependencies**
 
 - Add python 3.13 & 3.14
+- ciso8601 upgraded to 2.3.3
+- orjson upgraded to 3.11.4
+- black upgraded to 25.9.0
 
 2.21.2 (2025-09-11)
 +++++++++++++++++++
