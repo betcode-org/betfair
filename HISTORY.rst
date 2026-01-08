@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.22.1 (2026-01-08)
++++++++++++++++++++
+
+**Improvements**
+
+- betDelayModels 12th January release (MarketCatalogue/MarketFilter)
+
 2.22.0 (2025-10-30)
 +++++++++++++++++++
 
