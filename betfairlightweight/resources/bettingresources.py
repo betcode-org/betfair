@@ -237,6 +237,8 @@ class MarketCatalogueDescription(BettingResource):
         keyLineDefinition: str = None,
         lineRangeInfo: dict = None,
         raceType: str = None,
+        betDelayModels: list = None,
+        **kwargs,
     ):
         self.betting_type = bettingType
         self.bsp_market = bspMarket
@@ -260,6 +262,7 @@ class MarketCatalogueDescription(BettingResource):
         )
         self.line_range_info = LineRangeInfo(**lineRangeInfo) if lineRangeInfo else None
         self.race_type = raceType
+        self.bet_delay_models = betDelayModels
 
 
 class RunnerCatalogue(BettingResource):

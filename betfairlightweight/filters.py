@@ -108,6 +108,7 @@ def market_filter(
     market_start_time: dict = None,
     with_orders: str = None,
     race_types: list = None,
+    bet_delay_models: list = None,
 ) -> dict:
     """
     :param str text_query: restrict markets by text associated with it, e.g name, event, comp.
@@ -125,6 +126,7 @@ def market_filter(
     :param dict market_start_time: filter market data by time at which it starts.
     :param str with_orders: filter market data by specified order status.
     :param list race_types: filter race types.
+    :param list bet_delay_models: filtering for both PASSIVE and DYNAMIC markets.
 
     :return: dict
     """
