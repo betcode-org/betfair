@@ -3,6 +3,13 @@
 Release History
 ---------------
 
+2.23.0 (2026-01-28)
++++++++++++++++++++
+
+**Improvements**
+
+- refactor all datetimes to tz aware
+
 2.22.1 (2026-01-08)
 +++++++++++++++++++
 
