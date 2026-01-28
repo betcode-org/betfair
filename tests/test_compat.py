@@ -28,5 +28,7 @@ class CompatTest(unittest.TestCase):
         )
         self.assertEqual(
             compat.parse_datetime("2016-08-17T18:10:01.321Z"),
-            datetime.datetime(2016, 8, 17, 18, 10, 1, 321000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(
+                2016, 8, 17, 18, 10, 1, 321000, tzinfo=datetime.timezone.utc
+            ),
         )

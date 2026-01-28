@@ -664,7 +664,9 @@ class BettingResourcesTest(unittest.TestCase):
                 0
             ].placed_date == datetime.datetime.strptime(
                 order["placedDate"], BETFAIR_DATE_FORMAT
-            ).replace(tzinfo=datetime.timezone.utc)
+            ).replace(
+                tzinfo=datetime.timezone.utc
+            )
             assert resource.place_instruction_reports[0].error_code == order.get(
                 "errorCode"
             )
@@ -784,7 +786,9 @@ class BettingResourcesTest(unittest.TestCase):
                 0
             ].cancelled_date == datetime.datetime.strptime(
                 order["cancelledDate"], BETFAIR_DATE_FORMAT
-            ).replace(tzinfo=datetime.timezone.utc)
+            ).replace(
+                tzinfo=datetime.timezone.utc
+            )
 
             assert (
                 resource.cancel_instruction_reports[0].instruction.bet_id
