@@ -3,12 +3,16 @@
 Release History
 ---------------
 
-2.23.0 (2026-01-28)
+2.23.0 (2026-02-26)
 +++++++++++++++++++
 
 **Improvements**
 
 - refactor all datetimes to tz aware
+
+**Dependencies**
+
+- orjson upgraded to 3.11.5
 
 2.22.1 (2026-01-08)
 +++++++++++++++++++
