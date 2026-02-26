@@ -29,7 +29,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 speed = [
     "ciso8601==2.3.3",
-    "orjson==3.11.4",
+    "orjson==3.11.5",
 ]
 test = [
     "black==25.9.0",

@@ -66,10 +66,10 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.market_count == time_range["marketCount"]
             assert resource.time_range._from == datetime.datetime.strptime(
                 time_range["timeRange"]["from"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             assert resource.time_range.to == datetime.datetime.strptime(
                 time_range["timeRange"]["to"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
 
             assert resource.market_count == resource["marketCount"]
             assert resource.time_range._from == resource["timeRange"]["from"]
@@ -89,7 +89,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.event.id == event_result["event"]["id"]
             assert resource.event.open_date == datetime.datetime.strptime(
                 event_result["event"]["openDate"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             assert resource.event.time_zone == event_result["event"]["timezone"]
             assert resource.event.country_code == event_result["event"]["countryCode"]
             assert resource.event.name == event_result["event"]["name"]
@@ -166,7 +166,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.total_matched == market_catalogue["totalMatched"]
             assert resource.market_start_time == datetime.datetime.strptime(
                 market_catalogue["marketStartTime"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
 
             assert resource.competition.id == market_catalogue["competition"]["id"]
             assert resource.competition.name == market_catalogue["competition"]["name"]
@@ -174,7 +174,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.event.id == market_catalogue["event"]["id"]
             assert resource.event.open_date == datetime.datetime.strptime(
                 market_catalogue["event"]["openDate"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             assert resource.event.time_zone == market_catalogue["event"]["timezone"]
             assert (
                 resource.event.country_code == market_catalogue["event"]["countryCode"]
@@ -203,7 +203,7 @@ class BettingResourcesTest(unittest.TestCase):
             )
             assert resource.description.market_time == datetime.datetime.strptime(
                 market_catalogue["description"]["marketTime"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             assert (
                 resource.description.market_type
                 == market_catalogue["description"]["marketType"]
@@ -225,7 +225,7 @@ class BettingResourcesTest(unittest.TestCase):
             )
             assert resource.description.suspend_time == datetime.datetime.strptime(
                 market_catalogue["description"]["suspendTime"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             assert (
                 resource.description.turn_in_play_enabled
                 == market_catalogue["description"]["turnInPlayEnabled"]
@@ -386,7 +386,7 @@ class BettingResourcesTest(unittest.TestCase):
             assert resource.bet_delay_models == market_book["betDelayModels"]
             assert resource.last_match_time == datetime.datetime.strptime(
                 market_book["lastMatchTime"], BETFAIR_DATE_FORMAT
-            )
+            ).replace(tzinfo=datetime.timezone.utc)
             assert (
                 resource.number_of_active_runners
                 == market_book["numberOfActiveRunners"]
@@ -462,7 +462,7 @@ class BettingResourcesTest(unittest.TestCase):
                 if runner.get("removalDate"):
                     assert resource_runner.removal_date == datetime.datetime.strptime(
                         runner["removalDate"], BETFAIR_DATE_FORMAT
-                    )
+                    ).replace(tzinfo=datetime.timezone.utc)
                 # else:
                 #     assert resource_runner.sp.near_price == runner['sp']['nearPrice']
                 #     assert resource_runner.sp.far_price == runner['sp']['farPrice']
@@ -664,6 +664,8 @@ class BettingResourcesTest(unittest.TestCase):
                 0
             ].placed_date == datetime.datetime.strptime(
                 order["placedDate"], BETFAIR_DATE_FORMAT
+            ).replace(
+                tzinfo=datetime.timezone.utc
             )
             assert resource.place_instruction_reports[0].error_code == order.get(
                 "errorCode"
@@ -784,6 +786,8 @@ class BettingResourcesTest(unittest.TestCase):
                 0
             ].cancelled_date == datetime.datetime.strptime(
                 order["cancelledDate"], BETFAIR_DATE_FORMAT
+            ).replace(
+                tzinfo=datetime.timezone.utc
             )
 
             assert (

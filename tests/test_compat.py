@@ -20,13 +20,15 @@ class CompatTest(unittest.TestCase):
         self.assertIsNone(compat.parse_datetime(""))
         self.assertEqual(
             compat.parse_datetime("2016-08-17T18:10:00.000Z"),
-            datetime.datetime(2016, 8, 17, 18, 10),
+            datetime.datetime(2016, 8, 17, 18, 10, tzinfo=datetime.timezone.utc),
         )
         self.assertEqual(
             compat.parse_datetime("2016-08-17T18:10:01.000Z"),
-            datetime.datetime(2016, 8, 17, 18, 10, 1),
+            datetime.datetime(2016, 8, 17, 18, 10, 1, tzinfo=datetime.timezone.utc),
         )
         self.assertEqual(
             compat.parse_datetime("2016-08-17T18:10:01.321Z"),
-            datetime.datetime(2016, 8, 17, 18, 10, 1, 321000),
+            datetime.datetime(
+                2016, 8, 17, 18, 10, 1, 321000, tzinfo=datetime.timezone.utc
+            ),
         )

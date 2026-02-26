@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 BETFAIR_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -21,7 +21,9 @@ try:
 
     def parse_datetime(datetime_string: str) -> Optional[datetime]:
         try:
-            return ciso8601.parse_datetime_as_naive(datetime_string)
+            return ciso8601.parse_datetime_as_naive(datetime_string).replace(
+                tzinfo=timezone.utc
+            )
         except ValueError:
             return
 
@@ -29,6 +31,8 @@ except ImportError:
 
     def parse_datetime(datetime_string: str) -> Optional[datetime]:
         try:
-            return datetime.strptime(datetime_string, BETFAIR_DATE_FORMAT)
+            return datetime.strptime(datetime_string, BETFAIR_DATE_FORMAT).replace(
+                tzinfo=timezone.utc
+            )
         except ValueError:
             return

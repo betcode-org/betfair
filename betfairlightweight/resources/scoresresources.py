@@ -9,6 +9,7 @@ class RaceDetails(BaseResource):
         self.meeting_id = kwargs.get("meetingId")
         self.race_status = kwargs.get("raceStatus")
         self.last_updated = self.strip_datetime(kwargs.get("lastUpdated"))
+        self.sequence = kwargs.get("sequence")
 
 
 class UpdateContext:

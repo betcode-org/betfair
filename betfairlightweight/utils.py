@@ -91,11 +91,8 @@ def create_date_string(date: datetime.datetime) -> Optional[str]:
 
 
 def utcnow():
-    """return timezone naive now"""
-    return datetime.datetime.now(tz=datetime.timezone.utc).replace(tzinfo=None)
+    return datetime.datetime.now(tz=datetime.timezone.utc)
 
 
 def utcfromtimestamp(ts):
-    return datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc).replace(
-        tzinfo=None
-    )
+    return datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
