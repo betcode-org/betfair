@@ -6,6 +6,10 @@ Release History
 2.23.2 (2026-03-16)
 +++++++++++++++++++
 
+**Improvements**
+
+- py3.9 removed from speed tests (orjson limitation)
+
 **Dependencies**
 
 - orjson upgraded to 3.11.7
