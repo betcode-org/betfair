@@ -1,0 +1,81 @@
+{
+	"eventTypeId": 1,
+	"eventId": 28210051,
+	"score": {
+		"home": {
+			"name": "Boluspor",
+			"score": "0",
+			"halfTimeScore": "0",
+			"fullTimeScore": "",
+			"penaltiesScore": "",
+			"penaltiesSequence": [],
+			"games": "",
+			"sets": "",
+			"numberOfYellowCards": 1,
+			"numberOfRedCards": 0,
+			"numberOfCards": 1,
+			"numberOfCorners": 1,
+			"numberOfCornersFirstHalf": 0,
+			"numberOfCornersSecondHalf": 1,
+			"bookingPoints": 10
+		},
+		"away": {
+			"name": "Sanliurfaspor",
+			"score": "2",
+			"halfTimeScore": "1",
+			"fullTimeScore": "",
+			"penaltiesScore": "",
+			"penaltiesSequence": [],
+			"games": "",
+			"sets": "",
+			"numberOfYellowCards": 0,
+			"numberOfRedCards": 0,
+			"numberOfCards": 0,
+			"numberOfCorners": 2,
+			"numberOfCornersFirstHalf": 2,
+			"numberOfCornersSecondHalf": 0,
+			"bookingPoints": 0
+		},
+		"numberOfYellowCards": 1,
+		"numberOfRedCards": 0,
+		"numberOfCards": 1,
+		"numberOfCorners": 3,
+		"numberOfCornersFirstHalf": 2,
+		"numberOfCornersSecondHalf": 1,
+		"bookingPoints": 10
+	},
+	"timeElapsed": 78,
+	"elapsedRegularTime": 77,
+	"timeElapsedSeconds": 56,
+	"fullTimeElapsed": {
+		"hour": 0,
+		"min": 0,
+		"sec": 0
+	},
+	"status": "SecondHalfKickOff",
+	"matchStatus": "SecondHalfKickOff",
+	"broadcasts": [
+		{
+			"eventId": 28210051,
+			"hasLiveStreaming": true,
+			"hasLiveStreamingInfo": true,
+			"imgUrl": "https://example.com/img.png",
+			"overviewUrl": "https://example.com/overview",
+			"provider": "PROVIDER",
+			"providerName": "Provider Name",
+			"providerDisplayName": "Provider Display Name",
+			"channels": ["channel1", "channel2"]
+		}
+	],
+	"matchInfo": {
+		"eventId": 28210051,
+		"matchId": "12345",
+		"homeTeam": "Boluspor",
+		"awayTeam": "Sanliurfaspor",
+		"competition": "Turkish League",
+		"eventTypeId": 1,
+		"startTime": "2017-05-07T15:30:00.000Z",
+		"venue": "Stadium",
+		"inPlay": true
+	}
+}
