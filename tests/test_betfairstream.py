@@ -310,6 +310,37 @@ class BetfairStreamTest(unittest.TestCase):
         mock_socket.recv.assert_called_with(self.buffer_size)
         assert data == data_return_value.decode("utf-8")
 
+    def test_receive_part_split(self):
+        part1 = b'{"op":"ccm","desc":"England v NZ \xe2'
+        part2 = b'\x80\x94 Test"}\r\n'
+        expected = part1 + part2
+
+        mock_socket = mock.Mock()
+        mock_socket.recv.side_effect = [part1, part2]
+        self.betfair_stream._socket = mock_socket
+        self.betfair_stream._running = True
+
+        data = self.betfair_stream._receive_all()
+
+        assert data == expected.decode("utf-8")
+        assert mock_socket.recv.call_count == 2
+        mock_socket.recv.assert_called_with(self.buffer_size)
+
+    def test_receive_crlf_split(self):
+        part1 = b'{"op":"status"}\r'
+        part2 = b"\n"
+        expected = part1 + part2
+
+        mock_socket = mock.Mock()
+        mock_socket.recv.side_effect = [part1, part2]
+        self.betfair_stream._socket = mock_socket
+        self.betfair_stream._running = True
+
+        data = self.betfair_stream._receive_all()
+
+        assert data == expected.decode("utf-8")
+        assert mock_socket.recv.call_count == 2
+
     @mock.patch("betfairlightweight.streaming.betfairstream.BetfairStream.stop")
     def test_receive_all_closed(self, mock_stop):
         mock_socket = mock.Mock()

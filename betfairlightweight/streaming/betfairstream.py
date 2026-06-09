@@ -240,10 +240,10 @@ class BetfairStream:
         """Whilst socket is running receives data from socket,
         till CRLF is detected.
         """
-        (data, part) = ("", "")
+        data = b""
         crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
 
-        while self._running and part[-2:] != crlf_bytes:
+        while self._running and data[-2:] != crlf_bytes:
             try:
                 part = self._socket.recv(self.buffer_size)
             except (socket.timeout, socket.error) as e:
@@ -264,8 +264,8 @@ class BetfairStream:
                 else:
                     return  # 165, prevents error if stop is called mid recv
 
-            data += part.decode(self.__encoding)
-        return data
+            data += part
+        return data.decode(self.__encoding)
 
     def _data(self, received_data: str) -> None:
         """Sends data to listener, if False is returned; socket
