@@ -243,7 +243,7 @@ class BetfairStream:
         data = b""
         crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)
 
-        while self._running and data[-2:] != crlf_bytes:
+        while self._running and not data.endswith(crlf_bytes):
             try:
                 part = self._socket.recv(self.buffer_size)
             except (socket.timeout, socket.error) as e:
