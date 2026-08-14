@@ -172,6 +172,44 @@ class StateOfBall:
         self.wide = wide
 
 
+class RadioBroadcast:
+    def __init__(self, url=None):
+        self.url = url
+
+
+class LiveVideoBroadcast:
+    def __init__(self, startTime=None, endTime=None, channel=None):
+        self.start_time = BaseResource.strip_datetime(startTime)
+        self.end_time = BaseResource.strip_datetime(endTime)
+        self.channel = channel
+
+
+class Broadcasts:
+    def __init__(
+        self,
+        tv=None,
+        radio=None,
+        bfLiveVideo=None,
+        isLiveVideoAvailable=None,
+        isDataVisualizationAvailable=None,
+        isPaddockViewAvailable=None,
+        channel=None,
+    ):
+        self.tv = tv if tv else []
+        self.radio = RadioBroadcast(**radio) if radio else None
+        self.bf_live_video = LiveVideoBroadcast(**bfLiveVideo) if bfLiveVideo else None
+        self.is_live_video_available = isLiveVideoAvailable
+        self.is_data_visualization_available = isDataVisualizationAvailable
+        self.is_paddock_view_available = isPaddockViewAvailable
+        self.channel = channel
+
+
+class MatchInfo:
+    def __init__(self, surface=None, numberOfSets=None):
+        self.surface = surface
+        self.number_of_sets = numberOfSets
+
+
 class Scores(BaseResource):
     def __init__(self, **kwargs):
         super(Scores, self).__init__(**kwargs)
@@ -195,4 +233,10 @@ class Scores(BaseResource):
             StateOfBall(**kwargs.get("stateOfBall"))
             if kwargs.get("stateOfBall")
             else None
+        )
+        self.broadcasts = (
+            Broadcasts(**kwargs.get("broadcasts")) if kwargs.get("broadcasts") else None
+        )
+        self.match_info = (
+            MatchInfo(**kwargs.get("matchInfo")) if kwargs.get("matchInfo") else None
         )

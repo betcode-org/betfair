@@ -100,6 +100,36 @@ class InPlayService(BaseEndpoint):
             response_json, resources.Scores, elapsed_time, lightweight
         )
 
+    def get_scores_and_broadcast(
+        self,
+        event_ids: list,
+        session: requests.Session = None,
+        lightweight: bool = None,
+    ) -> Union[list, List[resources.Scores]]:
+        """
+        Returns a list of scores, including broadcast and
+        match info data, based on event id's supplied.
+
+        :param list event_ids: List of event id's to return
+        :param requests.session session: Requests session object
+        :param bool lightweight: If True will return dict not a resource
+
+        :rtype: list[resources.Scores]
+        """
+        url = "%s%s" % (self.url, "scoresAndBroadcast")
+        params = {
+            "eventIds": ",".join(str(x) for x in event_ids),
+            "alt": "json",
+            "regionCode": "UK",
+            "locale": "en_GB",
+        }
+        (response, response_json, elapsed_time) = self.request(
+            params=params, session=session, url=url
+        )
+        return self.process_response(
+            response_json, resources.Scores, elapsed_time, lightweight
+        )
+
     def request(
         self,
         method: str = None,

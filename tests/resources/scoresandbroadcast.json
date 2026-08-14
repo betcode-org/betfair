@@ -1,0 +1,82 @@
+{
+	"eventTypeId": 2,
+	"eventId": 34392141,
+	"score": {
+		"home": {
+			"name": "Player One",
+			"score": "1",
+			"halfTimeScore": "",
+			"fullTimeScore": "",
+			"penaltiesScore": "",
+			"penaltiesSequence": [],
+			"games": "3",
+			"sets": "1",
+			"numberOfYellowCards": 0,
+			"numberOfRedCards": 0,
+			"numberOfCards": 0,
+			"numberOfCorners": 0,
+			"numberOfCornersFirstHalf": 0,
+			"numberOfCornersSecondHalf": 0,
+			"bookingPoints": 0,
+			"isServing": true,
+			"playerSeed": "4",
+			"serviceBreaks": 1
+		},
+		"away": {
+			"name": "Player Two",
+			"score": "0",
+			"halfTimeScore": "",
+			"fullTimeScore": "",
+			"penaltiesScore": "",
+			"penaltiesSequence": [],
+			"games": "2",
+			"sets": "0",
+			"numberOfYellowCards": 0,
+			"numberOfRedCards": 0,
+			"numberOfCards": 0,
+			"numberOfCorners": 0,
+			"numberOfCornersFirstHalf": 0,
+			"numberOfCornersSecondHalf": 0,
+			"bookingPoints": 0,
+			"isServing": false,
+			"playerSeed": "12",
+			"serviceBreaks": 0
+		},
+		"numberOfYellowCards": 0,
+		"numberOfRedCards": 0,
+		"numberOfCards": 0,
+		"numberOfCorners": 0,
+		"numberOfCornersFirstHalf": 0,
+		"numberOfCornersSecondHalf": 0,
+		"bookingPoints": 0
+	},
+	"timeElapsed": 34,
+	"elapsedRegularTime": 34,
+	"timeElapsedSeconds": 12,
+	"fullTimeElapsed": {
+		"hour": 0,
+		"min": 34,
+		"sec": 12
+	},
+	"status": "InProgress",
+	"matchStatus": "FirstSet",
+	"broadcasts": {
+		"tv": [],
+		"radio": {
+			"url": "http://radio.betfair.com"
+		},
+		"bfLiveVideo": {
+			"startTime": "2024-03-26T16:00:00.000Z",
+			"endTime": "2024-03-26T21:00:00.000Z",
+			"channel": "http://livevideo.betfair.com/Default.do?mi=226657935"
+		},
+		"isLiveVideoAvailable": true,
+		"isDataVisualizationAvailable": false,
+		"isPaddockViewAvailable": false,
+		"channel": "WEB"
+	},
+	"matchInfo": {
+		"surface": "",
+		"numberOfSets": "3"
+	}
+}

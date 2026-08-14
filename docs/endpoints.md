@@ -158,6 +158,9 @@ trading.in_play_service.get_event_timelines()
 ```python
 trading.in_play_service.get_scores()
 ```
+```python
+trading.in_play_service.get_scores_and_broadcast()
+```
 
 ### Race Card
 
