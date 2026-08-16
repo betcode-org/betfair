@@ -93,6 +93,31 @@ class InPlayServiceTest(unittest.TestCase):
         assert mock_request.call_count == 1
         assert mock_process_response.call_count == 1
 
+    @mock.patch(
+        "betfairlightweight.endpoints.inplayservice.InPlayService.process_response"
+    )
+    @mock.patch(
+        "betfairlightweight.endpoints.inplayservice.InPlayService.request",
+        return_value=(mock.Mock(), mock.Mock(), 1.3),
+    )
+    def test_get_scores_and_broadcast(self, mock_request, mock_process_response):
+        event_ids = [12345, 54321]
+        params = {
+            "eventIds": "12345,54321",
+            "alt": "json",
+            "regionCode": "UK",
+            "locale": "en_GB",
+        }
+        self.in_play_service.get_scores_and_broadcast(event_ids)
+
+        mock_request.assert_called_with(
+            url="https://ips.betfair.com/inplayservice/v1.1/scoresAndBroadcast",
+            session=None,
+            params=params,
+        )
+        assert mock_request.call_count == 1
+        assert mock_process_response.call_count == 1
+
     @mock.patch("betfairlightweight.endpoints.inplayservice.check_status_code")
     @mock.patch("betfairlightweight.endpoints.inplayservice.InPlayService.headers")
     @mock.patch("betfairlightweight.baseclient.requests.get")
