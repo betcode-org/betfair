@@ -36,7 +36,7 @@ from .scoresresources import RaceDetails, Score, Incidents, AvailableEvent
 
 from .racecardresources import RaceCard
 
-from .inplayserviceresources import EventTimeline, Scores
+from .inplayserviceresources import EventTimeline, Scores, ScoresAndBroadcast
 
 from .streamingresources import (
     CricketMatch,
