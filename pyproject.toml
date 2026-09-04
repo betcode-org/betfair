@@ -22,14 +22,14 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "requests<2.33.0",
+    "requests<2.35.0",
 ]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 speed = [
     "ciso8601==2.3.3",
-    "orjson==3.11.7",
+    "orjson==3.12.0",
 ]
 test = [
     "black==25.9.0",

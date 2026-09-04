@@ -1,0 +1,75 @@
+{
+	"eventTypeId": 2,
+	"eventId": 33163030,
+	"score": {
+		"home": {
+			"name": "J Smith",
+			"score": "40",
+			"halfTimeScore": "",
+			"fullTimeScore": "",
+			"penaltiesScore": "",
+			"penaltiesSequence": [],
+			"games": "3",
+			"sets": "1",
+			"gameSequence": [6, 3],
+			"isServing": true,
+			"playerSeed": "1",
+			"aces": 4,
+			"doubleFaults": 1,
+			"serviceBreaks": 2,
+			"highlight": false
+		},
+		"away": {
+			"name": "R Jones",
+			"score": "30",
+			"halfTimeScore": "",
+			"fullTimeScore": "",
+			"penaltiesScore": "",
+			"penaltiesSequence": [],
+			"games": "2",
+			"sets": "0",
+			"gameSequence": [4, 2],
+			"isServing": false,
+			"playerSeed": "4",
+			"aces": 2,
+			"doubleFaults": 3,
+			"serviceBreaks": 1,
+			"highlight": false
+		}
+	},
+	"timeElapsed": 58,
+	"timeElapsedSeconds": 12,
+	"currentSet": 2,
+	"fullTimeElapsed": {
+		"hour": 0,
+		"min": 58,
+		"sec": 12
+	},
+	"status": "IN_PLAY",
+	"matchStatus": "InProgress",
+	"broadcasts": {
+		"tv": [
+			{
+				"startTime": "2024-03-26T16:00:00.000Z",
+				"endTime": "2024-03-26T21:00:00.000Z",
+				"channel": "Sky Sports Main Event"
+			}
+		],
+		"radio": {
+			"url": "http://radio.betfair.com"
+		},
+		"bfLiveVideo": {
+			"startTime": "2024-03-26T16:00:00.000Z",
+			"endTime": "2024-03-26T21:00:00.000Z",
+			"channel": "http://livevideo.betfair.com/Default.do?mi=226657935"
+		},
+		"isLiveVideoAvailable": true,
+		"isDataVisualizationAvailable": false,
+		"isPaddockViewAvailable": false,
+		"channel": "WEB"
+	},
+	"matchInfo": {
+		"surface": "",
+		"numberOfSets": "3"
+	}
+}

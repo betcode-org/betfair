@@ -196,3 +196,54 @@ class Scores(BaseResource):
             if kwargs.get("stateOfBall")
             else None
         )
+
+
+class BroadcastChannel:
+    def __init__(self, startTime=None, endTime=None, channel=None):
+        self.start_time = BaseResource.strip_datetime(startTime)
+        self.end_time = BaseResource.strip_datetime(endTime)
+        self.channel = channel
+
+
+class RadioBroadcast:
+    def __init__(self, url=None):
+        self.url = url
+
+
+class Broadcasts:
+    def __init__(
+        self,
+        tv=None,
+        radio=None,
+        bfLiveVideo=None,
+        isLiveVideoAvailable=None,
+        isDataVisualizationAvailable=None,
+        isPaddockViewAvailable=None,
+        channel=None,
+    ):
+        self.tv = [BroadcastChannel(**i) for i in tv] if tv else []
+        self.radio = RadioBroadcast(**radio) if radio else None
+        self.bf_live_video = BroadcastChannel(**bfLiveVideo) if bfLiveVideo else None
+        self.is_live_video_available = isLiveVideoAvailable
+        self.is_data_visualization_available = isDataVisualizationAvailable
+        self.is_paddock_view_available = isPaddockViewAvailable
+        self.channel = channel
+
+
+class MatchInfo:
+    # fields returned vary by event type, raw response stored in _data
+    def __init__(self, **kwargs):
+        self._data = kwargs
+        self.surface = kwargs.get("surface")
+        self.number_of_sets = kwargs.get("numberOfSets")
+
+
+class ScoresAndBroadcast(Scores):
+    def __init__(self, **kwargs):
+        super(ScoresAndBroadcast, self).__init__(**kwargs)
+        self.broadcasts = (
+            Broadcasts(**kwargs.get("broadcasts")) if kwargs.get("broadcasts") else None
+        )
+        self.match_info = (
+            MatchInfo(**kwargs.get("matchInfo")) if kwargs.get("matchInfo") else None
+        )

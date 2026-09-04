@@ -1,4 +1,4 @@
-requests<2.33.0
+requests<2.35.0
 
 # Tests & Linting
 black==25.9.0
