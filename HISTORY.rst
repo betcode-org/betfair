@@ -3,6 +3,19 @@
 Release History
 ---------------
 
+2.24.0 (2026-09-04)
++++++++++++++++++++
+
+**Improvements**
+
+- #618 Fixes handling of a split frame message (@lunswor)
+- #569 Add in_play_service.get_scores_and_broadcas (@bensynapse)
+
+**Dependencies**
+
+- orjson upgraded to 3.12.0
+- requests upgraded to <2.35.0
+
 2.23.2 (2026-03-16)
 +++++++++++++++++++
 
